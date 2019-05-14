@@ -24,5 +24,7 @@
 <!-- MODULES                                                                -->
 <!-- ====================================================================== -->
 	<modules>
+    <module>r01fVaadin8UIServerClasses</module>
+    <module>r01fVaadin8UIClientClasses</module>
   </modules>
 </project>

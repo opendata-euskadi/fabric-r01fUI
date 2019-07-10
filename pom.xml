@@ -39,10 +39,10 @@
 <!-- MODULES                                                                -->
 <!-- ====================================================================== -->
 	<modules>
-    <module>r01fVaadin7UI</module>
-    <module>r01fVaadin8UI</module>
-    <module>r01fUIClasses</module>
-  </modules>
+		<module>r01fVaadin7UI</module>
+		<module>r01fVaadin8UI</module>
+		<module>r01fUIClasses</module>
+	</modules>
 
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
@@ -70,33 +70,33 @@
 		<!-- Logback                                   -->
 		<!-- ///////////////////////////////////////// -->
 		<dependency>
-		    <groupId>ch.qos.logback</groupId>
-		    <artifactId>logback-core</artifactId>
-		    <version>${logback.verson}</version>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.verson}</version>
 		</dependency>
 		<dependency>
-		    <groupId>ch.qos.logback</groupId>
-		    <artifactId>logback-classic</artifactId>
-		    <version>${logback.verson}</version>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.verson}</version>
 		</dependency>
 
 		<!-- ///////////////////////////////////////// -->
 		<!-- SL4FJ BRIDGES                             -->
 		<!-- ///////////////////////////////////////// -->
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>jcl-over-slf4j</artifactId>
-		    <version>${slf4j.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>log4j-over-slf4j</artifactId>
-		    <version>${slf4j.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>jul-to-slf4j</artifactId>
-		    <version>${slf4j.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<!-- ///////////////////////////////////////// -->
@@ -122,7 +122,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 
 		<!-- ///////////////////////////////////////// -->
 		<!-- TEST                                      -->
@@ -166,7 +165,7 @@
 				  most common certificate-authorities public root certificates
 	-->
 	<repositories>
-	    <repository>
+		<repository>
 			<id>EJIE</id>
 			<name>EJIE Public Releases</name>
 			<url>https://bin1.alm02.itbatera.euskadi.eus/repository/maven-public-releases/</url>
@@ -181,9 +180,8 @@
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 			<layout>default</layout>
-	    </repository>
+		</repository>
 	</repositories>
-
 
 <!-- ====================================================================== -->
 <!-- PLUGINS                                                                -->
@@ -203,6 +201,7 @@
 					</configuration>
 				</plugin>
 				-->
+
 				<!-- Version plugin -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -211,46 +210,53 @@
 				</plugin>
 
 				<!-- Mav4en deploy: https://maven.apache.org/plugins/maven-deploy-plugin/usage.html -->
-                <plugin>
-                	<artifactId>maven-deploy-plugin</artifactId>
-                   	<version>3.0.0-M1</version>
-                   	<executions>
-                    	<execution>
-                        	<id>default-deploy</id>
-                         	<phase>deploy</phase>
-                        	<goals>
-                            	<goal>deploy</goal>
-                         	</goals>
-                      	</execution>
-                	</executions>
-                </plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.0.0-M1</version>
+					<executions>
+						<execution>
+							<id>default-deploy</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>deploy</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 
-                <!-- Add the [resources] dir to the compile & package phase -->
-                <!-- https://www.mojohaus.org/build-helper-maven-plugin/usage.html -->
+				<!-- Add the [resources] dir to the compile & package phase -->
+				<!-- https://www.mojohaus.org/build-helper-maven-plugin/usage.html -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-				  	<artifactId>build-helper-maven-plugin</artifactId>
-				  	<version>1.7</version>
-				  	<executions>
-				    	<execution>
-				      		<id>add-source</id>
-				      		<phase>generate-sources</phase>
-				      		<goals>
-				        		<goal>add-source</goal>
-				      		</goals>
-				      		<configuration>
-				        		<sources>
-				          			<source>src/main/resources</source>
-				          			<source>src/test/resources</source>
-				          			<source>src/main/config</source>
-				        		</sources>
-				      		</configuration>
-				    	</execution>
-				  	</executions>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.7</version>
+					<executions>
+						<execution>
+							<id>add-source</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>src/main/resources</source>
+									<source>src/test/resources</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 
 			</plugins>
 		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/config</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 
 	<!-- Maven deploy -->
@@ -260,28 +266,12 @@
 			<name>maven-public-releases</name>
 			<layout>default</layout>
 			<url>https://bin1.alm02.itbatera.euskadi.eus/repository/maven-public-releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 		<snapshotRepository>
 			<id>maven-snapshots</id>
-			<name>maven-public-releases</name>
+			<name>maven-snapshots</name>
 			<layout>default</layout>
 			<url>https://bin1.alm02.itbatera.euskadi.eus/repository/maven-snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</snapshotRepository>
 	</distributionManagement>
 

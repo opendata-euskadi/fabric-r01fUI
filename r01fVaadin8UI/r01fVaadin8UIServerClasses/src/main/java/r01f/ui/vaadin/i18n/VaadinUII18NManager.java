@@ -1,5 +1,5 @@
 
-package r01f.ui.i18n;
+package r01f.ui.vaadin.i18n;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,11 +12,12 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.types.JavaPackage;
+import r01f.ui.i18n.UII18NManagerBase;
 
 
 @Slf4j
 @Accessors(prefix="_")
-public abstract class VaadinI18NManager
+public abstract class VaadinUII18NManager
               extends UII18NManagerBase {
 
     private static final long serialVersionUID = -4523459172009081309L;
@@ -27,11 +28,11 @@ public abstract class VaadinI18NManager
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////
-    public VaadinI18NManager(final Collection<JavaPackage> pckgNames) {
+    public VaadinUII18NManager(final Collection<JavaPackage> pckgNames) {
         super(pckgNames);
     }
-    public VaadinI18NManager(final ClassLoader classLoader,
-    					 final Collection<JavaPackage> pckgNames) {
+    public VaadinUII18NManager(final ClassLoader classLoader,
+    						   final Collection<JavaPackage> pckgNames) {
         super(classLoader,
         	  pckgNames);
     }

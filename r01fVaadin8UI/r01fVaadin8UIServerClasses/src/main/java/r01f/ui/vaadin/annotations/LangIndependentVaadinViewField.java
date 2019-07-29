@@ -17,6 +17,6 @@ import com.vaadin.data.HasValue;
  */
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface UILangIndependentVaadinViewField {
+public @interface LangIndependentVaadinViewField {
 	// just a marker annotation
 }

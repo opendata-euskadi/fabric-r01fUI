@@ -18,12 +18,12 @@ import r01f.patterns.Provider;
 @NoArgsConstructor @AllArgsConstructor
 public class VaadinViewMultiValueItem {
 /////////////////////////////////////////////////////////////////////////////////////////
-//  
-/////////////////////////////////////////////////////////////////////////////////////////	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 	@Getter @Setter private String _id;
 	@Getter @Setter private String _value;
 /////////////////////////////////////////////////////////////////////////////////////////
-//  
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Vaadin {@link Converter} to be used when binding the combo at a vaadin {@link Binder}
@@ -34,27 +34,27 @@ public class VaadinViewMultiValueItem {
 	 * 			@Getter @Setter private String _oid;
 	 * 			@Getter @Setter private float _ammount;
 	 * 			...
-	 * 			@Getter @Setter private String _vendorId;
-	 * 			@Getter @Setter private String _vendorName;
+	 * 			@Getter @Setter private String _vendorId;		// this is the combo item id
+	 * 			@Getter @Setter private String _vendorName;		// this is the combo item caption
 	 * 		}
 	 * </pre>
-	 * When a {@link ComboBox} is used to select the [vendor] and vaadin {@link Binder} is used to bind the InvoiceView 
+	 * When a {@link ComboBox} is used to select the [vendor] and vaadin {@link Binder} is used to bind the view object
 	 * <pre class='brush:java'>
 	 * 		// Create the form
 	 * 		final TextField txtOid = new TextField();
 	 * 		final TextField txtAmmount = new TextField();
 	 * 		...
 	 * 		final ComboBox<VaadinViewMultiValueItem> cmbVendor = new ComboBox<>();
-	 * 
+	 *
 	 * 		// bind
 	 * 		_binder.forField( txtOid )
 	 * 			   .bind(InvoiceView::getOid,InvoiceView::setOid)
 	 * 		_binder.forField( txtAmmount )
 	 * 			   .bind(InvoiceView::getAmmount,InvoiceView::setAmmount)
-	 * 		_binder.forField( cmbVendor )	
+	 * 		_binder.forField( cmbVendor )
 	 *		  .bind(InvoiceView::getVendorId,InvoiceView::setVendorId)
  	 *		  .withConverter(VaadinViewMultiValueItem.converterFor(() -> _viewObj.getVendorName()))
-	 * 
+	 *
 	 * </pre>
 	 * @param valueProvider
 	 * @return
@@ -73,9 +73,9 @@ public class VaadinViewMultiValueItem {
 							public VaadinViewMultiValueItem convertToPresentation(final String id,
 																				 final ValueContext context) {
 								// a value provider is used to get the value from the id
-								// ... the value provider can issue a database call to load the value from the DB 
+								// ... the value provider can issue a database call to load the value from the DB
 								return new VaadinViewMultiValueItem(id,
-																   valueProvider.provideValue()); 
+																   valueProvider.provideValue());
 							}
 			  	};
 	}
@@ -88,9 +88,9 @@ public class VaadinViewMultiValueItem {
 		if (obj == this) return true;
 		if (!(obj instanceof VaadinViewMultiValueItem)) return false;
 		VaadinViewMultiValueItem other = (VaadinViewMultiValueItem)obj;
-		boolean idEq = this.getId() != null && other.getId() != null 
+		boolean idEq = this.getId() != null && other.getId() != null
 							? this.getId().equals(other.getId())
-							: this.getId() != null && other.getId() == null 
+							: this.getId() != null && other.getId() == null
 									? false
 									: this.getId() == null && other.getId() != null
 											? false

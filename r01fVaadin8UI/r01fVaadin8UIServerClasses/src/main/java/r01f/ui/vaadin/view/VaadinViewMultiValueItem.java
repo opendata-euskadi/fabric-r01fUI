@@ -7,21 +7,32 @@ import com.vaadin.data.Result;
 import com.vaadin.data.ValueContext;
 import com.vaadin.ui.ComboBox;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import r01f.guids.OID;
 import r01f.patterns.Provider;
 
 @Accessors(prefix="_")
-@NoArgsConstructor @AllArgsConstructor
 public class VaadinViewMultiValueItem {
 /////////////////////////////////////////////////////////////////////////////////////////
-//
+//	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter @Setter private String _id;
 	@Getter @Setter private String _value;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////////
+	public VaadinViewMultiValueItem() {
+		// default no-args constructor
+	}
+	public VaadinViewMultiValueItem(final String id,final String value) {
+		_id = id;
+		_value = value;
+	}
+	public <O extends OID> VaadinViewMultiValueItem(final O oid,final String value) {
+		this(oid.asString(),value);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -15,17 +15,17 @@ import com.vaadin.ui.Window;
 import lombok.experimental.Accessors;
 import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.ui.coremediator.UICOREMediatorForPersistableObjectBase;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.coremediator.VaadinCOREMediatorForPersistableObjectBase;
-import r01f.ui.vaadin.presenter.VaadinPresenterSubscriber;
-import r01f.ui.vaadin.viewobject.VaadinViewObject;
+import r01f.ui.presenter.UIPresenterSubscriber;
+import r01f.ui.viewobject.UIViewObject;
 
 @Accessors( prefix="_" )
-public abstract class R01UIDeleteConfirmDialogVerificationBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-												   V extends VaadinViewObject,
-												   P extends R01UIDeleteConfirmPresenterBase<O,M,
+public abstract class VaadinDeleteConfirmDialogVerificationBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
+												   V extends UIViewObject,
+												   P extends VaadinDeleteConfirmPresenterBase<O,M,
 												   											 V,
-												   											 ? extends VaadinCOREMediatorForPersistableObjectBase<O,M,?>>>		// core mediator
+												   											 ? extends UICOREMediatorForPersistableObjectBase<O,M,?>>>		// core mediator
 	 		  extends Window {
 	
 	private static final long serialVersionUID = 7440334832528162438L;
@@ -42,12 +42,12 @@ public abstract class R01UIDeleteConfirmDialogVerificationBase<O extends Persist
 //  OUTSIDE WORLD SUBSCRIBERS & DATA
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private O _objToBeDeletedOid;
-	private VaadinPresenterSubscriber<V> _subscriber;
+	private UIPresenterSubscriber<V> _subscriber;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public R01UIDeleteConfirmDialogVerificationBase(final UII18NService i18n,
+	public VaadinDeleteConfirmDialogVerificationBase(final UII18NService i18n,
 													final P presenter,
 													final String name) {
 		_i18n = i18n;
@@ -82,7 +82,7 @@ public abstract class R01UIDeleteConfirmDialogVerificationBase<O extends Persist
 												public void buttonClick(final ClickEvent event) {
 													_presenter.onDeleteRequested(_objToBeDeletedOid,
 																				 _subscriber);			// the presenter will tell the subscriber...
-													R01UIDeleteConfirmDialogVerificationBase.this.close();
+													VaadinDeleteConfirmDialogVerificationBase.this.close();
 													dialogTextField.clear();
 												}
 										} );
@@ -94,7 +94,7 @@ public abstract class R01UIDeleteConfirmDialogVerificationBase<O extends Persist
 
 												@Override
 												public void buttonClick(final ClickEvent event) {
-													R01UIDeleteConfirmDialogVerificationBase.this.close();
+													VaadinDeleteConfirmDialogVerificationBase.this.close();
 												}
 									   });
 		
@@ -141,7 +141,7 @@ public abstract class R01UIDeleteConfirmDialogVerificationBase<O extends Persist
 //  PUBLIC ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void setObjToBeDeletedOid(final O oid,
-									 final VaadinPresenterSubscriber<V> subscriber) {
+									 final UIPresenterSubscriber<V> subscriber) {
 		_objToBeDeletedOid = oid;
 		_subscriber = subscriber;
 	}

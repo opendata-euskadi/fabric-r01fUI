@@ -1,8 +1,8 @@
-package r01f.ui.vaadin.presenter;
+package r01f.ui.presenter;
 
 import java.io.Serializable;
 
-public interface VaadinPresenter 
+public interface UIPresenter 
   		 extends Serializable {
 	// just extends
 }

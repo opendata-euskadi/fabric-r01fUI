@@ -1,9 +1,9 @@
-package r01f.ui.vaadin.viewobject;
+package r01f.ui.viewobject;
 
 import r01f.locale.Language;
 
-public interface VaadinViewObjectHasDescriptionInSpanishAndBasque 
-		 extends VaadinViewObject {
+public interface UIViewObjectHasDescriptionInSpanishAndBasque 
+		 extends UIViewObject {
 	public String getDescriptionEs();
 	public void setDescriptionEs( String value );
 	public String getDescriptionEu();

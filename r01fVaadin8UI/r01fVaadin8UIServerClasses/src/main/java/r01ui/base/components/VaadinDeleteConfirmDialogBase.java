@@ -8,17 +8,17 @@ import com.vaadin.ui.Window;
 import lombok.experimental.Accessors;
 import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.ui.coremediator.UICOREMediatorForPersistableObjectBase;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.coremediator.VaadinCOREMediatorForPersistableObjectBase;
-import r01f.ui.vaadin.presenter.VaadinPresenterSubscriber;
-import r01f.ui.vaadin.viewobject.VaadinViewObject;
+import r01f.ui.presenter.UIPresenterSubscriber;
+import r01f.ui.viewobject.UIViewObject;
 
 @Accessors( prefix="_" )
-public abstract class R01UIDeleteConfirmDialogBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-												   V extends VaadinViewObject,
-												   P extends R01UIDeleteConfirmPresenterBase<O,M,
+public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
+												   V extends UIViewObject,
+												   P extends VaadinDeleteConfirmPresenterBase<O,M,
 												   											 V,
-												   											 ? extends VaadinCOREMediatorForPersistableObjectBase<O,M,?>>>		// core mediator
+												   											 ? extends UICOREMediatorForPersistableObjectBase<O,M,?>>>		// core mediator
 	 		  extends Window {
 
 	private static final long serialVersionUID = 67118991862242129L;
@@ -35,12 +35,12 @@ public abstract class R01UIDeleteConfirmDialogBase<O extends PersistableObjectOI
 //  OUTSIDE WORLD SUBSCRIBERS & DATA
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private O _objToBeDeletedOid;
-	private VaadinPresenterSubscriber<V> _subscriber;
+	private UIPresenterSubscriber<V> _subscriber;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public R01UIDeleteConfirmDialogBase(final UII18NService i18n,
+	public VaadinDeleteConfirmDialogBase(final UII18NService i18n,
 										final P presenter) {
 		_i18n = i18n;
 		_presenter = presenter;
@@ -58,12 +58,12 @@ public abstract class R01UIDeleteConfirmDialogBase<O extends PersistableObjectOI
 		acceptButton.addClickListener(event -> {
 													_presenter.onDeleteRequested(_objToBeDeletedOid,
 																				 _subscriber);			// the presenter will tell the subscriber...
-													R01UIDeleteConfirmDialogBase.this.close();
+													VaadinDeleteConfirmDialogBase.this.close();
 												});
 		// CANCEL
 		final Button cancelButton = new Button();
 		cancelButton.setCaption( i18n.getMessage( "cancel" ) );
-		cancelButton.addClickListener(event -> R01UIDeleteConfirmDialogBase.this.close());
+		cancelButton.addClickListener(event -> VaadinDeleteConfirmDialogBase.this.close());
 		
 		// layout
 		HorizontalLayout layoutDeleteConfirm = new HorizontalLayout();
@@ -83,7 +83,7 @@ public abstract class R01UIDeleteConfirmDialogBase<O extends PersistableObjectOI
 //  PUBLIC ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void setObjToBeDeletedOid(final O oid,
-									 final VaadinPresenterSubscriber<V> subscriber) {
+									 final UIPresenterSubscriber<V> subscriber) {
 		_objToBeDeletedOid = oid;
 		_subscriber = subscriber;
 	}

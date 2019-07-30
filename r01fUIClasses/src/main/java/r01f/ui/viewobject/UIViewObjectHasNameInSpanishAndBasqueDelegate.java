@@ -1,15 +1,15 @@
-package r01f.ui.vaadin.viewobject;
+package r01f.ui.viewobject;
 
 import lombok.RequiredArgsConstructor;
 import r01f.locale.Language;
 
 @RequiredArgsConstructor
-public class VaadinViewObjectHasNameInSpanishAndBasqueDelegate 
-  implements VaadinViewObjectHasNameInSpanishAndBasque {
+public class UIViewObjectHasNameInSpanishAndBasqueDelegate 
+  implements UIViewObjectHasNameInSpanishAndBasque {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final VaadinViewObjectHasNameInSpanishAndBasque _hasDesc;
+	private final UIViewObjectHasNameInSpanishAndBasque _hasDesc;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  DELEGATED
 /////////////////////////////////////////////////////////////////////////////////////////

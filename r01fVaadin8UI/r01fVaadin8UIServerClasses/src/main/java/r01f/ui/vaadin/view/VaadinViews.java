@@ -42,7 +42,7 @@ import r01f.reflection.ReflectionUtils;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
 import r01f.ui.vaadin.annotations.VaadinViewField;
-import r01f.ui.vaadin.viewobject.VaadinViewObject;
+import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 
@@ -146,12 +146,12 @@ public abstract class VaadinViews {
 	 * @param i18n
 	 * @return
 	 */
-	public static <M extends VaadinViewObject> UIVaadinViewBinderBuilderViewStep<M> using(final Binder<M> binder,final UII18NService i18n) {
+	public static <M extends UIViewObject> UIVaadinViewBinderBuilderViewStep<M> using(final Binder<M> binder,final UII18NService i18n) {
 		return new VaadinViews() { /* nothing */ }
 						.new UIVaadinViewBinderBuilderViewStep<M>(binder,i18n);
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public class UIVaadinViewBinderBuilderViewStep<M extends VaadinViewObject> {
+	public class UIVaadinViewBinderBuilderViewStep<M extends UIViewObject> {
 		private final Binder<M> _binder;
 		private final UII18NService _i18n;
 
@@ -161,7 +161,7 @@ public abstract class VaadinViews {
 		}
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public class UIVaadinViewBinderBuilderViewObjStep<V extends VaadinView,M extends VaadinViewObject> {
+	public class UIVaadinViewBinderBuilderViewObjStep<V extends VaadinView,M extends UIViewObject> {
 		private final V _view;
 		private final Binder<M> _binder;
 		private final UII18NService _i18n;
@@ -173,7 +173,7 @@ public abstract class VaadinViews {
 		}
 	}
 	private static <V extends VaadinView,
-				    M extends VaadinViewObject> void _bind(final V view,final Class<M> viewObjectType,
+				    M extends UIViewObject> void _bind(final V view,final Class<M> viewObjectType,
 														   final Binder<M> binder,
 														   final UII18NService i18n)  {
 		final Class<?> viewType = view.getClass();
@@ -243,7 +243,7 @@ public abstract class VaadinViews {
 		return true;
 	}
 	@SuppressWarnings({ "unchecked","rawtypes" })
-	private static <M extends VaadinViewObject,T> void _bindConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
+	private static <M extends UIViewObject,T> void _bindConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 											  							 final Class<T> viewObjPropertyType) {	// view object property
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
@@ -286,7 +286,7 @@ public abstract class VaadinViews {
 			dateBindingBuilder.withConverter(new LocalDateToDateConverter());
 		}
 	}
-	private static <M extends VaadinViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,
+	private static <M extends UIViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 													  				    final HasValue<?> viewComp,
 													  				    final Class<T> viewObjPropertyType,
 													  				    final VaadinViewField viewFieldAnnot,
@@ -324,7 +324,7 @@ public abstract class VaadinViews {
 		}
 	}
 	@SuppressWarnings({ "unchecked" })
-	private static <M extends VaadinViewObject,T> void _bindNullRepresentationFor(final Binder.BindingBuilder<M,?> bindingBuilder,
+	private static <M extends UIViewObject,T> void _bindNullRepresentationFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 																			   	 final HasValue<?> viewComp) {
 		// TextField: null representation
 		if (AbstractTextField.class.isAssignableFrom(viewComp.getClass())) {
@@ -377,7 +377,7 @@ public abstract class VaadinViews {
 	}
 
 	private static <V extends VaadinView,
-				    M extends VaadinViewObject> void _setLabels(final V view,
+				    M extends UIViewObject> void _setLabels(final V view,
 														  	   final UII18NService i18n)  {
 		final Class<?> viewType = view.getClass();
 		final Field[] viewFields = ReflectionUtils.allFields(viewType);

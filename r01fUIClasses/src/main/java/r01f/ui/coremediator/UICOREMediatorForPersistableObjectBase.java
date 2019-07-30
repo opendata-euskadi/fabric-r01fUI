@@ -1,16 +1,16 @@
-package r01f.ui.vaadin.coremediator;
+package r01f.ui.coremediator;
 
 import r01f.guids.PersistableObjectOID;
 import r01f.model.API;
 import r01f.model.PersistableModelObject;
 
-public abstract class VaadinCOREMediatorForPersistableObjectBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-																  A extends API> 
-              extends VaadinCOREMediatorBase<A> {
+public abstract class UICOREMediatorForPersistableObjectBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
+															 A extends API> 
+              extends UICOREMediatorBase<A> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinCOREMediatorForPersistableObjectBase(final A api) {
+	public UICOREMediatorForPersistableObjectBase(final A api) {
 		super(api);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@ public abstract class VaadinCOREMediatorForPersistableObjectBase<O extends Persi
 /////////////////////////////////////////////////////////////////////////////////////////
 	public abstract M load(final O oid);
 	public void load(final O oid,
-				  	 final VaadinCOREMediatorSubscriber<M> subscriber) {
+				  	 final UICOREMediatorSubscriber<M> subscriber) {
 		try {
 			M loadedObj = this.load(oid);
 			subscriber.onSuccess(loadedObj);
@@ -29,7 +29,7 @@ public abstract class VaadinCOREMediatorForPersistableObjectBase<O extends Persi
 	
 	public abstract M save(final M obj);
 	public void save(final M obj,
-				  	 final VaadinCOREMediatorSubscriber<M> subscriber) {
+				  	 final UICOREMediatorSubscriber<M> subscriber) {
 		try {
 			M savedObj = this.save(obj);
 			subscriber.onSuccess(savedObj);
@@ -40,7 +40,7 @@ public abstract class VaadinCOREMediatorForPersistableObjectBase<O extends Persi
 	
 	public abstract M delete(final O oid);
 	public void delete(final O oid,
-					   final VaadinCOREMediatorSubscriber<M> subscriber) {
+					   final UICOREMediatorSubscriber<M> subscriber) {
 		try {
 			M deletedObj = this.delete(oid);
 			subscriber.onSuccess(deletedObj);

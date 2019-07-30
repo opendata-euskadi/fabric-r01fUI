@@ -1,17 +1,17 @@
-package r01f.ui.vaadin.viewobject;
+package r01f.ui.viewobject;
 
 import lombok.RequiredArgsConstructor;
 import r01f.locale.Language;
 
 @RequiredArgsConstructor
-public class VaadinViewObjectHasDescriptionInSpanishAndBasqueDelegate 
-  implements VaadinViewObjectHasDescriptionInSpanishAndBasque {
+public class UIViewObjectHasDescriptionInSpanishAndBasqueDelegate 
+  implements UIViewObjectHasDescriptionInSpanishAndBasque {
 
 	private static final long serialVersionUID = 5062426729579488918L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final VaadinViewObjectHasDescriptionInSpanishAndBasque _hasDesc;
+	private final UIViewObjectHasDescriptionInSpanishAndBasque _hasDesc;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  DELEGATED
 /////////////////////////////////////////////////////////////////////////////////////////

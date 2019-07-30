@@ -1,10 +1,12 @@
-package r01f.ui.vaadin.subscriber;
+package r01f.ui.subscriber;
 
 import r01f.patterns.Subscriber;
 
 @FunctionalInterface
-public interface VaadinSubscriber<T> 
-		 extends Subscriber<T> {
+public interface UISubscriber<T> 
+		 extends Subscriber<T>,
+		  		 UIOnSuccessSubscriber<T>,
+		  		 UIOnErrorSubscriber {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	

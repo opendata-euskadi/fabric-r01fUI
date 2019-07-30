@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.coremediator;
+package r01f.ui.coremediator;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,8 @@ import r01f.model.API;
 
 @Accessors( prefix="_" )
 @RequiredArgsConstructor
-public abstract class VaadinCOREMediatorBase<A extends API> 
-           implements VaadinCOREMediator {
+public abstract class UICOREMediatorBase<A extends API> 
+           implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////

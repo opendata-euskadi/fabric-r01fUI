@@ -1,8 +1,8 @@
-package r01f.ui.vaadin.viewobject;
+package r01f.ui.viewobject;
 
 import r01f.locale.Language;
 
-public interface VaadinViewObjectHasNameInSpanishAndBasque {
+public interface UIViewObjectHasNameInSpanishAndBasque {
 	public String getNameEs();
 	public void setNameEs( String value );
 	public String getNameEu();

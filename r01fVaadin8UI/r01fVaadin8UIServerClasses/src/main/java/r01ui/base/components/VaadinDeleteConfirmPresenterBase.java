@@ -11,8 +11,8 @@ import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 
 public abstract class VaadinDeleteConfirmPresenterBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-													  V extends UIViewObject,
-												  	  C extends UICOREMediatorForPersistableObjectBase<O,M,?>>
+													   V extends UIViewObject,
+												  	   C extends UICOREMediatorForPersistableObjectBase<O,M,?>>
            implements UIPresenter {
 
 	private static final long serialVersionUID = 106480819336910484L;

@@ -237,6 +237,7 @@
 							</goals>
 							<configuration>
 								<sources>
+									<source>src/main/aspect</source>
 									<source>src/main/resources</source>
 									<source>src/test/resources</source>
 								</sources>
@@ -247,9 +248,8 @@
 
 			</plugins>
 		</pluginManagement>
-		<!-- 
-		The Resources Plugin handles the copying of project resources to the output directory
-		-->
+
+		<!-- The Resources Plugin handles the copying of project resources to the output directory -->
 		<resources>
 			<resource>
 				<directory>src/main/config</directory>
@@ -258,9 +258,10 @@
 				</includes>
 			</resource>
 			<resource>
-			    <directory>src/main/resources</directory>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
+
 	</build>
 
 	<!-- Maven deploy -->

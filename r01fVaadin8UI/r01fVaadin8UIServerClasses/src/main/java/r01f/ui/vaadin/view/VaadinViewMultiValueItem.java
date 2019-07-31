@@ -1,5 +1,7 @@
 package r01f.ui.vaadin.view;
 
+import java.io.Serializable;
+
 import com.google.common.base.Objects;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
@@ -8,24 +10,23 @@ import com.vaadin.data.ValueContext;
 import com.vaadin.ui.ComboBox;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import r01f.guids.OID;
 import r01f.patterns.Provider;
 
 @Accessors(prefix="_")
-public class VaadinViewMultiValueItem {
+public class VaadinViewMultiValueItem
+  implements Serializable {
+
+	private static final long serialVersionUID = -2149247399653588769L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Getter @Setter private String _id;
-	@Getter @Setter private String _value;
+	@Getter protected final String _id;
+	@Getter protected final String _value;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinViewMultiValueItem() {
-		// default no-args constructor
-	}
 	public VaadinViewMultiValueItem(final String id,final String value) {
 		_id = id;
 		_value = value;
@@ -72,22 +73,22 @@ public class VaadinViewMultiValueItem {
 	 */
 	public static Converter<VaadinViewMultiValueItem,String> converterFor(final Provider<String> valueProvider) {
 		return new Converter<VaadinViewMultiValueItem,String>() {
-		  					private static final long serialVersionUID = -7013881683281931641L;
+	  					private static final long serialVersionUID = -7013881683281931641L;
 
-							@Override
-							public Result<String> convertToModel(final VaadinViewMultiValueItem cmbValue,
-																 final ValueContext context) {
-								String id = cmbValue.getId();
-								return Result.ok(id);
-							}
-							@Override
-							public VaadinViewMultiValueItem convertToPresentation(final String id,
-																				 final ValueContext context) {
-								// a value provider is used to get the value from the id
-								// ... the value provider can issue a database call to load the value from the DB
-								return new VaadinViewMultiValueItem(id,
-																   valueProvider.provideValue());
-							}
+						@Override
+						public Result<String> convertToModel(final VaadinViewMultiValueItem cmbValue,
+															 final ValueContext context) {
+							String id = cmbValue.getId();
+							return Result.ok(id);
+						}
+						@Override
+						public VaadinViewMultiValueItem convertToPresentation(final String id,
+																			  final ValueContext context) {
+							// a value provider is used to get the value from the id
+							// ... the value provider can issue a database call to load the value from the DB
+							return new VaadinViewMultiValueItem(id,
+															    valueProvider.provideValue());
+						}
 			  	};
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

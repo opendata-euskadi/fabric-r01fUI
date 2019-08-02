@@ -107,17 +107,19 @@ public class VaadinViewMultiValueItem
 									: this.getId() == null && other.getId() != null
 											? false
 											: true;		// both null
-		boolean valEq = this.getValue() != null && other.getValue() != null
-							? this.getValue().equals(other.getValue())
-							: this.getValue() != null && other.getValue() == null
-									? false
-									: this.getValue() == null && other.getValue() != null
-											? false
-											: true;		// both null
+//		boolean valEq = this.getValue() != null && other.getValue() != null
+//							? this.getValue().equals(other.getValue())
+//							: this.getValue() != null && other.getValue() == null
+//									? false
+//									: this.getValue() == null && other.getValue() != null
+//											? false
+//											: true;		// both null
+		boolean valEq = true;
+
 		return idEq && valEq;
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(_id,_value);
+		return Objects.hashCode(_id); //Objects.hashCode(_id,_value);
 	}
 }

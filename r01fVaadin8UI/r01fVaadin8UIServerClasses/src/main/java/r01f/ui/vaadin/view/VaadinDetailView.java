@@ -1,8 +1,8 @@
 package r01f.ui.vaadin.view;
 
-import r01f.model.PersistableModelObject;
+import r01f.ui.viewobject.UIViewObject;
 
-public interface VaadinDetailView<M extends PersistableModelObject<?>> 
+public interface VaadinDetailView<V extends UIViewObject>
   		 extends VaadinView {
 	// just extends
 }

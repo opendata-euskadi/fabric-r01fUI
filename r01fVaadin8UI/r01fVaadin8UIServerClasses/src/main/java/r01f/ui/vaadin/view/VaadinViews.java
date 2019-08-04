@@ -13,6 +13,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
 import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.data.converter.StringToBigDecimalConverter;
 import com.vaadin.data.converter.StringToBigIntegerConverter;
@@ -42,6 +43,7 @@ import r01f.reflection.ReflectionUtils;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
 import r01f.ui.vaadin.annotations.VaadinViewField;
+import r01f.ui.vaadin.annotations.VaadinVoidViewFieldValidator;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
@@ -183,12 +185,13 @@ public abstract class VaadinViews {
 				if (!ReflectionUtils.isImplementing(viewCompField.getType(),
 													Component.class)) continue;		// do NOT process fields that are NOT vaadin component
 
+				// [0] - Get the @VaadinViewField annotation which contains the viewObject's field data
 				final VaadinViewField viewFieldAnnotation = viewCompField.getAnnotation(VaadinViewField.class);
 				if (viewFieldAnnotation == null) continue;
 
 				boolean canBeBinded = _canBeBinded(viewCompField);
 
-				// [0] - Get the @PropertyId annotation which contains the viewObject's field data
+				// [1] - Get the view object field name from the @VaadinViewField annotation
 				final String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
 				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,
 																	 viewObjFieldName);
@@ -198,7 +201,7 @@ public abstract class VaadinViews {
 										   viewObjectType,viewObjFieldName,viewObjFieldType,
 										   HasValue.class);
 
-				// [1] - Get the component field and the corresponding view obj type
+				// [1] - Get the view component field and the corresponding view obj type
 				HasValue<?> hasValueComp = (HasValue<?>)ReflectTools.getJavaFieldValue(view,
 																					   viewCompField,HasValue.class);
 				if (hasValueComp == null) continue;
@@ -208,11 +211,10 @@ public abstract class VaadinViews {
 
 				// [3] - Bind
 				// BEWARE!!! Order matters
-				// [a] - Get the @R01UIViewComponentValueCannotBeNull annotation: cannot be null
-				VaadinViewField valueCannotBeNullAnnot = viewCompField.getAnnotation(VaadinViewField.class);
+				// [a] - Get the @UIViewComponentValueCannotBeNull annotation: cannot be null
 				_bindRequiredFor(bindingBuilder,
 								 hasValueComp,viewObjFieldType,
-								 valueCannotBeNullAnnot,
+								 viewFieldAnnotation,
 								 i18n);
 				// [b] - Null representation
 				_bindNullRepresentationFor(bindingBuilder,
@@ -220,6 +222,11 @@ public abstract class VaadinViews {
 				// [c] - Converter
 				_bindConverterFor(bindingBuilder,
 								  viewObjFieldType);
+
+				// [d] - Validator
+				_bindValidator(bindingBuilder,
+							   viewFieldAnnotation,
+							   i18n);
 
 				// [4] - Bind to the view object property
 				bindingBuilder.bind(viewObjFieldName);
@@ -287,10 +294,10 @@ public abstract class VaadinViews {
 		}
 	}
 	private static <M extends UIViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,
-													  				    final HasValue<?> viewComp,
-													  				    final Class<T> viewObjPropertyType,
-													  				    final VaadinViewField viewFieldAnnot,
-													  				    final UII18NService i18n) {
+													  				final HasValue<?> viewComp,
+													  				final Class<T> viewObjPropertyType,
+													  				final VaadinViewField viewFieldAnnot,
+													  				final UII18NService i18n) {
 		if (viewFieldAnnot != null
 		 && viewFieldAnnot.required()) {
 			if (AbstractTextField.class.isAssignableFrom(viewComp.getClass())) {
@@ -325,10 +332,29 @@ public abstract class VaadinViews {
 	}
 	@SuppressWarnings({ "unchecked" })
 	private static <M extends UIViewObject,T> void _bindNullRepresentationFor(final Binder.BindingBuilder<M,?> bindingBuilder,
-																			   	 final HasValue<?> viewComp) {
+																			  final HasValue<?> viewComp) {
 		// TextField: null representation
 		if (AbstractTextField.class.isAssignableFrom(viewComp.getClass())) {
 			((Binder.BindingBuilder<M,String>)bindingBuilder).withNullRepresentation("");
+		}
+	}
+	@SuppressWarnings({ "rawtypes","unchecked" })
+	private static void _bindValidator(final Binder.BindingBuilder<?,?> bindingBuilder,
+									   final VaadinViewField viewFieldAnnot,
+									   final UII18NService i18n) {
+		if (viewFieldAnnot != null
+		 && viewFieldAnnot.useValidatorType() != VaadinVoidViewFieldValidator.class) {
+			Class<? extends Validator> validatorType = viewFieldAnnot.useValidatorType();
+			try {
+				Validator validator = ReflectionUtils.createInstanceOf(validatorType,
+																	   new Class<?>[] { UII18NService.class },new Object[] { i18n });
+				bindingBuilder.withValidator(validator);
+			} catch (Throwable th) {
+				log.error("Could NOT create a view field validator of type {}; do the validator type has a {}-based constructor?: {}",
+						  validatorType,
+						  UII18NService.class,
+						  th.getMessage(),th);
+			}
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

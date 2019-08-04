@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.vaadin.data.Validator;
+
 /**
  * Annotation used in vaadin fields to automate the field-to-bean Field binding
  * View fiend-type components (implementing HasValue) can be binded to view object's fields using one of
@@ -35,8 +37,10 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
+@SuppressWarnings("rawtypes")
 public @interface VaadinViewField {
 	public String bindToViewObjectFieldNamed();
     public boolean required() default false;
     public String i18nKeyForRequiredMessage() default "validation.field.required.default";
+	public Class<? extends Validator> useValidatorType() default VaadinVoidViewFieldValidator.class;
 }

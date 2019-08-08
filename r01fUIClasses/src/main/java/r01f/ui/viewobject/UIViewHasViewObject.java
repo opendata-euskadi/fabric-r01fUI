@@ -6,4 +6,5 @@ package r01f.ui.viewobject;
  */
 public interface UIViewHasViewObject<T extends UIViewObject> {
 	public T getViewObject();
+	public void setViewObject(final T uiViewObject);
 }

@@ -14,6 +14,6 @@ public interface VaadinViewHasVaadinViewObjectBinder<M extends UIViewObject>
 	
 	@Override
 	public default void setViewObject(final M viewObject) {
-		this.writeBeanIfValid(viewObject);
+		this.bindViewTo(viewObject);
 	}
 }

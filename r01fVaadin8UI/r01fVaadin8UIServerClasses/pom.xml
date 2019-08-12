@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-			 
+
 	<modelVersion>4.0.0</modelVersion>
 
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
 	<properties>
-		<vaadin.version>8.8.0</vaadin.version>	
+		<vaadin.version>8.8.5</vaadin.version>
 	</properties>
 
 <!-- ====================================================================== -->
@@ -18,13 +18,13 @@
 		<artifactId>r01fVaadin8UI</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 <!-- ====================================================================== -->
 <!-- ARTIFACT                                                               -->
 <!-- ====================================================================== -->
 	<name>r01fVaadin8UIServerClasses</name>
 	<artifactId>r01fVaadin8UIServerClasses</artifactId>
-	
+
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
 <!-- ====================================================================== -->
@@ -39,7 +39,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<!-- ///////////////////////////////////////// -->
 		<!-- R01f: UI                                  -->
@@ -49,14 +49,14 @@
 			<artifactId>r01fUIClasses</artifactId>
 			<version>${r01f.version}</version>
 		</dependency>
-		
+
 		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin                                    -->
 		<!-- ///////////////////////////////////////// -->
 		<!-- see: https://vaadin.com/docs/v7/framework/getting-started/getting-started-libraries.html  -->
 		<!--
 		The main library for developing server-side Vaadin applications.
-		It requires the vaadin-shared and the vaadin-themes libraries. 
+		It requires the vaadin-shared and the vaadin-themes libraries.
 		The pre-built vaadin-client-compiled lib can be used for server-side development, unless add-on components or custom widgets are needed
 		-->
 		<dependency>
@@ -64,28 +64,41 @@
 		    <artifactId>vaadin-server</artifactId>
 		</dependency>
 		<!--
-		A shared library for server-side and client-side development. It is always needed 
+		A shared library for server-side and client-side development. It is always needed
 		-->
 		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-shared</artifactId>
 		</dependency>
 		<!--
-		Pre-compiled Vaadin Client-Side Engine (widget set) that includes all the basic built-in widgets in Vaadin. 
+		Pre-compiled Vaadin Client-Side Engine (widget set) that includes all the basic built-in widgets in Vaadin.
 		This library is not needed if the application widget set is compiled with the Vaadin Client Compiler
-		(see r01fVaadinUIClientClasses) 
+		(see r01fVaadinUIClientClasses)
 		-->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiled</artifactId>
 		</dependency>
-		<!-- 
-		Vaadin built-in themes both as SCSS source files and precompiled CSS files. 
+		<!--
+		Vaadin built-in themes both as SCSS source files and precompiled CSS files.
 		The library is required both for basic use with CSS themes and for compiling custom Sass themes
 		-->
 		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-themes</artifactId>
+		</dependency>
+
+
+		<!-- ///////////////////////////////////////// -->
+		<!-- ServletAPI                                -->
+		<!-- ///////////////////////////////////////// -->
+		<!-- BEWARE! it's SCOPE is PROVIDED so it has to be defined
+			     	 where this dep is used -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>3.1.0</version>
+		    <scope>provided</scope>		<!-- BEWARE!!! -->
 		</dependency>
 	</dependencies>
 </project>

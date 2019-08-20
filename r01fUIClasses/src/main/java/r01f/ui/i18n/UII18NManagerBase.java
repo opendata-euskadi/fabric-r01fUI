@@ -89,15 +89,20 @@ public abstract class UII18NManagerBase
     }
     @Override
     public String getMessage(final String key,final Object... args) {
+    	// if the key starts with $! just return the key
+    	if (key.startsWith("$!")) return key.substring(2);
+    	
+    	String outMessage = null;
         for (final String i18nBundleName : _i18nBundleNames) {
             try {
-                return _retrieveMessage(i18nBundleName,
-                                        key,args );
+                outMessage = _retrieveMessage(i18nBundleName,
+                                        	  key,args );
+                if (Strings.isNOTNullOrEmpty(outMessage)) break;
             } catch(final MissingResourceException e) {
                 // do nothing
             }
         }
-        return key;
+        return Strings.isNOTNullOrEmpty(outMessage) ? outMessage : key;
     }
     @Override
     public String getMessage(final Locale locale,
@@ -107,16 +112,21 @@ public abstract class UII18NManagerBase
     @Override
     public String getMessage(final Locale locale,
                              final String key, final Object... args) {
+    	// if the key starts with $! just return the key
+    	if (key.startsWith("$!")) return key.substring(2);
+    	
+    	String outMessage = null;
         for (final String i18nBundleName : _i18nBundleNames) {
             try {
-                return _retrieveMessage(locale,
-                                        i18nBundleName,
-                                        key,args );
-            } catch(final MissingResourceException e) {
+                outMessage = _retrieveMessage(locale,
+                                        	  i18nBundleName,
+                                        	  key,args);
+                if (Strings.isNOTNullOrEmpty(outMessage)) break;
+            } catch (final MissingResourceException e) {
                 // do nothing
             }
         }
-        return key;
+        return Strings.isNOTNullOrEmpty(outMessage) ? outMessage : key;
     }
     @Override
     public Language getCurrentLanguage() {
@@ -143,7 +153,7 @@ public abstract class UII18NManagerBase
                                     final String key,final Object... args) {
         return _retrieveMessage(this.getCurrentLocale(),
                                 i18nBundleName,
-                                key, args);
+                                key,args);
     }
 
     /**
@@ -164,12 +174,11 @@ public abstract class UII18NManagerBase
                                     final String key,final Object... args) {
         final ResourceBundle bundle = ResourceBundle.getBundle(i18nBundleName,
         													   locale);
-        String outMessage = key;
-        if (CollectionUtils.hasData(args)) {
-            final MessageFormat msg = new MessageFormat(bundle.getString(key));
+        String outMessage = bundle.getString(key); 
+        if (Strings.isNOTNullOrEmpty(outMessage)
+         && CollectionUtils.hasData(args)) {
+            final MessageFormat msg = new MessageFormat(outMessage);
             outMessage  = msg.format(args);
-        } else {
-            outMessage = bundle.getString(key);
         }
         return outMessage;
     }

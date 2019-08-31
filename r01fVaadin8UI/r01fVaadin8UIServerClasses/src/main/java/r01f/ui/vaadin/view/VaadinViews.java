@@ -60,13 +60,17 @@ public abstract class VaadinViews {
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
+	@Deprecated
+	public static String vaadinViewUrlPathParamOf(final VaadinViewID viewId,final Map<String,String> navParams) {
+		return VaadinViews.vaadinViewUrlPathFragmentOf(viewId,navParams);
+	}
 	/**
 	 * Creates a Vaadin {@link Navigator} url params from the view id and params
 	 * @param viewId
 	 * @param navParams
 	 * @return
 	 */
-	public static String vaadinViewUrlPathParamOf(final VaadinViewID viewId,final Map<String,String> navParams) {
+	public static String vaadinViewUrlPathFragmentOf(final VaadinViewID viewId,final Map<String,String> navParams) {
 		String outUrlPathParam = null;
 		if (CollectionUtils.hasData(navParams)) {
 			StringBuilder paramsStr = new StringBuilder();

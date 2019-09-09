@@ -3,9 +3,12 @@ package r01f.ui.i18n;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -27,7 +30,6 @@ import r01f.util.types.locale.Languages;
 public abstract class UII18NManagerBase
            implements UII18NService {
 
-    private static final long serialVersionUID = -4523459172009081309L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +85,32 @@ public abstract class UII18NManagerBase
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public boolean hasKey(final OID key) {
+		return this.hasKey(key.asString());
+	}
+	@Override
+	public boolean hasKey(final String key) {
+		boolean containsKey = false;
+		for (String bundleName : _i18nBundleNames) {
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													this.getCurrentLocale());
+			containsKey = bundle.containsKey(key);
+			if (containsKey) break;
+		} 
+		return containsKey;
+	}
+	@Override
+	public List<String> keys() {
+		List<String> outKeys = new LinkedList<String>();
+		for (String bundleName : _i18nBundleNames) {
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													this.getCurrentLocale());
+			Enumeration<String> en = bundle.getKeys();
+			while (en.hasMoreElements()) outKeys.add(en.nextElement());
+		}
+		return outKeys;
+	}
     @Override
     public String getMessage(final OID key,final Object... args) {
     	return this.getMessage(key.asString(),args);
@@ -118,8 +146,8 @@ public abstract class UII18NManagerBase
     	String outMessage = null;
         for (final String i18nBundleName : _i18nBundleNames) {
             try {
-                outMessage = _retrieveMessage(locale,
-                                        	  i18nBundleName,
+                outMessage = _retrieveMessage(i18nBundleName,
+                							  locale,
                                         	  key,args);
                 if (Strings.isNOTNullOrEmpty(outMessage)) break;
             } catch (final MissingResourceException e) {
@@ -128,6 +156,44 @@ public abstract class UII18NManagerBase
         }
         return Strings.isNOTNullOrEmpty(outMessage) ? outMessage : key;
     }
+	@Override
+	public Map<String, String> getMessagesWithKeysStartingWith(final String keyPrefix) {
+		if (keyPrefix == null) throw new IllegalArgumentException("Cannot load bundle key: Missing key!");  
+		Map<String,String> outMessages = new HashMap<String,String>();
+		for (String bundleName : _i18nBundleNames) {
+			// Load the resourceBundle and iterate for every key 
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													this.getCurrentLocale());
+			Enumeration<String> keys = bundle.getKeys();
+			if (keys != null && keys.hasMoreElements()) {
+				do {
+					String key = keys.nextElement();
+					String msg = key.startsWith(keyPrefix) ? bundle.getString(key)
+														   : null;
+					if (msg != null) outMessages.put(key,msg);
+				} while(keys.hasMoreElements());
+			}
+		}
+		return outMessages;
+	}
+	@Override
+	public Map<String, String> getMessagesMap() {
+		Map<String,String> outMessages = new HashMap<String,String>();
+		for (String bundleName : _i18nBundleNames) {
+			// Load the resourceBundle and iterate
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													this.getCurrentLocale());
+			Enumeration<String> keys = bundle.getKeys();
+			if (keys != null && keys.hasMoreElements()) {
+				do {
+					String key = keys.nextElement();
+					String msg = bundle.getString(key);
+					if (msg != null) outMessages.put(key,msg);
+				} while(keys.hasMoreElements());
+			}
+		}
+		return outMessages;
+	}
     @Override
     public Language getCurrentLanguage() {
     	Locale loc = this.getCurrentLocale();
@@ -151,8 +217,8 @@ public abstract class UII18NManagerBase
      */
     private String _retrieveMessage(final String i18nBundleName,
                                     final String key,final Object... args) {
-        return _retrieveMessage(this.getCurrentLocale(),
-                                i18nBundleName,
+        return _retrieveMessage(i18nBundleName,
+        					    this.getCurrentLocale(),
                                 key,args);
     }
 
@@ -169,11 +235,11 @@ public abstract class UII18NManagerBase
      * @param args the arguments used to format the message
      * @return
      */
-    private String _retrieveMessage(final Locale locale,
-                                    final String i18nBundleName,
+    private String _retrieveMessage(final String i18nBundleName,
+    								final Locale locale,
                                     final String key,final Object... args) {
-        final ResourceBundle bundle = ResourceBundle.getBundle(i18nBundleName,
-        													   locale);
+        final ResourceBundle bundle = _retrieveBundle(i18nBundleName,
+        											  locale);
         String outMessage = bundle.getString(key); 
         if (Strings.isNOTNullOrEmpty(outMessage)
          && CollectionUtils.hasData(args)) {
@@ -181,5 +247,11 @@ public abstract class UII18NManagerBase
             outMessage  = msg.format(args);
         }
         return outMessage;
+    }
+    private ResourceBundle _retrieveBundle(final String i18nBundleName,
+    									   final Locale locale) {
+        final ResourceBundle bundle = ResourceBundle.getBundle(i18nBundleName,
+        													   locale);
+        return bundle;
     }
 }

@@ -6,10 +6,10 @@
  */
 package r01f.ui.i18n;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 import r01f.guids.OID;
+import r01f.locale.I18NBundleAccess;
 import r01f.locale.Language;
 
 /**
@@ -17,7 +17,7 @@ import r01f.locale.Language;
  * using the guice framework. 
  */
 public interface UII18NService 
-         extends Serializable {
+         extends I18NBundleAccess {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -26,42 +26,26 @@ public interface UII18NService
 	 */
 	public final String I18N_MESSAGES = ".i18n.messages";
 /////////////////////////////////////////////////////////////////////////////////////////
-//  
+//	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * Returns the I18N message.
-	 * @param key the key for the desired string
-	 * @param args the arguments used to format the message
-	 * @return the string for the given key
-	 */
-	String getMessage(String key,Object... args);
-	/**
-	 * Returns the I18N message
-	 * @param key
-	 * @param args
-	 * @return
-	 */
-	String getMessage(OID key,Object... args);
-	
-	/**
-	 * Returns the I18N message.
-	 * @param key the key for the desired string
-	 * @param locale the locale for which a resource bundle is desired
-	 * @param args the arguments used to format the message
-	 * @return the string for the given key
-	 */
-	String getMessage(Locale locale, 
-					  String key, Object... args);
-	/**
-	 * Returns the I18N message.
-	 * @param key the key for the desired string
-	 * @param locale the locale for which a resource bundle is desired
-	 * @param args the arguments used to format the message
-	 * @return the string for the given key
-	 */
-	String getMessage(Locale locale,
-					  OID key,Object... args);
-	
+    /**
+     * Returns a message in the given locale
+     * @param locale
+     * @param key
+     * @param args
+     * @return
+     */
+    public String getMessage(final Locale locale,
+                         	 final OID key, final Object... args);
+    /**
+     * Returns a message in the given locale
+     * @param locale
+     * @param key
+     * @param args
+     * @return
+     */
+    public String getMessage(final Locale locale,
+                             final String key, final Object... args);
     /**
      * @return the current locale
      */

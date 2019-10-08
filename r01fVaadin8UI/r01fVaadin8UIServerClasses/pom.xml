@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>r01.r01f.ui.vaadin</groupId>
 		<artifactId>r01fVaadin8UI</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${r01f.version}</version>
 	</parent>
 
 <!-- ====================================================================== -->

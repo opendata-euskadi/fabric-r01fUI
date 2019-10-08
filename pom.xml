@@ -238,8 +238,8 @@
 	      				  The WAR Plugin is responsible for collecting all artifact dependencies, classes and resources of the web application and packaging them into a web application archive
 	      		-->
 		        <plugin>
-		          	<artifactId>maven-jar-plugi</artifactId>
-		          	<version>3.1.2</version>
+		          	<artifactId>maven-jar-plugin</artifactId>
+		          	<version>3.1.1</version>	<!-- version 3.1.2 is problematic in older versions of eclipse (upgrade the maven conector from https://download.eclipse.org/m2e-wtp/releases/1.4/) -->
 		        </plugin>
 		        <plugin>
 		          	<artifactId>maven-war-plugin</artifactId>

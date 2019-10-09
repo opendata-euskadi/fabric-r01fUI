@@ -30,6 +30,7 @@ import com.vaadin.ui.AbstractLocalDateTimeField;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.MultiSelect;
 import com.vaadin.util.ReflectTools;
 
 import lombok.AccessLevel;
@@ -310,7 +311,12 @@ public abstract class VaadinViews {
 																	if (Strings.isNOTNullOrEmpty(strVal)) return ValidationResult.ok();
 																	return ValidationResult.error(i18n.getMessage(viewFieldAnnot.i18nKeyForRequiredMessage()));
 															  });
-
+			} else if (MultiSelect.class.isAssignableFrom(viewComp.getClass())) {	
+				bindingBuilder.asRequired((value,context) -> {
+																	Collection<?> v = (Collection<?>) value;
+																	if (value != null && CollectionUtils.hasData(v)) return ValidationResult.ok();
+																	return ValidationResult.error(i18n.getMessage(viewFieldAnnot.i18nKeyForRequiredMessage()));
+															  });
 			} else {
 				bindingBuilder.asRequired((value,context) -> {
 																	if (value != null) return ValidationResult.ok();

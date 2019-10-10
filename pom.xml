@@ -49,88 +49,12 @@
 <!-- ====================================================================== -->
 	<dependencies>
 		<!-- ///////////////////////////////////////// -->
-		<!-- Project lombok                            -->
+		<!-- R01F                                      -->
 		<!-- ///////////////////////////////////////// -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.20</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- SL4FJ                                     -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- Logback                                   -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.verson}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.verson}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- SL4FJ BRIDGES                             -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- GUAVA                                     -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>20.0</version>
-
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.j2objc</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.errorprone</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>animal-sniffer-annotations</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- TEST                                      -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+			<groupId>r01.r01f.base</groupId>
+			<artifactId>r01fBaseClasses</artifactId>
+			<version>${r01f.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -192,13 +116,13 @@
 	      		<!--
 	      			[0] - Clean
 	      			https://maven.apache.org/plugins/maven-clean-plugin/
-	      			The Clean Plugin is used when you want to remove files generated at build-time in a project's ServiceCatalog. 
+	      			The Clean Plugin is used when you want to remove files generated at build-time in a project's ServiceCatalog.
 	      		-->
 		        <plugin>
 		        	<artifactId>maven-clean-plugin</artifactId>
 		          	<version>3.1.0</version>
 		        </plugin>
-		        <!-- 
+		        <!--
 		        	PHASES: see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging
 		        		[1] - process-resources
 		        			  process-test-resources
@@ -211,7 +135,7 @@
 	      		<!--
 	      			[1] - RESOURCES: https://maven.apache.org/plugins/maven-resources-plugin/
 	      				  The Resources Plugin handles the copying of project resources to the output directory
-	      			There are two different kinds of resources: main resources and test resources 
+	      			There are two different kinds of resources: main resources and test resources
 	      		-->
 		        <plugin>
 		          	<artifactId>maven-resources-plugin</artifactId>
@@ -253,8 +177,8 @@
 		          	<artifactId>maven-install-plugin</artifactId>
 		          	<version>3.0.0-M1</version>
 		        </plugin>
-				<!-- 
-					[6] - DEPLOY:: https://maven.apache.org/plugins/maven-deploy-plugin/usage.html 
+				<!--
+					[6] - DEPLOY:: https://maven.apache.org/plugins/maven-deploy-plugin/usage.html
 				-->
 				<plugin>
 					<artifactId>maven-deploy-plugin</artifactId>
@@ -269,7 +193,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				
+
 
 
 				<!-- Add the [resources] dir to the compile & package phase -->
@@ -294,17 +218,17 @@
 						</execution>
 					</executions>
 				</plugin>
-				
+
 				<!-- Version plugin -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.7</version>
 				</plugin>
-				
+
 			</plugins>
 		</pluginManagement>
-		<!-- 
+		<!--
 		The Resources Plugin handles the copying of project resources to the output directory
 		-->
 		<resources>

@@ -46,7 +46,7 @@ public interface UIPresenterSubscriber<T>
 	}
 	public static <T> UIPresenterSubscriber<T> nop() {
 		return UIPresenterSubscriber.from(result -> {},	// do nothing on success
-											 error -> {});	// do nothing on error
+										  error -> {});	// do nothing on error
 	}
 	public static <T> UIPresenterSubscriber<T> log(final Logger log) {
 		return UIPresenterSubscriber.from(result -> {

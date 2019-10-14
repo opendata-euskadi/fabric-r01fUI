@@ -16,7 +16,7 @@
 		<!-- R01F version -->
 		<!-- BEWARE! use this property on [dependencies] ONLY
 					 for [artifact] versioning use maven versions plugin:
-							> mvn versions:set -DnewVersion=1.0.3 -->
+						> mvn versions:set -DnewVersion=1.0.3 -->
 		<revision>0.0.1-SNAPSHOT</revision>
 		<r01f.version>${revision}</r01f.version>
 
@@ -50,88 +50,12 @@
 <!-- ====================================================================== -->
 	<dependencies>
 		<!-- ///////////////////////////////////////// -->
-		<!-- Project lombok                            -->
+		<!-- R01F                                      -->
 		<!-- ///////////////////////////////////////// -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.20</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- SL4FJ                                     -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- Logback                                   -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.verson}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.verson}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- SL4FJ BRIDGES                             -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- GUAVA                                     -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>20.0</version>
-
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.j2objc</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.errorprone</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>animal-sniffer-annotations</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- TEST                                      -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+			<groupId>r01.r01f.base</groupId>
+			<artifactId>r01fBaseClasses</artifactId>
+			<version>${r01f.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -190,7 +114,6 @@
 	<build>
 
 		<pluginManagement>
-			<!-- Mav4en deploy: https://maven.apache.org/plugins/maven-deploy-plugin/usage.html -->
 			<plugins>
 				<!--
 					[0] - CLEAN: https://maven.apache.org/plugins/maven-clean-plugin/
@@ -318,6 +241,7 @@
 								<goal>flatten</goal>
 							</goals>
 						</execution>
+<!--
 						<execution>
 							<id>flatten.clean</id>
 							<phase>clean</phase>
@@ -325,6 +249,7 @@
 								<goal>clean</goal>
 							</goals>
 						</execution>
+-->
 					</executions>
 				</plugin>
 
@@ -335,6 +260,7 @@
 					<version>2.7</version>
 				</plugin>
 			</plugins>
+
 		</pluginManagement>
 
 		<!--

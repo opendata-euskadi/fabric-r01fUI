@@ -4,42 +4,42 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>r01.r01f.ui.vaadin</groupId>
   <artifactId>r01fVaadin8UIClientClasses</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <dependencies>
     <dependency>
       <groupId>r01.r01f.ui</groupId>
       <artifactId>r01fUIClasses</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-client</artifactId>
-      <version>8.8.0</version>
+      <version>8.8.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-shared</artifactId>
-      <version>8.8.0</version>
+      <version>8.8.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-themes</artifactId>
-      <version>8.8.0</version>
+      <version>8.8.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-client-compiler</artifactId>
-      <version>8.8.0</version>
+      <version>8.8.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>r01.r01f.base</groupId>
       <artifactId>r01fBaseClasses</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

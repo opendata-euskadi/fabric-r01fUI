@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>r01.r01f.ui</groupId>
   <artifactId>r01fUI</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
       <groupId>r01.r01f.base</groupId>
       <artifactId>r01fBaseClasses</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

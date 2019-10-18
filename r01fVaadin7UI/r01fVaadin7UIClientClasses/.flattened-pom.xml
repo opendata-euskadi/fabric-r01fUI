@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>r01.r01f.ui.vaadin</groupId>
   <artifactId>r01fVaadin7UIClientClasses</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <dependencies>
     <dependency>
       <groupId>r01.r01f.ui</groupId>
       <artifactId>r01fUIClasses</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>r01.r01f.base</groupId>
       <artifactId>r01fBaseClasses</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

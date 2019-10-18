@@ -1,8 +1,6 @@
 package r01f.ui.viewobject;
 
-import r01f.model.ModelObject;
-
-public interface UIViewObjectWrapped<T extends ModelObject> 
+public interface UIViewObjectWrapped<T> 
 		 extends UIViewObject {
 	
 	public T getWrappedModelObject();

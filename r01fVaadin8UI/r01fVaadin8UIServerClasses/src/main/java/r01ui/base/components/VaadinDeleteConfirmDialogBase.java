@@ -8,17 +8,15 @@ import com.vaadin.ui.Window;
 import lombok.experimental.Accessors;
 import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
-import r01f.ui.coremediator.UICOREMediatorForPersistableObjectBase;
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.presenter.UIObjectDetailLanguageDependentPresenter;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 
 @Accessors( prefix="_" )
 public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-												   V extends UIViewObject,
-												   P extends VaadinDeleteConfirmPresenterBase<O,M,
-												   											 V,
-												   											 ? extends UICOREMediatorForPersistableObjectBase<O,M,?>>>		// core mediator
+												    V extends UIViewObject,
+												    P extends UIObjectDetailLanguageDependentPresenter<O,V>>		// core mediator
 	 		  extends Window {
 
 	private static final long serialVersionUID = 67118991862242129L;
@@ -57,6 +55,7 @@ public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectO
 		acceptButton.setStyleName( "danger" );
 		acceptButton.addClickListener(event -> {
 													_presenter.onDeleteRequested(_objToBeDeletedOid,
+																				 _i18n.getCurrentLanguage(),
 																				 _subscriber);			// the presenter will tell the subscriber...
 													VaadinDeleteConfirmDialogBase.this.close();
 												});

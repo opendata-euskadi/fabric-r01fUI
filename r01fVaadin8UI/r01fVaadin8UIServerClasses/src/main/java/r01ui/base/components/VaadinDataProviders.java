@@ -30,9 +30,9 @@ public abstract class VaadinDataProviders {
      * @param hasDataProvider
      * @return
      */
-    public static <T> VaadinDataProviderAccessor<T> collectionBackedOf(final HasDataProvider<T> hasDataProvider) {
+    public static <T> VaadinHasDataProviderAccessor<T> collectionBackedOf(final HasDataProvider<T> hasDataProvider) {
     	return new VaadinDataProviders() { /* nothing */ }
-    				.new VaadinDataProviderAccessor<T>(hasDataProvider);
+    				.new VaadinHasDataProviderAccessor<T>(hasDataProvider);
     }
     /**
      * Provides access to a {@link Collection}-backed {@link DataProvider}
@@ -48,11 +48,19 @@ public abstract class VaadinDataProviders {
     	return new VaadinDataProviders() { /* nothing */ }
     				.new VaadinFilterableDataProviderAccessor<T>(hasDataProvider);
     }
+    @SuppressWarnings("unchecked")
+	public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final DataProvider<T,?> dataProvider) {
+    	return VaadinDataProviders.ofListDataProvider((ListDataProvider<T>)dataProvider);
+    }
+    public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final ListDataProvider<T> dataProvider) {
+    	return new VaadinDataProviders() { /* nothing */ }
+    				.new VaadinDataProviderAccessor<T>(dataProvider);
+    }
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////    
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-    public class VaadinDataProviderAccessor<T> {
+    public class VaadinHasDataProviderAccessor<T> {
     	private final HasDataProvider<T> _hasDataProvider;
     	
 	    @SuppressWarnings("unchecked")
@@ -62,6 +70,10 @@ public abstract class VaadinDataProviders {
 	    public Collection<T> getUnderlyingItemsCollection() {
 	    	return this.getDataProvider()
 	    			   .getItems();
+	    }
+	    public int getUnderlyingItemsCollectionSize() {
+	    	Collection<T> col = this.getUnderlyingItemsCollection();
+	    	return col != null ? col.size() : 0;
 	    }
 	    public void addNewItem(final T item) {
 	    	// add a new item to the underlying collection
@@ -87,6 +99,10 @@ public abstract class VaadinDataProviders {
 	    	return this.getDataProvider()
 	    			   .getItems();
 	    }
+		public int getUnderlyingItemsCollectionSize() {
+	    	Collection<T> col = this.getUnderlyingItemsCollection();
+	    	return col != null ? col.size() : 0;
+	    }
 	    public void addNewItem(final T item) {
 	    	// add a new item to the underlying collection
 	    	Collection<T> items = this.getUnderlyingItemsCollection();
@@ -94,6 +110,28 @@ public abstract class VaadinDataProviders {
 	    	// refresh
 	    	this.getDataProvider()
 	    		.refreshAll();
+	    }
+    }
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////    
+    @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+    public class VaadinDataProviderAccessor<T> {
+    	private final ListDataProvider<T> _dataProvider;
+    	
+		public Collection<T> getUnderlyingItemsCollection() {
+	    	return _dataProvider.getItems();
+	    }
+		public int getUnderlyingItemsCollectionSize() {
+	    	Collection<T> col = this.getUnderlyingItemsCollection();
+	    	return col != null ? col.size() : 0;
+	    }
+	    public void addNewItem(final T item) {
+	    	// add a new item to the underlying collection
+	    	Collection<T> items = this.getUnderlyingItemsCollection();
+	    	items.add(item);
+	    	// refresh
+	    	_dataProvider.refreshAll();
 	    }
     }
 }

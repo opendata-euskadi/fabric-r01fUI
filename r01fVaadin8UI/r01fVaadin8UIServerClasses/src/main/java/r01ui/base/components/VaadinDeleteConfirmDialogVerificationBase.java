@@ -102,7 +102,7 @@ public abstract class VaadinDeleteConfirmDialogVerificationBase<O extends Persis
 
 														@Override
 														public void valueChange(final ValueChangeEvent<String> event) {
-															if(dialogTextField.getValue().equals("Eliminar")) {
+															if (dialogTextField.getValue().equals("Eliminar")) {
 																acceptButton.setEnabled(true);
 															}
 															else {

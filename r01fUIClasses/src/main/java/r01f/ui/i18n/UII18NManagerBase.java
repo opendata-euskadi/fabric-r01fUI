@@ -171,7 +171,7 @@ public abstract class UII18NManagerBase
 					String msg = key.startsWith(keyPrefix) ? bundle.getString(key)
 														   : null;
 					if (msg != null) outMessages.put(key,msg);
-				} while(keys.hasMoreElements());
+				} while (keys.hasMoreElements());
 			}
 		}
 		return outMessages;
@@ -189,7 +189,7 @@ public abstract class UII18NManagerBase
 					String key = keys.nextElement();
 					String msg = bundle.getString(key);
 					if (msg != null) outMessages.put(key,msg);
-				} while(keys.hasMoreElements());
+				} while (keys.hasMoreElements());
 			}
 		}
 		return outMessages;

@@ -27,30 +27,30 @@ public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectO
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final transient UII18NService _i18n;
 /////////////////////////////////////////////////////////////////////////////////////////
-// 	PRESENTER 
-/////////////////////////////////////////////////////////////////////////////////////////	
+// 	PRESENTER
+/////////////////////////////////////////////////////////////////////////////////////////
 	private final P _presenter;
-			
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //  OUTSIDE WORLD SUBSCRIBERS & DATA
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	private O _objToBeDeletedOid;
 	private UIPresenterSubscriber<V> _subscriber;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinDeleteConfirmDialogBase(final UII18NService i18n,
-										final P presenter) {
+										 final P presenter) {
 		_i18n = i18n;
 		_presenter = presenter;
-		
+
 		this.center();
 		this.setModal( true );
 		this.setWidth( 50,Unit.PERCENTAGE );
 		this.setCaption( i18n.getMessage( "confirm" ) );
 		this.setResizable( false );
-		
+
 		// DELETE
 		final Button acceptButton = new Button();
 		acceptButton.setCaption(i18n.getMessage("delete"));
@@ -64,19 +64,19 @@ public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectO
 		final Button cancelButton = new Button();
 		cancelButton.setCaption( i18n.getMessage( "cancel" ) );
 		cancelButton.addClickListener(event -> VaadinDeleteConfirmDialogBase.this.close());
-		
+
 		// layout
 		HorizontalLayout layoutDeleteConfirm = new HorizontalLayout();
-		layoutDeleteConfirm.addComponents(cancelButton, 
-										  acceptButton);	
-		layoutDeleteConfirm.setExpandRatio(acceptButton, 
+		layoutDeleteConfirm.addComponents(cancelButton,
+										  acceptButton);
+		layoutDeleteConfirm.setExpandRatio(acceptButton,
 										   1);
-		layoutDeleteConfirm.setComponentAlignment(acceptButton, 
+		layoutDeleteConfirm.setComponentAlignment(acceptButton,
 												  Alignment.MIDDLE_RIGHT);
-		
-		layoutDeleteConfirm.setMargin( true );		
+
+		layoutDeleteConfirm.setMargin( true );
 		layoutDeleteConfirm.setWidth(100,Unit.PERCENTAGE);
-		
+
 		this.setContent(layoutDeleteConfirm);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -87,5 +87,5 @@ public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectO
 		_objToBeDeletedOid = oid;
 		_subscriber = subscriber;
 	}
-	
+
 }

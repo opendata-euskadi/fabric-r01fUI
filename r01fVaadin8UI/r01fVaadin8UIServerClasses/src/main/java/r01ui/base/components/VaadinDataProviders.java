@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public abstract class VaadinDataProviders {
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Provides access to a {@link Collection}-backed {@link DataProvider}
      * <pre class='brush:java'>
@@ -48,21 +48,33 @@ public abstract class VaadinDataProviders {
     	return new VaadinDataProviders() { /* nothing */ }
     				.new VaadinFilterableDataProviderAccessor<T>(hasDataProvider);
     }
+    /**
+     * Provides access to a {@link DataProvider}
+     * @param <T>
+     * @param dataProvider
+     * @return
+     */
     @SuppressWarnings("unchecked")
 	public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final DataProvider<T,?> dataProvider) {
     	return VaadinDataProviders.ofListDataProvider((ListDataProvider<T>)dataProvider);
     }
+    /**
+     * Provides access to a {@link ListDataProvider}
+     * @param <T>
+     * @param dataProvider
+     * @return
+     */
     public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final ListDataProvider<T> dataProvider) {
     	return new VaadinDataProviders() { /* nothing */ }
     				.new VaadinDataProviderAccessor<T>(dataProvider);
     }
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////    
+//
+/////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
     public class VaadinHasDataProviderAccessor<T> {
     	private final HasDataProvider<T> _hasDataProvider;
-    	
+
 	    @SuppressWarnings("unchecked")
 		public ListDataProvider<T> getDataProvider() {
 			return (ListDataProvider<T>)_hasDataProvider.getDataProvider();
@@ -85,12 +97,12 @@ public abstract class VaadinDataProviders {
 	    }
     }
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////    
+//
+/////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
     public class VaadinFilterableDataProviderAccessor<T> {
     	private final HasFilterableDataProvider<T,?> _hasDataProvider;
-    	
+
 	    @SuppressWarnings("unchecked")
 		public ListDataProvider<T> getDataProvider() {
 			return (ListDataProvider<T>)_hasDataProvider.getDataProvider();
@@ -113,12 +125,12 @@ public abstract class VaadinDataProviders {
 	    }
     }
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////    
+//
+/////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
     public class VaadinDataProviderAccessor<T> {
     	private final ListDataProvider<T> _dataProvider;
-    	
+
 		public Collection<T> getUnderlyingItemsCollection() {
 	    	return _dataProvider.getItems();
 	    }

@@ -1,5 +1,6 @@
 package r01f.ui.vaadin.view;
 
+import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
 import com.vaadin.data.Result;
 import com.vaadin.data.ValueContext;
@@ -9,6 +10,17 @@ import r01f.guids.OID;
 import r01f.patterns.FactoryFrom;
 import r01f.util.types.Strings;
 
+/**
+ * Vaadin OID converter
+ * Used at vaadin {@link Binder} like:
+ * <pre class='brush:java'>
+ *		_binder.forField(txtOid)	// the TextField for the oid
+ *			   .asRequired()
+ *			   .withConverter(new VaadinOIDConverter<MyOID>(oidStr -> MyOID.forId(oidStr)))
+ *			   .bind(MyViewObject::gatOid,MyViewObject::setOid);
+ * </pre>
+ * @param <O>
+ */
 @RequiredArgsConstructor
 public class VaadinOIDConverter<O extends OID>
   implements Converter<String,O> {

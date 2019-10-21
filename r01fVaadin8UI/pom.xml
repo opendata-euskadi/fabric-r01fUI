@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>r01.r01f.ui</groupId>
 		<artifactId>r01fUI</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${revision}</version>
 	</parent>
 	
 <!-- ====================================================================== -->
@@ -24,7 +24,7 @@
 <!-- MODULES                                                                -->
 <!-- ====================================================================== -->
 	<modules>
-    <module>r01fVaadin8UIServerClasses</module>
-    <module>r01fVaadin8UIClientClasses</module>
-  </modules>
+		<module>r01fVaadin8UIServerClasses</module>
+		<module>r01fVaadin8UIClientClasses</module>
+	</modules>
 </project>

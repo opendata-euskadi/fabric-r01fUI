@@ -1,6 +1,7 @@
 package r01ui.base.components;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.vaadin.data.HasDataProvider;
 import com.vaadin.data.HasFilterableDataProvider;
@@ -83,6 +84,9 @@ public abstract class VaadinDataProviders {
 	    	return this.getDataProvider()
 	    			   .getItems();
 	    }
+	    public List<T> getUnderlyingItemsCollectionAsList() {
+	    	return (List<T>)this.getUnderlyingItemsCollection();
+	    }
 	    public int getUnderlyingItemsCollectionSize() {
 	    	Collection<T> col = this.getUnderlyingItemsCollection();
 	    	return col != null ? col.size() : 0;
@@ -111,6 +115,9 @@ public abstract class VaadinDataProviders {
 	    	return this.getDataProvider()
 	    			   .getItems();
 	    }
+	    public List<T> getUnderlyingItemsCollectionAsList() {
+	    	return (List<T>)this.getUnderlyingItemsCollection();
+	    }
 		public int getUnderlyingItemsCollectionSize() {
 	    	Collection<T> col = this.getUnderlyingItemsCollection();
 	    	return col != null ? col.size() : 0;
@@ -133,6 +140,9 @@ public abstract class VaadinDataProviders {
 
 		public Collection<T> getUnderlyingItemsCollection() {
 	    	return _dataProvider.getItems();
+	    }
+	    public List<T> getUnderlyingItemsCollectionAsList() {
+	    	return (List<T>)this.getUnderlyingItemsCollection();
 	    }
 		public int getUnderlyingItemsCollectionSize() {
 	    	Collection<T> col = this.getUnderlyingItemsCollection();

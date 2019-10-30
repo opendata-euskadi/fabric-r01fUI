@@ -17,37 +17,37 @@ import lombok.RequiredArgsConstructor;
  * Utils about vaadin {@link Grid}
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
-public abstract class VaadinDataProviders {
+public abstract class VaadinListDataProviders {
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Provides access to a {@link Collection}-backed {@link DataProvider}
      * <pre class='brush:java'>
-     * 		Collection<T> items = VaadinDataProviders.collectionBackedOf(grid)
-     * 												 .getUnderlyingItemsCollection();
+     * 		Collection<T> items = VaadinListDataProviders.collectionBackedOf(grid)
+     * 												 	 .getUnderlyingItemsCollection();
      * </pre>
      * @param <T>
      * @param hasDataProvider
      * @return
      */
-    public static <T> VaadinHasDataProviderAccessor<T> collectionBackedOf(final HasDataProvider<T> hasDataProvider) {
-    	return new VaadinDataProviders() { /* nothing */ }
-    				.new VaadinHasDataProviderAccessor<T>(hasDataProvider);
+    public static <T> VaadinHasDataListProviderAccessor<T> collectionBackedOf(final HasDataProvider<T> hasDataProvider) {
+    	return new VaadinListDataProviders() { /* nothing */ }
+    				.new VaadinHasDataListProviderAccessor<T>(hasDataProvider);
     }
     /**
      * Provides access to a {@link Collection}-backed {@link DataProvider}
      * <pre class='brush:java'>
-     * 		Collection<T> items = VaadinDataProviders.collectionBackedOf(combo)
-     * 												 .getUnderlyingItemsCollection();
+     * 		Collection<T> items = VaadinListDataProviders.collectionBackedOf(combo)
+     * 												 	 .getUnderlyingItemsCollection();
      * </pre>
      * @param <T>
      * @param hasDataProvider
      * @return
      */
-    public static <T> VaadinFilterableDataProviderAccessor<T> collectionBackedOf(final HasFilterableDataProvider<T,?> hasDataProvider) {
-    	return new VaadinDataProviders() { /* nothing */ }
-    				.new VaadinFilterableDataProviderAccessor<T>(hasDataProvider);
+    public static <T> VaadinFilterableListDataProviderAccessor<T> collectionBackedOf(final HasFilterableDataProvider<T,?> hasDataProvider) {
+    	return new VaadinListDataProviders() { /* nothing */ }
+    				.new VaadinFilterableListDataProviderAccessor<T>(hasDataProvider);
     }
     /**
      * Provides access to a {@link DataProvider}
@@ -56,8 +56,8 @@ public abstract class VaadinDataProviders {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final DataProvider<T,?> dataProvider) {
-    	return VaadinDataProviders.ofListDataProvider((ListDataProvider<T>)dataProvider);
+	public static <T> VaadinListDataProviderAccessor<T> ofListDataProvider(final DataProvider<T,?> dataProvider) {
+    	return VaadinListDataProviders.ofListDataProvider((ListDataProvider<T>)dataProvider);
     }
     /**
      * Provides access to a {@link ListDataProvider}
@@ -65,15 +65,15 @@ public abstract class VaadinDataProviders {
      * @param dataProvider
      * @return
      */
-    public static <T> VaadinDataProviderAccessor<T> ofListDataProvider(final ListDataProvider<T> dataProvider) {
-    	return new VaadinDataProviders() { /* nothing */ }
-    				.new VaadinDataProviderAccessor<T>(dataProvider);
+    public static <T> VaadinListDataProviderAccessor<T> ofListDataProvider(final ListDataProvider<T> dataProvider) {
+    	return new VaadinListDataProviders() { /* nothing */ }
+    				.new VaadinListDataProviderAccessor<T>(dataProvider);
     }
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-    public class VaadinHasDataProviderAccessor<T> {
+    public class VaadinHasDataListProviderAccessor<T> {
     	private final HasDataProvider<T> _hasDataProvider;
 
 	    @SuppressWarnings("unchecked")
@@ -104,7 +104,7 @@ public abstract class VaadinDataProviders {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-    public class VaadinFilterableDataProviderAccessor<T> {
+    public class VaadinFilterableListDataProviderAccessor<T> {
     	private final HasFilterableDataProvider<T,?> _hasDataProvider;
 
 	    @SuppressWarnings("unchecked")
@@ -135,7 +135,7 @@ public abstract class VaadinDataProviders {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
     @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-    public class VaadinDataProviderAccessor<T> {
+    public class VaadinListDataProviderAccessor<T> {
     	private final ListDataProvider<T> _dataProvider;
 
 		public Collection<T> getUnderlyingItemsCollection() {

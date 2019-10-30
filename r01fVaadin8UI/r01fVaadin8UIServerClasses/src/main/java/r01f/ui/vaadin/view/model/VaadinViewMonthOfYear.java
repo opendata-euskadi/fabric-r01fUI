@@ -1,5 +1,7 @@
 package r01f.ui.vaadin.view.model;
 
+import com.vaadin.server.SerializableFunction;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -42,5 +44,19 @@ public class VaadinViewMonthOfYear
 	@Override
 	public int hashCode() {
 		return _monthOfYear.hashCode();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	public static final SerializableFunction<MonthOfYear,VaadinViewMonthOfYear> toViewConverterIn(final Language lang) {
+		return new SerializableFunction<MonthOfYear,VaadinViewMonthOfYear>() {
+			private static final long serialVersionUID = 1671146461937959956L;
+
+			@Override
+			public VaadinViewMonthOfYear apply(final MonthOfYear monthOfYear) {
+				return new VaadinViewMonthOfYear(monthOfYear,
+					   				  			 lang);
+			}
+		};
 	}
 }

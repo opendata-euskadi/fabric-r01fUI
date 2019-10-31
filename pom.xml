@@ -263,7 +263,7 @@
 
 				<!-- Version plugin -->
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
+					<groupId>org.codehaus.mojadd addMavenDescriptor to false in maven jar and war pluginso</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.7</version>
 				</plugin>

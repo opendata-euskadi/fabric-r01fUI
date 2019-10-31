@@ -169,10 +169,20 @@
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.1.1</version>	<!-- version 3.1.2 is problematic in older versions of eclipse (upgrade the maven conector from https://download.eclipse.org/m2e-wtp/releases/1.4/) -->
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>3.2.3</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<!--
 					[5] - INSTALL: https://maven.apache.org/plugins/maven-war-plugin/
@@ -241,7 +251,6 @@
 								<goal>flatten</goal>
 							</goals>
 						</execution>
-<!--
 						<execution>
 							<id>flatten.clean</id>
 							<phase>clean</phase>
@@ -249,7 +258,6 @@
 								<goal>clean</goal>
 							</goals>
 						</execution>
--->
 					</executions>
 				</plugin>
 

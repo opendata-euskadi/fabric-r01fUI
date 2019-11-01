@@ -112,7 +112,11 @@
 <!-- PLUGINS                                                                -->
 <!-- ====================================================================== -->
 	<build>
-
+		<!--
+		Default plugin config
+		BEWARE!! In [eclipse] ensure this config is set:
+					[window] > [preferences] > [Maven] > [Errors/Wranings] > [Plugin execution NOT covered by lifecycle configuration] >>> se to WARNING 
+		-->
 		<pluginManagement>
 			<plugins>
 				<!--
@@ -222,8 +226,7 @@
 					</executions>
 				</plugin>
 
-				<!-- When we have a multi module build. We have a parent pom and one or more children -->
-				<!-- With this plugin automatic replace parent variable version -->
+				<!-- Automatic replacement of a parent [version] variable in child modules -->
 				<!-- https://www.mojohaus.org/flatten-maven-plugin/usage.html -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -262,6 +265,23 @@
 			</plugins>
 
 		</pluginManagement>
+
+		<!--
+		Plugins to be run by default 
+		-->
+		<plugins>
+			<!--
+			Run the [flatten] plugin by default
+			if the [flatten] plugin is NOT run by default the GOAL MUST be run instead:
+				mvn clean flatten:flatten install
+			If none of the above is done, the folder containing the artifact will be 
+			incorrectly named ${revision} instead of the revision number
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 
 		<!--
 		The Resources Plugin handles the copying of project resources to the output directory

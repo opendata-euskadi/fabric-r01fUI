@@ -273,10 +273,10 @@
 					 https://stackoverflow.com/questions/30063357/how-can-i-map-maven-lifecycle-phases-not-covered-by-the-eclipse-m2e-plugin
 				-->
 				<plugin>
-				  	<groupId>org.eclipse.m2e</groupId>
-				  	<artifactId>lifecycle-mapping</artifactId>
-				  	<version>1.0.0</version>
-				  	<configuration> 
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration> 
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
 								<!-- flatten plugin -->

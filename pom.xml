@@ -20,10 +20,6 @@
 		<revision>0.0.1-SNAPSHOT</revision>
 
 		<!-- Dependencies versions -->
-		<slf4j.version>1.7.25</slf4j.version>
-		<logback.verson>1.2.3</logback.verson>
-		<guice.version>4.2.1</guice.version>	<!-- TODO 4.2.2 version exists BUT somehow it cannot be loaded! -->
-		<rxjava.version>2.2.8</rxjava.version>
 	</properties>
 
 <!-- ====================================================================== -->
@@ -180,6 +176,8 @@
 								<sources>
 									<source>src/main/resources</source>
 									<source>src/test/resources</source>
+									<source>src/main/config</source>
+									<source>src/main/aspect</source>
 								</sources>
 							</configuration>
 						</execution>
@@ -443,7 +441,7 @@
 					<version>version</version>
 				</dependency>
 			</dependencies>
-		</profile>
-		 -->
+		</profile> 
+		--> 
 	</profiles>
 </project>

@@ -153,7 +153,8 @@ public abstract class VaadinViews {
 	 * @param i18n
 	 * @return
 	 */
-	public static <M extends UIViewObject> UIVaadinViewBinderBuilderViewStep<M> using(final Binder<M> binder,final UII18NService i18n) {
+	public static <M extends UIViewObject> UIVaadinViewBinderBuilderViewStep<M> using(final Binder<M> binder,
+																					  final UII18NService i18n) {
 		return new VaadinViews() { /* nothing */ }
 						.new UIVaadinViewBinderBuilderViewStep<M>(binder,i18n);
 	}
@@ -164,7 +165,7 @@ public abstract class VaadinViews {
 
 		public <V extends VaadinView> UIVaadinViewBinderBuilderViewObjStep<V,M> bindComponentsOf(final V view) {
 			return new UIVaadinViewBinderBuilderViewObjStep<V,M>(view,
-															   	    _binder,_i18n);
+															   	 _binder,_i18n);
 		}
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
@@ -181,8 +182,8 @@ public abstract class VaadinViews {
 	}
 	private static <V extends VaadinView,
 				    M extends UIViewObject> void _bind(final V view,final Class<M> viewObjectType,
-														   final Binder<M> binder,
-														   final UII18NService i18n)  {
+													   final Binder<M> binder,
+													   final UII18NService i18n)  {
 		final Class<?> viewType = view.getClass();
 		final Field[] viewFields = ReflectionUtils.allFields(viewType);
 		for (final Field viewCompField : viewFields) {

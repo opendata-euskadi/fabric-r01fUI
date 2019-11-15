@@ -163,13 +163,13 @@ public abstract class VaadinViews {
 		private final Binder<M> _binder;
 		private final UII18NService _i18n;
 
-		public <V extends VaadinView> UIVaadinViewBinderBuilderViewObjStep<V,M> bindComponentsOf(final V view) {
+		public <V extends VaadinComponent> UIVaadinViewBinderBuilderViewObjStep<V,M> bindComponentsOf(final V view) {
 			return new UIVaadinViewBinderBuilderViewObjStep<V,M>(view,
 															   	 _binder,_i18n);
 		}
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public class UIVaadinViewBinderBuilderViewObjStep<V extends VaadinView,M extends UIViewObject> {
+	public class UIVaadinViewBinderBuilderViewObjStep<V extends VaadinComponent,M extends UIViewObject> {
 		private final V _view;
 		private final Binder<M> _binder;
 		private final UII18NService _i18n;
@@ -180,7 +180,7 @@ public abstract class VaadinViews {
 				  _i18n);
 		}
 	}
-	private static <V extends VaadinView,
+	private static <V extends VaadinComponent,
 				    M extends UIViewObject> void _bind(final V view,final Class<M> viewObjectType,
 													   final Binder<M> binder,
 													   final UII18NService i18n)  {
@@ -257,7 +257,7 @@ public abstract class VaadinViews {
 	}
 	@SuppressWarnings({ "unchecked","rawtypes" })
 	private static <M extends UIViewObject,T> void _bindConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
-											  							 final Class<T> viewObjPropertyType) {	// view object property
+											  					     final Class<T> viewObjPropertyType) {	// view object property
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
 
@@ -407,13 +407,13 @@ public abstract class VaadinViews {
 	public class UIVaadinViewI18NLabelsStep {
 		private final UII18NService _i18n;
 
-		public <V extends VaadinView> void setI18NLabelsOf(final V view) {
+		public <V extends VaadinComponent> void setI18NLabelsOf(final V view) {
 			_setLabels(view,
 					   _i18n);
 		}
 	}
 
-	private static <V extends VaadinView,
+	private static <V extends VaadinComponent,
 				    M extends UIViewObject> void _setLabels(final V view,
 														  	   final UII18NService i18n)  {
 		final Class<?> viewType = view.getClass();

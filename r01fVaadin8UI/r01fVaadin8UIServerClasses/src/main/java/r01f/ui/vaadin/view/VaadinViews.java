@@ -12,8 +12,10 @@ import java.util.Map;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
 import com.vaadin.data.HasValue;
+import com.vaadin.data.Result;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.data.converter.StringToBigDecimalConverter;
 import com.vaadin.data.converter.StringToBigIntegerConverter;
@@ -225,9 +227,16 @@ public abstract class VaadinViews {
 				// [b] - Null representation
 				_bindNullRepresentationFor(bindingBuilder,
 										   hasValueComp);
-				// [c] - Converter
-				_bindConverterFor(bindingBuilder,
-								  viewObjFieldType);
+				// [c] - String converter
+				//		 BEWARE! Vaadin fields are instances of HasValue<?>
+				//				 convert ONLY HasValue<String> fields like TextFields 
+				//				 (ie: do NOT convert on combos)
+				// TODO research on how to get the [parameterized type] of HasValue and convert only if it's an string
+				if (!ReflectionUtils.isImplementing(viewCompField.getType(),
+												   	ComboBox.class)) {
+					_bindStringConverterFor(bindingBuilder,
+									  		viewObjFieldType);
+				}
 
 				// [d] - Validator
 				_bindValidator(bindingBuilder,
@@ -256,34 +265,49 @@ public abstract class VaadinViews {
 		return true;
 	}
 	@SuppressWarnings({ "unchecked","rawtypes" })
-	private static <M extends UIViewObject,T> void _bindConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
-											  					     final Class<T> viewObjPropertyType) {	// view object property
+	private static <M extends UIViewObject,T> void _bindStringConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
+											  					     	   final Class<T> viewObjPropertyType) {	// view object property
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
 
-		if (Integer.class.isAssignableFrom(viewObjPropertyType)
-		 || int.class.isAssignableFrom(viewObjPropertyType)) {
+		if (String.class.isAssignableFrom(viewObjPropertyType)) {
+			// do nothing
+		} 
+		else if (Integer.class.isAssignableFrom(viewObjPropertyType)
+		        || int.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToIntegerConverter(null,
 														 		  	  	 "Must be a number"));
-		} else if (Float.class.isAssignableFrom(viewObjPropertyType)
+		} 
+		else if (Float.class.isAssignableFrom(viewObjPropertyType)
 				|| float.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToFloatConverter(null,
 																	   "Must be a number"));
-		} else if (Double.class.isAssignableFrom(viewObjPropertyType)
+		} 
+		else if (Double.class.isAssignableFrom(viewObjPropertyType)
 				|| double.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToDoubleConverter(null,
 																		"Must be a number"));
-		} else if (Long.class.isAssignableFrom(viewObjPropertyType)
+		} 
+		else if (Long.class.isAssignableFrom(viewObjPropertyType)
 				|| long.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToLongConverter(null,
 																	  "Must be a number"));
-		} else if (BigDecimal.class.isAssignableFrom(viewObjPropertyType)) {
+		} 
+		else if (BigDecimal.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToBigDecimalConverter(null,
 																		    "Must be a number"));
-		} else if (BigInteger.class.isAssignableFrom(viewObjPropertyType)) {
+		} 
+		else if (BigInteger.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToBigIntegerConverter(null,
 																			"Must be a number"));
-		} else if (OID.class.isAssignableFrom(viewObjPropertyType)) {
+		} 
+		else if (Date.class.isAssignableFrom(viewObjPropertyType)) {
+			Binder.BindingBuilder<M,LocalDate> dateBindingBuilder = (Binder.BindingBuilder<M,LocalDate>)bindingBuilder;
+
+			dateBindingBuilder.withConverter(new LocalDateToDateConverter());
+			
+		} 
+		else if (OID.class.isAssignableFrom(viewObjPropertyType)) {
 			FactoryFrom<String,T> oidFactory = new FactoryFrom<String,T>() {
 														@Override
 														public T from(final String oidAsStr) {
@@ -293,10 +317,26 @@ public abstract class VaadinViews {
 											  };
 			Converter<String,T> converter = new VaadinOIDConverter(oidFactory);
 			strBindingBuilder.withConverter(converter);
-		} else if (Date.class.isAssignableFrom(viewObjPropertyType)) {
-			Binder.BindingBuilder<M,LocalDate> dateBindingBuilder = (Binder.BindingBuilder<M,LocalDate>)bindingBuilder;
+			
+		} 
+		else if (ReflectionUtils.canBeCreatedFromString(viewObjPropertyType)) {
+			// try to see if the [view obj] property type has a valueOf or a constructor from String
+			Converter<String,T> converter = new Converter<String,T>() {
+													private static final long serialVersionUID = -2471867717063606318L;
 
-			dateBindingBuilder.withConverter(new LocalDateToDateConverter());
+													@Override
+													public Result<T> convertToModel(final String value,final ValueContext context) {													
+														T instance = value != null ? ReflectionUtils.createInstanceFromString(viewObjPropertyType,
+																											  				  value)
+																				   : null;
+														return Result.ok(instance);
+													}
+													@Override
+													public String convertToPresentation(final T value,final ValueContext context) {
+														return value != null ? value.toString() : null;
+													}
+											};
+			strBindingBuilder.withConverter(converter);
 		}
 	}
 	private static <M extends UIViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,

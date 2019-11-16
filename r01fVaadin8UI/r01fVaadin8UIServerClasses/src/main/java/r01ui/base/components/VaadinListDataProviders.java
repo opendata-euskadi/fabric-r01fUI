@@ -91,6 +91,16 @@ public abstract class VaadinListDataProviders {
 			Collection<T> col = this.getUnderlyingItemsCollection();
 			return col != null ? col.size() : 0;
 		}
+		public VaadinHasDataListProviderAccessor<T> refreshItem(final T item) {
+			this.getDataProvider()
+				.refreshItem(item);
+			return this;
+		}
+		public VaadinHasDataListProviderAccessor<T> refreshAll() {
+			this.getDataProvider()
+				.refreshAll();
+			return this;
+		}
 		public VaadinHasDataListProviderAccessor<T> setItems(final Collection<T> newItems) {
 			// add a new item to the underlying collection
 			this.getUnderlyingItemsCollection()
@@ -154,12 +164,22 @@ public abstract class VaadinListDataProviders {
 			Collection<T> col = this.getUnderlyingItemsCollection();
 			return col != null ? col.size() : 0;
 		}
+		public VaadinFilterableListDataProviderAccessor<T> refreshItem(final T item) {
+			this.getDataProvider()
+				.refreshItem(item);
+			return this;
+		}
+		public VaadinFilterableListDataProviderAccessor<T> refreshAll() {
+			this.getDataProvider()
+				.refreshAll();
+			return this;
+		}
 		public VaadinFilterableListDataProviderAccessor<T> setItems(final Collection<T> newItems) {
 			// add a new item to the underlying collection
 			this.getUnderlyingItemsCollection()
 				.clear();
 			return this.addNewItems(newItems);
-		}
+		}		
 		public VaadinFilterableListDataProviderAccessor<T> addNewItem(final T item) {
 			// add a new item to the underlying collection
 			this.getUnderlyingItemsCollection()

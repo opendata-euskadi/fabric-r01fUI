@@ -28,6 +28,24 @@ public interface UISubscriber<T>
 	 *     one want to use lambda expressions
 	 * <pre class='brush:java'>
 	 * 		util.doSomething(params,
+	 * 						 UISubscriber.from(result -> { ..on success.. }));
+	 * </pre>
+	 * @param <T>
+	 * @param onSuccess
+	 * @return
+	 */
+	public static <T> UISubscriber<T> from(final OnSuccessSubscriber<T> onSuccess) {
+		return UISubscriber.from(onSuccess,
+								 // on error
+								 th -> {  /* do nothing with the error */ });
+	}
+	/**
+	 * Utility to create a {@link Subscriber} fron an {@link OnSuccessSubscriber} and
+	 * an {@link OnErrorSubscriber}
+	 * ... this is handy when a {@link Subscriber} is required as a method param but
+	 *     one want to use lambda expressions
+	 * <pre class='brush:java'>
+	 * 		util.doSomething(params,
 	 * 						 UISubscriber.from(result -> { ..on success.. },
 	 * 										   th -> {.. on error..}));
 	 * </pre>

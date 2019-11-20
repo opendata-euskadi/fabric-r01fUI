@@ -6,6 +6,10 @@ import r01f.patterns.OnErrorSubscriber;
 import r01f.patterns.OnSuccessSubscriber;
 import r01f.patterns.Subscriber;
 
+/**
+ * An UI subscriber
+ * @param <T>
+ */
 @FunctionalInterface
 public interface UISubscriber<T>
 		 extends Subscriber<T>,
@@ -22,7 +26,7 @@ public interface UISubscriber<T>
 //	UTIL
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Utility to create a {@link Subscriber} fron an {@link OnSuccessSubscriber} and
+	 * Utility to create a {@link Subscriber} from an {@link OnSuccessSubscriber} and
 	 * an {@link OnErrorSubscriber}
 	 * ... this is handy when a {@link Subscriber} is required as a method param but
 	 *     one want to use lambda expressions
@@ -40,7 +44,7 @@ public interface UISubscriber<T>
 								 th -> {  /* do nothing with the error */ });
 	}
 	/**
-	 * Utility to create a {@link Subscriber} fron an {@link OnSuccessSubscriber} and
+	 * Utility to create a {@link Subscriber} from an {@link OnSuccessSubscriber} and
 	 * an {@link OnErrorSubscriber}
 	 * ... this is handy when a {@link Subscriber} is required as a method param but
 	 *     one want to use lambda expressions

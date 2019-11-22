@@ -14,8 +14,8 @@ import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 
 @Accessors( prefix="_" )
-public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
-												    V extends UIViewObject,
+public abstract class VaadinDeleteConfirmDialogBase<O extends PersistableObjectOID,
+												    M extends PersistableModelObject<O>,V extends UIViewObject,
 												    P extends UIObjectDetailLanguageDependentPresenter<O,V>>		// core mediator
 	 		  extends Window {
 

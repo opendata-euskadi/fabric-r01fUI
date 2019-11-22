@@ -16,7 +16,25 @@ public interface UIPresenterSubscriber<T>
 //	UTIL
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Utility to create a {@link Subscriber} fron an {@link OnSuccessSubscriber} and
+	 * Utility to create a {@link Subscriber} from an {@link OnSuccessSubscriber} and
+	 * an {@link OnErrorSubscriber}
+	 * ... this is handy when a {@link Subscriber} is required as a method param but
+	 *     one want to use lambda expressions
+	 * <pre class='brush:java'>
+	 * 		util.doSomething(params,
+	 * 						 UIPresenterSubscriber.from(result -> { ..on success.. }));
+	 * </pre>
+	 * @param <T>
+	 * @param onSuccess
+	 * @return
+	 */
+	public static <T> UIPresenterSubscriber<T> from(final OnSuccessSubscriber<T> onSuccess) {
+		return UIPresenterSubscriber.from(onSuccess,
+										  // on error
+								 		  th -> {  /* do nothing with the error */ });
+	}
+	/**
+	 * Utility to create a {@link Subscriber} from an {@link OnSuccessSubscriber} and
 	 * an {@link OnErrorSubscriber}
 	 * ... this is handy when a {@link Subscriber} is required as a method param but
 	 *     one want to use lambda expressions

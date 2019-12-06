@@ -43,4 +43,5 @@ public @interface VaadinViewField {
     public boolean required() default false;
     public String i18nKeyForRequiredMessage() default "validation.field.required.default";
 	public Class<? extends Validator> useValidatorType() default VaadinVoidViewFieldValidator.class;
+	public boolean bindStringConverter() default true;
 }

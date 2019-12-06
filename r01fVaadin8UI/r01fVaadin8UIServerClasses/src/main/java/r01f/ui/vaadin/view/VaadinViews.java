@@ -232,17 +232,16 @@ public abstract class VaadinViews {
 				//				 convert ONLY HasValue<String> fields like TextFields 
 				//				 (ie: do NOT convert on combos)
 				// TODO research on how to get the [parameterized type] of HasValue and convert only if it's an string
-				if (!ReflectionUtils.isImplementing(viewCompField.getType(),
+				if (viewFieldAnnotation.bindStringConverter()
+				 && !ReflectionUtils.isImplementing(viewCompField.getType(),
 												   	ComboBox.class)) {
 					_bindStringConverterFor(bindingBuilder,
 									  		viewObjFieldType);
 				}
-
 				// [d] - Validator
 				_bindValidator(bindingBuilder,
 							   viewFieldAnnotation,
 							   i18n);
-
 				// [4] - Bind to the view object property
 				bindingBuilder.bind(viewObjFieldName);
 			} catch (Throwable th) {
@@ -269,27 +268,27 @@ public abstract class VaadinViews {
 											  					     	   final Class<T> viewObjPropertyType) {	// view object property
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
-
+			
 		if (String.class.isAssignableFrom(viewObjPropertyType)) {
 			// do nothing
-		} 
+		}
 		else if (Integer.class.isAssignableFrom(viewObjPropertyType)
-		        || int.class.isAssignableFrom(viewObjPropertyType)) {
+		      || int.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToIntegerConverter(null,
 														 		  	  	 "Must be a number"));
 		} 
 		else if (Float.class.isAssignableFrom(viewObjPropertyType)
-				|| float.class.isAssignableFrom(viewObjPropertyType)) {
+			  || float.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToFloatConverter(null,
 																	   "Must be a number"));
 		} 
 		else if (Double.class.isAssignableFrom(viewObjPropertyType)
-				|| double.class.isAssignableFrom(viewObjPropertyType)) {
+			  || double.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToDoubleConverter(null,
 																		"Must be a number"));
 		} 
 		else if (Long.class.isAssignableFrom(viewObjPropertyType)
-				|| long.class.isAssignableFrom(viewObjPropertyType)) {
+			  || long.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToLongConverter(null,
 																	  "Must be a number"));
 		} 
@@ -333,10 +332,14 @@ public abstract class VaadinViews {
 													}
 													@Override
 													public String convertToPresentation(final T value,final ValueContext context) {
-														return value != null ? value.toString() : null;
+														String outStr = value != null ? value.toString() : null;
+														return outStr;
 													}
 											};
 			strBindingBuilder.withConverter(converter);
+		} else {
+			log.debug("Could NOT bind a string converter for a [view obj]'s property of type {}",
+					  viewObjPropertyType);
 		}
 	}
 	private static <M extends UIViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,

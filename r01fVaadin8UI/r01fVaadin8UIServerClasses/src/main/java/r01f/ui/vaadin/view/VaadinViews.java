@@ -33,6 +33,7 @@ import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.MultiSelect;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.util.ReflectTools;
 
 import lombok.AccessLevel;
@@ -349,7 +350,7 @@ public abstract class VaadinViews {
 													  				final UII18NService i18n) {
 		if (viewFieldAnnot != null
 		 && viewFieldAnnot.required()) {
-			if (AbstractTextField.class.isAssignableFrom(viewComp.getClass())) {
+			if (AbstractTextField.class.isAssignableFrom(viewComp.getClass()) || RichTextArea.class.isAssignableFrom(viewComp.getClass())) {
 				bindingBuilder.asRequired((value,context) -> {
 																	String strVal = value != null ? value.toString() : null;
 																	if (Strings.isNOTNullOrEmpty(strVal)) return ValidationResult.ok();

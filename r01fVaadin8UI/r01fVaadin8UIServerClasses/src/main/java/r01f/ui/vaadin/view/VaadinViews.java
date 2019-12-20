@@ -202,7 +202,8 @@ public abstract class VaadinViews {
 
 				// [1] - Get the view object field name from the @VaadinViewField annotation
 				final String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
-				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,
+				
+				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,		// BEWARE!! there MUST exist a GETTER for the [view obj] field
 																	 viewObjFieldName);
 
 				if (!canBeBinded) log.warn("{} view's component field {} of type {} cannot be 'automatically' binded to {}'s {} property of type {} since the component does NOT implement {}: it should be binded MANUALLY",
@@ -214,6 +215,44 @@ public abstract class VaadinViews {
 				HasValue<?> hasValueComp = (HasValue<?>)ReflectTools.getJavaFieldValue(view,
 																					   viewCompField,HasValue.class);
 				if (hasValueComp == null) continue;
+				
+				// BEWARE!	If the component is null maybe the call to 
+				// 						VaadinViews.using(_i18n)
+				//								   .setI18NLabelsOf(this);
+				// 			is done in the WRONG place:
+				//	The problem arises when a form extends a base form:
+				//	public class MyEditorBase {
+				//		protected MyEditorBase(final UII18NService i18n,
+				//							   final final Class<V> viewObjType) {
+				//		VaadinViews.using(_binder,_i18n)
+				//				   .bindComponentsOf(this)
+				//				   .toViewObjectOfType(viewObjType);	<--- WRONG!!! this MUST be called at the
+				//		}													  		  concrete type constructor!!!
+				//	}
+				//	public class MyEditor
+				//		 extends MyEditorBase {
+				//
+				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false) 
+				//		@LangIndependentVaadinViewField
+				//		@VaadinViewComponentLabels(captionI18NKey="myKey",useCaptionI18NKeyAsPlaceHolderKey=true)
+				//		protected final TextField _txtMyField = new TextField();
+				//
+				//		public MyEditor() {
+				//			super(i18n,
+				//				  MyViewObj.class);
+				//		}
+				//	}
+				//	Since the call to 
+				//			VaadinViews.using(_binder,_i18n)
+				//					   .bindComponentsOf(this)
+				//					   .toViewObjectOfType(viewObjType);
+				//	is done at the BASE type, the _txtMyField field IS NOT YET initialized!
+				//	... so it's NULL!!
+				//	ensure to call 
+				//			VaadinViews.using(_binder,_i18n)
+				//					   .bindComponentsOf(this)
+				//					   .toViewObjectOfType(viewObjType);
+				//	at the MyEditor constructor 
 
 				// [2] - Get the binding builder
 				Binder.BindingBuilder<M,?> bindingBuilder = binder.forField(hasValueComp);
@@ -463,12 +502,49 @@ public abstract class VaadinViews {
 		final Class<?> viewType = view.getClass();
 		final Field[] viewFields = ReflectionUtils.allFields(viewType);
 		for (final Field viewCompField : viewFields) {
-			try {
+			try {				
 				if (!ReflectionUtils.isImplementing(viewCompField.getType(),Component.class)) continue;
 
 				// [1] - Get the component field and the corresponding view obj type
-				Component vaadinComponent = (Component)ReflectTools.getJavaFieldValue(view,
-																					  viewCompField,Component.class);
+				Component vaadinComponent = ReflectionUtils.fieldValue(view,viewCompField,
+																	   false);		// do not use Accessors 
+//				Component vaadinComponent = (Component)ReflectTools.getJavaFieldValue(view,
+//																					  viewCompField,Component.class);
+				
+				// BEWARE!	If the component is null maybe the call to 
+				// 						VaadinViews.using(_i18n)
+				//								   .setI18NLabelsOf(this);
+				// 			is done in the WRONG place:
+				//	The problem arises when a form extends a base form:
+				//	public class MyEditorBase {
+				//		protected MyEditorBase(final UII18NService i18n,
+				//							   final final Class<V> viewObjType) {
+				//			VaadinViews.using(_i18n)
+				//					   .setI18NLabelsOf(this);	<--- WRONG!!! this MUST be called at the
+				//		}													  concrete type constructor!!!
+				//	}
+				//	public class MyEditor
+				//		 extends MyEditorBase {
+				//
+				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false) 
+				//		@LangIndependentVaadinViewField
+				//		@VaadinViewComponentLabels(captionI18NKey="myKey",useCaptionI18NKeyAsPlaceHolderKey=true)
+				//		protected final TextField _txtMyField = new TextField();
+				//
+				//		public MyEditor() {
+				//			super(i18n,
+				//				  MyViewObj.class);
+				//		}
+				//	}
+				//	Since the call to 
+				// 				VaadinViews.using(_i18n)
+				//						   .setI18NLabelsOf(this);
+				//	is done at the BASE type, the _txtMyField field IS NOT YET initialized!
+				//	... so it's NULL!!
+				//	ensure to call 
+				// 				VaadinViews.using(_i18n)
+				//						   .setI18NLabelsOf(this);
+				//	at the MyEditor constructor 
 				if (vaadinComponent == null) continue;		// parent field on AbstractComponent
 
 				// [2] - Get the @R01UIViewComponentCaption annotation which contains the view component's caption (label)
@@ -480,14 +556,14 @@ public abstract class VaadinViews {
 																? viewCompCaption
 																: Strings.isNOTNullOrEmpty(labelsAnnot.placeholderI18NKey()) ? labelsAnnot.placeholderI18NKey()
 																															 : null;
-
 					_setViewComponentCaption(i18n,
 											 vaadinComponent,
 								   			 viewCompCaption,labelsAnnot.captionI18NKey());	// caption & default value
 					_setViewComponentPlaceHolder(i18n,
 												 vaadinComponent,
 												 viewCompPlaceHolder);
-				}
+				} 
+				
 				// [3] - Style
 				_styleViewComponent(vaadinComponent);
 

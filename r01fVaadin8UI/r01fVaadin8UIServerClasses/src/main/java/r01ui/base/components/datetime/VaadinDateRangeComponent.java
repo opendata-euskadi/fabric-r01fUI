@@ -31,6 +31,22 @@ public class VaadinDateRangeComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	protected Component initContent() {
+		////////// Behavior
+		// set the upper bound to be at least the lower bound
+		_dateLowerBound.addValueChangeListener(e -> {
+													LocalDate currLow = e.getValue();
+													LocalDate currUp = _dateUperBound.getValue();
+													if (currUp != null && currUp.isBefore(currLow)) _dateUperBound.setValue(null);
+													_dateUperBound.setRangeStart(currLow);
+													_dateUperBound.setRangeEnd(null);
+											   });
+		_dateUperBound.addValueChangeListener(e -> {
+													LocalDate currLow = _dateLowerBound.getValue();
+													LocalDate currUp = e.getValue();
+													if (currLow != null && currLow.isAfter(currUp)) _dateLowerBound.setValue(null);
+													_dateLowerBound.setRangeStart(null);
+													_dateLowerBound.setRangeEnd(currUp);
+											  });
 		////////// Layout
 		HorizontalLayout hly = new HorizontalLayout(_dateLowerBound,
 													_dateUperBound);

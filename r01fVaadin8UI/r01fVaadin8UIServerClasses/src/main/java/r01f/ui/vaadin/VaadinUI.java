@@ -5,10 +5,18 @@ import com.vaadin.ui.UI;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import r01f.locale.Language;
 import r01f.securitycontext.SecurityContext;
+import r01f.util.types.locale.Languages;
 
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 public abstract class VaadinUI {
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public static Language getCurrentLanguage() {
+		return Languages.of(UI.getCurrent().getLocale());
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	

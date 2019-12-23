@@ -4,10 +4,13 @@ import java.time.LocalDate;
 
 import com.google.common.collect.Range;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.datefield.DateResolution;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
+
+import r01f.util.types.Ranges;
 
 /**
  * A vaadin date range selector like:
@@ -36,14 +39,20 @@ public class VaadinDateRangeComponent
 		_dateLowerBound.addValueChangeListener(e -> {
 													LocalDate currLow = e.getValue();
 													LocalDate currUp = _dateUperBound.getValue();
-													if (currUp != null && currUp.isBefore(currLow)) _dateUperBound.setValue(null);
+													if (currUp != null && currLow != null 
+													 && currUp.isBefore(currLow)) {
+														_dateUperBound.setValue(null);
+													}
 													_dateUperBound.setRangeStart(currLow);
 													_dateUperBound.setRangeEnd(null);
 											   });
 		_dateUperBound.addValueChangeListener(e -> {
 													LocalDate currLow = _dateLowerBound.getValue();
 													LocalDate currUp = e.getValue();
-													if (currLow != null && currLow.isAfter(currUp)) _dateLowerBound.setValue(null);
+													if (currLow != null && currUp != null
+													 && currLow.isAfter(currUp)) {
+														_dateLowerBound.setValue(null);
+													}
 													_dateLowerBound.setRangeStart(null);
 													_dateLowerBound.setRangeEnd(currUp);
 											  });
@@ -56,7 +65,7 @@ public class VaadinDateRangeComponent
 	public Range<LocalDate> getValue() {
 		LocalDate low = _dateLowerBound.getValue();
 		LocalDate up = _dateUperBound.getValue();
-		return _composeRange(low,up);
+		return Ranges.guavaRangeFrom(low,up);
 	}
 	@Override
 	protected void doSetValue(final Range<LocalDate> value) {
@@ -80,14 +89,14 @@ public class VaadinDateRangeComponent
 		
 		// Raise an event when either the [lower bound] or [upper bound] change
 		_dateLowerBound.addValueChangeListener(e -> {
-													Range<LocalDate> oldVal = _composeRange(e.getOldValue(),_dateUperBound.getValue());
+													Range<LocalDate> oldVal = Ranges.guavaRangeFrom(e.getOldValue(),_dateUperBound.getValue());
 													ValueChangeEvent<Range<LocalDate>> evt = new ValueChangeEvent<>(this,		// component
 																													oldVal,		// old value
 																													true);		// user originated
 													listener.valueChange(evt);
 											   });
 		_dateUperBound.addValueChangeListener(e -> {
-													Range<LocalDate> oldVal = _composeRange(_dateLowerBound.getValue(),e.getOldValue());
+													Range<LocalDate> oldVal = Ranges.guavaRangeFrom(_dateLowerBound.getValue(),e.getOldValue());
 													ValueChangeEvent<Range<LocalDate>> evt = new ValueChangeEvent<>(this,		// component
 																													oldVal,		// old value
 																													true);		// user originated
@@ -98,17 +107,11 @@ public class VaadinDateRangeComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static Range<LocalDate> _composeRange(final LocalDate low,final LocalDate up) {
-		Range<LocalDate> outRange = null;
-		if (low != null && up != null) {
-			outRange = Range.closed(low,up);
-		} else if (low != null && up == null) {
-			outRange = Range.atLeast(low);
-		} else if (low == null && up != null) {
-			outRange = Range.atMost(up);
-		} else {
-			outRange = Range.all();
-		}
-		return outRange;
+	public DateResolution getResolution() {
+		return _dateLowerBound.getResolution();	// both lower or upper has the same resolution
+	}
+	public void setResolution(final DateResolution res) {
+		_dateLowerBound.setResolution(DateResolution.MONTH);
+		_dateUperBound.setResolution(DateResolution.MONTH);
 	}
 }

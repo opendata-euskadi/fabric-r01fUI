@@ -43,6 +43,10 @@ public @interface VaadinViewField {
     public boolean required() default false;
     public String i18nKeyForRequiredMessage() default "validation.field.required.default";
 	public Class<? extends Validator> useValidatorType() default VaadinVoidViewFieldValidator.class;
+	/**
+	 * The binder by default tries to bind a StringConverter
+	 * ...BUT on ComboBoxes this is usually NOT necessary 
+	 */
 	public boolean bindStringConverter() default true;		// use this in combos
 //	public Class<?> converter() default Void.class;
 }

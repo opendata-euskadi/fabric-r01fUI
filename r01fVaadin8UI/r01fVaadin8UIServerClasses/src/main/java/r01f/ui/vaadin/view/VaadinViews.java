@@ -271,10 +271,7 @@ public abstract class VaadinViews {
 				//		 BEWARE! Vaadin fields are instances of HasValue<?>
 				//				 convert ONLY HasValue<String> fields like TextFields 
 				//				 (ie: do NOT convert on combos)
-				// TODO research on how to get the [parameterized type] of HasValue and convert only if it's an string
-				if (viewFieldAnnotation.bindStringConverter()
-				 && !ReflectionUtils.isImplementing(viewCompField.getType(),	// TODO remove this condition
-												   	ComboBox.class)) {
+				if (viewFieldAnnotation.bindStringConverter()) {
 					_bindStringConverterFor(bindingBuilder,
 									  		viewObjFieldType);
 				}

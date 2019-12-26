@@ -22,6 +22,6 @@ public class VaadinDateRangeComponent
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinDateRangeComponent() {
-		super(DateField::new);			// component factory
+		super(DateField::new);
 	}
 }

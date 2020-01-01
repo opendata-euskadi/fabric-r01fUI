@@ -76,15 +76,19 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 	public Range<T> getValue() {
 		T low = _dateLowerBound.getValue();
 		T up = _dateUperBound.getValue();
-		return Ranges.guavaRangeFrom(low,up);
+		return low == null && up == null ? null
+										 : Ranges.guavaRangeFrom(low,up);
 	}
 	@Override
 	protected void doSetValue(final Range<T> value) {
+		if (value == null) return;
+		
 		if (value.hasLowerBound()) {
 			_dateLowerBound.setValue(value.lowerEndpoint());
 		} else {
 			_dateLowerBound.setValue(null);
 		}
+		
 		if (value.hasUpperBound()) {
 			_dateUperBound.setValue(value.upperEndpoint());
 		} else {

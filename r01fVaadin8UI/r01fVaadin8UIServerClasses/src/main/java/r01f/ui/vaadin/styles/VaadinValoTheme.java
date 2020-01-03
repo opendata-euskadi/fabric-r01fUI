@@ -1,15 +1,21 @@
 package r01f.ui.vaadin.styles;
 
-public class VaadinValoTheme {
+import com.vaadin.ui.themes.ValoTheme;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
+public abstract class VaadinValoTheme 
+			  extends ValoTheme {
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 // STYLES CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
+	public static final String VIEW_CONTAINER = "view-container";
 	public static final String CONTAINER_BASE = "container-base";
 	public static final String NON_SELECT = "nonselect";
 	public static final String NON_SELECT_ALL = "nonselect-all";
-	public static final String LABEL_H1 = "label-h1";
-	public static final String LABEL_H2 = "label-h2";
 	public static final String PAGE_OUTLINE_NAV = "page-outline-nav"; 
 	public static final String PAGE_ID = "page-id"; 
 	public static final String SECTION = "section";
@@ -26,5 +32,6 @@ public class VaadinValoTheme {
 	public static final String WRAP_LINE = "wrapline";
 	public static final String JUSTIFY = "justify";
 	public static final String VA_PREVIEW_BOX = "va-preview-box";
+	public static final String MENU_ITEM_CHECKED = "checked";
 	
 }

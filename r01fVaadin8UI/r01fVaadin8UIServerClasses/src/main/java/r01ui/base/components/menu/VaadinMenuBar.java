@@ -73,7 +73,11 @@ public class VaadinMenuBar
 								  				 final MenuBar.Command command) {
 		return new VaadinMenuItemBuilderI18NStep(key,icon,
 												 command,
-												 _rootItems);
+												 _rootItems,
+												 (theCaption,theIcon,theCommand) -> {
+													 return VaadinMenuBar.this.addItem(theCaption,theIcon,
+															 						   theCommand);
+												 });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //																			  
@@ -247,7 +251,11 @@ public class VaadinMenuBar
 									  				 final MenuBar.Command command) {
 			return new VaadinMenuItemBuilderI18NStep(key,icon,
 													 command,
-													 _subItems);
+													 _subItems,
+													 (theCaption,theIcon,theCommand) -> {
+													 return _menuItem.addItem(theCaption,theIcon,
+															 				  theCommand);
+													 });
 		}
 		@Override
 		public String getCaption() {
@@ -284,22 +292,30 @@ public class VaadinMenuBar
 		private final Resource _icon;
 		private final MenuBar.Command _command;
 		private final Collection<VaadinMenuItem> _col;
+		private final VaadinHasMenuItems _hasMenuItems;
 		
 		public VaadinMenuItem withCaptionFrom(final UII18NService i18n) {
 			String caption = _key != null ? i18n.getMessage(_key)
 										  : "";
-			MenuItem menuItem = VaadinMenuBar.super.addItem(caption,_icon,
-										  	  				_command);
+			MenuItem menuItem = _hasMenuItems.addItem(caption,_icon,
+										  	  		  _command);
 			VaadinMenuItem item = new VaadinMenuItem(_key,menuItem);
 			_col.add(item);  
 			return item;
+		}
+		public VaadinMenuItem withoutCaption() {
+			return this.withNOCaption();
 		}
 		public VaadinMenuItem withNOCaption() {
-			MenuItem menuItem = VaadinMenuBar.super.addItem(null,_icon,
+			MenuItem menuItem = VaadinMenuBar.super.addItem("",_icon,
 										  	  				_command);
 			VaadinMenuItem item = new VaadinMenuItem(_key,menuItem);
 			_col.add(item);  
 			return item;
 		}
+	}
+	private interface VaadinHasMenuItems {
+		public MenuItem addItem(final String caption,final Resource icon,
+								final MenuBar.Command command);
 	}
 }

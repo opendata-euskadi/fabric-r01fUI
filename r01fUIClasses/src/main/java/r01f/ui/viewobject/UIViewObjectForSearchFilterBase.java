@@ -5,7 +5,7 @@ import r01f.model.search.SearchFilter;
 
 @Accessors(prefix="_")
 public abstract class UIViewObjectForSearchFilterBase<F extends SearchFilter> 
-			  extends UIViewObjectBase<F>
+			  extends UIViewObjectWrappedBase<F>
            implements UIViewObjectForSearchFilter<F> {
 
 	private static final long serialVersionUID = 1141228509063913807L;

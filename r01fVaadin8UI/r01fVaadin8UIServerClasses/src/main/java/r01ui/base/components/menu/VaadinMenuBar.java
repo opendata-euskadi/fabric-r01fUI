@@ -1,5 +1,6 @@
 package r01ui.base.components.menu;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -166,7 +167,10 @@ public class VaadinMenuBar
 	@RequiredArgsConstructor
 	public class VaadinMenuItem 
 	  implements VaadinComponentHasCaption,VaadinComponentHasIcon,
-	  			 VaadinViewI18NMessagesCanBeUpdated {
+	  			 VaadinViewI18NMessagesCanBeUpdated,
+	  			 Serializable {
+
+		private static final long serialVersionUID = -7424723184476135645L;
 		
 		@Getter private final I18NKey _key;
 		@Getter private final MenuItem _menuItem;

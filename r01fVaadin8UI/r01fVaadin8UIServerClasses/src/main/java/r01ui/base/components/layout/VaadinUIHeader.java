@@ -1,30 +1,21 @@
 package r01ui.base.components.layout;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.themes.ValoTheme;
-
 import lombok.experimental.Accessors;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
 import r01f.securitycontext.SecurityContext;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.notifications.VaadinNotificationsWindow;
-import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01ui.base.components.menu.VaadinMenuBar;
-import r01ui.base.components.menu.VaadinUserMenu;
-import r01ui.base.components.menu.VaadinUserMenu.R01UILanguageChangeEventListener;
-import r01ui.base.components.text.VaadinTranslatableLabel;
 
 /**
  * A header like:
  * <pre>
  * 		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * 		+ [RightMenu]   Title     [notifications] [user] [left menu] +
- * 		+ |         |             |             |        |         | +
- * 		+ |         |             |             |        |         | + 
- * 		+ |         |             |             |        |         | +
+ * 		+ [Menu     ]   Title     [notifications] [user] [user info] +
+ * 		+ |         |             |             |        |[menu]   | +
+ * 		+ |         |             |             |        |es eu en | + 
+ * 		+ |         |             |             |        |sign out | +
  * 		+ +---------+             |             |        +---------+ +
  * 		+						  |             |                    +
  * 		+						  +-------------+ 					 +
@@ -59,17 +50,11 @@ import r01ui.base.components.text.VaadinTranslatableLabel;
  */
 @Accessors(prefix="_")
 public class VaadinUIHeader
-	 extends CustomComponent
-  implements VaadinViewI18NMessagesCanBeUpdated {
+	 extends VaadinUIHeaderBase {
 	
-	private static final long serialVersionUID = 7806676118570889809L;
-/////////////////////////////////////////////////////////////////////////////////////////
-// 	FIELDS
-/////////////////////////////////////////////////////////////////////////////////////////   
-	private final VaadinTranslatableLabel _title;
-	private final VaadinMenuBar _leftMenu;
-	private final VaadinNotificationsWindow<?> _notificationsWindow;
-	private final VaadinUserMenu _userMenu;
+
+	private static final long serialVersionUID = 2584139654619115128L;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -94,62 +79,12 @@ public class VaadinUIHeader
 					   	  final SecurityContext securityContext,
 					   	  final VaadinMenuBar rightMenu,
 					   	  final Language... supportedLangs) {
-		// set composition root
-		super(new HorizontalLayout());
-		
-		// style header
-		this.getCompositionRoot().setSizeFull();
-		this.getCompositionRoot().addStyleName("r01header");
-		
-		// left menu
-		_leftMenu = leftMenu;
-		_leftMenu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-		// title
-		_title = new VaadinTranslatableLabel(i18n,
-											titleI18NKey);		
-		
-		HorizontalLayout leftLayout = new HorizontalLayout(leftMenu,_title);	
-		leftLayout.setComponentAlignment(leftMenu,Alignment.MIDDLE_LEFT);
-		leftLayout.setComponentAlignment(_title,Alignment.MIDDLE_LEFT);		
-		this.getCompositionRoot().addComponent(leftLayout);
-		this.getCompositionRoot().setComponentAlignment(leftLayout,Alignment.MIDDLE_LEFT);
-		// notifications
-		_notificationsWindow = notifsWin;
-		
-		// right user menu
-		_userMenu = new VaadinUserMenu(i18n,
-									  securityContext,
-									  rightMenu,
-									  supportedLangs);
-		
-		
-		HorizontalLayout rightLayout = new HorizontalLayout();
-		if (_notificationsWindow != null) rightLayout.addComponent(_notificationsWindow);
-		if (_userMenu != null) rightLayout.addComponent(_userMenu);
-		if (_notificationsWindow != null) rightLayout.setComponentAlignment(_notificationsWindow,Alignment.MIDDLE_RIGHT);
-		if (_userMenu != null) rightLayout.setComponentAlignment(_userMenu,Alignment.MIDDLE_RIGHT);
-		this.getCompositionRoot().addComponents(rightLayout);
-		this.getCompositionRoot().setComponentAlignment(rightLayout,Alignment.MIDDLE_RIGHT);	
-		
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	LANGUAGE CHANGE EVENT LISTENER                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
-	public void addLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
-		_userMenu.addLanguageChangeEventListener(langEventListener);
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	UIViewI18NMessagesCanBeUpdated                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public void updateI18NMessages(final UII18NService i18n) {
-		_title.updateI18NMessages(i18n);
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//  
-/////////////////////////////////////////////////////////////////////////////////////////	
-	@Override 
-	protected HorizontalLayout getCompositionRoot() {
-		return (HorizontalLayout)super.getCompositionRoot();
+		super(i18n,
+			  titleI18NKey,
+			  leftMenu,
+			  notifsWin,
+			  securityContext,
+			  rightMenu,
+			  supportedLangs);
 	}
 }

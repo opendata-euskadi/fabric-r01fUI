@@ -10,8 +10,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -33,6 +31,26 @@ import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
 
+/**
+ * Creates a user menu like
+ * <pre>
+ *    +-------------+
+ *    [user info    ]
+ *    +-------------+ 
+ *    | [component] | 
+ *    |             | 
+ *    | [en] [es]   |
+ *    |             | 
+ *    | [sign out]  | 
+ *    +-------------+ 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * </pre>
+ */
 @RequiredArgsConstructor
 public class VaadinUserMenu
 	 extends CustomComponent
@@ -43,7 +61,7 @@ public class VaadinUserMenu
 //	FIELDS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Button _btnUser;
-	private final VaadinMenuBar _menu;
+	private final Component _component;
 	private final VaadinLangButtons _langChangeButtons;
 	
 	private R01UILanguageChangeEventListener _langEventListener;
@@ -51,33 +69,24 @@ public class VaadinUserMenu
 //	CONSTRUCTOR                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUserMenu(final UII18NService i18n,
-						 final SecurityContext securityContext,
-						 final VaadinMenuBar menu,
-						 final Language... supportedLangs) {
+						  final SecurityContext securityContext,
+						  final Component component,
+						  final Language... supportedLangs) {
 		super(new HorizontalLayout());
-		this.getCompositionRoot().setMargin(false);
-
-		VerticalLayout popupContent = new VerticalLayout();
-		popupContent.setSizeFull();		        
-        PopupView popup = new PopupView(null, popupContent);
-        popup.setStyleName("r01ui-userMenu");
-        popup.setHideOnMouseOut(false);
 		
-		// user
-		_btnUser = _createUserInfo(i18n,
-								   securityContext);
-		if (_btnUser != null) {			
-			_btnUser.addClickListener(click -> popup.setPopupVisible(true));
-			this.getCompositionRoot().addComponent(_btnUser);
-		}
+		this.getCompositionRoot()
+			.setMargin(false);
+
+		////////// Popup content
+		VerticalLayout ly = new VerticalLayout();
+		ly.setSizeFull();	
 		
 		// menu
-		_menu = menu;
-		if (_menu != null) {
-			_menu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-			popupContent.addComponent(_menu);
+		_component = component;
+		if (_component != null) {
+			_component.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
+			ly.addComponent(_component);
 		}
-		
 		// change language
 		Collection<R01UILangButton> langButtons = _createLanguageChangeButtons(supportedLangs);
 		_langChangeButtons = new VaadinLangButtons(langButtons);
@@ -85,18 +94,13 @@ public class VaadinUserMenu
 			HorizontalLayout hlLangs = new HorizontalLayout();
 			FluentIterable.from(_langChangeButtons)
 						  .forEach(btn -> hlLangs.addComponent(btn.getButton()));
-			popupContent.addComponent(hlLangs);
+			ly.addComponent(hlLangs);
 		}
-		
 		// sign out
 		Button btnSignOut = new Button(i18n.getMessage("uiCommon.signout"),
 									   VaadinIcons.SIGN_OUT);
 		btnSignOut.addStyleName(ValoTheme.BUTTON_LINK);
-		btnSignOut.addClickListener(new ClickListener() {
-											private static final long serialVersionUID = -8459728097219966474L;
-
-											@Override
-											public void buttonClick(final ClickEvent event) {
+		btnSignOut.addClickListener(event -> {
 												// the redir to the login page MUST done BEFORE closing the session, 
 												// as the UI or page are not available after that
 												// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
@@ -111,13 +115,27 @@ public class VaadinUserMenu
 															 .invalidate();		
 												// remove the user context from the thread-local
 												SecurityContextStoreAtThreadLocalStorage.remove();
-											}
 									});
-		popupContent.addComponent(btnSignOut);
+		ly.addComponent(btnSignOut);
 		
-		// add the popup
+		
+		////////// Popup
+		PopupView popup = new PopupView(null,
+        								ly);
+		popup.setStyleName("r01ui-userMenu");
+		popup.setHideOnMouseOut(false);
+		
 		this.getCompositionRoot()
 			.addComponent(popup);
+		
+		////////// User
+		_btnUser = _createUserInfo(i18n,
+								   securityContext);
+		if (_btnUser != null) {			
+			_btnUser.addClickListener(click -> popup.setPopupVisible(true));
+			this.getCompositionRoot()
+				.addComponent(_btnUser);
+		}
 	}
 	@Override
 	public HorizontalLayout getCompositionRoot() {
@@ -176,7 +194,10 @@ public class VaadinUserMenu
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	private class VaadinLangButtons
-	   implements Iterable<R01UILangButton> {
+	   implements Iterable<R01UILangButton>, 
+				  Serializable {
+
+		private static final long serialVersionUID = 2256163414191531302L;
 		
 		private final Collection<R01UILangButton> _langButtons;
 		
@@ -201,7 +222,11 @@ public class VaadinUserMenu
 	}
 	@Accessors(prefix="_")
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	private class R01UILangButton {
+	private class R01UILangButton 
+	   implements Serializable {
+		
+		private static final long serialVersionUID = -998382762234341948L;
+		
 		@Getter private final Language _lang;
 		@Getter private final Button _button;
 		
@@ -224,7 +249,11 @@ public class VaadinUserMenu
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
 		// tell the menu to update the messages
-		if (_menu != null) _menu.updateI18NMessages(i18n);
+		if (_component != null
+		 && _component instanceof VaadinViewI18NMessagesCanBeUpdated) {
+			VaadinViewI18NMessagesCanBeUpdated i18nAwareComp = (VaadinViewI18NMessagesCanBeUpdated)_component;
+			i18nAwareComp.updateI18NMessages(i18n);
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EVENTS                                                                          

@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
@@ -39,11 +40,13 @@ public class VaadinDateNavigator
 		////////// Components
 		_btnPrevDate = new Button(VaadinIcons.ANGLE_LEFT);
 		_btnPrevDate.setDescription(i18n.getMessage("previous"));
+		_btnPrevDate.setEnabled(false);
 
 		_date = new DateField(i18n.getMessage("date"));
 		
-		_btnNextDate = new Button(VaadinIcons.ANGLE_LEFT);
+		_btnNextDate = new Button(VaadinIcons.ANGLE_RIGHT);
 		_btnNextDate.setDescription(i18n.getMessage("next"));
+		_btnNextDate.setEnabled(false);
 		
 		////////// Behaviour
 		_date.addValueChangeListener(valChangeEvent -> {
@@ -51,14 +54,18 @@ public class VaadinDateNavigator
 										_btnNextDate.setEnabled(lDate != null);
 										_btnPrevDate.setEnabled(lDate != null);
 									 });
-		
+		_btnPrevDate.addClickListener(ClickEvent -> this.gotoPrevious());
+		_btnNextDate.addClickListener(clickEvent -> this.gotoNext());
 	}
 	@Override
 	protected Component initContent() {
 		////////// Layout
 		HorizontalLayout hly = new HorizontalLayout(_btnPrevDate,
 													_date,
-													_btnNextDate);
+													_btnNextDate);	
+		hly.setComponentAlignment(_btnPrevDate,Alignment.BOTTOM_LEFT);
+		hly.setComponentAlignment(_date,Alignment.BOTTOM_LEFT);
+		hly.setComponentAlignment(_btnNextDate,Alignment.BOTTOM_RIGHT);
 		hly.setSizeFull();
 		hly.setMargin(false);
 		hly.setSpacing(false);

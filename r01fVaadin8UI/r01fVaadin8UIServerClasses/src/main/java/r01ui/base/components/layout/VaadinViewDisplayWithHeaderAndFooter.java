@@ -136,4 +136,20 @@ public class VaadinViewDisplayWithHeaderAndFooter
 	public void setContent(final Component content) {
 		_viewDisplay.setContent(content);
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	@SuppressWarnings("unchecked")
+	public <C> C getHeaderAs(final Class<C> compType) {
+		return (C)_header;
+	}
+	@SuppressWarnings("unchecked")
+	public <C> C getContentAs(final Class<C> content) {
+		return (C)_viewDisplay.getContent();
+	}
+	@SuppressWarnings("unchecked")
+	public <C> C getFooterAs(final Class<C> compType) {
+		return (C)_footer;
+	}
 }
+ 

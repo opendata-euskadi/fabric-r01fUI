@@ -1,12 +1,10 @@
-/**
- * 
- */
 package r01ui.base.components.layout;
 
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
-import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -62,6 +60,11 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 	 * The footer layout
 	 */
 	@Getter private final Component _footer;
+	
+	/**
+	 * The layout >> [left menu] [view display]
+	 */
+	private HorizontalLayout _splitLayout;
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////  
@@ -81,19 +84,27 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 		_viewDisplay = new Panel();
 		_footer = footer;
 		
+		// style the header
+		
 		// style the view display
 		_viewDisplay.setStyleName(ValoTheme.PANEL_BORDERLESS);
 		_viewDisplay.addStyleName(VaadinValoTheme.VIEW_CONTAINER);
+		_viewDisplay.setSizeFull();
 		
 		// Horizontal split pannel: 
 		//		[left menu] | [view display]
-		HorizontalSplitPanel splitLayout = new HorizontalSplitPanel();
-		splitLayout.setLocked(true);
-		splitLayout.setSizeFull();
-		splitLayout.addStyleName("r01-main-split-view");
+		_splitLayout = new HorizontalLayout();
+		_splitLayout.setDefaultComponentAlignment(Alignment.TOP_LEFT);
+		_splitLayout.setSizeFull();
+		_splitLayout.setMargin(false);
+		_splitLayout.setSpacing(false);
+		_splitLayout.setResponsive(true);
+		_splitLayout.setWidth("100%");
 		
-		splitLayout.addComponent(_leftMenu);
-		splitLayout.addComponent(_viewDisplay);
+		_splitLayout.addComponent(_leftMenu);
+		_splitLayout.addComponent(_viewDisplay);
+		
+		_splitLayout.setExpandRatio(_viewDisplay,3f);	// this makes the [view display] to expand 3 more times than teh [menu]
 		
 		// Vertical layout: 
 		//		[ header                     ]
@@ -101,15 +112,44 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 		//		[ footer                     ]
 		VerticalLayout ly = new VerticalLayout();
 		ly.addComponentAsFirst(_header);
-		ly.addComponent(splitLayout);
+		ly.addComponent(_splitLayout);
 		ly.addComponent(_footer);
 		
 		// style
 		ly.setSizeFull();
 		ly.setMargin(false);
+		ly.setHeightUndefined();
+		
+		_splitLayout.addStyleName("r01-view-display-container");
+		_leftMenu.addStyleName("r01-view-display-left-menu");
+		_viewDisplay.addStyleName("r01-view-display");
 		
 		// composition root
 		this.setCompositionRoot(ly);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void hideLeftMenu() {
+		_leftMenu.setVisible(false);
+	}
+	public void showLeftMenu() {
+		_leftMenu.setVisible(true);
+	}
+	public void toggleLeftMenu() {
+		// toggle left menu visibility
+		this.setLeftMenuVisible(!_leftMenu.isVisible());
+	}
+	public void setLeftMenuVisible(final boolean visible) {
+		// toggle left menu visibility
+		if (!visible) {
+			this.hideLeftMenu();
+		} else {
+			this.showLeftMenu();
+		}		
+	}
+	public boolean isLeftMenuVisible() {
+		return _leftMenu.isVisible();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

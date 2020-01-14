@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.guids.OID;
+import r01f.locale.I18NBundleAccess;
 import r01f.locale.Language;
 import r01f.reflection.scanner.AnnotatedWithScanner;
 import r01f.types.JavaPackage;
@@ -93,25 +94,12 @@ public abstract class UII18NManagerBase
 	}
 	@Override
 	public boolean hasKey(final String key) {
-		boolean containsKey = false;
-		for (String bundleName : _i18nBundleNames) {
-			ResourceBundle bundle = _retrieveBundle(bundleName,
-													this.getCurrentLocale());
-			containsKey = bundle.containsKey(key);
-			if (containsKey) break;
-		} 
-		return containsKey;
+		return _hasKey(this.getCurrentLocale(),
+					   key);
 	}
 	@Override
 	public List<String> keys() {
-		List<String> outKeys = new LinkedList<String>();
-		for (String bundleName : _i18nBundleNames) {
-			ResourceBundle bundle = _retrieveBundle(bundleName,
-													this.getCurrentLocale());
-			Enumeration<String> en = bundle.getKeys();
-			while (en.hasMoreElements()) outKeys.add(en.nextElement());
-		}
-		return outKeys;
+		return _keys(this.getCurrentLocale());
 	}
 	@Override
 	public String getMessage(final OID key,final Object... args) {
@@ -119,37 +107,114 @@ public abstract class UII18NManagerBase
 	}
 	@Override
 	public String getMessage(final String key,final Object... args) {
-		// if the key starts with $! just return the key
-		if (key.startsWith("$!")) return key.substring(2);
-		
-		String outMessage = null;
-		for (final String i18nBundleName : _i18nBundleNames) {
-			try {
-				outMessage = _retrieveMessage(i18nBundleName,
-											  key,args );
-				if (Strings.isNOTNullOrEmpty(outMessage)) break;
-			} catch(final MissingResourceException e) {
-				// do nothing
-			}
-		}
-		return Strings.isNOTNullOrEmpty(outMessage) ? outMessage : key;
+		return this.getMessage(this.getCurrentLocale(),
+							   key,args);
 	}
 	@Override
 	public String getMessage(final Locale locale,
-							 final OID key, final Object... args) {
+							 final OID key,final Object... args) {
 		return this.getMessage(key.asString(),args);
 	}
 	@Override
 	public String getMessage(final Locale locale,
-							 final String key, final Object... args) {
+							 final String key,final Object... args) {
+		return _getMessage(locale,
+						   key,args);
+	}
+	@Override
+	public Map<String, String> getMessagesWithKeysStartingWith(final String keyPrefix) {
+		return _getMessagesWithKeysStartingWith(this.getCurrentLocale(),
+												keyPrefix);
+	}
+	@Override
+	public Map<String, String> getMessagesMap() {
+		return _getMessagesMap(this.getCurrentLocale());
+	}
+	@Override
+	public Language getCurrentLanguage() {
+		return _getLanguageOf(this.getCurrentLocale());
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public I18NBundleAccess getCurrentI18NBundleAccess() {
+		return this.getI18NBundleAccessFor(this.getCurrentLocale());
+	}
+	@Override
+	public I18NBundleAccess getI18NBundleAccessFor(final Locale locale) {
+		return new I18NBundleAccess() {
+						private static final long serialVersionUID = 3423325910848819274L;
+						
+						@Override
+						public boolean hasKey(final OID key) {
+							return _hasKey(locale,
+										   key.asString());
+						}
+						@Override
+						public boolean hasKey(final String key) {
+							return _hasKey(locale,
+										   key);
+						}
+						@Override
+						public List<String> keys() {
+							return _keys(locale);
+						}
+						@Override
+						public String getMessage(final OID key, final Object... params) {
+							return _getMessage(locale,
+											   key.asString(),params);
+						}
+						@Override
+						public String getMessage(final String key, final Object... params) {
+							return _getMessage(locale,
+											   key,params);
+						}
+						@Override
+						public Map<String, String> getMessagesWithKeysStartingWith(final String keyPrefix) {
+							return _getMessagesWithKeysStartingWith(locale,
+																	keyPrefix);
+						}
+						@Override
+						public Map<String, String> getMessagesMap() {
+							return _getMessagesMap(locale);
+						}
+			   };
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+/////////////////////////////////////////////////////////////////////////////////////////
+	private boolean _hasKey(final Locale locale,
+							final String key) {
+		boolean containsKey = false;
+		for (String bundleName : _i18nBundleNames) {
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													locale);
+			containsKey = bundle.containsKey(key);
+			if (containsKey) break;
+		} 
+		return containsKey;
+	}
+	private List<String> _keys(final Locale locale) {
+		List<String> outKeys = new LinkedList<String>();
+		for (String bundleName : _i18nBundleNames) {
+			ResourceBundle bundle = _retrieveBundle(bundleName,
+													locale);
+			Enumeration<String> en = bundle.getKeys();
+			while (en.hasMoreElements()) outKeys.add(en.nextElement());
+		}
+		return outKeys;
+	}
+	private String _getMessage(final Locale locale,
+							   final String key, final Object... args) {
 		// if the key starts with $! just return the key
 		if (key.startsWith("$!")) return key.substring(2);
 		
 		String outMessage = null;
 		for (final String i18nBundleName : _i18nBundleNames) {
 			try {
-				outMessage = _retrieveMessage(i18nBundleName,
-											  locale,
+				outMessage = _retrieveMessage(locale,
+											  i18nBundleName,
 											  key,args);
 				if (Strings.isNOTNullOrEmpty(outMessage)) break;
 			} catch (final MissingResourceException e) {
@@ -158,14 +223,14 @@ public abstract class UII18NManagerBase
 		}
 		return Strings.isNOTNullOrEmpty(outMessage) ? outMessage : key;
 	}
-	@Override
-	public Map<String, String> getMessagesWithKeysStartingWith(final String keyPrefix) {
+	private Map<String, String> _getMessagesWithKeysStartingWith(final Locale locale,
+																 final String keyPrefix) {
 		if (keyPrefix == null) throw new IllegalArgumentException("Cannot load bundle key: Missing key!");  
 		Map<String,String> outMessages = new HashMap<String,String>();
 		for (String bundleName : _i18nBundleNames) {
 			// Load the resourceBundle and iterate for every key 
 			ResourceBundle bundle = _retrieveBundle(bundleName,
-													this.getCurrentLocale());
+													locale);
 			Enumeration<String> keys = bundle.getKeys();
 			if (keys != null && keys.hasMoreElements()) {
 				do {
@@ -178,13 +243,12 @@ public abstract class UII18NManagerBase
 		}
 		return outMessages;
 	}
-	@Override
-	public Map<String, String> getMessagesMap() {
+	private Map<String, String> _getMessagesMap(final Locale locale) {
 		Map<String,String> outMessages = new HashMap<String,String>();
 		for (String bundleName : _i18nBundleNames) {
 			// Load the resourceBundle and iterate
 			ResourceBundle bundle = _retrieveBundle(bundleName,
-													this.getCurrentLocale());
+													locale);
 			Enumeration<String> keys = bundle.getKeys();
 			if (keys != null && keys.hasMoreElements()) {
 				do {
@@ -196,16 +260,11 @@ public abstract class UII18NManagerBase
 		}
 		return outMessages;
 	}
-	@Override
-	public Language getCurrentLanguage() {
-		Locale loc = this.getCurrentLocale();
+	private Language _getLanguageOf(final Locale loc) {
 		if (loc == null) log.warn("NO current locale!!! default to {}",Language.DEFAULT);
 		return loc != null ? Languages.of(loc)
 						   : Language.DEFAULT;
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE METHODS
-/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Gets a string for the given key from this resource bundle or one of its parents.
 	 * Calling this method is equivalent to calling
@@ -219,8 +278,8 @@ public abstract class UII18NManagerBase
 	 */
 	private String _retrieveMessage(final String i18nBundleName,
 									final String key,final Object... args) {
-		return _retrieveMessage(i18nBundleName,
-								this.getCurrentLocale(),
+		return _retrieveMessage(this.getCurrentLocale(),
+								i18nBundleName,
 								key,args);
 	}
 
@@ -237,8 +296,8 @@ public abstract class UII18NManagerBase
 	 * @param args the arguments used to format the message
 	 * @return
 	 */
-	private String _retrieveMessage(final String i18nBundleName,
-									final Locale locale,
+	private String _retrieveMessage(final Locale locale,
+									final String i18nBundleName,
 									final String key,final Object... args) {
 		final ResourceBundle bundle = _retrieveBundle(i18nBundleName,
 													  locale);

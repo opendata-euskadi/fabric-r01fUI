@@ -17,7 +17,7 @@ import r01f.locale.Language;
  * using the guice framework. 
  */
 public interface UII18NService 
-         extends I18NBundleAccess {
+		 extends I18NBundleAccess {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -26,33 +26,38 @@ public interface UII18NService
 	 */
 	public final String I18N_MESSAGES = ".i18n.messages";
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//																			  
 /////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Returns a message in the given locale
-     * @param locale
-     * @param key
-     * @param args
-     * @return
-     */
-    public String getMessage(final Locale locale,
-                         	 final OID key, final Object... args);
-    /**
-     * Returns a message in the given locale
-     * @param locale
-     * @param key
-     * @param args
-     * @return
-     */
-    public String getMessage(final Locale locale,
-                             final String key, final Object... args);
-    /**
-     * @return the current locale
-     */
-    public Locale getCurrentLocale();
-    
-    /**
-     * @return the current language
-     */
-    public Language getCurrentLanguage();
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args
+	 * @return
+	 */
+	public String getMessage(final Locale locale,
+						 	 final OID key, final Object... args);
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args
+	 * @return
+	 */
+	public String getMessage(final Locale locale,
+							 final String key, final Object... args);
+	/**
+	 * @return the current locale
+	 */
+	public Locale getCurrentLocale();
+	
+	/**
+	 * @return the current language
+	 */
+	public Language getCurrentLanguage();
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public I18NBundleAccess getCurrentI18NBundleAccess();
+	public I18NBundleAccess getI18NBundleAccessFor(final Locale locale);
 }

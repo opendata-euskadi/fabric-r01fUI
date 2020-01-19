@@ -48,5 +48,4 @@ public abstract class UICOREMediatorForPersistableObjectBase<O extends Persistab
 			subscriber.onError(th);
 		}
 	}
-
 }

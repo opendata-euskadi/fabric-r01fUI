@@ -32,8 +32,6 @@ public class VaadinAcceptCancelDeleteButtons
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public VaadinAcceptCancelDeleteButtons( final UII18NService i18n ) {
-		super.setSizeFull();
-		
 		////////// Create components
 		// accept
 		_btnAccept.setCaption(i18n.getMessage("save"));
@@ -53,9 +51,11 @@ public class VaadinAcceptCancelDeleteButtons
 		hly.setComponentAlignment(_btnDelete,Alignment.BOTTOM_LEFT);
 		hly.setComponentAlignment(_btnAccept,Alignment.BOTTOM_RIGHT);
 		hly.setComponentAlignment(_btnCancel,Alignment.BOTTOM_RIGHT);
+		hly.setSizeFull();
 		
 		////////// composition
 		this.setCompositionRoot(hly);
+		this.setSizeFull();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

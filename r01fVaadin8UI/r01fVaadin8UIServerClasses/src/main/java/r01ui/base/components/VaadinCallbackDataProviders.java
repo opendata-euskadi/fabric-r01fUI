@@ -37,6 +37,10 @@ public abstract class VaadinCallbackDataProviders {
 		public CallbackDataProvider<T,F>  getDataProvider() {
 			return (CallbackDataProvider<T,F>)_hasDataProvider.getDataProvider();
 		}
+		@SuppressWarnings("unchecked")
+		public <D extends CallbackDataProvider<T,F>> D getDataProviderAs(final Class<D> dataProviderType) {
+			return (D)_hasDataProvider.getDataProvider();
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
@@ -48,21 +52,13 @@ public abstract class VaadinCallbackDataProviders {
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	public class VaadinFiltrableDataProviderAccessor<T,F> {
 		private final HasDataProvider<T> _hasDataProvider;
-		
+	
 		@SuppressWarnings("unchecked")
 		public ConfigurableFilterDataProvider<T,Void,F>  getFiltrableDataProvider() {
 			return (ConfigurableFilterDataProvider<T,Void,F>)_hasDataProvider.getDataProvider();
 		}
 		@SuppressWarnings("unchecked")
 		public <D extends ConfigurableFilterDataProvider<T,Void,F>> D getFiltrableDataProviderAs(final Class<D> dataProviderType) {
-			return (D)_hasDataProvider.getDataProvider();
-		}
-		@SuppressWarnings("unchecked")
-		public CallbackDataProvider<T,F> getCallbackDataProvider() {
-			return (CallbackDataProvider<T,F>)_hasDataProvider.getDataProvider();
-		}
-		@SuppressWarnings("unchecked")
-		public <D extends CallbackDataProvider<T,F>> D getCallbackDataProviderAs(final Class<D> dataProviderType) {
 			return (D)_hasDataProvider.getDataProvider();
 		}
 	}

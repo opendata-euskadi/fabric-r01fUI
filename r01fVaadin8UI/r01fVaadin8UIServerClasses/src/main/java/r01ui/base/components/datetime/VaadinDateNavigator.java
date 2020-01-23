@@ -104,7 +104,23 @@ public class VaadinDateNavigator
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void hideNavigationHandlers() {
+		_btnPrevDate.setVisible(false);
+		_btnNextDate.setVisible(false);
+	}
+	public void disableNavigation() {
+		_btnPrevDate.setEnabled(false);
+		_btnNextDate.setEnabled(false);
+	}
+	public void showNavigationHandlers() {
+		_btnPrevDate.setVisible(false);
+		_btnNextDate.setVisible(false);
+	}
+	public void enableNavigation() {
+		_btnPrevDate.setEnabled(true);
+		_btnPrevDate.setEnabled(true);
+	}
 	public Date gotoNext() {
 		Date outDate = null;
 		

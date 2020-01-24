@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.util.Collection;
 
 import com.google.common.collect.Range;
 import com.vaadin.shared.Registration;
@@ -104,7 +105,15 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 			_dateUperBound.setValue(null);
 		}
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
+	
+	@Override
+	public void clear() {
+		_dateLowerBound.setValue(null);
+		_dateUperBound.setValue(null);
+		
+		Collection<?> registeredEventListeners = this.getListeners(ValueChangeEvent.class);
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////
 //	BEWARE! if an event is NOT raised when the value changes, the vaadin binder
 //			does NOT works
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,7 @@ package r01ui.base.components.datetime;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
 
 import com.vaadin.icons.VaadinIcons;
@@ -15,6 +16,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
+import r01f.util.types.collections.CollectionUtils;
 
 /**
  * Creates a date navigator like:
@@ -102,7 +104,23 @@ public class VaadinDateNavigator
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void hideNavigationHandlers() {
+		_btnPrevDate.setVisible(false);
+		_btnNextDate.setVisible(false);
+	}
+	public void disableNavigation() {
+		_btnPrevDate.setEnabled(false);
+		_btnNextDate.setEnabled(false);
+	}
+	public void showNavigationHandlers() {
+		_btnPrevDate.setVisible(false);
+		_btnNextDate.setVisible(false);
+	}
+	public void enableNavigation() {
+		_btnPrevDate.setEnabled(true);
+		_btnPrevDate.setEnabled(true);
+	}
 	public Date gotoNext() {
 		Date outDate = null;
 		
@@ -112,6 +130,7 @@ public class VaadinDateNavigator
 			_date.setValue(nextLDate);
 			outDate = this.getDate();
 		}
+		_raiseValueChangeEvent(ldate);	// manually raise a [value change event]
 		return outDate;
 	}
 	public Date gotoPrevious() {
@@ -123,6 +142,7 @@ public class VaadinDateNavigator
 			_date.setValue(nextLDate);
 			outDate = this.getDate();
 		}
+		_raiseValueChangeEvent(ldate);	// manually raise a [value change event]
 		return outDate;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -133,16 +153,32 @@ public class VaadinDateNavigator
     public Registration addValueChangeListener(final ValueChangeListener<LocalDate> listener) {
 		Registration reg = super.addValueChangeListener(listener);
 		
-		// Raise an event when either the [lower bound] or [upper bound] change
+		// Raise an event when the [date] changes
 		_date.addValueChangeListener(e -> {
+										if (e.isUserOriginated()) {
 											LocalDate oldVal = _date.getValue();
-											ValueChangeEvent<LocalDate> evt = new ValueChangeEvent<>(this,		// component
-																									 oldVal,	// old value
-																									 true);		// user originated
+											ValueChangeEvent<LocalDate> evt = new ValueChangeEvent<>(this,					// component
+																									 oldVal,				// old value
+																									 e.isUserOriginated());	// user originated
 											listener.valueChange(evt);
+										}
 									 });
 		return reg;
     }
+	@SuppressWarnings("unchecked")
+	private void _raiseValueChangeEvent(final LocalDate oldVal) {
+		Collection<?> valueChangeEventListeners = this.getListeners(ValueChangeEvent.class);
+		if (CollectionUtils.hasData(valueChangeEventListeners)) {
+			valueChangeEventListeners.stream()
+									 .forEach(listener -> {
+													ValueChangeEvent<LocalDate> evt = new ValueChangeEvent<>(this,		// component
+																											 oldVal,	// old value
+																											 true);		// user originated
+										 			ValueChangeListener<LocalDate> valChangeEvtListener = (ValueChangeListener<LocalDate>)listener;
+										 			valChangeEvtListener.valueChange(evt);
+									 		  });
+		}
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	I18N
 /////////////////////////////////////////////////////////////////////////////////////////

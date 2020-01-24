@@ -76,6 +76,7 @@ public class VaadinViewDisplayWithHeaderAndFooter
 		_footer = footer;
 		
 		VerticalLayout ly = new VerticalLayout();
+		ly.setMargin(false);
 		ly.addComponentAsFirst(_header);
 		ly.addComponent(_viewDisplay);
 		ly.addComponent(_footer);

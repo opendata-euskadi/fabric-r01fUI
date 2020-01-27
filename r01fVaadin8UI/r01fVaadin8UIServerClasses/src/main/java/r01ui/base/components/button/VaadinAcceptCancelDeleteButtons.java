@@ -31,7 +31,7 @@ public class VaadinAcceptCancelDeleteButtons
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////	
-	public VaadinAcceptCancelDeleteButtons( final UII18NService i18n ) {
+	public VaadinAcceptCancelDeleteButtons(final UII18NService i18n) {
 		////////// Create components
 		// accept
 		_btnAccept.setCaption(i18n.getMessage("save"));

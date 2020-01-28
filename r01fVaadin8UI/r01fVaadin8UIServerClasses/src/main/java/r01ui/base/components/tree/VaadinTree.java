@@ -84,6 +84,13 @@ public abstract class VaadinTree<T>
 
 						 					// get the dragged item (maybe it has a sub-tree below)
 						 					T draggedItem = this.getDraggedItem();
+						 					
+						 					//Dont drag the item in the same item
+						 					if(dropTargetItem.equals(draggedItem)) return;
+						 					
+						 					//Necessary a special validation
+						 					if (!_customIsValid(dropTargetItem, draggedItem)) return;
+						 						
 
 						 					////////// [1] - If an INTERNAL movement, remove the moved sub-tree
 						 					//				 ... it was stored at _draggedSubTree
@@ -163,6 +170,8 @@ public abstract class VaadinTree<T>
 
 							  				////////// [5] - last things...
 							  				_draggedSubTree = null;			// BEWARE!!! Remove reference to dragged items
+							  				
+							  				_customUpdate(_treeData());
 					 					   });
 		  });
 	}
@@ -216,4 +225,10 @@ public abstract class VaadinTree<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected abstract String _itemCaption(final T item);
 	protected abstract StringBuilder _treeDebugInfo(final TreeData<T> treeData);
+	protected boolean _customIsValid(T dropTargetItem, T draggedItem) {
+		return true;
+	}
+	protected TreeData<T> _customUpdate(final TreeData<T> treeData) {
+		return treeData;
+	}
 }

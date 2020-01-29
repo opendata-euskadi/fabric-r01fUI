@@ -218,6 +218,9 @@ public class VaadinMenuBar
 			}
 			return outItem;
 		}
+		public void setEnabled(final boolean enabled) {
+			_menuItem.setEnabled(enabled);
+		}
 		public void setSelected() {
 			_selected = true;
 			_menuItem.setStyleName(VaadinValoTheme.MENU_ITEM_CHECKED);

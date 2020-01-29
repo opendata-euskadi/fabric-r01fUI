@@ -13,6 +13,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -27,6 +28,7 @@ import r01f.securitycontext.SecurityContext;
 import r01f.securitycontext.SecurityContextStoreAtThreadLocalStorage;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
+import r01f.util.types.Dates;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
@@ -63,6 +65,9 @@ public class VaadinUserMenu
 	private final Button _btnUser;
 	private final Component _component;
 	private final VaadinLangButtons _langChangeButtons;
+	private final Button _btnSignOut; 
+	private final Label  _lblLanguageChange;
+	private final Label _lblLastConnection;
 	
 	private R01UILanguageChangeEventListener _langEventListener;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -90,17 +95,31 @@ public class VaadinUserMenu
 		// change language
 		Collection<R01UILangButton> langButtons = _createLanguageChangeButtons(supportedLangs);
 		_langChangeButtons = new VaadinLangButtons(langButtons);
+		HorizontalLayout hlLangs = new HorizontalLayout();
+		_lblLastConnection = new Label();
+		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
+								  					  securityContext != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+								  							  					     .formatDate(securityContext.getCreateDate())  
+										  						   	    	  : "not known"));
+		ly.addComponent(_lblLastConnection);
+		_lblLanguageChange = new Label(i18n.getMessage("uiCommon.languageChange"));
+		_lblLanguageChange.addStyleName(ValoTheme.LABEL_BOLD);
+		hlLangs.addComponent(_lblLanguageChange);
+		hlLangs.setExpandRatio(_lblLanguageChange,1);
 		if (_langChangeButtons.hasData()) {
-			HorizontalLayout hlLangs = new HorizontalLayout();
 			FluentIterable.from(_langChangeButtons)
 						  .forEach(btn -> hlLangs.addComponent(btn.getButton()));
+			_langChangeButtons.setCurrent(Languages.of(i18n.getCurrentLocale()));
 			ly.addComponent(hlLangs);
 		}
 		// sign out
-		Button btnSignOut = new Button(i18n.getMessage("uiCommon.signout"),
+		_btnSignOut = new Button(i18n.getMessage("uiCommon.signout"),
 									   VaadinIcons.SIGN_OUT);
-		btnSignOut.addStyleName(ValoTheme.BUTTON_LINK);
-		btnSignOut.addClickListener(event -> {
+		
+		_btnSignOut.addStyleNames(ValoTheme.BUTTON_LINK,
+								 ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
+		_btnSignOut.addClickListener(event -> {
 												// the redir to the login page MUST done BEFORE closing the session, 
 												// as the UI or page are not available after that
 												// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
@@ -116,7 +135,7 @@ public class VaadinUserMenu
 												// remove the user context from the thread-local
 												SecurityContextStoreAtThreadLocalStorage.remove();
 									});
-		ly.addComponent(btnSignOut);
+		ly.addComponent(_btnSignOut);
 		
 		
 		////////// Popup
@@ -155,9 +174,7 @@ public class VaadinUserMenu
 		Button btnUser = new Button();
 		btnUser.addStyleName(ValoTheme.BUTTON_LINK);
 		btnUser.setIcon(VaadinIcons.USER);
-		btnUser.setCaption(Strings.customized("{} (logged at {})",
-											  userName,securityContext != null ? securityContext.getCreateDate() 
-													  						   : "not known"));
+		btnUser.setCaption(userName);
 		return btnUser;
 	}
 	private Collection<R01UILangButton> _createLanguageChangeButtons(final Language... supportedLangs) {
@@ -178,11 +195,13 @@ public class VaadinUserMenu
 																			// change the ui locale
 																			UI.getCurrent().setLocale(Languages.getLocale(lang));
 																			
+																			// update the lang buttons
+																			_langChangeButtons.setCurrent(lang);
+																			
 																			// raise an event
 																			_langEventListener.languageChanged(evt);
 																			
-																			// update the lang buttons
-																			_langChangeButtons.setCurrent(lang);
+
 																		}
 																	  });
 										return new R01UILangButton(lang,btnLang);
@@ -221,15 +240,19 @@ public class VaadinUserMenu
 		}
 	}
 	@Accessors(prefix="_")
-	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	private class R01UILangButton 
 	   implements Serializable {
 		
 		private static final long serialVersionUID = -998382762234341948L;
-		
+				
 		@Getter private final Language _lang;
 		@Getter private final Button _button;
 		
+		public R01UILangButton(final Language lang, final Button button) {			
+			_lang = lang;
+			_button = button;
+			_button.addStyleNames(ValoTheme.BUTTON_PRIMARY,ValoTheme.BUTTON_SMALL);
+		}		
 		public void setCurrent() {
 			_button.setEnabled(false);
 		}
@@ -254,6 +277,14 @@ public class VaadinUserMenu
 			VaadinViewI18NMessagesCanBeUpdated i18nAwareComp = (VaadinViewI18NMessagesCanBeUpdated)_component;
 			i18nAwareComp.updateI18NMessages(i18n);
 		}
+		_btnSignOut.setCaption(i18n.getMessage("uiCommon.signout"));
+		_lblLanguageChange.setValue(i18n.getMessage("uiCommon.languageChange"));
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
+								  					  SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+								  							  					     								 .formatDate(SecurityContextStoreAtThreadLocalStorage.get()
+								  							  					     										 											 .getCreateDate()
+								  							  					     										 	)  
+								  							  					     						 : "not known"));		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EVENTS                                                                          

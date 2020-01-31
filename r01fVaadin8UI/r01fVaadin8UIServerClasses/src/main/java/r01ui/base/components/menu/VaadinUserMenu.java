@@ -98,9 +98,10 @@ public class VaadinUserMenu
 		HorizontalLayout hlLangs = new HorizontalLayout();
 		_lblLastConnection = new Label();
 		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
+		
 		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
 								  					  securityContext != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
-								  							  					     .formatDate(securityContext.getCreateDate())  
+								  							  					     .formatDateWithTimeToSeconds(securityContext.getCreateDate())  
 										  						   	    	  : "not known"));
 		ly.addComponent(_lblLastConnection);
 		_lblLanguageChange = new Label(i18n.getMessage("uiCommon.languageChange"));

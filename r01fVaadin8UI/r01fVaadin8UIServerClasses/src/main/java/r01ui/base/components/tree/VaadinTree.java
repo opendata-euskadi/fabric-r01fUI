@@ -190,7 +190,7 @@ public abstract class VaadinTree<T>
 		return (D)this.getTreeData();
 	}
 	@SuppressWarnings("unchecked")
-	private VaadinTreeData<T> _treeData() {
+	protected VaadinTreeData<T> _treeData() {
 		return this.getTreeDataAs(VaadinTreeData.class);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -224,7 +224,7 @@ public abstract class VaadinTree<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected abstract String _itemCaption(final T item);
 	protected abstract StringBuilder _treeDebugInfo(final TreeData<T> treeData);
-	protected boolean _customIsValid(final T dropTargetItem, final T draggedItem) {
+	protected boolean _customIsValid(final T dropTargetItem,final T draggedItem) {
 		return true;
 	}
 	/**

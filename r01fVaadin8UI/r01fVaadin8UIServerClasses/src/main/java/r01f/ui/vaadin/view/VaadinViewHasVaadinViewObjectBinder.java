@@ -5,8 +5,8 @@ import com.vaadin.data.Binder;
 import r01f.ui.viewobject.UIViewHasViewObject;
 import r01f.ui.viewobject.UIViewObject;
 
-public interface VaadinViewHasVaadinViewObjectBinder<M extends UIViewObject>
-  		 extends UIViewHasViewObject<M> {	// if binding the view object...
+public interface VaadinViewHasVaadinViewObjectBinder<V extends UIViewObject>
+  		 extends UIViewHasViewObject<V> {	// if binding the view object...
 /////////////////////////////////////////////////////////////////////////////////////////
 //	VIEW OBJECT > UI CONTROLS																		  
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -17,10 +17,10 @@ public interface VaadinViewHasVaadinViewObjectBinder<M extends UIViewObject>
 	 * is also updated
 	 * @param obj
 	 */
-	public void bindViewTo(final M obj);
+	public void bindViewTo(final V obj);
 	
 	@Override
-	public default void setViewObject(final M viewObject) {
+	public default void setViewObject(final V viewObject) {
 		this.bindViewTo(viewObject);
 	}
 	/**
@@ -30,7 +30,7 @@ public interface VaadinViewHasVaadinViewObjectBinder<M extends UIViewObject>
 	 * 			the [bean properties]
 	 * @param obj
 	 */
-	public void readBean(final M obj);
+	public void readBean(final V obj);
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS > VIEW OBJECT																		  
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ public interface VaadinViewHasVaadinViewObjectBinder<M extends UIViewObject>
 	 * @param viewObject
 	 * @return
 	 */
-	public boolean writeBeanIfValid(final M viewObject);
+	public boolean writeBeanIfValid(final V viewObject);
 /////////////////////////////////////////////////////////////////////////////////////////
 //																			  
 /////////////////////////////////////////////////////////////////////////////////////////

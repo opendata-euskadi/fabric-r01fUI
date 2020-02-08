@@ -20,39 +20,39 @@ import r01f.ui.i18n.UII18NService;
 @Accessors( prefix="_" )
 public class VaadinAcceptCancelDeleteButtons
 	 extends Composite {
-	
+
 	private static final long serialVersionUID = 5892967547409836937L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	private final Button _btnAccept = new Button();
 	private final Button _btnCancel = new Button();
 	private final Button _btnDelete = new Button();
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
-/////////////////////////////////////////////////////////////////////////////////////////	
-	public VaadinAcceptCancelDeleteButtons( final UII18NService i18n ) {
+/////////////////////////////////////////////////////////////////////////////////////////
+	public VaadinAcceptCancelDeleteButtons(final UII18NService i18n) {
 		////////// Create components
 		// accept
 		_btnAccept.setCaption(i18n.getMessage("save"));
 		_btnAccept.setStyleName("primary");
-		
+
 		// cancel
 		_btnCancel.setCaption(i18n.getMessage("cancel"));
-		
+
 		// delete
 		_btnDelete.setCaption(i18n.getMessage("delete"));
 		_btnDelete.setStyleName("danger");
-		
+
 		////////// layout
-		HorizontalLayout hly = new HorizontalLayout(_btnDelete, 
+		HorizontalLayout hly = new HorizontalLayout(_btnDelete,
 													_btnCancel,
 													_btnAccept);
 		hly.setComponentAlignment(_btnDelete,Alignment.BOTTOM_LEFT);
 		hly.setComponentAlignment(_btnAccept,Alignment.BOTTOM_RIGHT);
 		hly.setComponentAlignment(_btnCancel,Alignment.BOTTOM_RIGHT);
 		hly.setSizeFull();
-		
+
 		////////// composition
 		this.setCompositionRoot(hly);
 		this.setSizeFull();

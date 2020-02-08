@@ -46,20 +46,20 @@ public abstract class VaadinTree<T>
 
 		// add drag start listener
 		treeDragSource.addGridDragStartListener(event -> { 	// Keep reference to the dragged sub-tree
-															T draggedItem = event.getDraggedItems().get(0);
-															_draggedSubTree = _treeData().getSubTreeOf(draggedItem);
-															log.debug("...drag subtree:\n{}",
-																	  _treeDebugInfo(_draggedSubTree));
-													 	 });
+													T draggedItem = event.getDraggedItems().get(0);
+													_draggedSubTree = _treeData().getSubTreeOf(draggedItem);
+													log.debug("...drag subtree:\n{}",
+															  _treeDebugInfo(_draggedSubTree));
+											 	 });
 		// add drag end listener
 		treeDragSource.addGridDragEndListener(event -> {	// If drop was successful, remove dragged items from source Grid
-															if (event.getDropEffect() == DropEffect.MOVE) {
-																this.getDataProvider()
-																	.refreshAll();
-																// Remove reference to dragged items
-																_draggedSubTree = null;
-															}
-												   	   });
+													if (event.getDropEffect() == DropEffect.MOVE) {
+														this.getDataProvider()
+															.refreshAll();
+														// Remove reference to dragged items
+														_draggedSubTree = null;
+													}
+										   	   });
 
 		////////// DROP TARGET
 		final TreeGridDropTarget<T> treeDropTarget = new TreeGridDropTarget<>(this,
@@ -70,100 +70,108 @@ public abstract class VaadinTree<T>
 		treeDropTarget.addTreeGridDropListener(event -> {
 				// accepting dragged items from another grid in the same UI
 				event.getDragSourceExtension()
-					 .ifPresent(source -> { ////////// [0] - guess [dragged sub-tree] and [drop target item]
-						 					// set the drop target item
-						 					T dropTargetItem = event.getDropTargetRow()
-																    .orElse(null);			// maybe the grid is empty (and the dragged item comes from OUTSIDE the grid)
-						 					// it the dragged items comes from OUTSIDE the grid (it's NOT an internal item movement)
-						 					// the _draggedSubTree = null (if it was an internal movement _draggedSubTree should have been set at [addGridDragStartListener] below)
-						 					boolean externalDraggedItem = _draggedSubTree == null;
+					 .ifPresent(source -> { 
+					 				////////// [0] - guess [dragged sub-tree] and [drop target item]
+				 					// set the drop target item
+				 					T dropTargetItem = event.getDropTargetRow()
+														    .orElse(null);			// maybe the grid is empty (and the dragged item comes from OUTSIDE the grid)
+				 					// it the dragged items comes from OUTSIDE the grid (it's NOT an internal item movement)
+				 					// the _draggedSubTree = null (if it was an internal movement _draggedSubTree should have been set at [addGridDragStartListener] below)
+				 					boolean externalDraggedItem = _draggedSubTree == null;
 
-						 					// if the item comes from OUTSIDE the grid, set the dragged sub-tree
-						 					// (remember that if the movement is internal, the dragged sub-tree should have been set at [addGridDragStartListener] below)
-						 					if (externalDraggedItem) _draggedSubTree = _draggedSubTreeFrom(source);
+				 					// if the item comes from OUTSIDE the grid, set the dragged sub-tree
+				 					// (remember that if the movement is internal, the dragged sub-tree should have been set at [addGridDragStartListener] below)
+				 					if (externalDraggedItem) _draggedSubTree = _draggedSubTreeFrom(source);
 
-						 					// get the dragged item (maybe it has a sub-tree below)
-						 					T draggedItem = this.getDraggedItem();
+				 					// get the dragged item (maybe it has a sub-tree below)
+				 					T draggedItem = this.getDraggedItem();
+				 					
+				 					// do not drag the item in the same item
+				 					if (dropTargetItem.equals(draggedItem)) return;
+				 					
+				 					// special validation
+				 					if (!_customIsValid(dropTargetItem,draggedItem)) return;
 
-						 					////////// [1] - If an INTERNAL movement, remove the moved sub-tree
-						 					//				 ... it was stored at _draggedSubTree
-											// 				 it'll be later added at the correct position
-						 					if (!externalDraggedItem) _treeData().removeSubTree(_draggedSubTree);
+				 					////////// [1] - If an INTERNAL movement, remove the moved sub-tree
+				 					//				 ... it was stored at _draggedSubTree
+									// 				 it'll be later added at the correct position
+				 					if (!externalDraggedItem) _treeData().removeSubTree(_draggedSubTree);
 
-											////////// [2] - Drop
-							  				if (event.getDropLocation() == DropLocation.EMPTY) {
-												log.debug("...dropping item={} on an EMPTY tree",
-														  _itemCaption(draggedItem));
-								  				_treeData().addItems(null,			// root item
-								  								     draggedItem);
-								  			}
-								  			// ... dropping ON TOP: as child of the [drop target item]
-							  				else if (event.getDropLocation() == DropLocation.ON_TOP) {
-							  					if (dropTargetItem == null) throw new IllegalStateException();
-												log.debug("...dropping item={} {} item={}",
-														  _itemCaption(draggedItem),
-														  event.getDropLocation(),
-														  dropTargetItem != null ? _itemCaption(draggedItem) : "null");
-							  					// add the [dragged item] as CHILD of the [drop target item]
-								  				_treeData().addItems(dropTargetItem,
-								  								   draggedItem);
-								  			}
-								  			// ... dropping ABOVE or BELOW
-								  			else {
-								  				if (dropTargetItem == null) throw new IllegalStateException();
-												// find the parent of the drop target
-												T parentItem = _treeData().getParent(dropTargetItem);
+									////////// [2] - Drop
+					  				if (event.getDropLocation() == DropLocation.EMPTY) {
+										log.debug("...dropping item={} on an EMPTY tree",
+												  _itemCaption(draggedItem));
+						  				_treeData().addItems(null,			// root item
+						  								     draggedItem);
+						  			}
+						  			// ... dropping ON TOP: as child of the [drop target item]
+					  				else if (event.getDropLocation() == DropLocation.ON_TOP) {
+										log.debug("...dropping item={} {} item={}",
+												  _itemCaption(draggedItem),
+												  event.getDropLocation(),
+												  dropTargetItem != null ? _itemCaption(draggedItem) : "null");
+					  					// add the [dragged item] as CHILD of the [drop target item]
+						  				_treeData().addItems(dropTargetItem,
+						  								   draggedItem);
+						  			}
+						  			// ... dropping ABOVE or BELOW
+						  			else {
+										// find the parent of the drop target
+										T parentItem = _treeData().getParent(dropTargetItem);
 
-												// find the position where the [dragged item] is dropped
-												final List<T> itemList = this.getDataCommunicator()
-																			 .fetchItemsWithRange(0,this.getDataCommunicator()
-																					   					.getDataProviderSize());
-												int index = itemList.indexOf(dropTargetItem);
-												log.debug("...dropping item={} {} item at {} (drop target item={})",
-														  _itemCaption(draggedItem),
-														  event.getDropLocation(),
-														  index,dropTargetItem != null ? _itemCaption(draggedItem) : "null");
-												// add the item as child of the parent (the parent can be null = root item)
-												_treeData().addItems(parentItem,
-																   draggedItem);
-												// move the item depending on the drop location: ABOVE or BELOW
-												if (event.getDropLocation() == DropLocation.ABOVE) {
-													if (index - 1 > 0) {
-														if (itemList.get(index-1).equals(parentItem)) {
-															// dropping as the FIRST sibling
-															_treeData().moveAfterSibling(draggedItem,
-																   					     null);	// first item among siblings
-														} else {
-															// dropping as NON FIRST sibling
-															_treeData().moveAfterSibling(draggedItem,
-																   					     itemList.get(index-1));
-														}
-													} else {
-														// the first ROOT item of the tree
-														_treeData().moveAfterSibling(draggedItem,
-																				     null);		// first item among siblings
-													}
-												} else if (event.getDropLocation() == DropLocation.BELOW) {
+										// find the position where the [dragged item] is dropped
+										final List<T> itemList = this.getDataCommunicator()
+																	 .fetchItemsWithRange(0,this.getDataCommunicator()
+																			   					.getDataProviderSize());
+										int index = itemList.indexOf(dropTargetItem);
+										log.debug("...dropping item={} {} item at {} (drop target item={})",
+												  _itemCaption(draggedItem),
+												  event.getDropLocation(),
+												  index,dropTargetItem != null ? _itemCaption(draggedItem) : "null");
+										// add the item as child of the parent (the parent can be null = root item)
+										_treeData().addItems(parentItem,
+														   draggedItem);
+										// move the item depending on the drop location: ABOVE or BELOW
+										if (event.getDropLocation() == DropLocation.ABOVE) {
+											if (index - 1 > 0) {
+												if (itemList.get(index-1).equals(parentItem)) {
+													// dropping as the FIRST sibling
 													_treeData().moveAfterSibling(draggedItem,
-																			     dropTargetItem);
+														   					     null);	// first item among siblings
+												} else {
+													// dropping as NON FIRST sibling
+													_treeData().moveAfterSibling(draggedItem,
+														   					     itemList.get(index-1));
 												}
-								  			}
+											} else {
+												// the first ROOT item of the tree
+												_treeData().moveAfterSibling(draggedItem,
+																		     null);		// first item among siblings
+											}
+										} else if (event.getDropLocation() == DropLocation.BELOW) {
+											_treeData().moveAfterSibling(draggedItem,
+																	     dropTargetItem);
+										}
+						  			}
 
-							  				////////// [3] - If the [dragged item] is a sub-structure, it has to be moved
-							  				_treeData().addSubTreeBelow(draggedItem, 	// the parent of the sub-tree is the original parent!
-							  									 	    draggedItem,_draggedSubTree);	// BEWARE!!! the [dragged item] has already been moved
-							  																			//			 only the sub-tree below the [dragged item]
-							  																			// 			 has to be moved!
+					  				////////// [3] - If the [dragged item] is a sub-structure, it has to be moved
+					  				_treeData().addSubTreeBelow(draggedItem, 	// the parent of the sub-tree is the original parent!
+					  									 	    draggedItem,_draggedSubTree);	// BEWARE!!! the [dragged item] has already been moved
+					  																			//			 only the sub-tree below the [dragged item]
+					  																			// 			 has to be moved!
 
-							  				////////// [4] - Refresh the tree
-							  				this.getDataProvider()
-							  					.refreshAll();
-							  				if (log.isDebugEnabled()) log.debug("\n[Structure tree]\n{}",
-							  													_treeDebugInfo(_treeData()));
+					  				////////// [4] - Refresh the tree
+					  				this.getDataProvider()
+					  					.refreshAll();
+					  				if (log.isDebugEnabled()) log.debug("\n[Structure tree]\n{}",
+					  													_treeDebugInfo(_treeData()));
 
-							  				////////// [5] - last things...
-							  				_draggedSubTree = null;			// BEWARE!!! Remove reference to dragged items
-					 					   });
+					  				////////// [5] - last things...
+					  				_draggedSubTree = null;			// BEWARE!!! Remove reference to dragged items
+					  				
+					  				////////// [99] - tell the outside world
+					  				_treeDataUpdated(_treeData());
+			 				});
 		  });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -182,7 +190,7 @@ public abstract class VaadinTree<T>
 		return (D)this.getTreeData();
 	}
 	@SuppressWarnings("unchecked")
-	private VaadinTreeData<T> _treeData() {
+	protected VaadinTreeData<T> _treeData() {
 		return this.getTreeDataAs(VaadinTreeData.class);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -216,4 +224,14 @@ public abstract class VaadinTree<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected abstract String _itemCaption(final T item);
 	protected abstract StringBuilder _treeDebugInfo(final TreeData<T> treeData);
+	protected boolean _customIsValid(final T dropTargetItem,final T draggedItem) {
+		return true;
+	}
+	/**
+	 * Called when the tree data structure is updated (ie: by drag & drop a tree item)
+	 * @param treeData
+	 */
+	protected void _treeDataUpdated(final TreeData<T> treeData) {
+		return;	// do nothing
+	}
 }

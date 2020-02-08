@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.vaadin.data.TreeData;
 
+import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
 
 /**
@@ -13,7 +14,8 @@ import r01f.util.types.collections.CollectionUtils;
  * 		- filter items
  */
 public class VaadinTreeData<T>
-     extends TreeData<T> {
+     extends TreeData<T> 
+  implements UIViewObject {
 
 	private static final long serialVersionUID = 7385317969673861714L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,43 @@ public class VaadinTreeData<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinTreeData() {
 		// default no-args constructor
+	}
+	public VaadinTreeData(final TreeData<T> other) {
+		this();
+		this.importTree(other);
+	}
+	public static <T> VaadinTreeData<T> from(final TreeData<T> other) {
+		return new VaadinTreeData<T>(other);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	IMPORT                                                                        
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void replaceWith(final TreeData<T> other) {
+		this.clear();
+		this.importTree(other);
+	}
+	@SuppressWarnings("unchecked")
+	public void importTree(final TreeData<T> other) {
+		if (other == null) return;
+		for (T rootItem : other.getRootItems()) {
+			// import the root
+			this.addRootItems(rootItem);
+			// recurse
+			_recurseImport(other,			
+						   rootItem);
+		}
+	}
+	private void _recurseImport(final TreeData<T> other,
+								final T item) {
+		Collection<T> childItems = other.getChildren(item);
+		if (CollectionUtils.isNullOrEmpty(childItems)) return;
+		
+		this.addItems(item,
+					  childItems);
+		for (T childItem : childItems) {
+			_recurseImport(other,
+						   childItem);
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET SUB-TREE
@@ -135,7 +174,6 @@ public class VaadinTreeData<T>
 		// LAST!! remove the item
 		this.removeItem(item);
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DEBUG
 /////////////////////////////////////////////////////////////////////////////////////////

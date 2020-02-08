@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-			 
+
 	<modelVersion>4.0.0</modelVersion>
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
 	<properties>
-		<vaadin.version>7.7.17</vaadin.version>	
+		<vaadin.version>7.7.17</vaadin.version>
 	</properties>
-	
+
 <!-- ====================================================================== -->
 <!-- PARENT                                                                 -->
 <!-- ====================================================================== -->
@@ -18,13 +18,13 @@
 		<artifactId>r01fVaadin7UI</artifactId>
 		<version>${revision}</version>
 	</parent>
-	
+
 <!-- ====================================================================== -->
 <!-- ARTIFACT                                                               -->
 <!-- ====================================================================== -->
 	<name>r01fVaadin7UIClientClasses</name>
 	<artifactId>r01fVaadin7UIClientClasses</artifactId>
-	
+
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
 <!-- ====================================================================== -->
@@ -39,7 +39,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<!-- ///////////////////////////////////////// -->
 		<!-- R01f: UI                                  -->
@@ -49,16 +49,16 @@
 			<artifactId>r01fUIClasses</artifactId>
 			<version>${revision}</version>
 		</dependency>
-		
+
 		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin                                    -->
 		<!-- ///////////////////////////////////////// -->
 		<!-- see: https://vaadin.com/docs/v7/framework/getting-started/getting-started-libraries.html  -->
-		
+
 		<!--
 		The client-side Vaadin framework, including the basic GWT API and Vaadin-specific widgets and other additions.
 		It is required when using the vaadin-client-compiler to compile client-side modules.
-		It is NOT needed if just using the server-side framework with the pre-compiled Client-Side Engine. 
+		It is NOT needed if just using the server-side framework with the pre-compiled Client-Side Engine.
 		Should NOT be deployed with a web application.
 		-->
 		<dependency>
@@ -67,33 +67,33 @@
 		    <scope>provided</scope>	<!-- BEWARE! provided -->
 		</dependency>
 		<!--
-		A shared library for server-side and client-side development. It is always needed 
+		A shared library for server-side and client-side development. It is always needed
 		-->
 		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-shared</artifactId>
 		</dependency>
-		
-		<!-- 
-		Vaadin built-in themes both as SCSS source files and precompiled CSS files. 
+
+		<!--
+		Vaadin built-in themes both as SCSS source files and precompiled CSS files.
 		The library is required both for basic use with CSS themes and for compiling custom Sass themes
 		-->
 		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-themes</artifactId>
 		</dependency>
-		
+
 		<!--
-		The Vaadin Client Compiler is a Java-to-JavaScript compiler that allows building client-side modules, 
+		The Vaadin Client Compiler is a Java-to-JavaScript compiler that allows building client-side modules,
 		such as the Client-Side Engine (widget set) required for server-side applications.
-		The compiler is needed, for example, for compiling add-on components to the application widget set 
+		The compiler is needed, for example, for compiling add-on components to the application widget set
 		-->
 		<dependency>
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-client-compiler</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 <!-- ====================================================================== -->
 <!-- BUILD                                                                  -->
 <!-- ====================================================================== -->
@@ -111,7 +111,7 @@
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
-					<configuration> 
+					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
 								<!-- flatten plugin -->

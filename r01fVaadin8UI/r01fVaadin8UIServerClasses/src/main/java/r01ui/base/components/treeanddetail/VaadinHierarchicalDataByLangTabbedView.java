@@ -33,6 +33,6 @@ public abstract class VaadinHierarchicalDataByLangTabbedView<// the component us
 							   			   		  	 final VaadinViewFactoryFrom<Language,WIL> viewByLangFactory) {
 		super(i18n,
 			  langs,
-			  viewByLangFactory);
+			  viewByLangFactory); 
 	}
 }

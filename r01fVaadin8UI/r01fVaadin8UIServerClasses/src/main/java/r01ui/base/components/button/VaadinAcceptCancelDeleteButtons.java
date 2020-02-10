@@ -78,4 +78,46 @@ public class VaadinAcceptCancelDeleteButtons
 	public void setEditingExistingRecordStatus() {
 		_btnDelete.setVisible(true);
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	VISIBLE                                                                         
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setAcceptButtonVisible(final boolean visible) {
+		_btnAccept.setVisible(visible);
+	}
+	public boolean isAcceptButtonVisible() {
+		return _btnAccept.isVisible();
+	}
+	public void setCancelButtonVisible(final boolean visible) {
+		_btnCancel.setVisible(visible);
+	}
+	public boolean isCancelButtonVisible() {
+		return _btnCancel.isVisible();
+	}
+	public void setDeleteButtonVisible(final boolean visible) {
+		_btnDelete.setVisible(visible);
+	}
+	public boolean isDeleteButtonVisible() {
+		return _btnDelete.isVisible();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	ENABLE                                                                         
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setAcceptButtonEnabled(final boolean visible) {
+		_btnAccept.setEnabled(visible);
+	}
+	public boolean isAcceptButtonEnabled() {
+		return _btnAccept.isEnabled();
+	}
+	public void setCancelButtonEnabled(final boolean visible) {
+		_btnCancel.setEnabled(visible);
+	}
+	public boolean isCancelButtonEnabled() {
+		return _btnCancel.isEnabled();
+	}
+	public void setDeleteButtonEnabled(final boolean visible) {
+		_btnDelete.setEnabled(visible);
+	}
+	public boolean isDeleteButtonEnabled() {
+		return _btnDelete.isEnabled();
+	}
 }

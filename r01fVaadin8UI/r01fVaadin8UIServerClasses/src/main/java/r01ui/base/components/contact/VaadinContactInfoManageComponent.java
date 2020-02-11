@@ -81,7 +81,7 @@ public class VaadinContactInfoManageComponent
 			 Lists.newArrayList(ContactMeanType.values()));
 	}
 	public VaadinContactInfoManageComponent(final UII18NService i18n,
-													final Collection<ContactMeanType> types) {
+										    final Collection<ContactMeanType> types) {
 		_allowedMediumTypes = types;
 
 		// create the components

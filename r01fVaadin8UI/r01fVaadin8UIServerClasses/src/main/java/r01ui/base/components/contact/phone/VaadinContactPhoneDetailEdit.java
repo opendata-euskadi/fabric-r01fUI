@@ -15,24 +15,24 @@ import r01ui.base.components.contact.VaadinContactMeanDetailEditBase;
 import r01ui.base.components.datetime.VaadinDateTimeRangeComponent;
 
 public class VaadinContactPhoneDetailEdit
-	 extends VaadinContactMeanDetailEditBase<VaadinDirectoryContactPhone> {
+	 extends VaadinContactMeanDetailEditBase<VaadinViewContactPhone> {
 
 	private static final long serialVersionUID = -3069365158386075376L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  UI
 /////////////////////////////////////////////////////////////////////////////////////////
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinDirectoryContactPhone.PHONE_NUMBER_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactPhone.PHONE_NUMBER_FIELD,
 					 required=true)
 	@VaadinViewComponentLabels(captionI18NKey="contact.phone.number",useCaptionI18NKeyAsPlaceHolderKey=true)
 	private final TextField _txtNumber = new TextField();
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinDirectoryContactPhone.TYPE_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactPhone.TYPE_FIELD,
 					 bindStringConverter=false,
 					 required = true)
 	@VaadinViewComponentLabels(captionI18NKey="contact.phone.type",useCaptionI18NKeyAsPlaceHolderKey=true)
 	private final ComboBox<ContactPhoneType> _cmbType = new ComboBox<ContactPhoneType>();
 
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinDirectoryContactPhone.AVAILABLE_RANGE,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactPhone.AVAILABLE_RANGE,
 					 bindStringConverter=false,
 					 required=false)
 	@LangIndependentVaadinViewField
@@ -43,7 +43,7 @@ public class VaadinContactPhoneDetailEdit
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactPhoneDetailEdit(final UII18NService i18n) {
-		super(VaadinDirectoryContactPhone.class,
+		super(VaadinViewContactPhone.class,
 			  i18n);
 
 		// phone number

@@ -5,7 +5,7 @@ import r01f.ui.i18n.UII18NService;
 import r01ui.base.components.VaadinDetailEditWindowBase;
 
 public class VaadinContactPhoneDetailEditWindow
-     extends VaadinDetailEditWindowBase<VaadinDirectoryContactPhone,
+     extends VaadinDetailEditWindowBase<VaadinViewContactPhone,
 			 					 	   	VaadinContactPhoneDetailEdit> {
 	private static final long serialVersionUID = -8502135692216603837L;
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -49,6 +49,7 @@ public abstract class VaadinValoTheme
 	public static final String GRID_CONTAINER_MEDIUM_SIZE = "grid-container-medium";
 	public static final String GRID_CONTAINER_BIG_SIZE = "grid-container-big";
 	public static final String GRID_NO_RESULTS_LABEL = "grid-lbl-no-results";
+	public static final String GRID_DOTS_MENU = "grid-dots-menu";
 	
 	public static final String MAIN_MENU_BAR = "main-menu-bar";
 	public static final String SIDE_BAR = "sidebar";
@@ -59,9 +60,13 @@ public abstract class VaadinValoTheme
 	public static final String TABSHEET = "tabsheet";
 	
 	public static final String BUTTON_ADD = "add-button";
+	public static final String PRIMARY_BUTTON = "primary-button";
+	public static final String SECONDARY_BUTTON = "secondary-button";
+
 	
 	public static final String CHECKBOX_DEFAULT = "checkbox-default";
 	
+	public static final String MENU_HIDE = "hide";
 	public static final String MENU_ITEM_CHECKED = "checked";
 
 	public static final String SECTION = "section";

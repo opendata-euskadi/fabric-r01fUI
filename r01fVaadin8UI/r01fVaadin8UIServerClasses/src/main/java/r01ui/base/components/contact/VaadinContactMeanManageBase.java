@@ -109,7 +109,7 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 		////////// specific cols
 		_configureMoreGridColumns(i18n);
 		
-		////////// Behaviour
+		////////// Behavior
 		// when the [default] checkbox is checked/unchecked we must ensure
 		// that there only exists a single checked item
 		_gridBinder.addValueChangeListener(event -> {

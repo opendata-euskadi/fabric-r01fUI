@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import r01f.types.contact.ContactPhone;
 import r01f.types.contact.ContactPhoneType;
 import r01f.types.contact.Phone;
+import r01f.types.contact.PhoneExtension;
 import r01f.util.types.Dates;
 import r01f.util.types.Ranges;
 import r01f.util.types.Strings;
@@ -38,6 +39,26 @@ public class VaadinViewContactPhone
 			_wrappedModelObject.setNumber(null);
 		} else {
 			_wrappedModelObject.setNumber(Phone.of(number));
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	EXTENSION                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	public static final String PHONE_EXTENSION_FIELD = "extension";
+	public PhoneExtension getExtension() {
+		return _wrappedModelObject.getExtension();
+	}
+	public String getExtensionAsString() {
+		return this.getExtension() != null ? this.getExtension().asString() : null;
+	}
+	public void setExtension(final PhoneExtension extension) {
+		_wrappedModelObject.setExtension(extension);
+	}
+	public void setExtensionFromString(final String extension) {
+		if (Strings.isNullOrEmpty(extension)) {
+			_wrappedModelObject.setExtension(null);
+		} else {
+			_wrappedModelObject.setExtension(PhoneExtension.of(extension));
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -87,7 +87,7 @@ public abstract class VaadinTree<T>
 				 					T draggedItem = this.getDraggedItem();
 				 					
 				 					// do not drag the item in the same item
-				 					if (dropTargetItem.equals(draggedItem)) return;
+				 					if (dropTargetItem != null && dropTargetItem.equals(draggedItem)) return;
 				 					
 				 					// special validation
 				 					if (!_customIsValid(dropTargetItem,draggedItem)) return;

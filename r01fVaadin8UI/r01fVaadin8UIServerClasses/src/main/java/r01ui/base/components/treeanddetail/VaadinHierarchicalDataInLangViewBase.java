@@ -140,6 +140,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 	@Override
 	public void bindViewTo(final VaadinTreeData<VO> obj) {
 		_treeGrid.setValue(obj);
+		_detailComponent.setVisible(false);
 	}
 	@Override
 	public void readBean(final VaadinTreeData<VO> obj) {

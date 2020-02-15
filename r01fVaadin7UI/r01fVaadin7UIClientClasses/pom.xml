@@ -42,15 +42,6 @@
 
 	<dependencies>
 		<!-- ///////////////////////////////////////// -->
-		<!-- R01f: UI                                  -->
-		<!-- ///////////////////////////////////////// -->
-		<dependency>
-			<groupId>r01.r01f.ui</groupId>
-			<artifactId>r01fUIClasses</artifactId>
-			<version>${revision}</version>
-		</dependency>
-
-		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin                                    -->
 		<!-- ///////////////////////////////////////// -->
 		<!-- see: https://vaadin.com/docs/v7/framework/getting-started/getting-started-libraries.html  -->

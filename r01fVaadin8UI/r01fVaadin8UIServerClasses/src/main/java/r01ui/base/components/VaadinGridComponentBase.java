@@ -87,7 +87,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		hlyoutTitle.addStyleName(VaadinValoTheme.LABEL_AND_ADD_BUTTON);
 
 		////////// No results label
-		_noResultsLabel = new Label(i18n.getMessage("directory.common.grid.noResults"));
+		_noResultsLabel = new Label(i18n.getMessage("notification.noresults"));
 		_noResultsLabel.addStyleName(VaadinValoTheme.GRID_NO_RESULTS_LABEL);
 		_noResultsLabel.addStyleName(VaadinValoTheme.NO_MARGIN_TOP);
 		_noResultsLabel.addStyleName(VaadinValoTheme.NO_MARGIN_BOTTOM);

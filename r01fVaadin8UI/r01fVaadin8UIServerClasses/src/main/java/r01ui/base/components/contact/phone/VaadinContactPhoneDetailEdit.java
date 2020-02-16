@@ -25,12 +25,12 @@ public class VaadinContactPhoneDetailEdit
 					 required=true)
 	@VaadinViewComponentLabels(captionI18NKey="contact.phone.number",useCaptionI18NKeyAsPlaceHolderKey=true)
 	private final TextField _txtNumber = new TextField();
-	
+
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactPhone.PHONE_EXTENSION_FIELD,
-					 required=true)
+					 required=false)
 	@VaadinViewComponentLabels(captionI18NKey="contact.phone.extension",useCaptionI18NKeyAsPlaceHolderKey=true)
 	private final TextField _txtExtension = new TextField();
-	
+
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactPhone.TYPE_FIELD,
 					 bindStringConverter=false,
 					 required = true)
@@ -55,7 +55,7 @@ public class VaadinContactPhoneDetailEdit
 		_txtNumber.setWidth(100,Unit.PERCENTAGE);
 		_txtNumber.setReadOnly(false);
 		_txtNumber.addStyleName(VaadinValoTheme.INPUT_MEDIUM_SIZE);
-		
+
 		// phone extension
 		_txtExtension.setWidth(100,Unit.PERCENTAGE);
 		_txtExtension.setReadOnly(false);
@@ -69,7 +69,7 @@ public class VaadinContactPhoneDetailEdit
 
 		// availability: from - to
 		_dateTimeRange.setResolution(DateTimeResolution.HOUR);
-		
+
 		// layout: DO NOT FORGET!
 		this.addComponents(new HorizontalLayout(_cmbUsage,_txtNumber,_txtExtension,_cmbType),
 						   _dateTimeRange,

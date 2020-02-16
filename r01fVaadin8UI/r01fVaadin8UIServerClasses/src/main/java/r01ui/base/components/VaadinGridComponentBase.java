@@ -178,7 +178,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 											   null);		// command
 
 			// Edit
-			principal.addItem(i18n.getMessage("directory.common.edit"),
+			principal.addItem(i18n.getMessage("edit"),
 						 	  VaadinIcons.EDIT,
 							  selectedItem -> {
 								   // open the detail window in EDIT mode
@@ -191,7 +191,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 
 								  });
 			// Delete
-			principal.addItem(i18n.getMessage("directory.common.delete"),
+			principal.addItem(i18n.getMessage("delete"),
 						 	  VaadinIcons.TRASH,
 							  selectedItem -> {
 									VaadinListDataProviders.collectionBackedOf(_grid)

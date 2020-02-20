@@ -127,7 +127,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											VO treeSelectedItemViewObj = _treeGrid.getUniqueSelectedItem();
 											int treeSelectedItemDepth = _treeGrid.getItemDepth(treeSelectedItemViewObj);
 //											_btnAdd.setEnabled(treeSelectedItemDepth < (_settings.getMaxDepth() - 1));
-											_btnAdd.setEnabled(treeSelectedItemDepth < (_settings.getMaxDepth()));
+											_btnAdd.setEnabled(treeSelectedItemDepth < _settings.getMaxDepth());
 											
 											if (treeSelectedItemViewObj == null) return;	// no selected item (should NOT happen)
 											
@@ -160,6 +160,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											  																			   				    newViewObj);
 										if (_itemEditEventListener != null) _itemEditEventListener.onItemEditRequested(event);
 										
+										_treeGrid.movePositionTo(newViewObj);
+										
 										// while adding a new item, do not allow clicking in another item
 										// neither click to the add button
 										this.setEnabled(false);
@@ -172,7 +174,6 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											  	     .size() == 1) {
 										  _btnAdd.setVisible(false);
 										}
-										_treeGrid.movePositionTo(newViewObj);
 									 });
 		}
 		////////// Trash button
@@ -223,7 +224,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 															   if (_itemDeletedEventListener != null) {
 																   	TreeData<VO> deletedTree = _treeGrid.getSubTreeOf(item);
 																   	VaadinHiearchicalDataTreeOnItemDeletedEvent<VO> event = new VaadinHiearchicalDataTreeOnItemDeletedEvent<>(this,
-																   			  																			  	   deletedTree);
+																   			  																								  deletedTree);
 																   	_itemDeletedEventListener.onItemsDeleted(event);
 															   }
 															   
@@ -237,7 +238,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 															   boolean addEnabled = _settings.isCollection() 
 																	   		   || (_settings.isNOTCollection() 
 																	   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
-																																		  		   _btnAdd.setEnabled(addEnabled); 
+															   this.setEnabled(addEnabled);
+													  		   _btnAdd.setEnabled(addEnabled); 
 													  	    });
 		UI.getCurrent()
 		  .addWindow(proceedGateDialog);
@@ -429,7 +431,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			boolean canDropIntoRootNode = droppingIntoRootNode					// dropping to a root node 
 									   && _recurseBranchMaxDepthStartingAt(draggedItem,0) < _vaTypeSettings.getMaxDepth(); 	// the dragged item max depth is less than the allowed max depth
 			boolean canDroIntoLevel1Node = droppingIntoLevel1Node
-										&& _recurseBranchMaxDepthStartingAt(draggedItem,1) < 1;
+										&& _recurseBranchMaxDepthStartingAt(draggedItem,1) < _vaTypeSettings.getMaxDepth();
 			if (canDropIntoRootNode
 			 || canDroIntoLevel1Node) {
 				return true;

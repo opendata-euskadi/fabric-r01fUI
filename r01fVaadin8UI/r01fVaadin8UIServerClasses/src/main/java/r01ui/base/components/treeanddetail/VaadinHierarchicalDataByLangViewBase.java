@@ -59,11 +59,6 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 	private final VaadinViewFactoryFrom<Language,WIL> _inLangViewFactory;			// the view inside each tab
 	
 /////////////////////////////////////////////////////////////////////////////////////////
-//																			  
-/////////////////////////////////////////////////////////////////////////////////////////	
-	private VBL _viewObject;	// by lang view object (contains in-lang view objects)
-	
-/////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHierarchicalDataByLangViewBase(final UII18NService i18n, 
@@ -104,23 +99,24 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void bindViewTo(final VBL byLangViewObj) {
-		_viewObject = byLangViewObj;
 		_langTabbedView.bindViewTo(byLangViewObj);		// tell the lang tabbed view to bind 
 	}
 	@Override
 	public void readBean(final VBL byLangViewObj) {
-		throw new UnsupportedOperationException("use #bindViewTo() & #getViewObject() methods instead of #readBean() & #writeBeanIfValid()");
+		_langTabbedView.readBean(byLangViewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROL -> VIEW OBJECT
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public VBL getViewObject() {
-		return _viewObject;
+		return _langTabbedView.getViewObject();
 	}
 	@Override
 	public boolean writeBeanIfValid(final VBL byLangViewObj) {
-		throw new UnsupportedOperationException("use #bindViewTo() & #getViewObject() methods instead of #readBean() & #writeBeanIfValid()");
+		boolean valid = _langTabbedView.writeBeanIfValid(byLangViewObj);
+		
+		return valid;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //																			  

@@ -138,13 +138,13 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 //	VIEW OBJECT -> UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public void bindViewTo(final VaadinTreeData<VO> obj) {
-		_treeGrid.setValue(obj);
+	public void bindViewTo(final VaadinTreeData<VO> viewObj) {
+		_treeGrid.setValue(viewObj);
 		_detailComponent.setVisible(false);
 	}
 	@Override
-	public void readBean(final VaadinTreeData<VO> obj) {
-		throw new UnsupportedOperationException("use #bindViewTo() & #getViewObject()!");
+	public void readBean(final VaadinTreeData<VO> viewObj) {
+		this.bindViewTo(viewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS -> VIEW OBJECT                                                                       
@@ -155,7 +155,12 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 	}
 	@Override
 	public boolean writeBeanIfValid(final VaadinTreeData<VO> viewObject) {
-		throw new UnsupportedOperationException("use #bindViewTo() & #getViewObject()!");
+		// in order to keep the received [view object] the "internal" state of the [view object]
+		// is REPLACED with the [tree data]
+		viewObject.clear();
+		VaadinTreeData<VO> currData = this.getValue();
+		viewObject.importTree(currData);
+		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

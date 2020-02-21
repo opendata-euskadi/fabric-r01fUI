@@ -99,8 +99,9 @@ public class VaadinUserMenu
 		_lblLastConnection = new Label();
 		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
 		
-		_lblLastConnection.setValue(i18n.getMessage("uiCommon.lastConnection", securityContext != null ? Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
-								  							  					     					.formatDateWithTimeToSeconds(securityContext.getCreateDate())  
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
+								  					  securityContext != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+								  							  					     .formatDateWithTimeToSeconds(securityContext.getCreateDate())
 										  						   	    	  : i18n.getMessage("uiCommon.lastConnection.unknown")));
 		ly.addComponent(_lblLastConnection);
 		_lblLanguageChange = new Label(i18n.getMessage("uiCommon.languageChange"));

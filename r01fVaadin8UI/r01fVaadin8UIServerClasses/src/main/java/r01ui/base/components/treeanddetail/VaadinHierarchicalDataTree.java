@@ -31,6 +31,7 @@ import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.tree.VaadinTree;
+import r01ui.base.components.tree.VaadinTree.VaadinTreeChangedEventListener;
 import r01ui.base.components.tree.VaadinTreeData;
 import r01ui.base.components.window.VaadinProceedGateDialogWindow;
 
@@ -265,6 +266,13 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnRemove.setEnabled(enabled);		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	TREE UPDATED 
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setOnTreeChangedEventListener(final VaadinTreeChangedEventListener listener) {
+		// just pass the tree the event listener
+		_treeGrid.setTreeChangedEventListener(listener);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	ITEM EDIT EVENT                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void setOnItemEditEventListener(final VaadinHiearchicalDataTreeOnItemEditEventListener<VO> listener) {
@@ -339,7 +347,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		private final VaadinTreeData<VO> _treeData;
 		
 		VaadinHierarchicalDataTreeImpl(final UII18NService i18n,
-									  final VaadinHierarchicalDataEditConfig vaTypeSettings) {
+									   final VaadinHierarchicalDataEditConfig vaTypeSettings) {
 			super();
 			_i18n = i18n;
 			_vaTypeSettings = vaTypeSettings;
@@ -377,6 +385,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		}
 		public void removeItem(final VO item) {
 			_treeData.removeItem(item);
+			_treeDataUpdated();
 		}
 		public Collection<VO> getRootItems() {
 			return _treeData.getRootItems();

@@ -18,6 +18,7 @@ import r01f.ui.vaadin.view.VaadinView;
 import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.tree.VaadinTree.VaadinTreeChangedEventListener;
 import r01ui.base.components.tree.VaadinTreeData;
 
 /**
@@ -65,17 +66,30 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI COMPONENTS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final VaadinHierarchicalDataTree<VO> _treeGrid;
-	private final D _detailComponent;
+	@Getter private final VaadinHierarchicalDataTree<VO> _treeGrid;
+	@Getter private final D _detailComponent;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHierarchicalDataInLangViewBase(final UII18NService i18n,
 												final VaadinHierarchicalDataEditConfig settings,
-												final Language lang,final Collection<Language> portalAvailablLangs,
+												final Language lang,final Collection<Language> availableLangs,
 												final Factory<VO> viewObjInLangFactory,
 												final D detailComponent) {
+		this(i18n,
+			 settings,
+			 lang,availableLangs,
+			 viewObjInLangFactory,
+			 detailComponent,
+			 null);	// no tree change event listener
+	}
+	public VaadinHierarchicalDataInLangViewBase(final UII18NService i18n,
+												final VaadinHierarchicalDataEditConfig settings,
+												final Language lang,final Collection<Language> availableLangs,
+												final Factory<VO> viewObjInLangFactory,
+												final D detailComponent,
+												final VaadinTreeChangedEventListener treeChangeEventListener) {
 		_language = lang;
 		
 		////////// UI
@@ -83,7 +97,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 		_treeGrid = new VaadinHierarchicalDataTree<>(i18n,
 													 settings,
 												 	 // lang & portal available langs
-													 lang,portalAvailablLangs,	
+													 lang,availableLangs,	
 													 // [view obj] factory
 													 viewObjInLangFactory);
 		_detailComponent = detailComponent;
@@ -112,6 +126,8 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 													// hide the [detail component]
 													_detailComponent.setVisible(false);
 												});
+		// what happens when the tree is update (ie by drag & drop elements or by removing an item)
+		if (treeChangeEventListener != null) this.setOnTreeChangedEventListener(treeChangeEventListener);
 	}
 	@Override
 	protected Component initContent() {
@@ -138,13 +154,13 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 //	VIEW OBJECT -> UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public void bindViewTo(final VaadinTreeData<VO> viewObj) {
+	public void readBean(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
 		_detailComponent.setVisible(false);
 	}
 	@Override
-	public void readBean(final VaadinTreeData<VO> viewObj) {
-		this.bindViewTo(viewObj);
+	public void bindViewTo(final VaadinTreeData<VO> viewObj) {
+		this.readBean(viewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS -> VIEW OBJECT                                                                       
@@ -168,6 +184,12 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 	@Override
 	public boolean isValid() {
 		return true;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public void setOnTreeChangedEventListener(final VaadinTreeChangedEventListener listener) {
+		_treeGrid.setOnTreeChangedEventListener(listener);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	I18N                                                                          

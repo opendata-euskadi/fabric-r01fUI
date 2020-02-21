@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 import com.vaadin.ui.CustomComponent;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.Language;
 import r01f.patterns.Transfer;
@@ -36,6 +38,7 @@ import r01ui.base.components.tree.VaadinTreeData;
  * @param <VIL>
  * @param <WIL>
  */
+@Accessors(prefix="_")
 public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view object & in-lang view object shown in the [detail] view 
 														   VBL extends UIViewObjectByLanguage<VIL>,		// by-lang view obj
 														   VIL extends UIViewObjectInLanguage,			// lang dependent (in a lang)
@@ -54,8 +57,8 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FILEDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final VaadinHierarchicalDataByLangTabbedView<VO,WIL,
-														 VBL,VIL> _langTabbedView;
+	@Getter private final VaadinHierarchicalDataByLangTabbedView<VO,WIL,
+														 		 VBL,VIL> _langTabbedView;
 	private final VaadinViewFactoryFrom<Language,WIL> _inLangViewFactory;			// the view inside each tab
 	
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,10 @@
 package r01ui.base.components.tree;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.TreeData;
 
 import r01f.ui.viewobject.UIViewObject;
@@ -30,6 +33,25 @@ public class VaadinTreeData<T>
 	}
 	public static <T> VaadinTreeData<T> from(final TreeData<T> other) {
 		return new VaadinTreeData<T>(other);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	public Collection<T> getSiblingsOf(final T node) {
+		T parent = this.getParent(node);
+		return this.getChildren(parent)
+				   .stream()
+				   .filter(otherNode -> otherNode.equals(node))
+				   .collect(Collectors.toList());
+	}
+	public List<T> getAncestorsOf(final T node) {
+		List<T> ancestors = Lists.newArrayList();
+		T currParent = this.getParent(node);
+		while (currParent != null) {
+			ancestors.add(currParent);
+			currParent = this.getParent(currParent);	// up!
+		}
+		return ancestors;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	IMPORT                                                                        

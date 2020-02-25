@@ -155,10 +155,15 @@ public class VaadinProceedGateDialogWindow
 		// Layout
 		final HorizontalLayout hLayoutForButtons = new HorizontalLayout(_btnNOTProceed,
 															  		    _btnProceed);
+		hLayoutForButtons.setComponentAlignment(_btnNOTProceed, Alignment.MIDDLE_LEFT);
+		hLayoutForButtons.setComponentAlignment(_btnProceed, Alignment.MIDDLE_RIGHT);
+		
 		final VerticalLayout vLayout = new VerticalLayout(_lblWindowMessage,
 														  _txtPuzzle,
 														  hLayoutForButtons);
-		vLayout.setComponentAlignment(hLayoutForButtons,Alignment.BOTTOM_RIGHT);
+		vLayout.setComponentAlignment(_lblWindowMessage, Alignment.MIDDLE_CENTER);
+		vLayout.setComponentAlignment(_txtPuzzle, Alignment.MIDDLE_CENTER);
+		vLayout.setMargin(true);
 		this.setContent(vLayout);
 	}
 	private void _initBehavior(final R01UIProceedGateOpendEventListener proceedGateOpenedListener,

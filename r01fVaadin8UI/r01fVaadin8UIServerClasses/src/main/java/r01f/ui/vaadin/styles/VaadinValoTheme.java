@@ -42,6 +42,10 @@ public abstract class VaadinValoTheme
 	
 	public static final String LABEL_AND_ADD_BUTTON = "lbl-add-button";
 	public static final String LABEL_WITH_ICON = "label-with-icon";
+	/**
+	 * Sets the style of the font to italic. Can be combined with other font styles
+	 */
+	public static final String LABEL_ITALIC = "italic";
 	
 	public static final String GRID_COMPONENT = "r01ui-object-grid-component";
 	public static final String GRID_STRIPPED = "stripes";

@@ -63,7 +63,7 @@ public class VaadinProceedGateDialogWindow
 	private final Button _btnProceed = new Button();
 	private final Label _lblWindowMessage = new Label();
 	private final TextField _txtPuzzle = new TextField();
-	private final R01UIProceedPuzzleCheck _puzzleCheck;
+	private R01UIProceedPuzzleCheck _puzzleCheck;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -218,5 +218,24 @@ public class VaadinProceedGateDialogWindow
 	@FunctionalInterface
 	public interface R01UIProceedPuzzleCheck {
 		public boolean check(final String text);
+	}
+		public void setProceedPuzzleCheck(final R01UIProceedPuzzleCheck check) {
+		_puzzleCheck = check;
+		if (_puzzleCheck != null) {
+			_btnProceed.setEnabled(false);	// the button is NOT enabled by default
+			
+			_txtPuzzle.setVisible(true);
+			_txtPuzzle.focus();
+			// only activate the operation button if the puzzle is solved
+			_txtPuzzle.addValueChangeListener(e -> {
+													String txt = e.getValue();
+													boolean solved = _puzzleCheck.check(txt);
+													_btnProceed.setEnabled(solved);
+											  });
+		}
+		else {
+			_btnProceed.setEnabled(false);
+			_txtPuzzle.setVisible(false);
+		}
 	}
 }

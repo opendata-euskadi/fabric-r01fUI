@@ -135,6 +135,7 @@ public abstract class VaadinUIHeaderBase
 		this.getCompositionRoot().addComponents(lyLeft,
 												lyRight);
 		////////// Style
+		this.addStyleName("r01uiheader");
 		this.getCompositionRoot().setSizeFull();
 		this.getCompositionRoot().addStyleName("r01header");
 		this.getCompositionRoot().setComponentAlignment(lyLeft,Alignment.MIDDLE_LEFT);

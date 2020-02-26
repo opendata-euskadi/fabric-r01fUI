@@ -14,7 +14,7 @@ import r01f.types.contact.ContactWeb;
 import r01f.ui.viewobject.UIViewObjectWrappedBase;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.contact.email.VaadinViewContactEmail;
-import r01ui.base.components.contact.phone.VaadinDirectoryContactPhone;
+import r01ui.base.components.contact.phone.VaadinViewContactPhone;
 import r01ui.base.components.contact.socialnetwork.VaadinViewContactSocialNetwork;
 import r01ui.base.components.contact.website.VaadinViewDirectoryContactWebSite;
 
@@ -57,14 +57,14 @@ public class VaadinViewContactInfo
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONTACT INFO - phoneChannels
 /////////////////////////////////////////////////////////////////////////////////////////
-	public Collection<VaadinDirectoryContactPhone> getViewContactPhones() {
+	public Collection<VaadinViewContactPhone> getViewContactPhones() {
 		return this.hasPhones() ? _wrappedModelObject.getContactPhones()
 									 				  .stream()
-													  .map(VaadinDirectoryContactPhone::new)
+													  .map(VaadinViewContactPhone::new)
 													  .collect(Collectors.toList())
-								: new ArrayList<VaadinDirectoryContactPhone>();
+								: new ArrayList<VaadinViewContactPhone>();
 	}
-	public void setViewContactPhones(final Collection<VaadinDirectoryContactPhone> viewObjs) {
+	public void setViewContactPhones(final Collection<VaadinViewContactPhone> viewObjs) {
 		Collection<ContactPhone> phones = CollectionUtils.hasData(viewObjs)
 											? viewObjs.stream()
 													  .map(viewObj -> viewObj.getWrappedModelObject())

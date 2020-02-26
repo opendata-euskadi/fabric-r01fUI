@@ -81,7 +81,7 @@ public class VaadinContactInfoManageComponent
 			 Lists.newArrayList(ContactMeanType.values()));
 	}
 	public VaadinContactInfoManageComponent(final UII18NService i18n,
-													final Collection<ContactMeanType> types) {
+										    final Collection<ContactMeanType> types) {
 		_allowedMediumTypes = types;
 
 		// create the components
@@ -100,7 +100,7 @@ public class VaadinContactInfoManageComponent
 															  		  .of(lang));
 		_cmbPreferedLanguage.addStyleName(VaadinValoTheme.COMBO_MEDIUM_SIZE);
 
-		Label labelOthers = new Label(i18n.getMessage("contact.others"));
+		Label labelOthers = new Label(i18n.getMessage("contact.others").toUpperCase());
 		labelOthers.addStyleName(VaadinValoTheme.LABEL_AND_ADD_BUTTON);
 		VerticalLayout vlOthers = new VerticalLayout(labelOthers,
 													 _cmbPreferedLanguage);

@@ -47,8 +47,8 @@ import r01f.util.types.collections.CollectionUtils;
 @Slf4j
 public abstract class VaadinGridComponentBase<V extends UIViewObject,
 											  W extends VaadinDetailEditWindow<V>>
-			   extends VerticalLayout
-			implements VaadinViewI18NMessagesCanBeUpdated {
+			  extends VerticalLayout
+		   implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = 1186941723663834774L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		_winDetailEdit = winDetailEdit;
 
 		////////// Title & add button
-		_lblCaption = new Label(i18n.getMessage(captionkey));
+		_lblCaption = new Label(i18n.getMessage(captionkey).toUpperCase());
 		_btnNew.addStyleName(VaadinValoTheme.BUTTON_ADD);
 		_btnNew.addClickListener(event -> {
 									// open the [edit] window in ADDITION MODE
@@ -87,7 +87,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		hlyoutTitle.addStyleName(VaadinValoTheme.LABEL_AND_ADD_BUTTON);
 
 		////////// No results label
-		_noResultsLabel = new Label(i18n.getMessage("directory.common.grid.noResults"));
+		_noResultsLabel = new Label(i18n.getMessage("notification.noresults"));
 		_noResultsLabel.addStyleName(VaadinValoTheme.GRID_NO_RESULTS_LABEL);
 		_noResultsLabel.addStyleName(VaadinValoTheme.NO_MARGIN_TOP);
 		_noResultsLabel.addStyleName(VaadinValoTheme.NO_MARGIN_BOTTOM);
@@ -168,18 +168,19 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		private static final long serialVersionUID = -8624200824370173655L;
 
 		protected R01UIDirectoryObjectGridMenu(final UII18NService i18n,
-											   final V viewObj) {
+												 final V viewObj) {
 			super.setResponsive(true);
 			super.addStyleName(ValoTheme.BUTTON_PRIMARY);
 			super.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-
+			super.addStyleName(VaadinValoTheme.GRID_DOTS_MENU);
 			MenuItem principal = super.addItem("",			// text
 											   VaadinIcons.ELLIPSIS_DOTS_V,
 											   null);		// command
 
 			// Edit
-			principal.addItem(i18n.getMessage("directory.common.edit"),
-							   selectedItem -> {
+			principal.addItem(i18n.getMessage("edit"),
+						 	  VaadinIcons.EDIT,
+							  selectedItem -> {
 								   // open the detail window in EDIT mode
 									   UIPresenterSubscriber<V> saveSubscriber = _afterEditSubscriber(_winDetailEdit);
 									   UIPresenterSubscriber<V> deleteSubscriber = _afterDeleteSubscriber(_winDetailEdit);
@@ -190,7 +191,8 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 
 								  });
 			// Delete
-			principal.addItem(i18n.getMessage("directory.common.delete"),
+			principal.addItem(i18n.getMessage("delete"),
+						 	  VaadinIcons.TRASH,
 							  selectedItem -> {
 									VaadinListDataProviders.collectionBackedOf(_grid)
 														   .removeItem(viewObj);

@@ -1,5 +1,7 @@
 package r01ui.base.components.tree;
 
+import java.util.EventListener;
+import java.util.EventObject;
 import java.util.List;
 
 import com.vaadin.data.TreeData;
@@ -8,6 +10,7 @@ import com.vaadin.shared.ui.dnd.EffectAllowed;
 import com.vaadin.shared.ui.grid.DropLocation;
 import com.vaadin.shared.ui.grid.DropMode;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeGrid;
 import com.vaadin.ui.components.grid.TreeGridDragSource;
 import com.vaadin.ui.components.grid.TreeGridDropTarget;
@@ -29,6 +32,8 @@ public abstract class VaadinTree<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	// The dragged items: set at [GridDragStart] unset at [GridDragEnd]
 	@Getter protected TreeData<T> _draggedSubTree;
+	
+			protected VaadinTreeChangedEventListener _changedEventListener;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +175,7 @@ public abstract class VaadinTree<T>
 					  				_draggedSubTree = null;			// BEWARE!!! Remove reference to dragged items
 					  				
 					  				////////// [99] - tell the outside world
-					  				_treeDataUpdated(_treeData());
+					  				_treeDataUpdated();
 			 				});
 		  });
 	}
@@ -231,7 +236,31 @@ public abstract class VaadinTree<T>
 	 * Called when the tree data structure is updated (ie: by drag & drop a tree item)
 	 * @param treeData
 	 */
-	protected void _treeDataUpdated(final TreeData<T> treeData) {
-		return;	// do nothing
+	protected void _treeDataUpdated() {
+		if (_changedEventListener != null) {
+			VaadinTreeChangedEvent event = new VaadinTreeChangedEvent(this);
+			_changedEventListener.onTreeChanged(event);
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	TREE UPDATED EVENT                                                                        
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setTreeChangedEventListener(final VaadinTreeChangedEventListener listener) {
+		_changedEventListener = listener;
+	}
+	@Accessors(prefix="_")
+	public static class VaadinTreeChangedEvent
+		 		extends EventObject {
+		private static final long serialVersionUID = -3843906493580325214L;
+		
+		public VaadinTreeChangedEvent(final Component srcComponent) {
+			super(srcComponent);
+		}
+	}
+	@FunctionalInterface
+	public interface VaadinTreeChangedEventListener 
+	         extends EventListener {
+	
+        public abstract void onTreeChanged(final VaadinTreeChangedEvent event);
 	}
 }

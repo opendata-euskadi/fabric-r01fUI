@@ -319,6 +319,11 @@ public abstract class VaadinUILangTabbedView<// the data being binded at the vie
 		// just "tell" all language-dependent view to get to the corresponding
 		// language-dependent view object
 		for (final V langView : this.langViewIterable()) {
+			if (langView instanceof VaadinViewTracksChanges) {
+				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)langView;
+				if (!tracksChanges.hasViewDataChanged()) continue;	// no changes
+			}
+			
 			// get the binded object
 			Language lang = langView.getLanguage();
 			D bindedViewObjInLang = langView.getViewObject();

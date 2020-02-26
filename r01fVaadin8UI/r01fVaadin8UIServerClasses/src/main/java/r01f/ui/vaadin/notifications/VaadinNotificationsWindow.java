@@ -152,7 +152,7 @@ public abstract class VaadinNotificationsWindow<N extends VaadinNotificationView
 		
 		// title
 		//TODO: implements "VaadinViewI18NMessagesCanBeUpdated"
-		final Label lblTitle = new Label(i18n.getMessage("notifications.title"));
+		final Label lblTitle = new Label("Notificaciones");
 		lblTitle.addStyleName(ValoTheme.LABEL_H3);
 		lblTitle.addStyleName(ValoTheme.LABEL_NO_MARGIN);
 		vLayoutWin.addComponent(lblTitle);

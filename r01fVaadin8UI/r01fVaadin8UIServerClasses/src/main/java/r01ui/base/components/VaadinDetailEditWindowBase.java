@@ -114,7 +114,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 		this.setCaption(_i18n.getMessage(this.getNewItemCaptionI18NKey()));
 
 		// bind the view object to the view
-		_detailView.bindViewTo(viewObj);
+		_detailView.readBean(viewObj);
 		
 		// set the buttons status
 		_btnAcepCancDelete.setCreatingNewRecordStatus();
@@ -133,7 +133,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 		this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
 
 		// bind the view object to the view
-		_detailView.bindViewTo(viewObj);
+		_detailView.readBean(viewObj);
 
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();

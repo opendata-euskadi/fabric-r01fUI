@@ -1,0 +1,13 @@
+package r01f.gwt;
+
+import r01f.types.url.UrlParserNoRegExp;
+
+public class UrlParserRegExpBased 
+     extends UrlParserNoRegExp  {		// just fake the gwt compiler
+/////////////////////////////////////////////////////////////////////////////////////////
+//  CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////////
+	public UrlParserRegExpBased(final String url) {
+		super(url);
+	}
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN" "http://gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<!--
+see https://www.concentricsky.com/articles/detail/emulating-jre-classes-gwt
+-->
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	
+	<!-- 
+		Strings.customized(...) uses MessageFormatter from SL4FJ
+		since SL4FJ is NOT GWT compatible, the SL4FJ for GWT implementation
+		at https://github.com/FinamTrade/slf4j-gwt is used (see project r01fbGWTClasses)
+    -->
+    <super-source path="gwt/emulated" />
+    <!-- 
+  	<replace-with class="r01f.gwt.replace.messageformatter.MessageFormatter">
+   		<when-type-is class="org.slf4j.helpers.MessageFormatter"/>
+	</replace-with>
+	-->
+</module> 

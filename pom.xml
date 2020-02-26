@@ -38,7 +38,9 @@
 		<module>r01fVaadin7UI</module>
 		<module>r01fVaadin8UI</module>
 		<module>r01fUIClasses</module>
-	</modules>
+		<module>r01fGWTClientClasses</module>
+    <module>r01fGWTServerClasses</module>
+  </modules>
 
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
@@ -290,7 +292,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>

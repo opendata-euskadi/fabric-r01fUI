@@ -56,7 +56,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinDetailEditWindowBase(final UII18NService i18n,
-									 final W detailView) {
+									  final W detailView) {
 		_i18n = i18n;
 
 		// style window
@@ -114,7 +114,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 		this.setCaption(_i18n.getMessage(this.getNewItemCaptionI18NKey()));
 
 		// bind the view object to the view
-		_detailView.readBean(viewObj);
+		_detailView.bindViewTo(viewObj);
 		
 		// set the buttons status
 		_btnAcepCancDelete.setCreatingNewRecordStatus();
@@ -133,7 +133,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 		this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
 
 		// bind the view object to the view
-		_detailView.readBean(viewObj);
+		_detailView.bindViewTo(viewObj);
 
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();

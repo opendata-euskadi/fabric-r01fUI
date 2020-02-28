@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN" "http://gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<!--
+In order to use this library a 
+	<inherits name='r01f'/>
+line MUST be added in the gwt.xml where the library is to be used 
+-->
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	
+	<!-- emulated -->
+	<inherits name='r01f.R01FBEmulated' />
+	
+	<!-- Paths for translatable code (ignore the path where this file is located) -->
+	<source path="">
+		<!-- [Base] -->
+		<exclude name="internal" />
+		<exclude name="r01f/concurrent" />
+		<exclude name="generics/**" />
+		<exclude name="model/annotations/**" />
+		
+		<!-- [Aspects] -->
+		<exclude name="aspects/**" />
+		
+		<!-- [HttpClient] -->
+		<exclude name="httpclient/**" />
+		
+		<!-- [OIDDispenser] -->
+		<exclude name="guid/dispenser/**" />
+		
+		<!-- [Locale] -->
+		<exclude name="locale/service/**" />
+		
+		<!-- [Reflection] -->
+		<exclude name="reflection/**" />		
+		
+		<!-- [InversionOfControl: Guice / Spring] -->
+		<exclude name="inject/**" />
+		
+		<!-- [DistributedCache] -->
+		<exclude name="cache/**" />	
+		
+		<!-- [IO] -->					
+		<exclude name="io" />
+		
+		<!-- [ObjectStreamer / Marshaller] -->
+		<exclude name="objectstreamer/**" />
+		<exclude name="marshalling/**" />
+		
+		<!-- [ResourceLoad] -->
+		<exclude name="resources/**" />		
+		<exclude name="bundles/**" />
+		
+		<!-- [XML] -->
+		<exclude name="xml/**"/>					
+		
+		<!-- [Properties] -->
+		<exclude name="configproperties/**"/>		
+		<exclude name="xmlproperties/**" />			
+		
+		<!-- [EE] -->
+		<exclude name="ejb"/>
+		
+		<!-- [WebProfile] -->						
+		<exclude name="rest" />						
+		<exclude name="servlet" />
+		
+		<!-- [FileStore] -->					
+		<exclude name="file" />
+		<exclude name="filestore" />	
+	</source>
+</module> 

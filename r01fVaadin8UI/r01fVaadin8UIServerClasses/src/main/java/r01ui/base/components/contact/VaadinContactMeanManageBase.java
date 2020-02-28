@@ -43,9 +43,9 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactMeanManageBase(final UII18NService i18n,
-											   final W winDetailEdit,
-											   final Factory<V> viewObjFactory,
-											   final I18NKey captionKey) {
+									   final W winDetailEdit,
+									   final Factory<V> viewObjFactory,
+									   final I18NKey captionKey) {
 		super(i18n,
 			  winDetailEdit,
 			  viewObjFactory,

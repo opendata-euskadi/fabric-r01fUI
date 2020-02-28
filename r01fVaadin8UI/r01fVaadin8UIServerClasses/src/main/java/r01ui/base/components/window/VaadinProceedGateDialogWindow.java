@@ -56,8 +56,8 @@ public class VaadinProceedGateDialogWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final I18NKey _i18nKeyForCaption; 
 	private final I18NKey _i18nKeyForMessage; 
-	private I18NKey _i18nKeyForBtnProceed = I18NKey.forId("common.yes");
-	private I18NKey _i18nKeyForBtnNOTProceed = I18NKey.forId("common.no");
+	private I18NKey _i18nKeyForBtnProceed = I18NKey.forId("yes");
+	private I18NKey _i18nKeyForBtnNOTProceed = I18NKey.forId("no");
 	
 	private final Button _btnNOTProceed = new Button();
 	private final Button _btnProceed = new Button();

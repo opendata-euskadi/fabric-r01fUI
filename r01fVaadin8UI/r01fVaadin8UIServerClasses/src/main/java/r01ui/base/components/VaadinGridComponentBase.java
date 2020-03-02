@@ -120,7 +120,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 
 		////////// grid columns
 		// add menu column
-		_grid.addComponentColumn(viewObj -> new R01UIDirectoryObjectGridMenu(i18n,
+		_grid.addComponentColumn(viewObj -> new R01UIGridMenu(i18n,
 																			 viewObj))
 				.setExpandRatio(0)		// exactly as wide as its contents requires
 				.setResizable(false);
@@ -162,13 +162,13 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 /////////////////////////////////////////////////////////////////////////////////////////
 //	MENU
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected class R01UIDirectoryObjectGridMenu
+	protected class R01UIGridMenu
 			extends MenuBar {
 
 		private static final long serialVersionUID = -8624200824370173655L;
 
-		protected R01UIDirectoryObjectGridMenu(final UII18NService i18n,
-												 final V viewObj) {
+		protected R01UIGridMenu(final UII18NService i18n,
+								final V viewObj) {
 			super.setResponsive(true);
 			super.addStyleName(ValoTheme.BUTTON_PRIMARY);
 			super.addStyleName(ValoTheme.BUTTON_BORDERLESS);
@@ -181,9 +181,9 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 			principal.addItem(i18n.getMessage("edit"),
 						 	  VaadinIcons.EDIT,
 							  selectedItem -> {
-								   // open the detail window in EDIT mode
-									   UIPresenterSubscriber<V> saveSubscriber = _afterEditSubscriber(_winDetailEdit);
-									   UIPresenterSubscriber<V> deleteSubscriber = _afterDeleteSubscriber(_winDetailEdit);
+								   	// open the detail window in EDIT mode
+									UIPresenterSubscriber<V> saveSubscriber = _afterEditSubscriber(_winDetailEdit);
+									UIPresenterSubscriber<V> deleteSubscriber = _afterDeleteSubscriber(_winDetailEdit);
 									_winDetailEdit.forEditing(viewObj,
 															  saveSubscriber,deleteSubscriber);		// what to do after save or delete
 									UI.getCurrent()

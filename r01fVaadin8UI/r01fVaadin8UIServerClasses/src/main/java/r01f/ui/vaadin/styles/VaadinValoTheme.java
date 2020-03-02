@@ -11,6 +11,7 @@ public abstract class VaadinValoTheme
 /////////////////////////////////////////////////////////////////////////////////////////
 // STYLES CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
+	public static final String CUSTOM_WINDOW = "r01ui-window";
 	public static final String CREATE_EDIT_WINDOW = "r01ui-create-edit-detail-view";
 	
 	public static final String HIDE = "hide";

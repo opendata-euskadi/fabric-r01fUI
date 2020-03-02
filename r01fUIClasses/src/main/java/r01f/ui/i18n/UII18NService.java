@@ -35,6 +35,31 @@ public interface UII18NService
 	 * @param args
 	 * @return
 	 */
+	public String getMessage(final Language locale,
+						 	 final OID key, final Object... args);
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args
+	 * @return
+	 */
+	public String getMessage(final Language locale,
+							 final String key, final Object... args);
+	/**
+	 * @return the current language
+	 */
+	public Language getCurrentLanguage();
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args
+	 * @return
+	 */
 	public String getMessage(final Locale locale,
 						 	 final OID key, final Object... args);
 	/**
@@ -50,11 +75,6 @@ public interface UII18NService
 	 * @return the current locale
 	 */
 	public Locale getCurrentLocale();
-	
-	/**
-	 * @return the current language
-	 */
-	public Language getCurrentLanguage();
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////

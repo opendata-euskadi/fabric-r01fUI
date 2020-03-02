@@ -407,6 +407,11 @@ public abstract class VaadinUILangTabbedView<// the data being binded at the vie
 	public Iterable<V> langViewIterable() {
 		return _langViews.viewIterable();
 	}
+	public V getLangViewFor(final Language lang) {
+		return _langViews.tabFormFor(lang)
+						 .orNull()
+						 .getView();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////

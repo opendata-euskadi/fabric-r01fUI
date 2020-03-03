@@ -15,9 +15,9 @@ public interface VaadinViewHasVaadinViewObjectBinder<V extends UIViewObject>
 	 * This method uses vaadin's {@link Binder} setBean method that BINDs the [UI controls] to 
 	 * the [bean's properties] so when an [UI control] is changed, the bean's property 
 	 * is also updated
-	 * @param obj
+	 * @param viewObj
 	 */
-	public void bindViewTo(final V obj);
+	public void bindViewTo(final V viewObj);
 	
 	@Override
 	public default void setViewObject(final V viewObject) {
@@ -28,9 +28,9 @@ public interface VaadinViewHasVaadinViewObjectBinder<V extends UIViewObject>
 	 * BEWARE!!	Unlike {@link #bindViewTo(UIViewObject)} if the UI controls are updated,
 	 * 			the bean is NOT updated accordingly because [UI controls] are NOT bound to 
 	 * 			the [bean properties]
-	 * @param obj
+	 * @param viewObj
 	 */
-	public void readBean(final V obj);
+	public void readBean(final V viewObj);
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS > VIEW OBJECT																		  
 /////////////////////////////////////////////////////////////////////////////////////////

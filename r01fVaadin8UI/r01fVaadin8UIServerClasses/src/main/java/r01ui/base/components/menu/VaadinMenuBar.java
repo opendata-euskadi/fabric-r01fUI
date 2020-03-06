@@ -88,7 +88,7 @@ public class VaadinMenuBar
 		return this.itemOf(item -> item.getMenuItem() == menuItem);
 	}
 	public VaadinMenuItem itemOf(final I18NKey key) {
-		return this.itemOf(item -> item.getKey().is(key));
+		return this.itemOf(item -> item.getKey()!=null && item.getKey().is(key));
 	}
 	// Recursively finds an item verifying the given predicate
 	public VaadinMenuItem itemOf(final Predicate<VaadinMenuItem> pred) {

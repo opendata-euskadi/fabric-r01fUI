@@ -74,16 +74,9 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		////////// Title & add button
 		_lblCaption = new Label(i18n.getMessage(captionkey).toUpperCase());
 		_btnNew.addStyleName(VaadinValoTheme.BUTTON_ADD);
-		_btnNew.addClickListener(event -> {
-									// open the [edit] window in ADDITION MODE
-									UIPresenterSubscriber<V> subscriber = _afterAddSubscriber(_winDetailEdit);
-									_winDetailEdit.forCreating(viewObjFactory,
-															   subscriber);		// what to do after save
-									UI.getCurrent()
-									  .addWindow((Window)_winDetailEdit);
-							  	});
+
 		HorizontalLayout hlyoutTitle = new HorizontalLayout(_lblCaption,
-															   _btnNew);
+															_btnNew);
 		hlyoutTitle.addStyleName(VaadinValoTheme.LABEL_AND_ADD_BUTTON);
 
 		////////// No results label
@@ -111,6 +104,9 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		this.addComponent(_grid);
 		this.addComponent(_noResultsLabel);
 		this.addStyleName(VaadinValoTheme.GRID_COMPONENT);
+		
+		////////// behavior
+		_setBehavior(viewObjFactory);
 	}
 	protected void _configureGrid(final UII18NService i18n) {
 		////////// style
@@ -121,7 +117,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		////////// grid columns
 		// add menu column
 		_grid.addComponentColumn(viewObj -> new R01UIGridMenu(i18n,
-																			 viewObj))
+															  viewObj))
 				.setExpandRatio(0)		// exactly as wide as its contents requires
 				.setResizable(false);
 	}
@@ -130,6 +126,17 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 	 * @param i18n
 	 */
 	protected abstract void _configureGridColumns(final UII18NService i18n);
+	
+	private void _setBehavior(final Factory<V> viewObjFactory) {
+		_btnNew.addClickListener(event -> {
+									// open the [edit] window in ADDITION MODE
+									UIPresenterSubscriber<V> subscriber = _afterAddSubscriber(_winDetailEdit);
+									_winDetailEdit.forCreating(viewObjFactory,
+															   subscriber);		// what to do after save
+									UI.getCurrent()
+									  .addWindow((Window)_winDetailEdit);
+							  	});
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -173,31 +180,29 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 			super.addStyleName(ValoTheme.BUTTON_PRIMARY);
 			super.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 			super.addStyleName(VaadinValoTheme.GRID_DOTS_MENU);
-			MenuItem principal = super.addItem("",			// text
-											   VaadinIcons.ELLIPSIS_DOTS_V,
-											   null);		// command
-
+			MenuItem menu = super.addItem("",			// text
+										  VaadinIcons.ELLIPSIS_DOTS_V,
+										  null);		// command
 			// Edit
-			principal.addItem(i18n.getMessage("edit"),
-						 	  VaadinIcons.EDIT,
-							  selectedItem -> {
-								   	// open the detail window in EDIT mode
-									UIPresenterSubscriber<V> saveSubscriber = _afterEditSubscriber(_winDetailEdit);
-									UIPresenterSubscriber<V> deleteSubscriber = _afterDeleteSubscriber(_winDetailEdit);
-									_winDetailEdit.forEditing(viewObj,
-															  saveSubscriber,deleteSubscriber);		// what to do after save or delete
-									UI.getCurrent()
-									  .addWindow((Window)_winDetailEdit);
-
-								  });
+			menu.addItem(i18n.getMessage("edit"),
+						 VaadinIcons.EDIT,
+						 selectedItem -> {
+							   	// open the detail window in EDIT mode
+								UIPresenterSubscriber<V> saveSubscriber = _afterEditSubscriber(_winDetailEdit);
+								UIPresenterSubscriber<V> deleteSubscriber = _afterDeleteSubscriber(_winDetailEdit);
+								_winDetailEdit.forEditing(viewObj,
+														  saveSubscriber,deleteSubscriber);		// what to do after save or delete
+								UI.getCurrent()
+								  .addWindow((Window)_winDetailEdit);
+						 });
 			// Delete
-			principal.addItem(i18n.getMessage("delete"),
-						 	  VaadinIcons.TRASH,
-							  selectedItem -> {
-									VaadinListDataProviders.collectionBackedOf(_grid)
-														   .removeItem(viewObj);
-									_showOrHideNoResultsMessage();
-								});
+			menu.addItem(i18n.getMessage("delete"),
+						 VaadinIcons.TRASH,
+						 selectedItem -> {
+							VaadinListDataProviders.collectionBackedOf(_grid)
+												   .removeItem(viewObj);
+							_showOrHideNoResultsMessage();
+						 });
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

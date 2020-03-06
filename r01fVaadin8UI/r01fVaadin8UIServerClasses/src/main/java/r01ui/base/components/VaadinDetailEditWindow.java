@@ -34,7 +34,10 @@ public interface VaadinDetailEditWindow<V extends UIViewObject>
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	public I18NKey getNewItemCaptionI18NKey();
-
-	public I18NKey getEditItemCaptionI18NKey();
+	public default I18NKey getNewItemCaptionI18NKey() {
+		return I18NKey.named("new");
+	}
+	public default I18NKey getEditItemCaptionI18NKey() {
+		return I18NKey.named("edit");
+	}
 }

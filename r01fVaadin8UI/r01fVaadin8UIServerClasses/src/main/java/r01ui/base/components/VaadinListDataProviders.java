@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Utils about vaadin {@link Grid}
+ * see: https://vaadin.com/docs/-/part/framework/datamodel/datamodel-providers.html#datamodel.dataproviders
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public abstract class VaadinListDataProviders {

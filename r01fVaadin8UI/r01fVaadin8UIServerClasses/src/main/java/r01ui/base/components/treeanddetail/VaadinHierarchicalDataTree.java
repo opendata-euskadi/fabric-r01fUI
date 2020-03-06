@@ -86,9 +86,6 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 													   settings);
 		HorizontalLayout hlyButtons = _configureButtonsLayout(settings);
 		
-		Button b = new Button("hey!");
-		b.addClickListener(ce -> System.out.println("::::"));
-		
 		VerticalLayout vly = new VerticalLayout(hlyButtons,
 												_treeGrid);
 		this.setCompositionRoot(vly);

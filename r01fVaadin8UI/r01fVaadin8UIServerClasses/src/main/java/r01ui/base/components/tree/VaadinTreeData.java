@@ -35,25 +35,6 @@ public class VaadinTreeData<T>
 		return new VaadinTreeData<T>(other);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
-	public Collection<T> getSiblingsOf(final T node) {
-		T parent = this.getParent(node);
-		return this.getChildren(parent)
-				   .stream()
-				   .filter(otherNode -> otherNode.equals(node))
-				   .collect(Collectors.toList());
-	}
-	public List<T> getAncestorsOf(final T node) {
-		List<T> ancestors = Lists.newArrayList();
-		T currParent = this.getParent(node);
-		while (currParent != null) {
-			ancestors.add(currParent);
-			currParent = this.getParent(currParent);	// up!
-		}
-		return ancestors;
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
 //	IMPORT                                                                        
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void replaceWith(final TreeData<T> other) {
@@ -82,6 +63,64 @@ public class VaadinTreeData<T>
 			_recurseImport(other,
 						   childItem);
 		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Adds a root node AFTER another given root node
+	 * @param nodeToBeAdded
+	 * @param prevSibling
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public VaadinTreeData<T> addRootItemAfterSibling(final T nodeToBeAdded,final T prevSibling) {
+		if (prevSibling != null
+		 && this.getParent(prevSibling) != null) throw new IllegalArgumentException("The given [sibling node] is NOT a [root node]");
+		
+		this.addRootItems(nodeToBeAdded);
+		if (prevSibling != null) this.moveAfterSibling(nodeToBeAdded,prevSibling);
+		return this;
+	}
+	/**
+	 * Adds a node AFTER another given sibling node
+	 * @param parentNode
+	 * @param nodeToBeAdded
+	 * @param prevSibling
+	 * @return
+	 */
+	public VaadinTreeData<T> addItemAfterSibling(final T parentNode,
+												 final T nodeToBeAdded,final T prevSibling)	{
+		if (parentNode != null
+		 && prevSibling != null
+		 && this.getParent(prevSibling) != parentNode) throw new IllegalArgumentException("The given [parent node] is NOT the parent of the given [sibling node]");
+		
+		if (parentNode == null
+		 && prevSibling != null
+		 && this.getParent(prevSibling) != null) throw new IllegalArgumentException("The given [sibling node] is NOT a [root node]");
+		
+		this.addItem(parentNode,nodeToBeAdded);
+		if (prevSibling != null) this.moveAfterSibling(nodeToBeAdded,prevSibling);
+		return this;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	GET                                                                         
+/////////////////////////////////////////////////////////////////////////////////////////
+	public Collection<T> getSiblingsOf(final T node) {
+		T parent = this.getParent(node);
+		return this.getChildren(parent)
+				   .stream()
+				   .filter(otherNode -> otherNode.equals(node))
+				   .collect(Collectors.toList());
+	}
+	public List<T> getAncestorsOf(final T node) {
+		List<T> ancestors = Lists.newArrayList();
+		T currParent = this.getParent(node);
+		while (currParent != null) {
+			ancestors.add(currParent);
+			currParent = this.getParent(currParent);	// up!
+		}
+		return ancestors;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET SUB-TREE

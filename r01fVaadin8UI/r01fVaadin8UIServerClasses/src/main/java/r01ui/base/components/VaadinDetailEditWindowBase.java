@@ -82,7 +82,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 															} else {
 																Notification.show(_i18n.getMessage("notification.empty.fields"));
 															}
-											  			});
+											  		  });
 		// - DELETE
 		_btnAcepCancDelete.addDeleteButtonClickListner(event -> {
 															_deleteSubscriber.onSuccess(_detailView.getViewObject());

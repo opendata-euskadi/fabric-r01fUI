@@ -94,9 +94,9 @@ public class VaadinCollectionManageComponent<// the view object type
 		_vlyGrid.setSpacing(false);
 		
 		// add and remove buttons
-		_btnAdd = new Button(VaadinIcons.PLUS);
+		_btnAdd = new Button(VaadinIcons.PLUS_CIRCLE);
 		_btnAdd.setDescription(i18n.getMessage("add"));
-		_btnAdd.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		_btnAdd.addStyleName(ValoTheme.BUTTON_QUIET);
 		
 		////////// Layout
 		// Buttons: 	[add]

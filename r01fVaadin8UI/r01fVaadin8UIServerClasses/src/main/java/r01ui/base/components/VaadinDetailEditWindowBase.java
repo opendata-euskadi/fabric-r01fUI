@@ -48,7 +48,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 	protected final W _detailView;
 	protected final VaadinAcceptCancelDeleteButtons _btnAcepCancDelete;
 
-	//  OUTSIDE WORLD SUBSCRIBERS
+	// OUTSIDE WORLD SUBSCRIBERS
 	protected UIPresenterSubscriber<V> _saveSubscriber;
 	protected UIPresenterSubscriber<V> _deleteSubscriber;
 
@@ -77,7 +77,7 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 															// collect ui controls values & tell
 															if (_detailView.isValid()) {	
 																V viewObj = _detailView.getViewObject();
-																_saveSubscriber.onSuccess(viewObj);
+																if (_saveSubscriber != null) _saveSubscriber.onSuccess(viewObj);
 																this.close();
 															} else {
 																Notification.show(_i18n.getMessage("notification.empty.fields"));
@@ -85,16 +85,16 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 											  		  });
 		// - DELETE
 		_btnAcepCancDelete.addDeleteButtonClickListner(event -> {
-															_deleteSubscriber.onSuccess(_detailView.getViewObject());
+															if (_deleteSubscriber != null) _deleteSubscriber.onSuccess(_detailView.getViewObject());
 													   });
 
 		// Layout
 		VerticalLayout layout = new VerticalLayout();
 		layout.setMargin(true);
-
+		layout.setSpacing(false);		
+		
 		layout.addComponents(_detailView,
 							 _btnAcepCancDelete);
-
 		this.setContent(layout);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -123,13 +123,13 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 	public void forEditing(final V viewObj,
 						   final UIPresenterSubscriber<V> saveSubscriber,
 						   final UIPresenterSubscriber<V> deleteSubscriber) {
-		if (viewObj == null) throw new IllegalArgumentException("contact mean view object not valid!");
+		if (viewObj == null) throw new IllegalArgumentException("view object MUST NOT be null!");
 
 		// store the subscribers
 		_saveSubscriber = saveSubscriber;
 		_deleteSubscriber = deleteSubscriber;
-
-		//sets window caption
+		
+		// sets window caption
 		this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
 
 		// bind the view object to the view
@@ -137,7 +137,8 @@ public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
 
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();
-		// set the favorite status
+		
+		// if no delete subscriber is handed, do NOT show the delete button
+		if (_deleteSubscriber == null) _btnAcepCancDelete.setDeleteButtonVisible(false);
 	}
-
 }

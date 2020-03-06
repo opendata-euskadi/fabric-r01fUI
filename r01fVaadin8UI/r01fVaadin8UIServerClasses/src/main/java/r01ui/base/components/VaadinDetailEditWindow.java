@@ -28,6 +28,17 @@ public interface VaadinDetailEditWindow<V extends UIViewObject>
 						   final UIPresenterSubscriber<V> saveSubscriber,
 						   final UIPresenterSubscriber<V> deleteSubscriber);
 	/**
+	 * Opens the window in edition mode with NO delete subscriber
+	 * @param viewObj
+	 * @param saveSubscriber
+	 */
+	public default void forEditing(final V viewObj,
+						   		   final UIPresenterSubscriber<V> saveSubscriber) {
+		this.forEditing(viewObj,
+						saveSubscriber,
+						null);		// no delete subscriber
+	}
+	/**
 	 * Closes the window
 	 */
 	public void close();

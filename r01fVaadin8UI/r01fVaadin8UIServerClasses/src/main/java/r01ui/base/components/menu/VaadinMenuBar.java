@@ -1,11 +1,16 @@
 package r01ui.base.components.menu;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -13,12 +18,12 @@ import r01f.locale.I18NKey;
 import r01f.patterns.CommandOn;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
-import r01f.ui.vaadin.view.*;
+import r01f.ui.vaadin.view.VaadinComponentHasCaption;
+import r01f.ui.vaadin.view.VaadinComponentHasIcon;
+import r01f.ui.vaadin.view.VaadinNavigator;
+import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
+import r01f.ui.vaadin.view.VaadinViewID;
 import r01f.util.types.collections.CollectionUtils;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
 
 public class VaadinMenuBar 
 	 extends MenuBar
@@ -129,31 +134,31 @@ public class VaadinMenuBar
 	/** Navigate to a view by menu selection */ 
 	private MenuBar.Command _createVaadinNavigateCommand(final VaadinViewID viewId,final Map<String,String> navParams) {
 		return new MenuBar.Command() {
-							private static final long serialVersionUID = 7920906555442357534L;
+						private static final long serialVersionUID = 7920906555442357534L;
+						
+						@Override
+						public void menuSelected(final MenuItem selectedItem) {
+							// [1] - Unselect the selected menu item
+					   		VaadinMenuBar.this.executeInAllInHierarchy(item -> item.setNOTSelected());
+					   		
+							// [2] - Find an item with the given menu
+							VaadinMenuItem item = VaadinMenuBar.this.itemOf(selectedItem);
+							if (item == null) throw new IllegalStateException();
+							item.setSelected();
 							
-							@Override
-							public void menuSelected(final MenuItem selectedItem) {
-								// [1] - Unselect the selected menu item
-						   		VaadinMenuBar.this.executeInAllInHierarchy(item -> item.setNOTSelected());
-						   		
-								// [2] - Find an item with the given menu
-								VaadinMenuItem item = VaadinMenuBar.this.itemOf(selectedItem);
-								if (item == null) throw new IllegalStateException();
-								item.setSelected();
-								
-								// [3] - use the key as vaadin id
-								final VaadinViewID viewId = item != null ? VaadinViewID.forId(item.getKey().asString())
-																		 : null;
-								if (viewId != null) {
-									String viewUrlPathParam = VaadinNavigator.vaadinViewUrlPathFragmentOf(viewId,
-									                                                                      navParams);
-									UI.getCurrent().getNavigator()
-												   .navigateTo(viewUrlPathParam);
-								} else {
-									Notification.show("Vaadin view NOT available");
-								}			
-							}
-					}; 		
+							// [3] - use the key as vaadin id
+							final VaadinViewID viewId = item != null ? VaadinViewID.forId(item.getKey().asString())
+																	 : null;
+							if (viewId != null) {
+								String viewUrlPathParam = VaadinNavigator.vaadinViewUrlPathFragmentOf(viewId,
+								                                                                      navParams);
+								UI.getCurrent().getNavigator()
+											   .navigateTo(viewUrlPathParam);
+							} else {
+								Notification.show("Vaadin view NOT available");
+							}			
+						}
+			   }; 		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //																			  

@@ -13,6 +13,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -20,6 +21,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import r01f.locale.I18NKey;
 import r01f.locale.Language;
 import r01f.patterns.Factory;
 import r01f.patterns.FactoryFrom;
@@ -68,6 +70,9 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
+	private final Label _lblTooltip;
+	private I18NKey _tooltipI18NKey;
+	
 	private final Button _btnAdd;
 	
 	private final VerticalLayout _vlyGrid;
@@ -93,6 +98,10 @@ public class VaadinCollectionManageComponent<// the view object type
 		_vlyGrid.setMargin(false);
 		_vlyGrid.setSpacing(false);
 		
+		// Tooltip
+		_lblTooltip = new Label();
+		_lblTooltip.setVisible(false);
+		
 		// add and remove buttons
 		_btnAdd = new Button(VaadinIcons.PLUS_CIRCLE);
 		_btnAdd.setDescription(i18n.getMessage("add"));
@@ -110,7 +119,8 @@ public class VaadinCollectionManageComponent<// the view object type
 		// Vertical layout
 		//		[Buttons]
 		//		[ Grid  ]
-		VerticalLayout vly = new VerticalLayout(hlyAddRemoveButtons,
+		VerticalLayout vly = new VerticalLayout(_lblTooltip,
+												hlyAddRemoveButtons,
 												_vlyGrid);
 		vly.setMargin(false);
 		vly.setSpacing(false);
@@ -163,6 +173,10 @@ public class VaadinCollectionManageComponent<// the view object type
 		// layout
 		_vlyGrid.addComponent(editRow);
 		
+		// set the move buttons status
+		int index = _vlyGrid.getComponentIndex(editRow);
+		_setUpDownButtonsStatus(index);
+		
 		// raise an event
 		if (CollectionUtils.hasData(_itemAddedOrRemovedEventListeners)) {
 			VaadinCollectionItemAddedOrRemovedEvent<V> event = new VaadinCollectionItemAddedOrRemovedEvent<>(VaadinCollectionItemOperation.ADD, // add
@@ -190,6 +204,11 @@ public class VaadinCollectionManageComponent<// the view object type
 										outViewObjs.add(viewRel);
 								  });
 		return outViewObjs;
+	}
+	public void setTooltip(final I18NKey tooltipKey) {
+		_tooltipI18NKey = tooltipKey;
+		_lblTooltip.setValue(_i18n.getMessage(tooltipKey));
+		_lblTooltip.setVisible(true);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

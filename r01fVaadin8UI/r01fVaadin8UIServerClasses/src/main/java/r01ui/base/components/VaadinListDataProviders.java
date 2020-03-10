@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.vaadin.data.HasDataProvider;
 import com.vaadin.data.HasFilterableDataProvider;
+import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 
 import lombok.AccessLevel;
@@ -213,6 +215,12 @@ public abstract class VaadinListDataProviders {
 			// refresh 
 			this.getDataProvider()
 				.refreshAll();
+			return this;
+		}
+		public <V extends Comparable<? super V>> VaadinFilterableListDataProviderAccessor<T> setSortOrder(final ValueProvider<T,V> valueProvider,
+																										  final SortDirection sortDirection) {
+			this.getDataProvider()
+				.setSortOrder(valueProvider,sortDirection);
 			return this;
 		}
 	}

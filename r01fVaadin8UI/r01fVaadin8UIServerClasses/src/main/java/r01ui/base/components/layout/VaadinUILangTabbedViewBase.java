@@ -3,12 +3,14 @@ package r01ui.base.components.layout;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.vaadin.data.HasValue;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Component;
@@ -33,7 +35,6 @@ import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
 import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViewTracksChanges;
-import r01f.ui.viewobject.UIViewHasViewObject;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
@@ -46,13 +47,13 @@ import r01f.util.types.locale.Languages;
  * <pre>
  * ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++
  * +                                                               +
- * +   ++ [ es ] [ eu ] ++++++++++++++++++++++++++++++++++++++++++ +
- * +   +                                                         + +
- * +   +                                                         + +
- * +   +   Each of the tabs is a [V]                             + + 
- * +   +                                                         + +
- * +   +                                                         + +
- * +   +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ +
+ * +   +- [ es ] [ eu ] ---------------------------------------- + +
+ * +   |                                                         | +
+ * +   |                                                         | +
+ * +   |   Each of the tabs is a [V]                             | + 
+ * +   |                                                         | +
+ * +   |                                                         | +
+ * +   +---------------------------------------------------------+ +
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
  * 
@@ -82,7 +83,6 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 										 	     VIL extends UIViewObjectInLanguage> 					// the lang dependent view obj										 	 
 	          extends Composite 
            implements TabSheet.SelectedTabChangeListener,
-           			  UIViewHasViewObject<VBL>,
   			 		  VaadinViewTracksChanges,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
   			 		  VaadinViewHasVaadinViewObjectBinder<VBL> {
@@ -97,6 +97,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
+	protected final VaadinViewFactoryFrom<Language,V> _viewByLangFactory;
 	protected final R01UITabbedLangViews _langViews;
 	
 	protected VBL _viewObject;
@@ -105,40 +106,43 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////	
-	@SuppressWarnings({ "rawtypes","unchecked" })
 	public VaadinUILangTabbedViewBase(final UII18NService i18n,
-						       	  final Collection<Language> langs,
-						       	  final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
+						       	  	  final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
 		_i18n = i18n;
-		
-		// store the language views
-		_langViews = new R01UITabbedLangViews(// ... using the view factory, create a view for each language 
-											  FluentIterable.from(langs)
-													.transform(
-														(lang) -> {
+		_viewByLangFactory = viewByLangFactory;
+		_langViews = new R01UITabbedLangViews(Lists.newArrayList());
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@SuppressWarnings({ "rawtypes","unchecked" })
+	public void addTabsFor(final Collection<Language> langs) {
+		// store the language views ... using the view factory, create a view for each language 
+		Collection<R01UITabbedLangView> tabs = langs.stream()
+													.map(lang -> {
 															// create the tab
-															final V langView = viewByLangFactory.from(i18n,
-																									  lang);
-															
+															V langView = _viewByLangFactory.from(_i18n,
+																								 lang);															
 															// set the tab caption
 															if (Strings.isNullOrEmpty(langView.getCaption())) {
-																final String captionKey = Strings.customized("tab.caption.{}",
-																									   		 Languages.languageLowerCase(lang));
+																String captionKey = Strings.customized("tab.caption.{}",
+																									   Languages.languageLowerCase(lang));
 																langView.setCaption(_i18n.getMessage(captionKey));
 															}
 															return new R01UITabbedLangView(lang,langView);
 														})
-													.toList());
+													.collect(Collectors.toList());
+		_langViews.addAll(tabs);
 		
 		// There exists view fields that has the same value no matter the language
 		// so when any of these fields is updated in any of the language views, 
 		// the value of the same field at the other language views must be updated
 		for (final V view : _langViews.viewIterable()) {
-			final FieldAnnotated<LangIndependentVaadinViewField>[] annLangIndFields = ReflectionUtils.fieldsAnnotated(view.getClass(),
-																											    	  LangIndependentVaadinViewField.class);
+			FieldAnnotated<LangIndependentVaadinViewField>[] annLangIndFields = ReflectionUtils.fieldsAnnotated(view.getClass(),
+																											    LangIndependentVaadinViewField.class);
 			if (CollectionUtils.hasData(annLangIndFields)) {
 				for (final FieldAnnotated<LangIndependentVaadinViewField> annLangIndField : annLangIndFields) {
-					final Field langIndField = annLangIndField.getField();		// a field annotated with @R01UILangIndependentViewField
+					Field langIndField = annLangIndField.getField();		// a field annotated with @R01UILangIndependentViewField
 					
 					if (!ReflectionUtils.isImplementing(langIndField.getType(),HasValue.class)) {
 						log.error("Error while registering [value change listener] for lang-dependent view: " + 
@@ -149,17 +153,17 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 						continue;
 					}
 					
-					final HasValue<?> langIndHasValue = (HasValue<?>)ReflectionUtils.fieldValue(view,langIndField,false);	// ... the field value on the view
+					HasValue<?> langIndHasValue = (HasValue<?>)ReflectionUtils.fieldValue(view,langIndField,false);	// ... the field value on the view
 					// add a value change listener so when the field gets updated, the corresponding
 					// fields at the other language dependent views are also updated with the same value					
 					langIndHasValue.addValueChangeListener((e) -> {
 																if (!_syncLangViews) return;
 																
 																// Get the updated value
-																final Object updatedVal = e.getValue();
+																Object updatedVal = e.getValue();
 																// ... and set it to the corresponding field at the other language views
 																for (final V otherView : _langViews.viewIterable()) {																
-																	final HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherView,langIndField,false);
+																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherView,langIndField,false);
 																	otherLangIndHasValue.setValue(updatedVal);
 																	
 																	// 
@@ -174,7 +178,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 																								  && updatedVal != null 
 																								  && langIndHasValue.getValue().equals(updatedVal));																	
 																}																
-															});
+														   });
 				}
 			}
 		}
@@ -184,19 +188,25 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		
 		// Set the first tab the one for the current language
 		// ... the other language tabs are set in the received order
-		final R01UITabbedLangView firstView = _langViews.tabFormFor(_i18n.getCurrentLanguage())
-													  .or(_langViews.tabFormFor(Language.DEFAULT)
-															  		.orNull());
+		R01UITabbedLangView firstView = _langViews.tabFormFor(_i18n.getCurrentLanguage())
+												  .or(_langViews.tabFormFor(Language.DEFAULT)
+														  		.orNull());
 		if (firstView == null) throw new IllegalStateException("Could NOT find a view for " + _i18n.getCurrentLanguage() + " nor for " + Language.DEFAULT);
 		
 		firstView.setCurrent(true);
-		this.addLanguageTab(firstView.getView());		// first tab: current language
+		_addLanguageTabComponent(firstView.getView());		// first tab: current language
 		
-		final Collection<R01UITabbedLangView> remainingTabs = _langViews.allTabsExcept(firstView);
-		for (final R01UITabbedLangView otherView : remainingTabs) this.addLanguageTab(otherView.getView());
+		Collection<R01UITabbedLangView> remainingTabs = _langViews.allTabsExcept(firstView);
+		for (final R01UITabbedLangView otherView : remainingTabs) _addLanguageTabComponent(otherView.getView());
+		
+		// select the first tab
+		this.setSelectedTab(firstView.getView());
 	}
+	
+	protected abstract void _addLanguageTabComponent(final V view);
+	
+	public abstract void setSelectedTab(final V view);
 	public abstract Registration addSelectedTabChangeListener(final SelectedTabChangeListener listener);
-	public abstract void addLanguageTab(final V view);
 	public abstract V getSelectedTab();
 /////////////////////////////////////////////////////////////////////////////////////////
 //	TAB CHANGE EVENT HANDLER	                                                                          
@@ -434,6 +444,14 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	   implements Iterable<R01UITabbedLangView> {
 		
 		private final Collection<R01UITabbedLangView> _langViews;
+		
+		@SuppressWarnings("unused")
+		public void add(final R01UITabbedLangView view) {
+			_langViews.add(view);
+		}
+		public void addAll(final Collection<R01UITabbedLangView> views) {
+			_langViews.addAll(views);
+		}
 		
 		@Override
 		public Iterator<R01UITabbedLangView> iterator() {

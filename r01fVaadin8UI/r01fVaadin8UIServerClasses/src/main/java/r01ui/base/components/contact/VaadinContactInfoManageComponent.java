@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -13,7 +12,6 @@ import r01f.types.contact.ContactMeanType;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.VaadinViewField;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.locale.Languages;
 import r01ui.base.components.contact.email.VaadinContactEMailManage;
@@ -45,9 +43,7 @@ import r01ui.base.components.contact.website.VaadinContactWebSiteManage;
  */
 public class VaadinContactInfoManageComponent
 	 extends VerticalLayout
-  implements Component,
-			 VaadinViewI18NMessagesCanBeUpdated,
-			 VaadinViewHasVaadinViewObjectBinder<VaadinViewContactInfo> {
+  implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -543903229607808643L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +68,7 @@ public class VaadinContactInfoManageComponent
 	 * This field ONLY is set when calling #bindViewTo
 	 * and is ONLY readed when calling #getViewObject
 	 */
-	private VaadinViewContactInfo _bindedViewObj;
+	private VaadinViewContactInfo _viewObject;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -118,84 +114,44 @@ public class VaadinContactInfoManageComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 //	[VIEW OBJECT] > [UI-CONTROLS]
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public void bindViewTo(final VaadinViewContactInfo viewObj) {
-		// Set the [ui control] values from [view object properties]
-		// (unlike binder.readBean [ui controls] are binded to [view object properties]
+	public void setViewObject(final VaadinViewContactInfo viewObj) {
+		// Set the [ui control] values from [view object]'s properties
+		// (unlike binder.readBean [ui controls] are binded to [view object]'s properties
 		//  so when an [ui control] changes, the [view object property] is also changed)
 		if (viewObj == null) throw new IllegalArgumentException("Cannot bind a null object!");
 
 		// store the view object
-		_bindedViewObj = viewObj;
+		_viewObject = viewObj;
 
 		// Ensure the [view object] contains a collection for each underlying contact object
-		if (_bindedViewObj.getWrappedModelObject().getContactMails() == null) _bindedViewObj.setViewContactMails(Lists.newArrayList());
-		if (_bindedViewObj.getWrappedModelObject().getContactPhones() == null) _bindedViewObj.setViewContactPhones(Lists.newArrayList());
-		if (_bindedViewObj.getWrappedModelObject().getContactSocialNetworks() == null) _bindedViewObj.setViewContactSocialNetworks(Lists.newArrayList());
-		if (_bindedViewObj.getWrappedModelObject().getContactWebSites() == null) _bindedViewObj.setViewContactWebSites(Lists.newArrayList());
+		if (_viewObject.getWrappedModelObject().getContactMails() == null) _viewObject.setViewContactMails(Lists.newArrayList());
+		if (_viewObject.getWrappedModelObject().getContactPhones() == null) _viewObject.setViewContactPhones(Lists.newArrayList());
+		if (_viewObject.getWrappedModelObject().getContactSocialNetworks() == null) _viewObject.setViewContactSocialNetworks(Lists.newArrayList());
+		if (_viewObject.getWrappedModelObject().getContactWebSites() == null) _viewObject.setViewContactWebSites(Lists.newArrayList());
 
 		// bind the individual components to the [view object] underlying collection
-		_emailsComponent.setItems(_bindedViewObj.getViewContactMails());
-		_phonesComponent.setItems(_bindedViewObj.getViewContactPhones());
-		_socialNetworksComponent.setItems(_bindedViewObj.getViewContactSocialNetworks());
-		_webSitesComponent.setItems(_bindedViewObj.getViewContactWebSites());
-		if (_bindedViewObj.getWrappedModelObject().getPreferedLanguage() != null) {
-			_cmbPreferedLanguage.setSelectedItem(_bindedViewObj.getPreferedLanguage());
+		_emailsComponent.setItems(_viewObject.getViewContactMails());
+		_phonesComponent.setItems(_viewObject.getViewContactPhones());
+		_socialNetworksComponent.setItems(_viewObject.getViewContactSocialNetworks());
+		_webSitesComponent.setItems(_viewObject.getViewContactWebSites());
+		if (_viewObject.getWrappedModelObject().getPreferedLanguage() != null) {
+			_cmbPreferedLanguage.setSelectedItem(_viewObject.getPreferedLanguage());
 		}
-	}
-	@Override
-	public void readBean(final VaadinViewContactInfo viewObj) {
-		// Set the [ui control] values from [view object properties]
-		// (the [ui controls] are NOT binded to [view object properties]
-		//  so when an [ui control] changes, the change is NOT reflected
-		//  at the [view object property]
-		if (viewObj == null) throw new IllegalArgumentException("Cannot read a null object!");
-
-		// BEWARE!! the view object is NOT stored
-		_bindedViewObj = null;
-
-		// bind the individual components to the [view object] underlying collection
-		_emailsComponent.setItems(viewObj.hasMailAddresses() ? viewObj.getViewContactMails()
-													 		 : Lists.newArrayList());
-		_phonesComponent.setItems(viewObj.hasPhones() ? viewObj.getViewContactPhones()
-													  : Lists.newArrayList());
-		_socialNetworksComponent.setItems(viewObj.hasSocialNetworks() ? viewObj.getViewContactSocialNetworks()
-																	  : Lists.newArrayList());
-		_webSitesComponent.setItems(viewObj.hasWebSites() ? viewObj.getViewContactWebSites()
-														  : Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	[UI-CONTROLS] > [VIEW OBJECT]
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Override
 	public VaadinViewContactInfo getViewObject() {
 		// update the wrapped view object with the individual components values
-		if (_bindedViewObj == null) throw new IllegalStateException("There's NO binded [view object]: the [view object] MUST have been binded using #bindViewTo() (do NOT use #readBean())");
+		if (_viewObject == null) throw new IllegalStateException("There's NO binded [view object]: the [view object] MUST have been binded using #bindViewTo() (do NOT use #readBean())");
 
 		// ensure the binded [view object] is updated
-		_bindedViewObj.setViewContactMails(_emailsComponent.getItems());
-		_bindedViewObj.setViewContactPhones(_phonesComponent.getItems());
-		_bindedViewObj.setViewContactSocialNetworks(_socialNetworksComponent.getItems());
-		_bindedViewObj.setViewContactWebSites(_webSitesComponent.getItems());
-		_bindedViewObj.setPreferedLanguage(_cmbPreferedLanguage.getValue());
-		return _bindedViewObj;
-	}
-	@Override
-	public boolean writeBeanIfValid(final VaadinViewContactInfo viewObj) {
-		// writes the [ui contro] field values to the corresponding [view objet properties]
-		viewObj.setViewContactMails(_emailsComponent.getItems());
-		viewObj.setViewContactPhones(_phonesComponent.getItems());
-		viewObj.setViewContactSocialNetworks(_socialNetworksComponent.getItems());
-		viewObj.setViewContactWebSites(_webSitesComponent.getItems());
-		viewObj.setPreferedLanguage(_cmbPreferedLanguage.getValue());
-		return true;
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public boolean isValid() {
-		return true;
+		_viewObject.setViewContactMails(_emailsComponent.getItems());
+		_viewObject.setViewContactPhones(_phonesComponent.getItems());
+		_viewObject.setViewContactSocialNetworks(_socialNetworksComponent.getItems());
+		_viewObject.setViewContactWebSites(_webSitesComponent.getItems());
+		_viewObject.setPreferedLanguage(_cmbPreferedLanguage.getValue());
+		return _viewObject;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

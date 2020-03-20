@@ -3,6 +3,7 @@ package r01ui.base.components.layout;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Alignment;
@@ -19,11 +20,11 @@ import r01f.locale.Language;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinComponent;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01f.util.types.locale.Languages;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 /**
  * Base type for lang-dependent VERTICAL tabbed views
  * <pre>
@@ -41,7 +42,7 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
 									 V extends Component & VaadinComponent & HasLanguage
-									 		 & VaadinViewHasVaadinViewObjectBinder<D>, 		// the view uses vaadin ui binder
+									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]
@@ -135,6 +136,10 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 						  						btn.removeStyleName("r01VTabSelected");
 						  					}
 					  					});
+	}
+	@Override
+	public void setSelectedTab(final int index) {
+		this.setSelectedTab(Iterables.get(_tabs,index));
 	}
 	@Override
 	public Registration addSelectedTabChangeListener(final SelectedTabChangeListener listener) {

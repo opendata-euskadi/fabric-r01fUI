@@ -9,23 +9,21 @@ import r01f.locale.Language;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinComponent;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * Base type for lang-dependent tabbed views
  * <pre>
  * ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++
- * +                                                               +
- * +   ++ [ es ] [ eu ] ++++++++++++++++++++++++++++++++++++++++++ +
- * +   +                                                         + +
- * +   +                                                         + +
- * +   +   Each of the tabs is a [V]                             + + 
- * +   +                                                         + +
- * +   +                                                         + +
- * +   +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ +
+ * +     ________________________________________________________  +
+ * + [es]                                                        | +
+ * + [eu]                                                        | +
+ * +    |    Each of the tabs is a [V]                           | +
+ * +    |                                                        | +
+ * +    +________________________________________________________+ +
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
  * 
@@ -48,7 +46,7 @@ public abstract class VaadinUILangTabbedView<// the data being binded at the vie
 											 D extends UIViewObject,
 											 // the component used to edit / show the [lang-dependent] view object (VIL)
 										  	 V extends Component & VaadinComponent & HasLanguage
-										 	         & VaadinViewHasVaadinViewObjectBinder<D>, 		// the view uses vaadin ui binder
+										 	         & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 										 	 // the [view obj] that contains [lang dependent view objs] (VIL)
 										 	 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 										 	 // the [lang dependent view obj]

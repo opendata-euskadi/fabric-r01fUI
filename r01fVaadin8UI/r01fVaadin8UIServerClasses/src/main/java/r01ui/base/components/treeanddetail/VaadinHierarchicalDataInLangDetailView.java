@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.facets.HasLanguage;
 import r01f.ui.vaadin.view.VaadinView;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public interface VaadinHierarchicalDataInLangDetailView<VO extends UIViewObjectI
 	     extends Component,
 	    		 VaadinView,
 	    		 HasLanguage,
-				 VaadinViewHasVaadinViewObjectBinder<VO>, 		// the view uses vaadin ui binder
+				 VaadinFormHasVaadinUIBinder<VO>, 		// the view uses vaadin ui binder
 				 VaadinViewI18NMessagesCanBeUpdated {			// the view i18n messages can be updated{
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUBLIC INTERFACE                                                                          

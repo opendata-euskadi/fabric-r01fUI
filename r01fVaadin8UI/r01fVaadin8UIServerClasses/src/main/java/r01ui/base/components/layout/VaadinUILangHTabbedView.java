@@ -12,10 +12,10 @@ import r01f.locale.Language;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinComponent;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * lang-dependent HORIZONTAL tabbed views
@@ -36,7 +36,7 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
 									 V extends Component & VaadinComponent & HasLanguage
-									 		 & VaadinViewHasVaadinViewObjectBinder<D>, 		// the view uses vaadin ui binder
+									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]
@@ -80,6 +80,10 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 	@Override
 	public void setSelectedTab(final V view) {
 		_tabs.setSelectedTab(view);
+	}
+	@Override
+	public void setSelectedTab(final int index) {
+		_tabs.setSelectedTab(index);
 	}
 	@Override
 	public Registration addSelectedTabChangeListener(final SelectedTabChangeListener listener) {

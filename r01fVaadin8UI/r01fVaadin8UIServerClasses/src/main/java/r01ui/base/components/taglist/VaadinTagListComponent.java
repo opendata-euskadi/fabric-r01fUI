@@ -207,6 +207,7 @@ public class VaadinTagListComponent<T>
 				  			_hlyTagsContainer.addComponent(btnVal);
 			  		   });
 	}
+	@SuppressWarnings("unused")
 	private Button _findValueButton(final T val) {
 		return _findValueButton(btn -> btn.getData().equals(val));
 	}

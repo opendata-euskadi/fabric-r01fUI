@@ -2,11 +2,11 @@ package r01ui.base.components.contact.socialnetwork;
 
 import r01f.locale.I18NKey;
 import r01f.ui.i18n.UII18NService;
-import r01ui.base.components.VaadinDetailEditWindowBase;
+import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 
 public class VaadinContactSocialNetworkDetailEditWindow
-     extends VaadinDetailEditWindowBase<VaadinViewContactSocialNetwork,
-			 						   	VaadinContactSocialNetworkDetailEdit> {
+     extends VaadinDetailEditFormWindowBase<VaadinViewContactSocialNetwork,
+			 						   		VaadinContactSocialNetworkDetailEdit> {
 
 	private static final long serialVersionUID = 2550850462553697426L;
 

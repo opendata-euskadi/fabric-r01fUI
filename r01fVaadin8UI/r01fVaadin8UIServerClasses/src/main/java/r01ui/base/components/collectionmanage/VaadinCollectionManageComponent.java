@@ -26,12 +26,12 @@ import r01f.locale.Language;
 import r01f.patterns.Factory;
 import r01f.patterns.FactoryFrom;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.HasVaadinManagedCollectionItemSummaryChangeEventListener;
 import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.VaadinCollectionItemSummaryComponent;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * A [not normalized relations] grid component like:
@@ -49,7 +49,7 @@ public class VaadinCollectionManageComponent<// the view object type
 											 V extends UIViewObject,
 											 // the editor component
 											 E extends Component 
-											 		 & VaadinViewHasVaadinViewObjectBinder<V>
+											 		 & VaadinFormHasVaadinUIBinder<V>
 													 & HasVaadinManagedCollectionItemSummaryChangeEventListener<SV>,
 											 // the summary component
 											 SV,
@@ -71,6 +71,8 @@ public class VaadinCollectionManageComponent<// the view object type
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Label _lblTooltip;
+	
+	@SuppressWarnings("unused")
 	private I18NKey _tooltipI18NKey;
 	
 	private final Button _btnAdd;
@@ -259,6 +261,7 @@ public class VaadinCollectionManageComponent<// the view object type
 		private final Button _btnDown;
 		private final E _editComponent;
 		
+		@SuppressWarnings("unused")
 		private boolean _new;
 		
 		public VaadinCollectionManageRowComponent() {
@@ -373,7 +376,7 @@ public class VaadinCollectionManageComponent<// the view object type
 		}
 		public void edit(final V viewObj) {
 			// bind the form to the view object
-			_editComponent.bindViewTo(viewObj);
+			_editComponent.bindUIControlsTo(viewObj);
 			_new = false;
 		}
 		public void setNew(final boolean isNew) {
@@ -397,6 +400,7 @@ public class VaadinCollectionManageComponent<// the view object type
 		public boolean isExpanded() {
 			return _editComponent.isVisible();
 		}
+		@SuppressWarnings("unused")
 		public boolean isCollapsed() {
 			return !this.isExpanded();
 		}

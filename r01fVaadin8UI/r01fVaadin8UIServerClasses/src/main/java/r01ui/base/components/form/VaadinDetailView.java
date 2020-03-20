@@ -1,8 +1,9 @@
-package r01f.ui.vaadin.view;
+package r01ui.base.components.form;
 
 import r01f.ui.viewobject.UIViewObject;
 
+@Deprecated // see VaadinDetailForm
 public interface VaadinDetailView<V extends UIViewObject>
-  		 extends VaadinView {
+  		 extends VaadinDetailForm<V> {
 	// just extends
 }

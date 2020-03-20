@@ -61,39 +61,39 @@ public class VaadinPagingComponent
 		//    ------------------------------------------------
 		_btnFirst = new Button(VaadinIcons.ANGLE_DOUBLE_LEFT);
 		_btnFirst.setDescription("Start");
-		_btnFirst.addClickListener(event -> {
-												 _paging.goToFirstPage();
-												 _updateUIStatusFromPaging();
-												 _pagingListener.goTo(_paging.getCurrentPageFirstItem(),// goto page first item	
-																	  _paging.getPageItems());			// and get x items
-											});
+		_btnFirst.addClickListener(clickEvent -> {
+										 _paging.goToFirstPage();
+										 _updateUIStatusFromPaging();
+										 _pagingListener.goTo(_paging.getCurrentPageFirstItem(),// goto page first item	
+															  _paging.getPageItems());			// and get x items
+								   });
 		
 		_btnPrevious = new Button(VaadinIcons.ANGLE_LEFT);
 		_btnPrevious.setDescription("Previous");
-		_btnPrevious.addClickListener(event -> {
-												_paging.goToPrevPage();
-												_updateUIStatusFromPaging();
-												_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
-																     _paging.getPageItems());			// and get x items
-											   });
+		_btnPrevious.addClickListener(clickEvent -> {
+											_paging.goToPrevPage();
+											_updateUIStatusFromPaging();
+											_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
+															     _paging.getPageItems());			// and get x items
+									  });
 		
 		_btnNext = new Button(VaadinIcons.ANGLE_RIGHT);
 		_btnNext.setDescription("Next");
-		_btnNext.addClickListener(event -> {
-												_paging.goToNextPage();
-												_updateUIStatusFromPaging();
-												_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
-																	 _paging.getPageItems());			// and get x items
-										   });
+		_btnNext.addClickListener(clickEvent -> {
+										_paging.goToNextPage();
+										_updateUIStatusFromPaging();
+										_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
+															 _paging.getPageItems());			// and get x items
+								  });
 		
 		_btnLast = new Button(VaadinIcons.ANGLE_DOUBLE_RIGHT);
 		_btnLast.setDescription("End");
-		_btnLast.addClickListener(event -> {
-												_paging.goToLastPage();
-												_updateUIStatusFromPaging();
-												_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
-																	 _paging.getPageItems());			// and get x items
-										   });
+		_btnLast.addClickListener(clickEvent -> {
+										_paging.goToLastPage();
+										_updateUIStatusFromPaging();
+										_pagingListener.goTo(_paging.getCurrentPageFirstItem(),	// goto page first item
+															 _paging.getPageItems());			// and get x items
+								 });
 		
 		// create layout
 		final HorizontalLayout hlayoutForPager = new HorizontalLayout(_btnFirst,_btnPrevious,				// [0] first  [1] previous
@@ -118,18 +118,18 @@ public class VaadinPagingComponent
 									 Lists.newArrayList(10,20,30));
 		_cbPageSize.setEmptySelectionAllowed(false);
 		_cbPageSize.setValue(10);
-		_cbPageSize.addValueChangeListener(event -> {
-														// [1] - Rebuild the paging with the new page size
-														int newPageSize = _cbPageSize.getValue();
-														_paging = new Paging(newPageSize,_paging.getNavBarWindowItems(),	// 10 items / page, 5 pages / window
-																			 _paging.getItemCount(),						// total items
-																			 1);											// current page
-														// [2] - Update the ui
-														_updateUIStatusFromPaging();
-														// [3] - Signal the listener
-														_pagingListener.goTo(_paging.getCurrentPage(),	// goto page first item
-																		 	 _cbPageSize.getValue());	// and get x items
-													});
+		_cbPageSize.addValueChangeListener(valChangeEvent -> {
+												// [1] - Rebuild the paging with the new page size
+												int newPageSize = _cbPageSize.getValue();
+												_paging = new Paging(newPageSize,_paging.getNavBarWindowItems(),	// 10 items / page, 5 pages / window
+																	 _paging.getItemCount(),						// total items
+																	 1);											// current page
+												// [2] - Update the ui
+												_updateUIStatusFromPaging();
+												// [3] - Signal the listener
+												_pagingListener.goTo(_paging.getCurrentPage(),	// goto page first item
+																 	 _cbPageSize.getValue());	// and get x items
+											});
 		_lblResultsText = new Label("results");
 		
 		final HorizontalLayout hLayoutForPageSize = new HorizontalLayout(_lblShowText,			

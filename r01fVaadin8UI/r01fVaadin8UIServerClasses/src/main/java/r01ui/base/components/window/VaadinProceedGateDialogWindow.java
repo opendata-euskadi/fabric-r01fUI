@@ -68,19 +68,19 @@ public class VaadinProceedGateDialogWindow
 //	CONSTRUCTOR                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
-									    final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									    // what happens when the user solves the puzzle
-									    final R01UIProceedGateOpendEventListener proceedGateOpenedListener) {
+									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
+									     // what happens when the user solves the puzzle
+									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage,
 			 proceedGateOpenedListener,
-			 null,
+			 null,		// opened listener
 			 null);		// no puzzle
 	}
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
-									    final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									    final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-									    final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
+									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
+									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
+									     final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage,
 			 proceedGateOpenedListener,
@@ -88,9 +88,9 @@ public class VaadinProceedGateDialogWindow
 			 null);		// no puzzle
 	}
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
-									    final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									    final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-									    final R01UIProceedPuzzleCheck puzzleCheck) {
+									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
+									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
+									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage, 
 			 proceedGateOpenedListener,
@@ -98,10 +98,10 @@ public class VaadinProceedGateDialogWindow
 			 puzzleCheck);
 	}	
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
-									    final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									    final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-									    final R01UIProceedGateClosedEventListener proceedGateClosedListener,
-									    final R01UIProceedPuzzleCheck puzzleCheck) {
+									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
+									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
+									     final R01UIProceedGateClosedEventListener proceedGateClosedListener,
+									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this.setCaption(i18n.getMessage(i18nKeyForCaption));
 		this.setModal(true);
 		this.setResizable(false);
@@ -145,33 +145,33 @@ public class VaadinProceedGateDialogWindow
 			_txtPuzzle.setVisible(true);
 			_txtPuzzle.focus();
 			// only activate the operation button if the puzzle is solved
-			_txtPuzzle.addValueChangeListener(e -> {
-														String txt = e.getValue();
-														boolean solved = _puzzleCheck.check(txt);
-														_btnProceed.setEnabled(solved);
-												   });
+			_txtPuzzle.addValueChangeListener(valChangeEvent -> {
+													String txt = valChangeEvent.getValue();
+													boolean solved = _puzzleCheck.check(txt);
+													_btnProceed.setEnabled(solved);
+											  });
 		}
 		
 		// Layout
-		final HorizontalLayout hLayoutForButtons = new HorizontalLayout(_btnNOTProceed,
-															  		    _btnProceed);
-		final VerticalLayout vLayout = new VerticalLayout(_lblWindowMessage,
-														  _txtPuzzle,
-														  hLayoutForButtons);
+		HorizontalLayout hLayoutForButtons = new HorizontalLayout(_btnNOTProceed,
+															  	  _btnProceed);
+		VerticalLayout vLayout = new VerticalLayout(_lblWindowMessage,
+													_txtPuzzle,
+													hLayoutForButtons);
 		vLayout.setComponentAlignment(hLayoutForButtons,Alignment.BOTTOM_RIGHT);
 		this.setContent(vLayout);
 	}
 	private void _initBehavior(final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
 							   final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
-		_btnNOTProceed.addClickListener(e ->{ 
-												if (proceedGateClosedListener!=null)
-													proceedGateClosedListener.closed();
-												this.close();
-											});
-		_btnProceed.addClickListener(e -> {	// pass the event & close
-												proceedGateOpenedListener.opened();
-												this.close();	
-											});
+		_btnNOTProceed.addClickListener(clickEvent ->{ 
+											if (proceedGateClosedListener!=null)
+												proceedGateClosedListener.closed();
+											this.close();
+									    });
+		_btnProceed.addClickListener(clickEvent -> {	// pass the event & close
+										proceedGateOpenedListener.opened();
+										this.close();	
+									});
 	}	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
@@ -219,7 +219,7 @@ public class VaadinProceedGateDialogWindow
 	public interface R01UIProceedPuzzleCheck {
 		public boolean check(final String text);
 	}
-		public void setProceedPuzzleCheck(final R01UIProceedPuzzleCheck check) {
+	public void setProceedPuzzleCheck(final R01UIProceedPuzzleCheck check) {
 		_puzzleCheck = check;
 		if (_puzzleCheck != null) {
 			_btnProceed.setEnabled(false);	// the button is NOT enabled by default
@@ -227,8 +227,8 @@ public class VaadinProceedGateDialogWindow
 			_txtPuzzle.setVisible(true);
 			_txtPuzzle.focus();
 			// only activate the operation button if the puzzle is solved
-			_txtPuzzle.addValueChangeListener(e -> {
-													String txt = e.getValue();
+			_txtPuzzle.addValueChangeListener(valChangeEvent -> {
+													String txt = valChangeEvent.getValue();
 													boolean solved = _puzzleCheck.check(txt);
 													_btnProceed.setEnabled(solved);
 											  });

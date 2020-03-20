@@ -5,6 +5,8 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.VerticalLayout;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import r01f.types.contact.ContactInfoUsage;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
@@ -13,6 +15,7 @@ import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01ui.base.components.contact.email.VaadinViewContactEmail;
 
+@Accessors(prefix="_")
 public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMeanObject>
 	 		  extends VerticalLayout
            implements VaadinContactMeanDetailEdit<V> {
@@ -28,8 +31,6 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 /////////////////////////////////////////////////////////////////////////////////////////
 //  UI
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected final Binder<V> _binder;
-
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactEmail.USAGE_FIELD,
 					 bindStringConverter=false,
 					 required=true)
@@ -43,6 +44,8 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactEmail.PRIVATE_FIELD,required=false)
 	@VaadinViewComponentLabels(captionI18NKey="contact.mean.private")
 	protected final CheckBox _chkPrivate = new CheckBox();
+	
+	@Getter protected final Binder<V> _vaadinUIBinder;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +60,7 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 		this.setStyleName(VaadinValoTheme.CREATE_EDIT_WINDOW);
 
 		////////// Init the binder
-		_binder = new Binder<>(viewObjType);
+		_vaadinUIBinder = new Binder<>(viewObjType);
 		
 		////////// form
 		// usage
@@ -116,52 +119,48 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 				   .setI18NLabelsOf(this);
 
 		////////// Bind: automatic binding using using @VaadinViewField annotation of view fields
-		VaadinViews.using(_binder,_i18n)
+		VaadinViews.using(_vaadinUIBinder,_i18n)
 				   .bindComponentsOf(this)
 				   .toViewObjectOfType(_viewObjType);
 		
 		_uiInitialized = true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	[VIEW OBJECT] > [UI-CONTROLS]
-/////////////////////////////////////////////////////////////////////////////////////////
+//	[viewObject] > [UI control]                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public void bindViewTo(final V obj) {
-		if (!_uiInitialized) throw new IllegalStateException("The UI is NOT initialized!: ensure to call _initFormComponents() method when the UI is built");
-		
-		// Set the [ui control] values from [view object properties]
-		// (unlike binder.readBean [ui controls] are binded to [view object properties]
-		//  so when an [ui control] changes, the [view object property] is also changed)
-		_binder.setBean(obj);
+	public void bindUIControlsTo(final V viewObj) {
+		// Set the [ui control] values from [view object]'s properties
+		// [ui controls] are binded to [view object] properties so when an [ui control] changes 
+		// the corresponding [view object]'s property is changed 
+		// BUT contrary to #readBean(bean) method, if a [view object]'s property changes,
+		// the [ui control] is ALSO CHANGED
+		// ... so changes in the [UI controls] are immediatly reflected to the received [view object] 
+		// so it's NOT possible to CANCEL editions
+		_vaadinUIBinder.setBean(viewObj);
 	}
 	@Override
-	public void readBean(final V obj) {
-		if (!_uiInitialized) throw new IllegalStateException("The UI is NOT initialized!: ensure to call _initFormComponents() method when the UI is built");
-		
-		// Set the [ui control] values from [view object properties]
-		// (the [ui controls] are NOT binded to [view object properties]
-		//  so when an [ui control] changes, the change is NOT reflected
-		//  at the [view object property]
-		_binder.readBean(obj);
+	public void readUIControlsFrom(final V viewObj) {
+		// Set the [ui control] values from [view object]'s properties
+		// [ui controls] are binded to [view object] properties so when an [ui control] changes 
+		// the corresponding [view object]'s property is changed 
+		// BUT contrary to #bindViewTo(bean) method, if a [view object]'s property changes,
+		// the [ui control] is NOT CHANGED
+		// ... so changes in the [UI controls] are NOT reflected to the received [view object] 
+		// so it's possible to CANCEL editions
+		_vaadinUIBinder.readBean(viewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	[UI-CONTROLS] > [VIEW OBJECT]
+//	[UI-CONTROLS] > [VIEW OBJECT]                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public V getViewObject() {
-		// returns the binder underlying bean
-		return _binder.getBean();
+		// Returns the [ui control]s binded [view object]
+		return _vaadinUIBinder.getBean();
 	}
 	@Override
-	public boolean writeBeanIfValid(final V viewObject) {
-		// writes the [ui contro] field values to the corresponding [view objet properties]
-		return _binder.writeBeanIfValid(viewObject);
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public boolean isValid() {
-		return _binder.isValid();
+	public boolean writeIfValidFromUIControlsTo(final V viewObj) {
+		// writes the [ui contro] field values to the corresponding [view object]'s properties
+		return _vaadinUIBinder.writeBeanIfValid(viewObj);
 	}
 }

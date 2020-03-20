@@ -2,11 +2,11 @@ package r01ui.base.components.contact.phone;
 
 import r01f.locale.I18NKey;
 import r01f.ui.i18n.UII18NService;
-import r01ui.base.components.VaadinDetailEditWindowBase;
+import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 
 public class VaadinContactPhoneDetailEditWindow
-     extends VaadinDetailEditWindowBase<VaadinViewContactPhone,
-			 					 	   	VaadinContactPhoneDetailEdit> {
+     extends VaadinDetailEditFormWindowBase<VaadinViewContactPhone,
+			 					 	   		VaadinContactPhoneDetailEdit> {
 	private static final long serialVersionUID = -8502135692216603837L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR

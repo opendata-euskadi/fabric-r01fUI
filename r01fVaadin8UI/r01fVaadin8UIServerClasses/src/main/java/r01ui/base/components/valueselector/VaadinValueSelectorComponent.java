@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * </pre>
  * @param <T>
  */
-@Deprecated // see r01ui.base.components.taglist.VaadinTagListComponent
+@Deprecated // see r01ui.base.components.taglist.VaadinValueSelectorComponent
 @Accessors(prefix="_")
 public class VaadinValueSelectorComponent<T>
 	 extends r01ui.base.components.taglist.VaadinValueSelectorComponent<T> {

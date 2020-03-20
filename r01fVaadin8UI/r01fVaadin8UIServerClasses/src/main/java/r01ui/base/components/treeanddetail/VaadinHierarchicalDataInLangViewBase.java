@@ -2,6 +2,7 @@ package r01ui.base.components.treeanddetail;
 
 import java.util.Collection;
 
+import com.vaadin.data.Binder;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -15,9 +16,9 @@ import r01f.locale.Language;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinView;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 import r01ui.base.components.tree.VaadinTree.VaadinTreeChangedEventListener;
 import r01ui.base.components.tree.VaadinTreeData;
 
@@ -53,7 +54,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 	 		  extends CustomField<VaadinTreeData<VO>> 		// BEWARE! TreeData<VIL>
   		   implements HasLanguage,
   			 		  VaadinView,
-  			 		  VaadinViewHasVaadinViewObjectBinder<VaadinTreeData<VO>>,	// BEWARE!! this is binding a TreeData<VIL>
+  			 		  VaadinFormHasVaadinUIBinder<VaadinTreeData<VO>>,	// BEWARE!! this is binding a TreeData<VIL>
   			 		  VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -741879526211369538L;
@@ -179,11 +180,11 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
+//	BINDER ACCESS
+/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public boolean isValid() {
-		return true;
+	public Binder<VaadinTreeData<VO>> getVaadinUIBinder() {
+		throw new UnsupportedOperationException("No vaadin binder in use!");
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

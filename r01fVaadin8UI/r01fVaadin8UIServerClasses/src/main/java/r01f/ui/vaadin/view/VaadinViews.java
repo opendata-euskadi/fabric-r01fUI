@@ -49,6 +49,7 @@ import r01f.ui.vaadin.annotations.VaadinVoidViewFieldValidator;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
+import r01ui.base.components.form.VaadinViewTracksChanges;
 
 /**
  * Utils for vaadin views

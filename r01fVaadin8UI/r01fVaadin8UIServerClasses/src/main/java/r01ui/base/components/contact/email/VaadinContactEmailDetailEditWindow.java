@@ -2,11 +2,11 @@ package r01ui.base.components.contact.email;
 
 import r01f.locale.I18NKey;
 import r01f.ui.i18n.UII18NService;
-import r01ui.base.components.VaadinDetailEditWindowBase;
+import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 
 public class VaadinContactEmailDetailEditWindow
-     extends VaadinDetailEditWindowBase<VaadinViewContactEmail,
-			 						    VaadinContactEmailDetailEdit> {
+     extends VaadinDetailEditFormWindowBase<VaadinViewContactEmail,
+			 						    	VaadinContactEmailDetailEdit> {
 
 	private static final long serialVersionUID = 5765469965554072345L;
 

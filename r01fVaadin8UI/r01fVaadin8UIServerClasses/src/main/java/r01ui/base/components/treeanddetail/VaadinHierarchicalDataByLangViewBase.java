@@ -3,6 +3,7 @@ package r01ui.base.components.treeanddetail;
 import java.util.Collection;
 import java.util.function.Function;
 
+import com.vaadin.data.Binder;
 import com.vaadin.ui.CustomComponent;
 
 import lombok.Getter;
@@ -13,10 +14,10 @@ import r01f.patterns.Transfer;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinView;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 import r01ui.base.components.tree.VaadinTreeData;
 
 /**
@@ -51,7 +52,7 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 	 		  extends CustomComponent 
 	 	   implements VaadinView,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
-  			 		  VaadinViewHasVaadinViewObjectBinder<VBL> {
+  			 		  VaadinFormHasVaadinUIBinder<VBL> {
 
 	private static final long serialVersionUID = -8652414236006812625L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -102,11 +103,11 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void bindViewTo(final VBL byLangViewObj) {
-		_langTabbedView.bindViewTo(byLangViewObj);		// tell the lang tabbed view to bind 
+		_langTabbedView.bindUIControlsTo(byLangViewObj);		// tell the lang tabbed view to bind 
 	}
 	@Override
 	public void readBean(final VBL byLangViewObj) {
-		_langTabbedView.readBean(byLangViewObj);
+		_langTabbedView.readUIControlsFrom(byLangViewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROL -> VIEW OBJECT
@@ -117,16 +118,16 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 	}
 	@Override
 	public boolean writeBeanIfValid(final VBL byLangViewObj) {
-		boolean valid = _langTabbedView.writeBeanIfValid(byLangViewObj);
+		boolean valid = _langTabbedView.writeIfValidFromUIControlsTo(byLangViewObj);
 		
 		return valid;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//																			  
+//	BINDER ACCESS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public boolean isValid() {
-		return true;
+	public Binder<VBL> getVaadinUIBinder() {
+		return _langTabbedView.getVaadinUIBinder();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

@@ -3,11 +3,11 @@ package r01ui.base.components;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.presenter.UIPresenterSubscriber;
-import r01f.ui.vaadin.view.VaadinDetailView;
 import r01f.ui.viewobject.UIViewObject;
+import r01ui.base.components.form.VaadinDetailForm;
 
 public interface VaadinDetailEditWindow<V extends UIViewObject> 
-		 extends VaadinDetailView<V> {
+		 extends VaadinDetailForm<V> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	

@@ -11,6 +11,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Component;
@@ -32,15 +33,15 @@ import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.LangIndependentVaadinViewField;
 import r01f.ui.vaadin.view.VaadinComponent;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
-import r01f.ui.vaadin.view.VaadinViewHasVaadinViewObjectBinder;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
-import r01f.ui.vaadin.view.VaadinViewTracksChanges;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
+import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinViewTracksChanges;
 
 /**
  * Base type for lang-dependent tabbed views
@@ -76,7 +77,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 											 	 D extends UIViewObject,
 											 	 // the component used to edit / show the [lang-dependent] view object (VIL)
 											 	 V extends Component & VaadinComponent & HasLanguage
-										 	             & VaadinViewHasVaadinViewObjectBinder<D>, 		// the view uses vaadin ui binder
+										 	             & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 										 	     // the [view obj] that contains [lang dependent view objs] (VIL)
 										 	     VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 										 	     // the [lang dependent view obj]
@@ -85,7 +86,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
            implements TabSheet.SelectedTabChangeListener,
   			 		  VaadinViewTracksChanges,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
-  			 		  VaadinViewHasVaadinViewObjectBinder<VBL> {
+  			 		  VaadinFormHasVaadinUIBinder<VBL> {
 	
 	private static final long serialVersionUID = -4245277897023751719L;
 	
@@ -206,6 +207,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	protected abstract void _addLanguageTabComponent(final V view);
 	
 	public abstract void setSelectedTab(final V view);
+	public abstract void setSelectedTab(final int index);
 	public abstract Registration addSelectedTabChangeListener(final SelectedTabChangeListener listener);
 	public abstract V getSelectedTab();
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -273,11 +275,11 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 //	[VIEW OBJECT] > [UI-CONTROLS]                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public void bindViewTo(final VBL viewObject) {
+	public void bindUIControlsTo(final VBL viewObject) {
 		_viewObject = viewObject; 
 		
-		// Set the [ui control] values from [view object properties]
-		// (unlike binder.readBean [ui controls] are binded to [view object properties] 
+		// Set the [ui control] values from [view object]'s properties
+		// (unlike binder.readBean [ui controls] are binded to [view object]'s properties 
 		//  so when an [ui control] changes, the [view object property] is also changed)
 		
 		// just "tell" all language-dependent view to bind to the corresponding
@@ -298,14 +300,14 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			D bindedViewObjInLang = this.transformViewObjInLangToBindedObj(viewObjInLang); 
 			
 			// ... and bind it into the view
-			langView.bindViewTo(bindedViewObjInLang);
+			langView.bindUIControlsTo(bindedViewObjInLang);
 		}
 		_syncLangViews = true;	// the [lang view] can now be sync-ed
 	}
 	@Override
-	public void readBean(final VBL viewObject) {
-		// Set the [ui control] values from [view object properties]
-		// (the [ui controls] are NOT binded to [view object properties]
+	public void readUIControlsFrom(final VBL viewObject) {
+		// Set the [ui control] values from [view object]'s properties
+		// (the [ui controls] are NOT binded to [view object]'s properties
 		//  so when an [ui control] changes, the change is NOT reflected
 		//  at the [view object property]
 		
@@ -321,7 +323,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			D bindedViewObjInLang = this.transformViewObjInLangToBindedObj(viewObjInLang);
 			
 			// ... and read the data
-			langView.readBean(bindedViewObjInLang);
+			langView.readUIControlsFrom(bindedViewObjInLang);
 		}
 		_syncLangViews = true;	// the [lang view] can now be sync-ed
 	}
@@ -331,7 +333,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	@Override
 	public VBL getViewObject() {
 		if (_viewObject == null) throw new IllegalStateException(String.format("If using %s#getViewObject(), the view object MUST have been previously set using %s#bindViewTo(viewObj)",
-																 			   VaadinViewHasVaadinViewObjectBinder.class.getSimpleName(),VaadinViewHasVaadinViewObjectBinder.class.getSimpleName()));
+																 			   VaadinFormHasVaadinUIBinder.class.getSimpleName(),VaadinFormHasVaadinUIBinder.class.getSimpleName()));
 		// force each lang-dep view object to be readed
 		// just "tell" all language-dependent view to get to the corresponding
 		// language-dependent view object
@@ -354,7 +356,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		return _viewObject;
 	}
 	@Override
-	public boolean writeBeanIfValid(final VBL viewObj) {
+	public boolean writeIfValidFromUIControlsTo(final VBL viewObj) {
 		// just "tell" all language-dependent view to write the corresponding
 		// language-dependent view object
 		boolean allTabsHasValidData = true;
@@ -372,7 +374,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			D bindedViewObjInLang = this.transformViewObjInLangToBindedObj(viewObjInLang); 
 			
 			// UI -> object
-			boolean langViewBeanWritten = langView.writeBeanIfValid(bindedViewObjInLang);
+			boolean langViewBeanWritten = langView.writeIfValidFromUIControlsTo(bindedViewObjInLang);
 
 			// and now back from D to VIL
 			this.copyBindedObjDataToViewObjectInLang(bindedViewObjInLang,viewObjInLang);		
@@ -382,16 +384,25 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		return allTabsHasValidData;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
+	public Binder<VBL> getVaadinUIBinder() {
+		throw new UnsupportedOperationException();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
 	public boolean isValid() {
 		boolean allValid = true;
 		for (final V langView : this.langViewIterable()) {
-			final boolean langViewValid = langView.isValid();
-			if (!langViewValid) {
-				allValid = false;
-				break;
+			Binder<D> vaadinUIBinder = langView.getVaadinUIBinder();
+			if (vaadinUIBinder != null) {
+				boolean langViewValid = vaadinUIBinder.isValid(); 
+				if (!langViewValid) {
+					allValid = false;
+					break;
+				}
 			}
 		}
 		return allValid;

@@ -102,11 +102,11 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 //	VIEW OBJECT -> UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public void bindViewTo(final VBL byLangViewObj) {
+	public void bindUIControlsTo(final VBL byLangViewObj) {
 		_langTabbedView.bindUIControlsTo(byLangViewObj);		// tell the lang tabbed view to bind 
 	}
 	@Override
-	public void readBean(final VBL byLangViewObj) {
+	public void readUIControlsFrom(final VBL byLangViewObj) {
 		_langTabbedView.readUIControlsFrom(byLangViewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 		return _langTabbedView.getViewObject();
 	}
 	@Override
-	public boolean writeBeanIfValid(final VBL byLangViewObj) {
+	public boolean writeIfValidFromUIControlsTo(final VBL byLangViewObj) {
 		boolean valid = _langTabbedView.writeIfValidFromUIControlsTo(byLangViewObj);
 		
 		return valid;

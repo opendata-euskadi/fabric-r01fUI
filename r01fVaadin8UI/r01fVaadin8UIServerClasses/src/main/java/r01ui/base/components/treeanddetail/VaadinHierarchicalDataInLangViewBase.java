@@ -155,13 +155,13 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 //	VIEW OBJECT -> UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
-	public void readBean(final VaadinTreeData<VO> viewObj) {
+	public void readUIControlsFrom(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
 		_detailComponent.setVisible(false);
 	}
 	@Override
-	public void bindViewTo(final VaadinTreeData<VO> viewObj) {
-		this.readBean(viewObj);
+	public void bindUIControlsTo(final VaadinTreeData<VO> viewObj) {
+		this.readUIControlsFrom(viewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS -> VIEW OBJECT                                                                       
@@ -171,7 +171,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 		return this.getValue();
 	}
 	@Override
-	public boolean writeBeanIfValid(final VaadinTreeData<VO> viewObject) {
+	public boolean writeIfValidFromUIControlsTo(final VaadinTreeData<VO> viewObject) {
 		// in order to keep the received [view object] the "internal" state of the [view object]
 		// is REPLACED with the [tree data]
 		viewObject.clear();

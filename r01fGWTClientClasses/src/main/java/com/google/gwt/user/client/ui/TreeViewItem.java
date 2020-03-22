@@ -638,7 +638,7 @@ public class TreeViewItem<T extends CanBePainted>
 	@Override
 	public void expandUpToRoot() {
 		TreeViewItem<T> parentItem = this.getDirectAncestor();
-		while(parentItem != null) {
+		while (parentItem != null) {
 			parentItem.expand(false);	// do not force child loading
 			parentItem = parentItem.getDirectAncestor();
 		}

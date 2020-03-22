@@ -233,7 +233,8 @@ public class VaadinTagListComponent<T>
 				outButton = btn;
 				break;
 			}
-		} while(btnIt.hasNext() && outButton == null);
+		} while (btnIt.hasNext() 
+			  && outButton == null);
 		return outButton;
 	}
 	private Iterator<Button> _buttonIterator() {

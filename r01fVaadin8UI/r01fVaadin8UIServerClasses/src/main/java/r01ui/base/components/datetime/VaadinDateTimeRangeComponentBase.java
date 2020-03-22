@@ -58,7 +58,7 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 														_dateUperBound.setValue(null);
 													}
 													//do not change the range if it is a DateTimeRangeComponent
-													if(!_isDateTimeRangeComponent()) {
+													if (!_isDateTimeRangeComponent()) {
 														_dateUperBound.setRangeStart(currLow);
 														_dateUperBound.setRangeEnd(null);
 													}
@@ -71,7 +71,7 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 														_dateLowerBound.setValue(null);
 													}
 													//do not change the range if it is a DateTimeRangeComponent
-													if(!_isDateTimeRangeComponent()) {
+													if (!_isDateTimeRangeComponent()) {
 														_dateLowerBound.setRangeStart(null);
 														_dateLowerBound.setRangeEnd(currUp);
 													}
@@ -123,9 +123,11 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 
 		// Raise an event when either the [lower bound] or [upper bound] change
 		_dateLowerBound.addValueChangeListener(e -> {
-													if(_isDateTimeRangeComponent() && _dateUperBound.getValue()!=null && e.getValue()!=null
-																&& _isNotValidRange(e.getValue(),_dateUperBound.getValue())) { // is not a valid range
-														//if DateTimeField and up is before low, just set up to null
+													if (_isDateTimeRangeComponent() 
+													 && _dateUperBound.getValue() != null && e.getValue() != null
+													 && _isNotValidRange(e.getValue(),
+															 			 _dateUperBound.getValue())) { // is not a valid range
+														// if DateTimeField and up is before low, just set up to null
 														return;
 													}
 													Range<T> val = Ranges.guavaRangeFrom(_isDateTimeRangeComponent() && e.getValue()==null ? null 				//if DateTimeField and value is null, just set the new value to low
@@ -137,8 +139,11 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 													listener.valueChange(evt);
 											   });
 		_dateUperBound.addValueChangeListener(e -> {
-													if(_isDateTimeRangeComponent() && _dateLowerBound.getValue()!=null && e.getValue()!=null
-																&& _isNotValidRange(_dateLowerBound.getValue(),e.getValue()))  { // is not a valid range
+													if (_isDateTimeRangeComponent() 
+													 && _dateLowerBound.getValue() != null 
+													 && e.getValue() != null
+													 && _isNotValidRange(_dateLowerBound.getValue(),
+															 			 e.getValue()))  { // is not a valid range
 														//if DateTimeField and low is after up, just set low to null
 														return;
 													}
@@ -167,9 +172,9 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 /////////////////////////////////////////////////////////////////////////////////////////
 	private boolean _isNotValidRange(T currLow,
 								  T currUp) {
-		if(_isDateTimeRangeComponent()) {
+		if (_isDateTimeRangeComponent()) {
 			return currLow.get(ChronoField.HOUR_OF_DAY) > (currUp.get(ChronoField.HOUR_OF_DAY));
-		}else {
+		} else {
 			return currLow.compareTo(currUp) > 0;
 		}
 	}

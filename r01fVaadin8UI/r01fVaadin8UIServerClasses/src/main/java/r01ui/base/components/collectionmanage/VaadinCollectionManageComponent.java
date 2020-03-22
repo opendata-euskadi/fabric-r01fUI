@@ -29,7 +29,7 @@ import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
-import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.HasVaadinManagedCollectionItemSummaryChangeEventListener;
+import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.HasVaadinManagedCollectionItemChangeEventListener;
 import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.VaadinCollectionItemSummaryComponent;
 import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
@@ -48,12 +48,11 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
 public class VaadinCollectionManageComponent<// the view object type
 											 V extends UIViewObject,
 											 // the editor component
-											 E extends Component 
+											 F extends Component 
 											 		 & VaadinFormHasVaadinUIBinder<V>
-													 & HasVaadinManagedCollectionItemSummaryChangeEventListener<SV>,
+													 & HasVaadinManagedCollectionItemChangeEventListener<V>,
 											 // the summary component
-											 SV,
-											 S extends VaadinCollectionItemSummaryComponent<SV>>
+											 CS extends VaadinCollectionItemSummaryComponent<V>>
 	 extends Composite
   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -63,9 +62,10 @@ public class VaadinCollectionManageComponent<// the view object type
 //	SERVICES
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final transient UII18NService _i18n;
+	
 	private final Factory<V> _viewObjFactory;
-	private final FactoryFrom<UII18NService,E> _editComponentFactory;
-	private final FactoryFrom<UII18NService,S> _summaryComponentFactory;
+	private final FactoryFrom<UII18NService,F> _editComponentFactory;
+	private final FactoryFrom<UII18NService,CS> _summaryComponentFactory;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
@@ -86,8 +86,8 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinCollectionManageComponent(final UII18NService i18n,
 								  		   final Factory<V> viewObjFactory,
-								  		   final FactoryFrom<UII18NService,E> editComponentFactory,
-								  		   final FactoryFrom<UII18NService,S> summaryComponentFactory) {
+								  		   final FactoryFrom<UII18NService,F> editComponentFactory,
+								  		   final FactoryFrom<UII18NService,CS> summaryComponentFactory) {
 		_i18n = i18n;
 		_viewObjFactory = viewObjFactory;
 		_editComponentFactory = editComponentFactory;
@@ -124,9 +124,8 @@ public class VaadinCollectionManageComponent<// the view object type
 		VerticalLayout vly = new VerticalLayout(_lblTooltip,
 												hlyAddRemoveButtons,
 												_vlyGrid);
+		vly.setWidthFull();
 		vly.setMargin(false);
-		vly.setSpacing(false);
-		vly.setSizeFull();
 		
 		this.setCompositionRoot(vly);
 		
@@ -136,19 +135,19 @@ public class VaadinCollectionManageComponent<// the view object type
 	private void _setBehavior() {
 		// create a new [rel]
 		_btnAdd.addClickListener(clickEvent -> {
-										// add a new obj
-										V viewObj = _viewObjFactory.create();
-										
-										VaadinCollectionManageRowComponent newRow = this.add(viewObj);
-										newRow.setNew(true);
-										
-										// set the move buttons status
-										int index = _vlyGrid.getComponentIndex(newRow);
-										_setUpDownButtonsStatus(index);
-										
-										// scroll into view
-										UI.getCurrent().scrollIntoView(newRow);
-									 });
+									// add a new obj
+									V viewObj = _viewObjFactory.create();
+									
+									VaadinCollectionManageRowComponent newRow = this.add(viewObj);
+									newRow.setNew(true);
+									
+									// set the move buttons status
+									int index = _vlyGrid.getComponentIndex(newRow);
+									_setUpDownButtonsStatus(index);
+									
+									// scroll into view
+									UI.getCurrent().scrollIntoView(newRow);
+								});
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUBLIC METHODS                                                                          
@@ -254,12 +253,12 @@ public class VaadinCollectionManageComponent<// the view object type
 	   implements VaadinViewI18NMessagesCanBeUpdated {
 		private static final long serialVersionUID = 8093451147953767189L;
 		
-		private final S _summary;
+		private final CS _summary;
 		private final Button _btnEdit;
 		private final Button _btnRemove;
 		private final Button _btnUp;
 		private final Button _btnDown;
-		private final E _editComponent;
+		private final F _editComponent;
 		
 		@SuppressWarnings("unused")
 		private boolean _new;
@@ -309,7 +308,6 @@ public class VaadinCollectionManageComponent<// the view object type
 			////////// Layout
 			VerticalLayout ly = new VerticalLayout(hlySummary,
 												   _editComponent);
-			ly.setSizeFull();
 			ly.setMargin(false);
 			
 			this.setCompositionRoot(ly);
@@ -363,12 +361,12 @@ public class VaadinCollectionManageComponent<// the view object type
 										
 										_setUpDownButtonsStatus(newIndex);
 									  });
-			// Update the [summary] when the [rel] name changes at the form
-			_editComponent.addSummaryChangeEventListener(_i18n.getCurrentLanguage(),
-														 summChangeEvt -> {
-															 SV val = summChangeEvt.getValue();
-															 _summary.setSummaryViewObject(val);	
-														 });
+			// Update the [summary] when the [viewObj] changes at the form
+			_editComponent.addItemChangeEventListener(_i18n.getCurrentLanguage(),
+													  itemChangeEvt -> {
+														  V val = itemChangeEvt.getNewValue();
+														   _summary.setSummaryOf(val);	
+													  });
 		}
 		public void setMoveButtonsStatusIfRowAt(final int index) {
 			_btnUp.setEnabled(index > 0);
@@ -377,6 +375,7 @@ public class VaadinCollectionManageComponent<// the view object type
 		public void edit(final V viewObj) {
 			// bind the form to the view object
 			_editComponent.bindUIControlsTo(viewObj);
+			_summary.setSummaryOf(viewObj);
 			_new = false;
 		}
 		public void setNew(final boolean isNew) {
@@ -419,22 +418,21 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 //	MANAGED ITEM SUMMARY CHANGED
 /////////////////////////////////////////////////////////////////////////////////////////
-	public interface VaadinCollectionItemSummaryComponent<SV> 
+	public interface VaadinCollectionItemSummaryComponent<V extends UIViewObject> 
 			 extends Component {
-		public void setSummaryViewObject(final SV viewObj);
+		public void setSummaryOf(final V viewObj);
 	}
-	public interface HasVaadinManagedCollectionItemSummaryChangeEventListener<SV> {
-		public void addSummaryChangeEventListener(final Language lang,
-												  final VaadinManagedCollectionItemSummaryChangeEventListener<SV> listener);
+	public interface HasVaadinManagedCollectionItemChangeEventListener<V extends UIViewObject> {
+		public void addItemChangeEventListener(final Language lang,
+											   final VaadinManagedCollectionItemChangeEventListener<V> listener);
 	}
-	public interface VaadinManagedCollectionItemSummaryChangeEventListener<SV> {
-		public void onSummaryChanged(VaadinManagedCollectionItemSummaryChangeEvent<SV> event);
+	public interface VaadinManagedCollectionItemChangeEventListener<V extends UIViewObject> {
+		public void onItemChanged(VaadinManagedCollectionItemSummaryChangeEvent<V> event);
 	}
 	@Accessors(prefix="_")
 	@RequiredArgsConstructor
-	public static class VaadinManagedCollectionItemSummaryChangeEvent<SV> {
-		@Getter private final SV _oldValue;
-		@Getter private final SV _value;
+	public static class VaadinManagedCollectionItemSummaryChangeEvent<V> {
+		@Getter private final V _newValue;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ADD / REMOVE EVENT

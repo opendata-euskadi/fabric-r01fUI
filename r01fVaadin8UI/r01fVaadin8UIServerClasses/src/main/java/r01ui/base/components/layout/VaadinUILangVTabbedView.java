@@ -37,17 +37,18 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * +    +________________________________________________________+ +
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
+ * See the base type for usage instructions
  */
 public class VaadinUILangVTabbedView<// the data being binded at the view; usually D=VIL but it does NOT have to be that way
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
-									 V extends Component & VaadinComponent & HasLanguage
+									 F extends Component & VaadinComponent & HasLanguage
 									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]
 									 VIL extends UIViewObjectInLanguage> 		// the lang dependent view obj	{
-	 extends VaadinUILangTabbedViewBase<D,V,
+	 extends VaadinUILangTabbedViewBase<D,F,
 	 									VBL,VIL> {
 
 
@@ -55,14 +56,14 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final Collection<V> _tabs;
+	private final Collection<F> _tabs;
 	private final VerticalLayout _vlyTabHandles;
-	private final HorizontalLayout _hly;
+	private final HorizontalLayout _layout;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUILangVTabbedView(final UII18NService i18n,
-								   final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
 		super(i18n,
 			  viewByLangFactory);
 		// the tabs collection
@@ -74,17 +75,17 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 		_vlyTabHandles.setMargin(false);
 		
 		// layout
-		_hly = new HorizontalLayout(_vlyTabHandles);
-		_hly.setSizeFull();
-		_hly.setMargin(false);
-		_hly.setComponentAlignment(_vlyTabHandles,Alignment.TOP_LEFT);
-		_hly.setExpandRatio(_vlyTabHandles,1F);
+		_layout = new HorizontalLayout(_vlyTabHandles);
+		_layout.setSizeFull();
+		_layout.setMargin(false);
+		_layout.setComponentAlignment(_vlyTabHandles,Alignment.TOP_LEFT);
+		_layout.setExpandRatio(_vlyTabHandles,1F);
 		
-		super.setCompositionRoot(_hly);
+		super.setCompositionRoot(_layout);
 	}
 	public VaadinUILangVTabbedView(final UII18NService i18n,
 								   final Collection<Language> langs,
-								   final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
 		this(i18n,
 			 viewByLangFactory);
 		this.addTabsFor(langs);
@@ -93,7 +94,7 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 //	TABS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override 
-	protected void _addLanguageTabComponent(final V view) {
+	protected void _addLanguageTabComponent(final F view) {
 		// add the view component 
 		_tabs.add(view);
 		
@@ -107,23 +108,23 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 		_vlyTabHandles.addComponent(btnLang);
 	}
 	@Override @SuppressWarnings("unchecked")
-	public V getSelectedTab() {
-		V currentView = (V)_hly.getComponent(1);
+	public F getSelectedTab() {
+		F currentView = (F)_layout.getComponent(1);
 		return currentView; 
 	}
 	@Override
-	public void setSelectedTab(final V view) {
-		if (_hly.getComponentCount() > 1) {
-			V currentView = this.getSelectedTab();
+	public void setSelectedTab(final F view) {
+		if (_layout.getComponentCount() > 1) {
+			F currentView = this.getSelectedTab();
 			if (currentView == view) return;
 			
 			// replace the component
-			_hly.removeComponent(currentView);
+			_layout.removeComponent(currentView);
 		}
 		view.setCaption(null);	// horizontal tabs do NOT need caption
-		_hly.addComponent(view);
-		_hly.setComponentAlignment(view,Alignment.TOP_LEFT);
-		_hly.setExpandRatio(view,20F);
+		_layout.addComponent(view);
+		_layout.setComponentAlignment(view,Alignment.TOP_LEFT);
+		_layout.setExpandRatio(view,20F);
 		
 		// change the button style
 		Language lang = view.getLanguage();

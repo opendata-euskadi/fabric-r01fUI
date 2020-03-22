@@ -31,17 +31,18 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * +   +---------------------------------------------------------+ +
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
+ * See the base type for usage instructions
  */
 public class VaadinUILangHTabbedView<// the data being binded at the view; usually D=VIL but it does NOT have to be that way
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
-									 V extends Component & VaadinComponent & HasLanguage
+									 F extends Component & VaadinComponent & HasLanguage
 									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]
 									 VIL extends UIViewObjectInLanguage> 					// the lang dependent view obj	{
-	 extends VaadinUILangTabbedViewBase<D,V,
+	 extends VaadinUILangTabbedViewBase<D,F,
 	 									VBL,VIL> {
 
 	private static final long serialVersionUID = 8242794789527302463L;
@@ -53,14 +54,15 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUILangHTabbedView(final UII18NService i18n,
-								   final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
 		super(i18n,
 			  viewByLangFactory);
-		super.setCompositionRoot(_tabs);
+		_tabs.setResponsive(true);
+		super.setCompositionRoot(_tabs);		
 	}
 	public VaadinUILangHTabbedView(final UII18NService i18n,
 								   final Collection<Language> langs,
-								   final VaadinViewFactoryFrom<Language,V> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
 		this(i18n,
 			 viewByLangFactory);
 		this.addTabsFor(langs);
@@ -69,16 +71,16 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 //	TABS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	protected void _addLanguageTabComponent(final V view) {
+	protected void _addLanguageTabComponent(final F view) {
 		_tabs.addComponent(view);
 	}
 	
 	@Override @SuppressWarnings("unchecked")
-	public V getSelectedTab() {
-		return (V)_tabs.getSelectedTab();
+	public F getSelectedTab() {
+		return (F)_tabs.getSelectedTab();
 	}
 	@Override
-	public void setSelectedTab(final V view) {
+	public void setSelectedTab(final F view) {
 		_tabs.setSelectedTab(view);
 	}
 	@Override

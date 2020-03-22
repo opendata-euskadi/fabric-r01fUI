@@ -427,11 +427,11 @@ public class VaadinCollectionManageComponent<// the view object type
 											   final VaadinManagedCollectionItemChangeEventListener<V> listener);
 	}
 	public interface VaadinManagedCollectionItemChangeEventListener<V extends UIViewObject> {
-		public void onItemChanged(VaadinManagedCollectionItemSummaryChangeEvent<V> event);
+		public void onItemChanged(VaadinManagedCollectionItemChangeEvent<V> event);
 	}
 	@Accessors(prefix="_")
 	@RequiredArgsConstructor
-	public static class VaadinManagedCollectionItemSummaryChangeEvent<V> {
+	public static class VaadinManagedCollectionItemChangeEvent<V> {
 		@Getter private final V _newValue;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

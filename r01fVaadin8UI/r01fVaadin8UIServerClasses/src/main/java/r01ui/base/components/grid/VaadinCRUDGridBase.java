@@ -191,20 +191,16 @@ public abstract class VaadinCRUDGridBase<// The view object
 	private final Label _lblCaption;
 	
 	private final Button _btnCreate;
+	
 	private final Button _btnEdit;
 	private final Button _btnRemove;
+	
+	private final CssLayout _lyButtonsUpDown; 
 	private final Button _btnUp;
 	private final Button _btnDown;
 	
 	private final VaadinDetailEditFormWindowBase<V,F> _formPopUp;
 	
-	
-/////////////////////////////////////////////////////////////////////////////////////////
-//	UI SUBSCRIBERS
-/////////////////////////////////////////////////////////////////////////////////////////	
-	private UISubscriber<V> _onItemCreatedSubscriber;
-	private UISubscriber<V> _onItemEditedSubscriber;
-	private UISubscriber<V> _onItemDeletedSubscriber;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +276,7 @@ public abstract class VaadinCRUDGridBase<// The view object
 		
 		////////// Caption
 		_lblCaption = new Label();
+		_lblCaption.setVisible(false);
 		
 		////////// Buttons
 		_btnCreate = new Button(VaadinIcons.PLUS_SQUARE_LEFT_O);
@@ -292,18 +289,20 @@ public abstract class VaadinCRUDGridBase<// The view object
 		// behavior
 		_setButtonsBehavior();
 		// layout
-		CssLayout lyButtons1 = new CssLayout(_btnEdit,_btnRemove);
-		CssLayout lyButtons2 = new CssLayout(_btnUp,_btnDown);
-		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyButtons1,lyButtons2);
+		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
+		
+		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
+		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyButtonsEditRemove,_lyButtonsUpDown);
 		lyButtons.setWidthFull();
 		lyButtons.setComponentAlignment(_lblCaption,Alignment.MIDDLE_LEFT);
 		lyButtons.setComponentAlignment(_btnCreate,Alignment.MIDDLE_LEFT);
-		lyButtons.setComponentAlignment(lyButtons2,Alignment.BOTTOM_RIGHT);
-		lyButtons.setComponentAlignment(lyButtons1,Alignment.BOTTOM_RIGHT);
+		lyButtons.setComponentAlignment(_lyButtonsUpDown,Alignment.BOTTOM_RIGHT);
+		lyButtons.setComponentAlignment(lyButtonsEditRemove,Alignment.BOTTOM_RIGHT);
 		lyButtons.setExpandRatio(_lblCaption,3);
 		lyButtons.setExpandRatio(_btnCreate,1);
-		lyButtons.setExpandRatio(lyButtons2,1);
-		lyButtons.setExpandRatio(lyButtons1,1);
+		lyButtons.setExpandRatio(_lyButtonsUpDown,1);
+		lyButtons.setExpandRatio(lyButtonsEditRemove,1);
+		
 		
 		////////// Form
 		_formPopUp = popUpFactory.create();
@@ -323,11 +322,6 @@ public abstract class VaadinCRUDGridBase<// The view object
 	 * @param grid
 	 */
 	protected void _configureGrid() {
-		// drag & drop
-		GridRowDragger<V> gridRowDragger = new GridRowDragger<>(_grid); 		//	drag and drop order
-		gridRowDragger.getGridDropTarget()
-					  .addGridDropListener(gridDropEvent -> _setUpDownButtonsStatusForSelectedItem());
-		
 		// sizing
 		_grid.setRowHeight(50.0);
 		_grid.setWidthFull();
@@ -408,17 +402,28 @@ public abstract class VaadinCRUDGridBase<// The view object
 								});
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	SUBSCRIBERS
+//	CONFIGURE
 /////////////////////////////////////////////////////////////////////////////////////////
-	public void setOnCreateItemSubscriber(final UISubscriber<V> subscriber) {
-		_onItemCreatedSubscriber = subscriber;
+	public void enableRowMovement() {
+		// drag & drop
+		GridRowDragger<V> gridRowDragger = new GridRowDragger<>(_grid); 		//	drag and drop order
+		gridRowDragger.getGridDropTarget()
+					  .addGridDropListener(gridDropEvent -> _setUpDownButtonsStatusForSelectedItem());
+		
+		_lyButtonsUpDown.setVisible(true);
 	}
-	public void setOnEditedItemSubscriber(final UISubscriber<V> subscriber) {
-		_onItemEditedSubscriber = subscriber;
+	public void disableRowMovement() {
+		_lyButtonsUpDown.setVisible(false);
 	}
-	public void setOnDeletedItemSubscriber(final UISubscriber<V> subscriber) {
-		_onItemDeletedSubscriber = subscriber;
-	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	ACTION METHODS
+/////////////////////////////////////////////////////////////////////////////////////////
+	protected abstract void doCreateItem(final V item,
+										 final UISubscriber<V> subscriber);
+	protected abstract void doSaveItem(final V item,
+									   final UISubscriber<V> subscriber);
+	protected abstract void doDeleteItem(final V item,
+										 final UISubscriber<V> subscriber);
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Show ADD, REMOVE, EDIT modal window
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -426,15 +431,18 @@ public abstract class VaadinCRUDGridBase<// The view object
 			_formPopUp.forCreating(_viewObjFactory,
 								   // What happens when the pop up is closed after creating a new [view object]
 								   // ...add the created obj and refresh
-								   createdViewObj -> {
-					   					VaadinListDataProviders.collectionBackedOf(_grid)
-					   										   .addNewItem(createdViewObj);
-										this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
-																					.getUnderlyingItemsCollectionSize());
-										_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
-										
+								   viewObjToCreate -> {
 										// tell the outside world
-										if (_onItemCreatedSubscriber != null) _onItemCreatedSubscriber.onSuccess(createdViewObj);
+										this.doCreateItem(viewObjToCreate,
+														  // what to do after creating
+														  createdViewObj -> {
+																// refresh the grid
+											   					VaadinListDataProviders.collectionBackedOf(_grid)
+											   										   .addNewItem(createdViewObj);
+																this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																											.getUnderlyingItemsCollectionSize());
+																_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+														   });
 								   });
 			UI.getCurrent()
 			  .addWindow(_formPopUp);
@@ -443,12 +451,15 @@ public abstract class VaadinCRUDGridBase<// The view object
 		_formPopUp.forEditing(viewObj,
 							  // What happens when the pop up is closed after editing the [view object]
 							  // ... update the edited obj and refresh
-							  savedViewObj -> {
-								  VaadinListDataProviders.collectionBackedOf(_grid)
-								  						 .refreshItem(viewObj);
-								  
+							  viewObjToSave -> {
 								  // tell the outside world
-								  if (_onItemEditedSubscriber != null) _onItemEditedSubscriber.onSuccess(savedViewObj);
+								  this.doSaveItem(viewObjToSave,
+										  		  // what to do after saving
+										  		  savedViewObj -> {
+													  // refresh the grid
+													  VaadinListDataProviders.collectionBackedOf(_grid)
+													  						 .refreshItem(savedViewObj);
+										  		  });
 							  });
 			UI.getCurrent()
 			  .addWindow(_formPopUp);
@@ -465,14 +476,16 @@ public abstract class VaadinCRUDGridBase<// The view object
 																			   				  I18NKey.forId("grid.crud.delete.message"),
 																							  // what happens when the user allows the panel disposal
 																							  () -> { 
-																								  /// remove the item
-																								  VaadinListDataProviders.collectionBackedOf(_grid)
-																								  						 .removeItem(viewObj);
-																								  // now there's no selected item
-																								 _resetButtonStatus();
-																								 
-																								 // tell the outside world
-																								 if (_onItemDeletedSubscriber != null) _onItemDeletedSubscriber.onSuccess(viewObj);
+																								  // tell the outside world
+																								  this.doDeleteItem(viewObj,
+																										  			// what to do after delete
+																										  			deletedViewObj -> {
+																														  /// remove the item
+																														  VaadinListDataProviders.collectionBackedOf(_grid)
+																														  						 .removeItem(deletedViewObj);
+																														  // now there's no selected item
+																														 _resetButtonStatus();
+																													  });
 																							  });
 		UI.getCurrent()
 		  .addWindow(proceedGatewayPopUp);
@@ -607,6 +620,7 @@ public abstract class VaadinCRUDGridBase<// The view object
 	public void setColumns(final String... columnIds) {
 		_grid.setColumns(columnIds);
 	}
+	@SuppressWarnings("unchecked")
 	public void setColumnOrder(final Column<V, ?>... columns) {
 		_grid.setColumnOrder(columns);
 	}

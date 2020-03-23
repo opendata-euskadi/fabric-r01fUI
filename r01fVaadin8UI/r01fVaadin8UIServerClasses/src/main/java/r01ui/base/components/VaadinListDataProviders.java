@@ -266,14 +266,12 @@ public abstract class VaadinListDataProviders {
 		@Override
 		public boolean canMoveItemUp(final T item) {
 			int itemIndex = this.getItemIndex(item);
-			System.out.println("_____________can move up: " + itemIndex);
 			return itemIndex > 0;
 		}
 		@Override
 		public boolean canMoveItemDown(final T item) {
 			int itemIndex = this.getItemIndex(item);
 			int itemCount = this.getUnderlyingItemsCollectionSize();
-			System.out.println("_____________can move down: " + itemIndex + " (" + itemCount + ")");
 			return itemIndex < (itemCount - 1);
 		}
 	}

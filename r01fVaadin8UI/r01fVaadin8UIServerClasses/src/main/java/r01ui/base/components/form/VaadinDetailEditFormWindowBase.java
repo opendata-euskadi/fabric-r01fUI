@@ -82,7 +82,12 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		// - OK
 		_btnAcepCancDelete.addAcceptButtonClickListner(event -> {
 															// collect ui controls values & tell
-															Binder<V> vaadinBinder = _form.getVaadinUIBinder();
+															Binder<V> vaadinBinder = null;
+															try {
+																vaadinBinder = _form.getVaadinUIBinder();	// sometimes the binder is not available
+															} catch (Throwable th) {
+																/* ignored */
+															}
 															if (vaadinBinder != null) {
 																BinderValidationStatus<V> status = vaadinBinder.validate();
 																if (status.hasErrors()) {

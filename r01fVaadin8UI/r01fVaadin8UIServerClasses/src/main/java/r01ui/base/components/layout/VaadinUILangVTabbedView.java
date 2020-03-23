@@ -28,7 +28,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
 /**
  * Base type for lang-dependent VERTICAL tabbed views
  * <pre>
- * ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++
+ * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * +     ________________________________________________________  +
  * + [es]                                                        | +
  * + [eu]                                                        | +

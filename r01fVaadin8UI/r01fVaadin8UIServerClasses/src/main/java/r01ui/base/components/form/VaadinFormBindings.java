@@ -20,7 +20,6 @@ public abstract class VaadinFormBindings {
 		public Binder<V> getVaadinUIBinder();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//
 // Binds the a [view object]'s properties to the underlying [ui control]s and back 
 //	
 // Uses vaadin's {@link Binder}  #tBean(bean) method that BINDs the [UI controls] to 

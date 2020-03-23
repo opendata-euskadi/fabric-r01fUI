@@ -34,10 +34,10 @@ import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.Va
 import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
- * A [not normalized relations] grid component like:
+ * A grid component like:
  * <pre>
  * 		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * 		+ [add] [remove]                                             +
+ * 		+                                [add] [remove] [up] [down]  +
  * 		+------------------------------------------------------------+
  * 		+ [x] [summary] 				[edit] [delete] [up] [down]	 + 
  * 		+ [ ] [summary]					[edit] [delete] [up] [down]	 +

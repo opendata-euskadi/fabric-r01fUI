@@ -27,12 +27,14 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DescriptionGenerator;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.Column.NestedNullBehavior;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.StyleGenerator;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -53,7 +55,6 @@ import com.vaadin.ui.renderers.AbstractRenderer;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.styles.VaadinStyler;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactory;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
@@ -66,15 +67,15 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
 /**
  * A grid with a popup to edit the row
  * <pre class='brush:java'>
- *		          +------------------------------+
- *		          +------------------------------+  [new] [delete] [up] [down]
- *		 +--------+                              +----------------------------+
+ *		          +==============================+
+ *		          |------------------------------|  [new] [delete] [up] [down]
+ *		 +--------|                              |----------------------------+
  *		 |--------|                              |----------------------------|
  *		 |--------|          Edit form           |----------------------------|
  *		 |--------|                              |----------------------------|
  *		 |--------|                              |----------------------------|
  *		 |--------| [Delete]       [Cancel] [OK] |----------------------------|
- *		 |--------+------------------------------+----------------------------|
+ *		 |--------+==============================+----------------------------|
  *		 |--------------------------------------------------------------------|
  *		 +--------------------------------------------------------------------+
  * </pre>
@@ -105,8 +106,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * 		public class MyForm 
  *	 	     extends VerticalLayout
  *		  implements VaadinDetailForm<MyViewObj>,
- * 			 		 VaadinFormHasVaadinUIBinder<MyViewObj>,
- * 			 		 View {
+ * 			 		 VaadinFormHasVaadinUIBinder<MyViewObj> {
  * 			// UI binder
  * 			@Getter private final Binder<MyViewObj> _vaadinUIBinder = new Binder<>(MyViewObj.class);
  * 
@@ -115,6 +115,9 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  *			private final TextField _txt = new TextField("Text");
  *
  *			public MyForm(final UII18NService i18n) {
+ * 				////////// Labels
+ *				VaadinViews.using(i18n)
+ *				   		   .setI18NLabelsOf(this);
  *				////////// Bind: automatic binding using using @VaadinViewField annotation of view fields
  *				VaadinViews.using(_vaadinUIBinder,i18n)
  *				   		   .bindComponentsOf(this)
@@ -183,6 +186,8 @@ public abstract class VaadinCRUDGridBase<// The view object
 //	UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Grid<V> _grid;
+	
+	private final Label _lblCaption;
 	
 	private final Button _btnCreate;
 	private final Button _btnEdit;
@@ -264,6 +269,9 @@ public abstract class VaadinCRUDGridBase<// The view object
 		
 		if (gridColsProvider != null) gridColsProvider.provideColumnsFor(_grid);		// provide columns for the grid
 		
+		////////// Caption
+		_lblCaption = new Label();
+		
 		////////// Buttons
 		_btnCreate = new Button(VaadinIcons.PLUS_SQUARE_LEFT_O);
 		_btnEdit = new Button(VaadinIcons.EDIT);
@@ -275,23 +283,24 @@ public abstract class VaadinCRUDGridBase<// The view object
 		// behavior
 		_setButtonsBehavior();
 		// layout
-		HorizontalLayout hlyButtons1 = new HorizontalLayout(_btnCreate,_btnEdit,_btnRemove);
-		HorizontalLayout hlyButtons2 = new HorizontalLayout(_btnUp,_btnDown);
-		VaadinStyler.setNoMargin(hlyButtons1,
-								 hlyButtons2);
-		VaadinStyler.setSizeFull(hlyButtons1,
-								 hlyButtons2);
-		HorizontalLayout hlyButtons = new HorizontalLayout(hlyButtons1,hlyButtons2);
-		hlyButtons.setMargin(false);
-		hlyButtons.setSizeFull();
-		hlyButtons.setComponentAlignment(hlyButtons2,Alignment.MIDDLE_RIGHT);
-		hlyButtons.setComponentAlignment(hlyButtons1,Alignment.MIDDLE_RIGHT);		
+		CssLayout lyButtons1 = new CssLayout(_btnEdit,_btnRemove);
+		CssLayout lyButtons2 = new CssLayout(_btnUp,_btnDown);
+		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyButtons1,lyButtons2);
+		lyButtons.setWidthFull();
+		lyButtons.setComponentAlignment(_lblCaption,Alignment.MIDDLE_LEFT);
+		lyButtons.setComponentAlignment(_btnCreate,Alignment.MIDDLE_LEFT);
+		lyButtons.setComponentAlignment(lyButtons2,Alignment.BOTTOM_RIGHT);
+		lyButtons.setComponentAlignment(lyButtons1,Alignment.BOTTOM_RIGHT);
+		lyButtons.setExpandRatio(_lblCaption,3);
+		lyButtons.setExpandRatio(_btnCreate,1);
+		lyButtons.setExpandRatio(lyButtons2,1);
+		lyButtons.setExpandRatio(lyButtons1,1);
 		
 		////////// Form
 		_formPopUp = popUpFactory.create();
 		
 		////////// Layout
-		VerticalLayout vly = new VerticalLayout(hlyButtons,
+		VerticalLayout vly = new VerticalLayout(lyButtons,
 												_grid);
 		vly.setMargin(false);
 		vly.setSizeFull();
@@ -312,7 +321,8 @@ public abstract class VaadinCRUDGridBase<// The view object
 		
 		// sizing
 		_grid.setRowHeight(50.0);
-		_grid.setSizeFull();
+		_grid.setWidthFull();
+		_grid.setResponsive(true);
 		
 		// no column sortable
 		_grid.getColumns()

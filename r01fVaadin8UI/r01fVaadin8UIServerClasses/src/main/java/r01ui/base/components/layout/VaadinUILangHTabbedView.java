@@ -20,7 +20,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
 /**
  * lang-dependent HORIZONTAL tabbed views
  * <pre>
- * ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++
+ * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * +                                                               +
  * +   +- [ es ] [ eu ] ---------------------------------------- + +
  * +   |                                                         | +

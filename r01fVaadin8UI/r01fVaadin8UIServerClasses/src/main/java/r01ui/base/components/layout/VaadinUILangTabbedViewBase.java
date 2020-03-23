@@ -46,7 +46,7 @@ import r01ui.base.components.form.VaadinViewTracksChanges;
 /**
  * Base type for lang-dependent tabbed views
  * <pre>
- * ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++    ++[R01UILangTabbedView]++++++++++++++++++++++++++++++++++++++++++ 
+ * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
  * +                                                               +    +     ________________________________________________________  + 
  * +   +- [ es ] [ eu ] ---------------------------------------- + +    + [es]                                                        | + 
  * +   |                                                         | +    + [eu]                                                        | + 
@@ -92,27 +92,13 @@ import r01ui.base.components.form.VaadinViewTracksChanges;
  *		 extends UIViewObjectWrappedBase<MyTestObj>
  *	  implements UIViewObjectByLanguage<MyTestViewObjInLang> {
  *
- *		private final Memoized<Map<Language,MyTestViewObjInLang>> _viewObjByLang;
- *		
  *		public MyTestViewObjByLang(final MyTestObj wrappedModelObject) {
  *			super(wrappedModelObject);
- *			_viewObjByLang = Memoized.using(() -> {
- *												// create the lang-dependent view objects
- *												MyTestViewObjInLang esViewObj = new MyTestViewObjInLang(_wrappedModelObject,
- *																										  	  Language.SPANISH);
- *												MyTestViewObjInLang euViewObj = new MyTestViewObjInLang(_wrappedModelObject,
- *																										  	  Language.BASQUE);
- *												// put them into a map
- *												Map<Language,MyTestViewObjInLang> outMap = Maps.newHashMapWithExpectedSize(2);
- *												outMap.put(Language.SPANISH,esViewObj);
- *												outMap.put(Language.BASQUE,euViewObj);
- *												return outMap;
- *											});
  *		}
  *		@Override
  *		public MyTestViewObjInLang getViewObjectFor(final Language lang) {
- *			return _viewObjByLang.get()
- *								 .get(lang);
+ *			return new MyTestViewObjInLang(_wrappedModelObject,
+ *										   lang);
  *		}
  *	}
  *
@@ -177,7 +163,7 @@ import r01ui.base.components.form.VaadinViewTracksChanges;
  *		@Getter private final Binder<MyTestViewObjInLang> _vaadinUIBinder = new Binder<>(MyTestViewObjInLang.class);
  *		
  *		public MyTestViewObjInLangForm(final UII18NService i18n,
- *										  final Language lang) {
+ *									   final Language lang) {
  *			_language = lang;
  *			
  *			// set ui labels
@@ -240,7 +226,7 @@ import r01ui.base.components.form.VaadinViewTracksChanges;
  *		
  *		public MyTestHTabsForm(final UII18NService i18n) {
  *			super(i18n,
- *  				  // The lang-tabs
+ *  			  // The lang-tabs
  *				  Lists.newArrayList(Language.SPANISH,Language.BASQUE),
  *				  // the language-dependent form factory: VaadinViewFactoryFrom<Language,MyTestViewObjInLangForm>
  *				  MyTestViewObjInLangForm::new);

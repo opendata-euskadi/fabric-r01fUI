@@ -55,6 +55,7 @@ import com.vaadin.ui.renderers.AbstractRenderer;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.subscriber.UISubscriber;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactory;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
@@ -196,6 +197,14 @@ public abstract class VaadinCRUDGridBase<// The view object
 	private final Button _btnDown;
 	
 	private final VaadinDetailEditFormWindowBase<V,F> _formPopUp;
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	UI SUBSCRIBERS
+/////////////////////////////////////////////////////////////////////////////////////////	
+	private UISubscriber<V> _onItemCreatedSubscriber;
+	private UISubscriber<V> _onItemEditedSubscriber;
+	private UISubscriber<V> _onItemDeletedSubscriber;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -399,6 +408,18 @@ public abstract class VaadinCRUDGridBase<// The view object
 								});
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	SUBSCRIBERS
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setOnCreateItemSubscriber(final UISubscriber<V> subscriber) {
+		_onItemCreatedSubscriber = subscriber;
+	}
+	public void setOnEditedItemSubscriber(final UISubscriber<V> subscriber) {
+		_onItemEditedSubscriber = subscriber;
+	}
+	public void setOnDeletedItemSubscriber(final UISubscriber<V> subscriber) {
+		_onItemDeletedSubscriber = subscriber;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //  Show ADD, REMOVE, EDIT modal window
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected void showPopUpForCreateNew() {
@@ -411,6 +432,9 @@ public abstract class VaadinCRUDGridBase<// The view object
 										this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
 																					.getUnderlyingItemsCollectionSize());
 										_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+										
+										// tell the outside world
+										if (_onItemCreatedSubscriber != null) _onItemCreatedSubscriber.onSuccess(createdViewObj);
 								   });
 			UI.getCurrent()
 			  .addWindow(_formPopUp);
@@ -422,6 +446,9 @@ public abstract class VaadinCRUDGridBase<// The view object
 							  savedViewObj -> {
 								  VaadinListDataProviders.collectionBackedOf(_grid)
 								  						 .refreshItem(viewObj);
+								  
+								  // tell the outside world
+								  if (_onItemEditedSubscriber != null) _onItemEditedSubscriber.onSuccess(savedViewObj);
 							  });
 			UI.getCurrent()
 			  .addWindow(_formPopUp);
@@ -443,6 +470,9 @@ public abstract class VaadinCRUDGridBase<// The view object
 																								  						 .removeItem(viewObj);
 																								  // now there's no selected item
 																								 _resetButtonStatus();
+																								 
+																								 // tell the outside world
+																								 if (_onItemDeletedSubscriber != null) _onItemDeletedSubscriber.onSuccess(viewObj);
 																							  });
 		UI.getCurrent()
 		  .addWindow(proceedGatewayPopUp);

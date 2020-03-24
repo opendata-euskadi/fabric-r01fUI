@@ -290,18 +290,19 @@ abstract class VaadinCRUDGridBase<// The view object
 		////////// Buttons
 		_btnCreate = new Button(VaadinIcons.PLUS_SQUARE_LEFT_O);
 		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
-		
+
 		_btnEdit = new Button(VaadinIcons.EDIT);
 		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
 		
 		_btnRemove = new Button(VaadinIcons.TRASH);
 		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
-		
+
 		_btnUp = new Button(VaadinIcons.ARROW_UP);
 		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
 		
 		_btnDown = new Button(VaadinIcons.ARROW_DOWN);
-		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnDown.addStyleName(ValoTheme.BUTTON_LINK);
+		
 		// all except the [create] button are disabled by default
 		_resetButtonStatus();
 		// behavior
@@ -365,6 +366,12 @@ abstract class VaadinCRUDGridBase<// The view object
 											_setUpDownButtonsStatusForSelectedItem();
 										}
 								   });
+		
+		// double click listener
+		_grid.addItemClickListener(event -> {
+			if (event.getMouseEventDetails().isDoubleClick())
+				this.enterEdit(event.getItem());
+		});
 	}
 	private void _resetButtonStatus() {
 		_btnCreate.setEnabled(true);

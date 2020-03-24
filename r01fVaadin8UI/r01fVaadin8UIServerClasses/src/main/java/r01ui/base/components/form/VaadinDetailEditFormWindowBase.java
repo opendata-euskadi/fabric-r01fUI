@@ -75,7 +75,6 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		// Form
 		_form = form;
 		
-//		_dimensionsPopUp();
 		
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);

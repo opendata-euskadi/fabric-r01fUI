@@ -75,11 +75,8 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		// Form
 		_form = form;
 		
-<<<<<<< HEAD
-=======
-		_dimensionsPopUp();
+//		_dimensionsPopUp();
 		
->>>>>>> branch 'develop' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
 		// - CANCEL

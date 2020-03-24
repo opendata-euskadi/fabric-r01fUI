@@ -1,5 +1,8 @@
 package r01ui.base.components.form;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
@@ -74,7 +77,9 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 
 		// Form
 		_form = form;
-
+		
+		_dimensionsPopUp();
+		
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
 		// - CANCEL
@@ -163,5 +168,15 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		
 		// if no delete subscriber is handed, do NOT show the delete button
 		if (_deleteSubscriber == null) _btnAcepCancDelete.setDeleteButtonVisible(false);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	PRIVATE METHODS
+/////////////////////////////////////////////////////////////////////////////////////////
+	private void _dimensionsPopUp() {
+		// Dimensions of the screen
+		Dimension screenSize = Toolkit.getDefaultToolkit()
+									  .getScreenSize();
+		_form.setWidth(screenSize.getWidth() * 0.3 + "") ;
+		_form.setHeight(screenSize.getHeight() * 0.2 + "");
 	}
 }

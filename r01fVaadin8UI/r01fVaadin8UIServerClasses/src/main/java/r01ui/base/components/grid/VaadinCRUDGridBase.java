@@ -51,6 +51,7 @@ import com.vaadin.ui.components.grid.GridSingleSelect;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.AbstractRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
@@ -280,10 +281,18 @@ public abstract class VaadinCRUDGridBase<// The view object
 		
 		////////// Buttons
 		_btnCreate = new Button(VaadinIcons.PLUS_SQUARE_LEFT_O);
+		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnCreate.setDescription("Nuevo tema");
 		_btnEdit = new Button(VaadinIcons.EDIT);
+		_btnEdit.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnEdit.setDescription("Editar tema");
 		_btnRemove = new Button(VaadinIcons.TRASH);
+		_btnRemove.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnRemove.setDescription("Eliminar tema");
 		_btnUp = new Button(VaadinIcons.ARROW_UP);
+		_btnUp.addStyleName(ValoTheme.BUTTON_LINK);
 		_btnDown = new Button(VaadinIcons.ARROW_DOWN);
+		_btnDown.addStyleName(ValoTheme.BUTTON_LINK);
 		// all except the [create] button are disabled by default
 		_resetButtonStatus();
 		// behavior
@@ -347,6 +356,12 @@ public abstract class VaadinCRUDGridBase<// The view object
 											_setUpDownButtonsStatusForSelectedItem();
 										}
 								   });
+		
+		// double click listener
+		_grid.addItemClickListener(event -> {
+			if (event.getMouseEventDetails().isDoubleClick())
+				this.showPopUpForEdit(event.getItem());
+		});
 	}
 	private void _resetButtonStatus() {
 		_btnCreate.setEnabled(true);

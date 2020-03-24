@@ -25,6 +25,7 @@ import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
+import r01ui.base.components.form.VaadinDetailEditForm;
 
 /**
  * Creates a grid component like:
@@ -46,7 +47,7 @@ import r01f.util.types.collections.CollectionUtils;
  */
 @Slf4j
 public abstract class VaadinGridComponentBase<V extends UIViewObject,
-											  W extends VaadinDetailEditWindow<V>>
+											  W extends VaadinDetailEditForm<V>>
 			  extends VerticalLayout
 		   implements VaadinViewI18NMessagesCanBeUpdated {
 

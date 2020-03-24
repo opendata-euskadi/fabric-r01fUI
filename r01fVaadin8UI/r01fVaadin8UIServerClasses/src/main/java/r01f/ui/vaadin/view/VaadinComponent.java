@@ -1,8 +1,8 @@
 package r01f.ui.vaadin.view;
 
-import java.io.Serializable;
+import com.vaadin.ui.Component;
 
 public interface VaadinComponent 
-  		 extends Serializable {
+  		 extends Component {
 	// just extends
 }

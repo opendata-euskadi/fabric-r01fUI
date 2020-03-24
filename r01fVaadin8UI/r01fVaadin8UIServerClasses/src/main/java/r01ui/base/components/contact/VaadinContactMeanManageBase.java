@@ -12,9 +12,9 @@ import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.types.contact.ContactInfoUsage;
 import r01f.ui.i18n.UII18NService;
-import r01ui.base.components.VaadinDetailEditWindow;
 import r01ui.base.components.VaadinGridComponentBase;
 import r01ui.base.components.VaadinListDataProviders;
+import r01ui.base.components.form.VaadinDetailEditForm;
 
 /**
  * Creates a [contact mean] (phone, email...) manage component like:
@@ -35,7 +35,7 @@ import r01ui.base.components.VaadinListDataProviders;
  * @param <W>
  */
 public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObject,
-												  W extends VaadinDetailEditWindow<V>>
+												  W extends VaadinDetailEditForm<V>>
 	 		  extends VaadinGridComponentBase<V,W> {
 
 	private static final long serialVersionUID = 679801385310874400L;

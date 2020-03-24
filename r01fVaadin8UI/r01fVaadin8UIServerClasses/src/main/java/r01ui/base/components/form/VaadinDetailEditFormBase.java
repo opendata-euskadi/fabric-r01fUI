@@ -3,10 +3,10 @@ package r01ui.base.components.form;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.ui.Composite;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
@@ -16,10 +16,8 @@ import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons;
 import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
- * Creates a detail edit popup-window like:
+ * Creates a detail edit form like:
  * <pre>
- * 		+++++++++++++++++++++++++++++++++++++++++++++++
- * 	    + Caption                                     +
  *      +++++++++++++++++++++++++++++++++++++++++++++++
  *      + [Form]                                      +
  *      +                                             +
@@ -29,15 +27,16 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  *      + [Delete]                  [Cancel] [Accept] +
  *      +++++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
+ * BEWARE! DO NOT CONFUSE with it's pop-up window counterpart {@link VaadinDetailEditFormWindowBase}
  * @param <V>
  */
-public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
-												 	 F extends VaadinDetailForm<V>
-															 & VaadinFormHasVaadinUIBinder<V>>
-     		  extends Window
+public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
+											   F extends VaadinDetailForm<V>
+												       & VaadinFormHasVaadinUIBinder<V>>
+     		  extends Composite
      	   implements VaadinDetailEditForm<V> {
 
-	private static final long serialVersionUID = 7719084020409366076L;
+	private static final long serialVersionUID = 9150166467660862183L;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //  SERVICES
@@ -59,23 +58,17 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
-									  	  final F form) {
+	public VaadinDetailEditFormBase(final UII18NService i18n,
+									final F form) {
 		_i18n = i18n;
-
-		// style window
-		this.center();
-		this.setModal(true);
-		this.setCaption("");
-		this.setResizable(false);
 
 		// Form
 		_form = form;
-		
+
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
 		// - CANCEL
-		_btnAcepCancDelete.addCancelButtonClickListner(event -> VaadinDetailEditFormWindowBase.this.close());
+		_btnAcepCancDelete.addCancelButtonClickListner(event -> VaadinDetailEditFormBase.this.close());
 		// - OK
 		_btnAcepCancDelete.addAcceptButtonClickListner(event -> {
 															// collect ui controls values & tell
@@ -114,7 +107,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		
 		layout.addComponents(_form,
 							 _btnAcepCancDelete);
-		this.setContent(layout);
+		this.setCompositionRoot(layout);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT

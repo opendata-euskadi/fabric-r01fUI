@@ -1,7 +1,5 @@
 package r01ui.base.components;
 
-import com.vaadin.ui.Component;
-
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
@@ -26,7 +24,8 @@ import r01ui.base.components.form.VaadinViewHasVaadinViewObjectBinder;
  */
 @Deprecated	// see VaadinDetailEditFormWindowBase
 public abstract class VaadinDetailEditWindowBase<V extends UIViewObject,
-												 F extends VaadinDetailForm<V> & VaadinViewHasVaadinViewObjectBinder<V> & Component>
+												 F extends VaadinDetailForm<V> 
+														 & VaadinViewHasVaadinViewObjectBinder<V>>
      		  extends VaadinDetailEditFormWindowBase<V,F> {
 
 	private static final long serialVersionUID = 3039822348497615734L;

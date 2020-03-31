@@ -154,7 +154,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
 
 		// bind the view object to the view
-		_form.readUIControlsFrom(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
+		_form.bindUIControlsTo(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
 
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();

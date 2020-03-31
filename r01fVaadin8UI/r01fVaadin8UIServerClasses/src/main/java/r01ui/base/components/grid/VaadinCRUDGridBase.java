@@ -288,20 +288,21 @@ abstract class VaadinCRUDGridBase<// The view object
 		_lblCaption.setVisible(false);
 		
 		////////// Buttons
-		_btnCreate = new Button(VaadinIcons.PLUS_SQUARE_LEFT_O);
-		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnCreate = new Button(i18n.getMessage("new"),
+								VaadinIcons.PLUS_SQUARE_LEFT_O);
+		_btnCreate.addStyleNames(ValoTheme.BUTTON_PRIMARY);
 
 		_btnEdit = new Button(VaadinIcons.EDIT);
-		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnEdit.addStyleNames(ValoTheme.BUTTON_BORDERLESS);
 		
 		_btnRemove = new Button(VaadinIcons.TRASH);
-		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnRemove.addStyleNames(ValoTheme.BUTTON_BORDERLESS);
 
 		_btnUp = new Button(VaadinIcons.ARROW_UP);
-		_btnCreate.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnUp.addStyleNames(ValoTheme.BUTTON_BORDERLESS);
 		
 		_btnDown = new Button(VaadinIcons.ARROW_DOWN);
-		_btnDown.addStyleName(ValoTheme.BUTTON_LINK);
+		_btnDown.addStyleNames(ValoTheme.BUTTON_BORDERLESS);
 		
 		// all except the [create] button are disabled by default
 		_resetButtonStatus();
@@ -448,14 +449,20 @@ abstract class VaadinCRUDGridBase<// The view object
 		_grid.addStyleNames(styles);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	ACTION METHODS
+//	ACTION METHODS (override if needed)
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected abstract void doCreateItem(final V item,
-										 final UISubscriber<V> subscriber);
-	protected abstract void doSaveItem(final V item,
-									   final UISubscriber<V> subscriber);
-	protected abstract void doDeleteItem(final V item,
-										 final UISubscriber<V> subscriber);
+	protected void doCreateItem(final V item,
+								final UISubscriber<V> subscriber) {
+		subscriber.onSuccess(item);
+	}
+	protected void doSaveItem(final V item,
+							  final UISubscriber<V> subscriber) {
+		subscriber.onSuccess(item);
+	}
+	protected void doDeleteItem(final V item,
+								final UISubscriber<V> subscriber) {
+		subscriber.onSuccess(item);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Show ADD, REMOVE, EDIT modal window
 /////////////////////////////////////////////////////////////////////////////////////////

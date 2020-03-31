@@ -46,6 +46,8 @@ public abstract class VaadinValoTheme
 	
 	public static final String GRID_COMPONENT = "r01ui-object-grid-component";
 	public static final String GRID_STRIPPED = "stripes";
+	public static final String GRID_NO_BORDER = "r01ui-grid-no-border";
+	public static final String GRID_CELL_NO_BORDER = "r01ui-grid-cell-no-border";
 	public static final String GRID_CONTAINER_SMALL_SIZE = "grid-container-small";
 	public static final String GRID_CONTAINER_MEDIUM_SIZE = "grid-container-medium";
 	public static final String GRID_CONTAINER_BIG_SIZE = "grid-container-big";

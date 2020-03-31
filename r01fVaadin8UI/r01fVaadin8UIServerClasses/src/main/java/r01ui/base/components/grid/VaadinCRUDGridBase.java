@@ -156,7 +156,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * 
  * 		// And finally the grid
  *		public class MyCRUDGrid
- *			 extends VaadinCRUDGridBase<MyViewObj> {
+ *			 extends VaadinCRUDGridWithPopUpDetailBase<MyViewObj> {
  *		
  *			public MyCRUDGrid(final UII18NService i18n) {
  *				super(i18n,
@@ -443,6 +443,9 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 	public void disableRowMovement() {
 		_lyButtonsUpDown.setVisible(false);
+	}
+	public void addStylesToGrid(final String... styles) {
+		_grid.addStyleNames(styles);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ACTION METHODS

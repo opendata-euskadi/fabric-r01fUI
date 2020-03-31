@@ -1,5 +1,7 @@
 package r01ui.base.components.button;
 
+import java.util.stream.Stream;
+
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
@@ -8,6 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 import lombok.experimental.Accessors;
 import r01f.ui.i18n.UII18NService;
+import r01f.util.types.collections.CollectionUtils;
 
 /**
  * A layout of [accept] [cancel] and [delete] buttons like
@@ -99,25 +102,73 @@ public class VaadinAcceptCancelDeleteButtons
 	public boolean isDeleteButtonVisible() {
 		return _btnDelete.isVisible();
 	}
+	public void setButtonsVisibleStatus(final boolean visible,
+										final VaadinAcceptCancelDeleteButton... button) {
+		if (CollectionUtils.isNullOrEmpty(button)) return;
+		Stream.of(button)
+			  .forEach(btn -> {
+				  			switch (btn) {
+							case ACCEPT:
+								this.setAcceptButtonVisible(visible);
+								break;
+							case CANCEL:
+								this.setCancelButtonVisible(visible);
+								break;
+							case DELETE:
+								this.setDeleteButtonVisible(visible);
+								break;
+							default:
+								throw new IllegalArgumentException();
+				  			}
+			  		   });
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENABLE                                                                         
 /////////////////////////////////////////////////////////////////////////////////////////
-	public void setAcceptButtonEnabled(final boolean visible) {
-		_btnAccept.setEnabled(visible);
+	public void setAcceptButtonEnabled(final boolean enabled) {
+		_btnAccept.setEnabled(enabled);
 	}
 	public boolean isAcceptButtonEnabled() {
 		return _btnAccept.isEnabled();
 	}
-	public void setCancelButtonEnabled(final boolean visible) {
-		_btnCancel.setEnabled(visible);
+	public void setCancelButtonEnabled(final boolean enabled) {
+		_btnCancel.setEnabled(enabled);
 	}
 	public boolean isCancelButtonEnabled() {
 		return _btnCancel.isEnabled();
 	}
-	public void setDeleteButtonEnabled(final boolean visible) {
-		_btnDelete.setEnabled(visible);
+	public void setDeleteButtonEnabled(final boolean enabled) {
+		_btnDelete.setEnabled(enabled);
 	}
 	public boolean isDeleteButtonEnabled() {
 		return _btnDelete.isEnabled();
+	}
+	public void setButtonsEnableStatus(final boolean enabled,
+									   final VaadinAcceptCancelDeleteButton... button) {
+		if (CollectionUtils.isNullOrEmpty(button)) return;
+		Stream.of(button)
+			  .forEach(btn -> {
+				  			switch (btn) {
+							case ACCEPT:
+								this.setAcceptButtonEnabled(enabled);
+								break;
+							case CANCEL:
+								this.setCancelButtonEnabled(enabled);
+								break;
+							case DELETE:
+								this.setDeleteButtonEnabled(enabled);
+								break;
+							default:
+								throw new IllegalArgumentException();
+				  			}
+			  		   });
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public enum VaadinAcceptCancelDeleteButton {
+		ACCEPT,
+		CANCEL,
+		DELETE;
 	}
 }

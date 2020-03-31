@@ -134,6 +134,8 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override 
 	protected <W extends VaadinDetailEditForm<V>> W enterCreateNew() {
+//		_grid.setEnabled(false);
+		
 		// create the detail form
 		W win = super.enterCreateNew();
 		
@@ -144,7 +146,7 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 		return win;
 	}
 	@Override 
-	protected <W extends VaadinDetailEditForm<V>> W enterEdit(final V viewObj) {
+	protected <W extends VaadinDetailEditForm<V>> W enterEdit(final V viewObj) {		
 		// create the detail form
 		W win = super.enterEdit(viewObj);
 		

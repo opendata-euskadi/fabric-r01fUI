@@ -1,8 +1,5 @@
 package r01ui.base.components.form;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
@@ -16,6 +13,7 @@ import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons;
+import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
 import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
@@ -66,12 +64,6 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 									  	  final F form) {
 		_i18n = i18n;
 
-		// style window
-		this.center();
-		this.setModal(true);
-		this.setCaption("");
-		this.setResizable(false);
-
 		// Form
 		_form = form;
 		
@@ -114,18 +106,23 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		// Layout
 		VerticalLayout layout = new VerticalLayout();
 		layout.setMargin(true);
-		layout.setSpacing(false);		
 		
 		layout.addComponents(_form,
 							 _btnAcepCancDelete);
 		this.setContent(layout);
+		
+		// style window
+		this.center();
+		this.setModal(true);
+		this.setCaption("");
+		this.setResizable(false);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void forCreating(final Factory<V> viewObjFactory,
-							final UIPresenterSubscriber<V> saveSubscriber) {		
+							final UIPresenterSubscriber<V> saveSubscriber) {
 		// what to do after saving
 		_saveSubscriber = saveSubscriber;
 		_deleteSubscriber = null;		// cannot delete from a create window
@@ -166,13 +163,16 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 		if (_deleteSubscriber == null) _btnAcepCancDelete.setDeleteButtonVisible(false);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	PRIVATE METHODS
+//	
 /////////////////////////////////////////////////////////////////////////////////////////
-	private void _dimensionsPopUp() {
-		// Dimensions of the screen
-		Dimension screenSize = Toolkit.getDefaultToolkit()
-									  .getScreenSize();
-		_form.setWidth(screenSize.getWidth() * 0.3 + "") ;
-		_form.setHeight(screenSize.getHeight() * 0.2 + "");
+	public void setButtonsVisibleStatus(final boolean visible,
+								  		final VaadinAcceptCancelDeleteButton... btns) {
+		_btnAcepCancDelete.setButtonsVisibleStatus(visible, 
+												   btns);
+	}
+	public void setButtonsEnableStatus(final boolean enabled,
+								  	   final VaadinAcceptCancelDeleteButton... btns) {
+		_btnAcepCancDelete.setButtonsEnableStatus(enabled, 
+												   btns);
 	}
 }

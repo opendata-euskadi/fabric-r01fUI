@@ -224,7 +224,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	protected final Button _btnUp;
 	protected final Button _btnDown;
 	
-	protected final VaadinDetailEditForm<V> _detailEdit;
+	protected final VaadinDetailEditForm<V> _detailEditForm;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
@@ -325,7 +325,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		
 		
 		////////// Form
-		_detailEdit = detailFactory.create();
+		_detailEditForm = detailFactory.create();
 		
 		////////// Layout
 		VerticalLayout vly = new VerticalLayout(lyButtons,
@@ -333,6 +333,9 @@ abstract class VaadinCRUDGridBase<// The view object
 		vly.setMargin(false);
 		vly.setSizeFull();
 		this.setCompositionRoot(vly);
+		
+		////////// enable row movement by default
+		this.enableRowMovement();
 		
 		////////// Initial empty data
 		this.setItems(Lists.newArrayList());
@@ -472,24 +475,24 @@ abstract class VaadinCRUDGridBase<// The view object
 	 */
 	@SuppressWarnings("unchecked")
 	protected <W extends VaadinDetailEditForm<V>> W enterCreateNew() {
-		_detailEdit.forCreating(_viewObjFactory,
-							   // What happens when the edit form is closed after creating a new [view object]
-							   // ...add the created obj and refresh
-							   viewObjToCreate -> {
-								   	// tell the outside world to create
-									this.doCreateItem(viewObjToCreate,
-													  // what to do after creating
-													  createdViewObj -> {
-															// refresh the grid
-										   					VaadinListDataProviders.collectionBackedOf(_grid)
-										   										   .addNewItem(createdViewObj);
-															this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
-																										.getUnderlyingItemsCollectionSize());
-															// setup buttons
-															_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
-													   });
-							   });
-		return (W)_detailEdit;
+		_detailEditForm.forCreating(_viewObjFactory,
+								    // What happens when the edit form is closed after creating a new [view object]
+								    // ...add the created obj and refresh
+								    viewObjToCreate -> {
+									   	// tell the outside world to create
+										this.doCreateItem(viewObjToCreate,
+														  // what to do after creating
+														  createdViewObj -> {
+																// refresh the grid
+											   					VaadinListDataProviders.collectionBackedOf(_grid)
+											   										   .addNewItem(createdViewObj);
+																this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																											.getUnderlyingItemsCollectionSize());
+																// setup buttons
+																_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+														   });
+								    });
+		return (W)_detailEditForm;
 	}
 	/**
 	 * Enter in edit mode
@@ -498,22 +501,22 @@ abstract class VaadinCRUDGridBase<// The view object
 	 */
 	@SuppressWarnings("unchecked")
 	protected <W extends VaadinDetailEditForm<V>> W enterEdit(final V viewObj) {
-		_detailEdit.forEditing(viewObj,
-							  // What happens when the edit form is closed after editing the [view object]
-							  // ... update the edited obj and refresh
-							  viewObjToSave -> {
-								  // tell the outside world to save
-								  this.doSaveItem(viewObjToSave,
-										  		  // what to do after saving
-										  		  savedViewObj -> {
-														// refresh the grid
-														 VaadinListDataProviders.collectionBackedOf(_grid)
-													  						 	.refreshItem(savedViewObj);
-														// setup buttons
-														_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
-										  		  });
-							  });
-		return (W)_detailEdit;
+		_detailEditForm.forEditing(viewObj,
+								   // What happens when the edit form is closed after editing the [view object]
+								   // ... update the edited obj and refresh
+								   viewObjToSave -> {
+									  // tell the outside world to save
+									  this.doSaveItem(viewObjToSave,
+											  		  // what to do after saving
+											  		  savedViewObj -> {
+															// refresh the grid
+															 VaadinListDataProviders.collectionBackedOf(_grid)
+														  						 	.refreshItem(savedViewObj);
+															// setup buttons
+															_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+											  		  });
+								   });
+		return (W)_detailEditForm;
 	}
 	/**
 	 * Show the remove popup

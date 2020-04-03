@@ -311,18 +311,10 @@ abstract class VaadinCRUDGridBase<// The view object
 		// layout
 		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
 		
-		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
-		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyButtonsEditRemove,_lyButtonsUpDown);
+		_lyButtonsUpDown = new CssLayout(lyButtonsEditRemove,_btnUp,_btnDown);
+		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,_lyButtonsUpDown);
 		lyButtons.setWidthFull();
-		lyButtons.setComponentAlignment(_lblCaption,Alignment.MIDDLE_LEFT);
-		lyButtons.setComponentAlignment(_btnCreate,Alignment.MIDDLE_LEFT);
-		lyButtons.setComponentAlignment(_lyButtonsUpDown,Alignment.BOTTOM_RIGHT);
-		lyButtons.setComponentAlignment(lyButtonsEditRemove,Alignment.BOTTOM_RIGHT);
-		lyButtons.setExpandRatio(_lblCaption,3);
-		lyButtons.setExpandRatio(_btnCreate,1);
-		lyButtons.setExpandRatio(_lyButtonsUpDown,1);
-		lyButtons.setExpandRatio(lyButtonsEditRemove,1);
-		
+		lyButtons.setComponentAlignment(_lyButtonsUpDown, Alignment.BOTTOM_RIGHT);
 		
 		////////// Form
 		_detailEditForm = detailFactory.create();
@@ -338,7 +330,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		this.enableRowMovement();
 		
 		////////// Initial empty data
-		this.setItems(Lists.newArrayList());
+		//this.setItems(Lists.newArrayList());
 	}
 	/**
 	 * Override this method to further configure the grid
@@ -569,7 +561,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	public Registration addSortListener(final SortListener<GridSortOrder<V>> listener) {
 		return _grid.addSortListener(listener);
 	}
-	public void setaDataProviderListener(final DataProviderListener<V> listener) {
+	public void setDataProviderListener(final DataProviderListener<V> listener) {
 		_grid.getDataProvider().addDataProviderListener(listener);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -577,21 +569,25 @@ abstract class VaadinCRUDGridBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void refreshList() {
+		System.out.println("refreshList");
 		VaadinListDataProviders.collectionBackedOf(_grid)
 							   .refreshAll();
 	}
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
+		System.out.println("setitems0");
 		_grid.setItems(items);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Stream<V> streamOfItems) {
+		System.out.println("setitems1");
 		_grid.setItems(streamOfItems);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Collection<V> items) {
+		System.out.println("setitems2");
 		Collection<V> theItems = items != null ? items : Lists.newArrayList();
 		_grid.setItems(theItems);
 		this.setHeightByRows(theItems.size());
@@ -599,6 +595,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 	@Override
 	public void setDataProvider(final DataProvider<V,?> dataProvider) {
+				System.out.println("setDataprovider");
 		_grid.setDataProvider(dataProvider);
 	}
 	@Override

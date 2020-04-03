@@ -52,7 +52,7 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	public <F extends VaadinDetailForm<V>
 			 		& VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-							  		   		 					   						final VaadinViewFactory<F> formFactory,final Factory<V> viewObjFactory) {
+							  		   		 					   				   final VaadinViewFactory<F> formFactory,final Factory<V> viewObjFactory) {
 		this(i18n,
 			 // edit popup factory
 			 () -> new VaadinDetailEditFormBase<V,F>(i18n,
@@ -92,8 +92,8 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	MORE CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////
-	public <W extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-																			final Factory<W> formFactory,
+	public <F extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
+																			final Factory<F> formFactory,
 																			final Factory<V> viewObjFactory) {
 		super(i18n,
 			 // edit form and popup factories
@@ -103,8 +103,8 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 			 // grid & columns provider
 			 null);		// no grid columns by default
 	}
-	public <W extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-							  		   										final Factory<W> formFactory,
+	public <F extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
+							  		   										final Factory<F> formFactory,
 							  		   										final Class<V> viewObjType,final Factory<V> viewObjFactory,
 							  		   										final String... viewObjPropertyNames) {	
 		super(i18n,
@@ -116,8 +116,8 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 			 new Grid<>(viewObjType),
 			 VaadinGridColumnProvider.createColumnProviderUsingViewObjectPropertiesWithNames(viewObjPropertyNames));	// grid columns are the property names
 	}
-	public <W extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-							  												final Factory<W> formFactory,
+	public <F extends VaadinDetailEditForm<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
+							  												final Factory<F> formFactory,
 							  												final Factory<V> viewObjFactory,
 							  												final VaadinGridColumnProvider<V> gridColsProvider) {
 		super(i18n,

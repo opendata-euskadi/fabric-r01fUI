@@ -227,6 +227,11 @@ abstract class VaadinCRUDGridBase<// The view object
 	protected final VaadinDetailEditForm<V> _detailEditForm;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
+//	STATE
+/////////////////////////////////////////////////////////////////////////////////////////
+	private boolean _enabled = true;
+	
+/////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
 	<F extends VaadinDetailForm<V>
@@ -311,18 +316,10 @@ abstract class VaadinCRUDGridBase<// The view object
 		// layout
 		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
 		
-		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
-		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyButtonsEditRemove,_lyButtonsUpDown);
+		_lyButtonsUpDown = new CssLayout(lyButtonsEditRemove,_btnUp,_btnDown);
+		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,_lyButtonsUpDown);
 		lyButtons.setWidthFull();
-		lyButtons.setComponentAlignment(_lblCaption,Alignment.MIDDLE_LEFT);
-		lyButtons.setComponentAlignment(_btnCreate,Alignment.MIDDLE_LEFT);
-		lyButtons.setComponentAlignment(_lyButtonsUpDown,Alignment.BOTTOM_RIGHT);
-		lyButtons.setComponentAlignment(lyButtonsEditRemove,Alignment.BOTTOM_RIGHT);
-		lyButtons.setExpandRatio(_lblCaption,3);
-		lyButtons.setExpandRatio(_btnCreate,1);
-		lyButtons.setExpandRatio(_lyButtonsUpDown,1);
-		lyButtons.setExpandRatio(lyButtonsEditRemove,1);
-		
+		lyButtons.setComponentAlignment(_lyButtonsUpDown, Alignment.BOTTOM_RIGHT);
 		
 		////////// Form
 		_detailEditForm = detailFactory.create();
@@ -338,7 +335,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		this.enableRowMovement();
 		
 		////////// Initial empty data
-		this.setItems(Lists.newArrayList());
+		//this.setItems(Lists.newArrayList());
 	}
 	/**
 	 * Override this method to further configure the grid
@@ -618,11 +615,12 @@ abstract class VaadinCRUDGridBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void setEnabled(final boolean enabled) {
+		_enabled = enabled;
 		_grid.setEnabled(enabled);
 	}
 	@Override
 	public boolean isEnabled() {
-		return _grid.isEnabled();
+		return _enabled;	// BEWARE!! do NOT use _grid.isEnabled() because when disabling, it disables also the detail form
 	}
 	@Override
 	public boolean isVisible() {

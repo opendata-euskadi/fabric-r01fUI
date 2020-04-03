@@ -566,7 +566,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	public Registration addSortListener(final SortListener<GridSortOrder<V>> listener) {
 		return _grid.addSortListener(listener);
 	}
-	public void setaDataProviderListener(final DataProviderListener<V> listener) {
+	public void setDataProviderListener(final DataProviderListener<V> listener) {
 		_grid.getDataProvider().addDataProviderListener(listener);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -574,21 +574,25 @@ abstract class VaadinCRUDGridBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void refreshList() {
+		System.out.println("refreshList");
 		VaadinListDataProviders.collectionBackedOf(_grid)
 							   .refreshAll();
 	}
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
+		System.out.println("setitems0");
 		_grid.setItems(items);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Stream<V> streamOfItems) {
+		System.out.println("setitems1");
 		_grid.setItems(streamOfItems);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Collection<V> items) {
+		System.out.println("setitems2");
 		Collection<V> theItems = items != null ? items : Lists.newArrayList();
 		_grid.setItems(theItems);
 		this.setHeightByRows(theItems.size());
@@ -596,6 +600,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 	@Override
 	public void setDataProvider(final DataProvider<V,?> dataProvider) {
+				System.out.println("setDataprovider");
 		_grid.setDataProvider(dataProvider);
 	}
 	@Override

@@ -48,12 +48,12 @@ public class VaadinAcceptCancelDeleteButtons
 		_btnDelete.setStyleName("danger");
 
 		////////// layout
-		HorizontalLayout hly = new HorizontalLayout(_btnDelete,
-													_btnCancel,
-													_btnAccept);
-		hly.setComponentAlignment(_btnDelete,Alignment.BOTTOM_LEFT);
-		hly.setComponentAlignment(_btnAccept,Alignment.BOTTOM_RIGHT);
-		hly.setComponentAlignment(_btnCancel,Alignment.BOTTOM_RIGHT);
+		HorizontalLayout buttonsly = new HorizontalLayout(_btnDelete,
+														  _btnCancel,
+														  _btnAccept);
+		
+		HorizontalLayout hly = new HorizontalLayout(buttonsly);
+		hly.setComponentAlignment(buttonsly, Alignment.MIDDLE_RIGHT);
 		hly.setSizeFull();
 
 		////////// composition

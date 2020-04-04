@@ -3,16 +3,24 @@ package r01ui.base.components.form;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Composite;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import r01f.model.facets.view.HasCaptionLanguageDependent;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
+import r01f.util.types.Strings;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons;
+import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
 import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
@@ -30,6 +38,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * BEWARE! DO NOT CONFUSE with it's pop-up window counterpart {@link VaadinDetailEditFormWindowBase}
  * @param <V>
  */
+@Accessors(prefix="_")
 public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 											   F extends VaadinDetailForm<V>
 												       & VaadinFormHasVaadinUIBinder<V>>
@@ -46,8 +55,8 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected final F _form;
-	protected final VaadinAcceptCancelDeleteButtons _btnAcepCancDelete;
+	@Getter protected final F _form;
+			protected final VaadinAcceptCancelDeleteButtons _btnAcepCancDelete;
 
 	// OUTSIDE WORLD SUBSCRIBERS
 	protected UIPresenterSubscriber<V> _saveSubscriber;
@@ -67,6 +76,15 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
+		_setAcceptCancelDeleteButtonsBehavior();
+
+		// Layout
+		CssLayout layout = new CssLayout(_form,
+							 			 _btnAcepCancDelete);
+		layout.setWidthFull();
+		this.setCompositionRoot(layout);
+	}
+	private void _setAcceptCancelDeleteButtonsBehavior() {
 		// - CANCEL
 		_btnAcepCancDelete.addCancelButtonClickListner(event -> VaadinDetailEditFormBase.this.close());
 		// - OK
@@ -99,15 +117,6 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		_btnAcepCancDelete.addDeleteButtonClickListner(event -> {
 															if (_deleteSubscriber != null) _deleteSubscriber.onSuccess(_form.getViewObject());
 													   });
-
-		// Layout
-		VerticalLayout layout = new VerticalLayout();
-		layout.setMargin(true);
-		layout.setSpacing(false);		
-		
-		layout.addComponents(_form,
-							 _btnAcepCancDelete);
-		this.setCompositionRoot(layout);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT
@@ -120,7 +129,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		_deleteSubscriber = null;		// cannot delete from a create window
 		
 		// create the view object
-		_viewObj = viewObjFactory.create();
+		_viewObj = viewObjFactory.create();		// set _viewObj BEFORE binding!
 
 		// bind the view object to the view
 		_form.bindUIControlsTo(_viewObj);
@@ -130,28 +139,77 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		
 		// set the buttons status
 		_btnAcepCancDelete.setCreatingNewRecordStatus();
+		this.setVisible(true);
 	}
 	@Override
 	public void forEditing(final V viewObj,
 						   final UIPresenterSubscriber<V> saveSubscriber,
 						   final UIPresenterSubscriber<V> deleteSubscriber) {
 		if (viewObj == null) throw new IllegalArgumentException("view object MUST NOT be null!");
-		_viewObj = viewObj;
 
 		// store the subscribers
 		_saveSubscriber = saveSubscriber;
 		_deleteSubscriber = deleteSubscriber;
 		
-		// sets window caption
-		this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
-
+		// store the view object
+		_viewObj = viewObj;						// set _viewObj BEFORE binding!
+		
 		// bind the view object to the view
-		_form.readUIControlsFrom(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
+		_form.bindUIControlsTo(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
 
+		// sets window caption
+		if (viewObj instanceof HasCaptionLanguageDependent) {
+			HasCaptionLanguageDependent hasCaption = (HasCaptionLanguageDependent)viewObj;
+			this.setCaption(Strings.customized("{}: {}",
+											   _i18n.getMessage(this.getEditItemCaptionI18NKey()),
+											   hasCaption.getCaption(_i18n.getCurrentLanguage())));
+		} else {
+			this.setCaption(_i18n.getMessage(this.getEditItemCaptionI18NKey()));
+		}
+		
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();
 		
 		// if no delete subscriber is handed, do NOT show the delete button
 		if (_deleteSubscriber == null) _btnAcepCancDelete.setDeleteButtonVisible(false);
+		this.setVisible(true);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void cancel() {
+		// simulate the [cancel] button click
+		_btnAcepCancDelete.cancel();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void addCancelButtonClickListner(final ClickListener clickListener) {
+		_btnAcepCancDelete.addCancelButtonClickListner(clickListener);
+	}
+	@Override
+	public void addAcceptButtonClickListner(final ClickListener clickListener) {
+		_btnAcepCancDelete.addAcceptButtonClickListner(clickListener);
+	}
+	@Override
+	public void addDeleteButtonClickListner(final ClickListener clickListener) {
+		_btnAcepCancDelete.addDeleteButtonClickListner(clickListener);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void setButtonsVisibleStatus(final boolean visible,
+								  		final VaadinAcceptCancelDeleteButton... btns) {
+		_btnAcepCancDelete.setButtonsVisibleStatus(visible, 
+												   btns);
+	}
+	@Override
+	public void setButtonsEnableStatus(final boolean enabled,
+								  	   final VaadinAcceptCancelDeleteButton... btns) {
+		_btnAcepCancDelete.setButtonsEnableStatus(enabled, 
+												   btns);
 	}
 }

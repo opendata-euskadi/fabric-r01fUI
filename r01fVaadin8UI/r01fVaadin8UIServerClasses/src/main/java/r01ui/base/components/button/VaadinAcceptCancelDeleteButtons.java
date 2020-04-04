@@ -81,6 +81,9 @@ public class VaadinAcceptCancelDeleteButtons
 	public void setEditingExistingRecordStatus() {
 		_btnDelete.setVisible(true);
 	}
+	public void cancel() {
+		_btnCancel.click();		// simulate the click event
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	VISIBLE                                                                         
 /////////////////////////////////////////////////////////////////////////////////////////

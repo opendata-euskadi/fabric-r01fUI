@@ -1,10 +1,12 @@
 package r01ui.base.components.form;
 
+import com.vaadin.ui.Button.ClickListener;
+
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
-import r01ui.base.components.form.VaadinDetailForm;
+import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
 
 public interface VaadinDetailEditForm<V extends UIViewObject> 
 		 extends VaadinDetailForm<V> {
@@ -38,17 +40,41 @@ public interface VaadinDetailEditForm<V extends UIViewObject>
 						saveSubscriber,
 						null);		// no delete subscriber
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Click the cancel button
+	 */
+	public default void cancel() {
+		// nothing
+	}
 	/**
 	 * Closes the form
 	 */
-	public void close();
+	public default void close() {
+		this.setVisible(false);			// hide by default
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	i18n                                                                         
 /////////////////////////////////////////////////////////////////////////////////////////
 	public default I18NKey getNewItemCaptionI18NKey() {
-		return I18NKey.named("new");
+		return I18NKey.named("creating");
 	}
 	public default I18NKey getEditItemCaptionI18NKey() {
-		return I18NKey.named("edit");
+		return I18NKey.named("editing");
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	Listeners
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void addCancelButtonClickListner(final ClickListener clickListener);
+	public void addAcceptButtonClickListner(final ClickListener clickListener);
+	public void addDeleteButtonClickListner(final ClickListener clickListener);
+/////////////////////////////////////////////////////////////////////////////////////////
+//	Enable / visible
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setButtonsVisibleStatus(final boolean visible,
+								  		final VaadinAcceptCancelDeleteButton... btns);
+	public void setButtonsEnableStatus(final boolean enabled,
+								  	   final VaadinAcceptCancelDeleteButton... btns);
 }

@@ -53,6 +53,8 @@ import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
@@ -229,7 +231,8 @@ abstract class VaadinCRUDGridBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	STATE
 /////////////////////////////////////////////////////////////////////////////////////////
-	private boolean _enabled = true;
+	
+	private final VaadinCRUDGridEnableStatusHandler _enabledStatusHandler;		// stores the enable/disable status for later restor
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
@@ -323,6 +326,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		
 		////////// Form
 		_detailEditForm = detailFactory.create();
+		_configureDetailEditForm(_detailEditForm);
 		
 		////////// Layout
 		VerticalLayout vly = new VerticalLayout(lyButtons,
@@ -334,8 +338,19 @@ abstract class VaadinCRUDGridBase<// The view object
 		////////// enable row movement by default
 		this.enableRowMovement();
 		
+		////////// Store the enable status 
+		_enabledStatusHandler = new VaadinCRUDGridEnableStatusHandler();		// enabled by default
+		_enabledStatusHandler.setEnabled(true);
+		
 		////////// Initial empty data
-		//this.setItems(Lists.newArrayList());
+		// this.setItems(Lists.newArrayList());
+	}
+	/**
+	 * Override this method to further configure the detail edit form
+	 * @param <W>
+	 */
+	protected <W extends VaadinDetailEditForm<V>> void _configureDetailEditForm(final W editForm) {
+		// do nothing by default
 	}
 	/**
 	 * Override this method to further configure the grid
@@ -367,7 +382,6 @@ abstract class VaadinCRUDGridBase<// The view object
 											_setUpDownButtonsStatusForSelectedItem();
 										}
 								   });
-		
 		// double click listener
 		_grid.addItemClickListener(event -> {
 			if (event.getMouseEventDetails().isDoubleClick())
@@ -472,10 +486,17 @@ abstract class VaadinCRUDGridBase<// The view object
 	 */
 	@SuppressWarnings("unchecked")
 	protected <W extends VaadinDetailEditForm<V>> W enterCreateNew() {
+		// disable
+		_enabledStatusHandler.setEnabled(false);
+		
+		// puts the [detail form] (a pop up or just a form) into [create-new mode]
 		_detailEditForm.forCreating(_viewObjFactory,
 								    // What happens when the edit form is closed after creating a new [view object]
 								    // ...add the created obj and refresh
 								    viewObjToCreate -> {
+								    	// enable again
+								    	_enabledStatusHandler.setEnabled(true);
+								    	
 									   	// tell the outside world to create
 										this.doCreateItem(viewObjToCreate,
 														  // what to do after creating
@@ -498,20 +519,27 @@ abstract class VaadinCRUDGridBase<// The view object
 	 */
 	@SuppressWarnings("unchecked")
 	protected <W extends VaadinDetailEditForm<V>> W enterEdit(final V viewObj) {
+		// disable
+		_enabledStatusHandler.setEnabled(false);
+		
+		// puts the [detail form] (a pop up or just a form) into [create-new mode]
 		_detailEditForm.forEditing(viewObj,
 								   // What happens when the edit form is closed after editing the [view object]
 								   // ... update the edited obj and refresh
 								   viewObjToSave -> {
-									  // tell the outside world to save
-									  this.doSaveItem(viewObjToSave,
-											  		  // what to do after saving
-											  		  savedViewObj -> {
+								    	// enable again
+								    	_enabledStatusHandler.setEnabled(true);
+								    	
+								    	// tell the outside world to save
+								    	this.doSaveItem(viewObjToSave,
+											  		 	// what to do after saving
+											  		  	savedViewObj -> {
 															// refresh the grid
 															 VaadinListDataProviders.collectionBackedOf(_grid)
 														  						 	.refreshItem(savedViewObj);
 															// setup buttons
 															_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
-											  		  });
+											  		  	});
 								   });
 		return (W)_detailEditForm;
 	}
@@ -521,6 +549,7 @@ abstract class VaadinCRUDGridBase<// The view object
 	 * @param viewObj
 	 */
 	protected void enterDelete(final V viewObj) {
+		// Shows a [delete] proceed gateway
 		VaadinProceedGateDialogWindow proceedGatewayPopUp = new VaadinProceedGateDialogWindow(_i18n,
 																			   				  I18NKey.forId("delete"),
 																			   				  I18NKey.forId("grid.crud.delete.message"),
@@ -530,11 +559,13 @@ abstract class VaadinCRUDGridBase<// The view object
 																								  this.doDeleteItem(viewObj,
 																										  			// what to do after delete
 																										  			deletedViewObj -> {
-																														  /// remove the item
-																														  VaadinListDataProviders.collectionBackedOf(_grid)
-																														  						 .removeItem(deletedViewObj);
-																														  // now there's no selected item
-																														 _resetButtonStatus();
+																													  	// remove the item
+																													  	VaadinListDataProviders.collectionBackedOf(_grid)
+																													  						   .removeItem(deletedViewObj);
+																														this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																																									.getUnderlyingItemsCollectionSize());
+																														// now there's no selected item
+																														_resetButtonStatus();
 																													});
 																							  });
 		UI.getCurrent()
@@ -580,19 +611,16 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
-		System.out.println("setitems0");
 		_grid.setItems(items);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Stream<V> streamOfItems) {
-		System.out.println("setitems1");
 		_grid.setItems(streamOfItems);
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Collection<V> items) {
-		System.out.println("setitems2");
 		Collection<V> theItems = items != null ? items : Lists.newArrayList();
 		_grid.setItems(theItems);
 		this.setHeightByRows(theItems.size());
@@ -600,7 +628,6 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 	@Override
 	public void setDataProvider(final DataProvider<V,?> dataProvider) {
-				System.out.println("setDataprovider");
 		_grid.setDataProvider(dataProvider);
 	}
 	@Override
@@ -618,14 +645,65 @@ abstract class VaadinCRUDGridBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENABLE & VISIBLE
 /////////////////////////////////////////////////////////////////////////////////////////
+	private class VaadinCRUDGridEnableStatusHandler {
+		private boolean _enabled;
+		
+		// the status BEFORE setting the [enabled] status to FALSE
+		private boolean _gridEnabled = true;
+		private boolean _createEnabled = true;
+		private boolean _editEnabled = true;
+		private boolean _removeEnabled = true;
+		private boolean _upEnabled = true;
+		private boolean _downEnabled = true;
+		
+		void setEnabled(final boolean status) {
+			if (!status) {
+				this.disable();
+			} else {
+				this.enable();
+			}
+		}
+		void disable() {
+			_enabled = false;
+			
+			// store the status
+			_gridEnabled = _grid.isEnabled();
+			_createEnabled = _btnCreate.isEnabled();
+			_editEnabled = _btnEdit.isEnabled();
+			_removeEnabled = _btnRemove.isEnabled();
+			_upEnabled = _btnUp.isEnabled();
+			_downEnabled = _btnDown.isEnabled();
+			
+			// set the status
+			_grid.setEnabled(false);
+			_btnCreate.setEnabled(false);
+			_btnEdit.setEnabled(false);
+			_btnRemove.setEnabled(false);
+			_btnUp.setEnabled(false);
+			_btnDown.setEnabled(false);
+		}
+		void enable() {
+			_enabled = true;
+			
+			// restore the status
+			_grid.setEnabled(_gridEnabled);
+			_btnCreate.setEnabled(_createEnabled);
+			_btnEdit.setEnabled(_editEnabled);
+			_btnRemove.setEnabled(_removeEnabled);
+			_btnUp.setEnabled(_upEnabled);
+			_btnDown.setEnabled(_downEnabled);
+		}
+		public boolean isEnabled() {
+			return _gridEnabled;
+		}
+	}
 	@Override
 	public void setEnabled(final boolean enabled) {
-		_enabled = enabled;
-		_grid.setEnabled(enabled);
+		_enabledStatusHandler.setEnabled(enabled);
 	}
 	@Override
 	public boolean isEnabled() {
-		return _enabled;	// BEWARE!! do NOT use _grid.isEnabled() because when disabling, it disables also the detail form
+		return _enabledStatusHandler.isEnabled();	// BEWARE!! do NOT use _grid.isEnabled() because when disabling, it disables also the detail form
 	}
 	@Override
 	public boolean isVisible() {

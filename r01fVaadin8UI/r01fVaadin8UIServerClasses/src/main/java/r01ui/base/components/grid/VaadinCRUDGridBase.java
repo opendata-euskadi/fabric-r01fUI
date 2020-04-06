@@ -53,8 +53,6 @@ import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
@@ -76,9 +74,9 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  *		          
  *   Using a popup: {@link VaadinCRUDGridWithPopUpDetailBase}                or   using a detail in the same window: {@link VaadinCRUDGridWithDetailBase}
  *   
- *		            																								     [new] [delete] [up] [down]
+ *		            															 [new]									           [delete] [up] [down]
  *	          +==============================+                              	 +--------------------------------------------------------------------+
- *	          |------------------------------|  [new] [delete] [up] [down]  	 |--------------------------------------------------------------------|
+ *	  [new]   |------------------------------|        [delete] [up] [down]  	 |--------------------------------------------------------------------|
  *	 +--------|                              |----------------------------+ 	 |--------------------------------------------------------------------|
  *	 |--------|                              |----------------------------| 	 |--------------------------------------------------------------------|
  *	 |--------|          Edit form           |----------------------------| 	 |--------------------        -GRID--    -----------------------------|

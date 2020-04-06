@@ -1,6 +1,5 @@
 package r01ui.base.components.grid;	
 
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 
@@ -21,7 +20,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * A grid with a popup to edit the row
  * <pre class='brush:java'>
  *		          +==============================+
- *		          |------------------------------|  [new] [delete] [up] [down]
+ *		 [new]    |------------------------------|         [delete] [up] [down]
  *		 +--------|                              |----------------------------+
  *		 |--------|                              |----------------------------|
  *		 |--------|          Edit form           |----------------------------|

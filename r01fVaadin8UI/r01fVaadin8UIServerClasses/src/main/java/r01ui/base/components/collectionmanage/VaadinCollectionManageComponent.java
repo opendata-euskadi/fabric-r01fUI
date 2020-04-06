@@ -19,6 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import r01f.locale.I18NKey;
@@ -70,14 +71,15 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
+	@SuppressWarnings("unused")
+	private I18NKey _i18nKeyForTooltip;
 	private final Label _lblTooltip;
 	
 	@SuppressWarnings("unused")
-	private I18NKey _tooltipI18NKey;
-	
+	private I18NKey _i18nKeyForBtnAdd;
 	private final Button _btnAdd;
 	
-	private final VerticalLayout _vlyGrid;
+	private final VerticalLayout _vlyGrid;		// maybe this can be an Accordion
 	
 	private Collection<VaadinCollectionItemAddedOrRemovedEventListener<V>> _itemAddedOrRemovedEventListeners;
 	
@@ -105,10 +107,10 @@ public class VaadinCollectionManageComponent<// the view object type
 		_lblTooltip.setVisible(false);
 		
 		// add and remove buttons
-		_btnAdd = new Button(VaadinIcons.PLUS_CIRCLE);
-		_btnAdd.setDescription(i18n.getMessage("add"));
-		_btnAdd.addStyleName(ValoTheme.BUTTON_QUIET);
-		
+		_btnAdd = new Button(i18n.getMessage("new"),
+							 VaadinIcons.PLUS_SQUARE_LEFT_O);
+		_btnAdd.addStyleNames(ValoTheme.BUTTON_PRIMARY);
+				
 		////////// Layout
 		// Buttons: 	[add]
 		HorizontalLayout hlyAddRemoveButtons = new HorizontalLayout(_btnAdd);
@@ -206,11 +208,6 @@ public class VaadinCollectionManageComponent<// the view object type
 								  });
 		return outViewObjs;
 	}
-	public void setTooltip(final I18NKey tooltipKey) {
-		_tooltipI18NKey = tooltipKey;
-		_lblTooltip.setValue(_i18n.getMessage(tooltipKey));
-		_lblTooltip.setVisible(true);
-	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -246,13 +243,14 @@ public class VaadinCollectionManageComponent<// the view object type
 							 		false);	// parallel
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	ROW COMPONENT
 /////////////////////////////////////////////////////////////////////////////////////////
 	private class VaadinCollectionManageRowComponent 
 		  extends Composite
 	   implements VaadinViewI18NMessagesCanBeUpdated {
 		private static final long serialVersionUID = 8093451147953767189L;
 		
+		private final Button _btnHandler;
 		private final CS _summary;
 		private final Button _btnEdit;
 		private final Button _btnRemove;
@@ -264,35 +262,43 @@ public class VaadinCollectionManageComponent<// the view object type
 		private boolean _new;
 		
 		public VaadinCollectionManageRowComponent() {
-			////////// Summary 
+			////////// Summary
+			// the button
+			_btnHandler = new Button(VaadinIcons.CHEVRON_DOWN);
+			_btnHandler.addStyleNames(ValoTheme.BUTTON_BORDERLESS,
+									  ValoTheme.BUTTON_ICON_ONLY);
+			
+			// the summary
 			_summary = _summaryComponentFactory.from(_i18n);
 			
 			// edit button
 			_btnEdit = new Button(VaadinIcons.EDIT);
 			_btnEdit.setDescription(_i18n.getMessage("edit"));
-			_btnEdit.addStyleName(ValoTheme.BUTTON_QUIET);
+			_btnEdit.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
 			// remove button
 			_btnRemove = new Button(VaadinIcons.TRASH);
 			_btnRemove.setDescription(_i18n.getMessage("remove"));
-			_btnRemove.addStyleName(ValoTheme.BUTTON_DANGER);
+			_btnRemove.addStyleNames(ValoTheme.BUTTON_BORDERLESS);
 			
 			// up & down buttons
 			_btnUp = new Button(VaadinIcons.ARROW_UP);
 			_btnUp.setDescription(_i18n.getMessage("up"));
-			_btnUp.addStyleName(ValoTheme.BUTTON_QUIET);
+			_btnUp.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 			
 			_btnDown = new Button(VaadinIcons.ARROW_DOWN);
 			_btnDown.setDescription(_i18n.getMessage("down"));
-			_btnDown.addStyleName(ValoTheme.BUTTON_QUIET);
+			_btnDown.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 			
 
-			HorizontalLayout hlySummary = new HorizontalLayout(_summary,_btnEdit,_btnRemove,_btnUp,_btnDown);
+			HorizontalLayout hlySummary = new HorizontalLayout(_btnHandler,_summary,_btnEdit,_btnRemove,_btnUp,_btnDown);
+			hlySummary.setComponentAlignment(_btnHandler,Alignment.MIDDLE_LEFT);
 			hlySummary.setComponentAlignment(_summary,Alignment.MIDDLE_LEFT);
 			hlySummary.setComponentAlignment(_btnEdit,Alignment.MIDDLE_RIGHT);
 			hlySummary.setComponentAlignment(_btnRemove,Alignment.MIDDLE_RIGHT);
 			hlySummary.setComponentAlignment(_btnUp,Alignment.MIDDLE_RIGHT);
 			hlySummary.setComponentAlignment(_btnDown,Alignment.MIDDLE_RIGHT);
+			hlySummary.setExpandRatio(_btnHandler,0);	// exact expand ration
 			hlySummary.setExpandRatio(_summary,1);
 			hlySummary.setExpandRatio(_btnEdit,0);		// exact expand ratio
 			hlySummary.setExpandRatio(_btnRemove,0);	// exact expand ratio
@@ -300,6 +306,7 @@ public class VaadinCollectionManageComponent<// the view object type
 			hlySummary.setExpandRatio(_btnDown,0);		// exact expand ratio
 			hlySummary.setSizeFull();
 			hlySummary.setMargin(false);
+			hlySummary.addStyleName("r01-collection-manage-summary");
 			
 			////////// Edit component
 			_editComponent = _editComponentFactory.from(_i18n);
@@ -307,8 +314,9 @@ public class VaadinCollectionManageComponent<// the view object type
 			
 			////////// Layout
 			VerticalLayout ly = new VerticalLayout(hlySummary,
-												   _editComponent);
+										 		   _editComponent);
 			ly.setMargin(false);
+			//ly.setMargin(new MarginInfo(false,false,true,false));		// bottom margin
 			
 			this.setCompositionRoot(ly);
 			
@@ -316,11 +324,14 @@ public class VaadinCollectionManageComponent<// the view object type
 			_setBehavior();
 		}
 		private void _setBehavior() {
+			// handler button
+			_btnHandler.addClickListener(clickEvent -> this.toggleExpansion());		// show the edit component
+			
+			// summary click
+			_summary.addItemClickListener(clickEvent -> this.toggleExpansion());	// show the edit component
+			
 			// Edit
-			_btnEdit.addClickListener(clickEvent -> {
-										// show the edit component
-										this.toggleExpansion();
-									 });
+			_btnEdit.addClickListener(clickEvent -> this.toggleExpansion());		// show the edit component
 			// Remove
 			_btnRemove.addClickListener(clickEvent -> {
 											// store the view objs BEFORE removing
@@ -383,10 +394,16 @@ public class VaadinCollectionManageComponent<// the view object type
 			this.expand();
 		}
 		public void expand() {
+			_getHandlerButton().setIcon(VaadinIcons.CHEVRON_UP);
+			_getSummaryComponent().addStyleName("r01-collection-manage-summary-selected");
+			
 			_editComponent.setVisible(true);
 			if (this.isExpanded()) _rowExpanded(this);
 		}
 		public void collapse() {
+			_getHandlerButton().setIcon(VaadinIcons.CHEVRON_DOWN);
+			_getSummaryComponent().removeStyleName("r01-collection-manage-summary-selected");
+			
 			_editComponent.setVisible(false);
 		}
 		public void toggleExpansion() {
@@ -406,9 +423,13 @@ public class VaadinCollectionManageComponent<// the view object type
 		public V getViewObject() {
 			return _editComponent.getViewObject();
 		}
-		@Override
-		public VerticalLayout getCompositionRoot() {
-			return (VerticalLayout)super.getCompositionRoot();
+		private HorizontalLayout _getSummaryComponent() {
+			VerticalLayout ly = (VerticalLayout)this.getCompositionRoot();
+			HorizontalLayout lySumm = (HorizontalLayout)ly.getComponent(0);
+			return lySumm;
+		}
+		private Button _getHandlerButton() {
+			return (Button)_getSummaryComponent().getComponent(0);
 		}
 		@Override
 		public void updateI18NMessages(final UII18NService i18n) {
@@ -420,8 +441,19 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 	public interface VaadinCollectionItemSummaryComponent<V extends UIViewObject> 
 			 extends Component {
+		
 		public void setSummaryOf(final V viewObj);
+		
+		public void addItemClickListener(final VaadinCollectionItemSummaryClickListener clickListener);
 	}
+	public interface VaadinCollectionItemSummaryClickListener {
+		public void onItemClicked(final VaadinCollectionItemSummaryClickEvent clickEvent);
+	}
+	@NoArgsConstructor
+	public static class VaadinCollectionItemSummaryClickEvent {
+		// nothing
+	}
+	
 	public interface HasVaadinManagedCollectionItemChangeEventListener<V extends UIViewObject> {
 		public void addItemChangeEventListener(final Language lang,
 											   final VaadinManagedCollectionItemChangeEventListener<V> listener);
@@ -450,6 +482,18 @@ public class VaadinCollectionManageComponent<// the view object type
 	public static enum VaadinCollectionItemOperation {
 		ADD,
 		REMOVE;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	TEXTS
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public void setTooltip(final I18NKey tooltipKey) {
+		_i18nKeyForTooltip = tooltipKey;
+		_lblTooltip.setValue(_i18n.getMessage(tooltipKey));
+		_lblTooltip.setVisible(true);
+	}
+	public void setAddItemButtonCaption(final I18NKey captionKey) {
+		_i18nKeyForBtnAdd = captionKey;
+		_btnAdd.setCaption(_i18n.getMessage(captionKey));
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

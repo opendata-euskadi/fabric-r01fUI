@@ -3,6 +3,7 @@ package r01ui.base.components.layout;
 import java.util.Collection;
 
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
@@ -75,7 +76,9 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 	protected void _addLanguageTabComponent(final F view) {
 		_tabs.addComponent(view);
 	}
-	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SELECTION
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Override @SuppressWarnings("unchecked")
 	public F getSelectedTab() {
 		return (F)_tabs.getSelectedTab();

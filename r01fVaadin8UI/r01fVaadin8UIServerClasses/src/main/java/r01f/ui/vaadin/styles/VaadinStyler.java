@@ -78,20 +78,23 @@ public abstract class VaadinStyler {
 		
 		public VaadinStylerStyleStep setNoMargin() {
 			if (CollectionUtils.isNullOrEmpty(_components)) return this;
-			Stream.of(_components)
-				  .forEach(component -> ((MarginHandler)component).setMargin(false));
+			for (Component comp : _components) {
+  				((MarginHandler)comp).setMargin(false);
+			}
 			return this;
 		}
 		public VaadinStylerStyleStep setNoSpacing() {
 			if (CollectionUtils.isNullOrEmpty(_components)) return this;
-			Stream.of(_components)
-				  .forEach(component -> ((SpacingHandler)component).setSpacing(false));
+			for (Component comp : _components) {
+  				((SpacingHandler)comp).setSpacing(false);
+			}
 			return this;
 		}
 		public VaadinStylerStyleStep setSizeFull() {
 			if (CollectionUtils.isNullOrEmpty(_components)) return this;
-			Stream.of(_components)
-				  .forEach(component -> ((Sizeable)component).setSizeFull());
+			for (Component comp : _components) {
+  				((Sizeable)comp).setSizeFull();
+			}
 			return this;
 		}
 	}

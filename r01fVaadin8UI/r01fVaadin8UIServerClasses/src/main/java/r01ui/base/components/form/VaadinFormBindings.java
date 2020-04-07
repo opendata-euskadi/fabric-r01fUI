@@ -20,6 +20,8 @@ public abstract class VaadinFormBindings {
 		public Binder<V> getVaadinUIBinder();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+// Vaadin AUTOMATIC binding
+//
 // Binds the a [view object]'s properties to the underlying [ui control]s and back 
 //	
 // Uses vaadin's {@link Binder}  #tBean(bean) method that BINDs the [UI controls] to 
@@ -53,6 +55,8 @@ public abstract class VaadinFormBindings {
 		public V getViewObject();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+// Vaadin MANUAL binding
+//
 // Sets the [UI control]s values from the [view object]'s properties values BUT not back
 // 
 // This method uses vaadin's {@link Binder} readBean(bean) method that BINDs the [UI controls] to 

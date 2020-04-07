@@ -17,6 +17,7 @@ import com.vaadin.event.SortEvent.SortListener;
 import com.vaadin.event.SortEvent.SortNotifier;
 import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
@@ -341,7 +342,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		_enabledStatusHandler.setEnabled(true);
 		
 		////////// Initial empty data
-		// this.setItems(Lists.newArrayList());
+		this.setItems(Lists.newArrayList());
 	}
 	/**
 	 * Override this method to further configure the detail edit form
@@ -445,6 +446,12 @@ abstract class VaadinCRUDGridBase<// The view object
 	@Override
 	public void setCaption(final String caption) {
 		_lblCaption.setValue(caption);
+	}
+	public void setCreateButtonCaption(final String caption) {
+		_btnCreate.setCaption(caption);
+	}
+	public void setCreateButtonIcon(final Resource icon) {
+		_btnCreate.setIcon(icon);
 	}
 	public void enableRowMovement() {
 		// drag & drop
@@ -571,13 +578,16 @@ abstract class VaadinCRUDGridBase<// The view object
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LISTENERS
-/////////////////////////////////////////////////////////////////////////////////////////	
-	public Registration addSelectionListener(final SelectionListener<V> listener) throws UnsupportedOperationException {
-		return _grid.addSelectionListener(listener);
-	}
+/////////////////////////////////////////////////////////////////////////////////////////
 	public void addValueChangeListener(final ValueChangeListener<V> listener) {
 		_grid.asSingleSelect()
 			 .addValueChangeListener(listener);
+	}
+	public void setDataProviderListener(final DataProviderListener<V> listener) {
+		_grid.getDataProvider().addDataProviderListener(listener);
+	}
+	public Registration addSelectionListener(final SelectionListener<V> listener) throws UnsupportedOperationException {
+		return _grid.addSelectionListener(listener);
 	}
 	public Registration addColumnReorderListener(final ColumnReorderListener listener) {
 		return _grid.addColumnReorderListener(listener);
@@ -595,32 +605,37 @@ abstract class VaadinCRUDGridBase<// The view object
 	public Registration addSortListener(final SortListener<GridSortOrder<V>> listener) {
 		return _grid.addSortListener(listener);
 	}
-	public void setDataProviderListener(final DataProviderListener<V> listener) {
-		_grid.getDataProvider().addDataProviderListener(listener);
-	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DATA
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void refreshList() {
-		System.out.println("refreshList");
 		VaadinListDataProviders.collectionBackedOf(_grid)
 							   .refreshAll();
 	}
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
-		_grid.setItems(items);
+		_grid.setDataProvider(DataProvider.ofCollection(Lists.newArrayList(items)));
+		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
+										// the new dataprovider instance won't have the listener and it will not be called.
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Stream<V> streamOfItems) {
-		_grid.setItems(streamOfItems);
+		_grid.setDataProvider(DataProvider.fromStream(streamOfItems));
+		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
+										// the new dataprovider instance won't have the listener and it will not be called.
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
 	@Override
 	public void setItems(final Collection<V> items) {
 		Collection<V> theItems = items != null ? items : Lists.newArrayList();
-		_grid.setItems(theItems);
+		_grid.setDataProvider(DataProvider.ofCollection(Lists.newArrayList(items)));
+		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
+										// the new dataprovider instance won't have the listener and it will not be called.
 		this.setHeightByRows(theItems.size());
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
@@ -692,7 +707,7 @@ abstract class VaadinCRUDGridBase<// The view object
 			_btnDown.setEnabled(_downEnabled);
 		}
 		public boolean isEnabled() {
-			return _gridEnabled;
+			return _enabled;
 		}
 	}
 	@Override

@@ -15,7 +15,8 @@ public class VaadinContactEmailDetailEditWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactEmailDetailEditWindow(final UII18NService i18n) {
 		super(i18n,
-			  new VaadinContactEmailDetailEdit(i18n));
+			  new VaadinContactEmailDetailEdit(i18n),
+			  VaadinViewContactEmail::new);				// view obj factory
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

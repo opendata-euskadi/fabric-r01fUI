@@ -1,8 +1,9 @@
 package r01ui.base.components.contact;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 
 import lombok.experimental.Accessors;
 import r01f.locale.Language;
@@ -41,7 +42,7 @@ public class VaadinViewContactInfo
 														     .stream()
 														     .map(VaadinViewContactEmail::new)
 														     .collect(Collectors.toList())
-										: new ArrayList<VaadinViewContactEmail>();
+										: Lists.newArrayList();
 	}
 	public void setViewContactMails(final Collection<VaadinViewContactEmail> viewObjs) {
 		Collection<ContactMail> mails = CollectionUtils.hasData(viewObjs)
@@ -62,7 +63,7 @@ public class VaadinViewContactInfo
 									 				  .stream()
 													  .map(VaadinViewContactPhone::new)
 													  .collect(Collectors.toList())
-								: new ArrayList<VaadinViewContactPhone>();
+								: Lists.newArrayList();
 	}
 	public void setViewContactPhones(final Collection<VaadinViewContactPhone> viewObjs) {
 		Collection<ContactPhone> phones = CollectionUtils.hasData(viewObjs)
@@ -83,7 +84,7 @@ public class VaadinViewContactInfo
 															 .stream()
 															 .map(VaadinViewContactSocialNetwork::new)
 															 .collect(Collectors.toList())
-										: new ArrayList<VaadinViewContactSocialNetwork>();
+										: Lists.newArrayList();
 	}
 	public void setViewContactSocialNetworks(final Collection<VaadinViewContactSocialNetwork> viewObjs) {
 		Collection<ContactSocialNetwork> nets = CollectionUtils.hasData(viewObjs)
@@ -104,7 +105,7 @@ public class VaadinViewContactInfo
 														.stream()
 														.map(VaadinViewDirectoryContactWebSite::new)
 														.collect(Collectors.toList())
-								  : new ArrayList<VaadinViewDirectoryContactWebSite>();
+								  : Lists.newArrayList();
 	}
 	public void setViewContactWebSites(final Collection<VaadinViewDirectoryContactWebSite> viewObjs) {
 		Collection<ContactWeb> nets = CollectionUtils.hasData(viewObjs)

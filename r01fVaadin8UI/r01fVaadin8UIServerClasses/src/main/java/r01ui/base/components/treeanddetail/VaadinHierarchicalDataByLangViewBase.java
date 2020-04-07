@@ -3,7 +3,6 @@ package r01ui.base.components.treeanddetail;
 import java.util.Collection;
 import java.util.function.Function;
 
-import com.vaadin.data.Binder;
 import com.vaadin.ui.CustomComponent;
 
 import lombok.Getter;
@@ -17,7 +16,7 @@ import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 import r01ui.base.components.tree.VaadinTreeData;
 
 /**
@@ -52,7 +51,7 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 	 		  extends CustomComponent 
 	 	   implements VaadinView,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
-  			 		  VaadinFormHasVaadinUIBinder<VBL> {
+  			 		  VaadinFormEditsViewObject<VBL> {
 
 	private static final long serialVersionUID = -8652414236006812625L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -99,35 +98,21 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 		this.setCompositionRoot(_langTabbedView);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	VIEW OBJECT -> UI CONTROLS
+//	Binding
 /////////////////////////////////////////////////////////////////////////////////////////
+	////////// [viewObject] > [UI control] --------------
 	@Override
-	public void bindUIControlsTo(final VBL byLangViewObj) {
-		_langTabbedView.bindUIControlsTo(byLangViewObj);		// tell the lang tabbed view to bind 
+	public void editViewObject(final VBL byLangViewObj) {
+		_langTabbedView.editViewObject(byLangViewObj);		// tell the lang tabbed view to bind 
+	}
+	////////// [UI control] > [viewObject] --------------
+	@Override
+	public void writeAsDraftEditedViewObjectTo(final VBL byLangViewObj) {
+		_langTabbedView.writeAsDraftEditedViewObjectTo(byLangViewObj);
 	}
 	@Override
-	public void readUIControlsFrom(final VBL byLangViewObj) {
-		_langTabbedView.readUIControlsFrom(byLangViewObj);
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	UI CONTROL -> VIEW OBJECT
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public VBL getViewObject() {
-		return _langTabbedView.getViewObject();
-	}
-	@Override
-	public boolean writeIfValidFromUIControlsTo(final VBL byLangViewObj) {
-		boolean valid = _langTabbedView.writeIfValidFromUIControlsTo(byLangViewObj);
-		
-		return valid;
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	BINDER ACCESS
-/////////////////////////////////////////////////////////////////////////////////////////	
-	@Override
-	public Binder<VBL> getVaadinUIBinder() {
-		return _langTabbedView.getVaadinUIBinder();
+	public boolean writeIfValidEditedViewObjectTo(final VBL viewObj) {
+		return _langTabbedView.writeIfValidEditedViewObjectTo(viewObj);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

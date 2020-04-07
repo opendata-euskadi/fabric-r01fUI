@@ -3,7 +3,6 @@ package r01ui.base.components.form;
 import com.vaadin.ui.Button.ClickListener;
 
 import r01f.locale.I18NKey;
-import r01f.patterns.Factory;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
@@ -18,8 +17,7 @@ public interface VaadinDetailEditForm<V extends UIViewObject>
 	 * @param viewObjFactory
 	 * @param saveSubscriber
 	 */
-	public void forCreating(final Factory<V> viewObjFactory,
-							final UIPresenterSubscriber<V> saveSubscriber);
+	public void forCreating(final UIPresenterSubscriber<V> saveSubscriber);
 	/**
 	 * Opens the form in edition mode
 	 * @param viewObj

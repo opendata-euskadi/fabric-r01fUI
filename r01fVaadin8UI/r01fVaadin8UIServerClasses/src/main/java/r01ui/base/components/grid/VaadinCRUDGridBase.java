@@ -65,7 +65,7 @@ import r01ui.base.components.VaadinListDataProviders;
 import r01ui.base.components.form.VaadinDetailEditForm;
 import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 import r01ui.base.components.form.VaadinDetailForm;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 import r01ui.base.components.window.VaadinProceedGateDialogWindow;
 
 /**
@@ -122,7 +122,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * 		public class MyForm 
  *	 	     extends VerticalLayout
  *		  implements VaadinDetailForm<MyViewObj>,
- * 			 		 VaadinFormHasVaadinUIBinder<MyViewObj>,
+ * 			 		 VaadinFormEditsViewObject<MyViewObj>,
  * 			 		 View {
  * 			// UI binder
  * 			@Getter private final Binder<MyViewObj> _vaadinUIBinder = new Binder<>(MyViewObj.class);
@@ -138,20 +138,12 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  *				   		   .toViewObjectOfType(MyViewObj.class);
  *			}
  *			@Override
- *			public void bindUIControlsTo(final MyViewObj viewObj) {
- *				_vaadinUIBinder.setBean(viewObj);
- *			}
- *			@Override
- *			public void readUIControlsFrom(final MyViewObj viewObj) {
+ *			public void editViewObject(final MyViewObj viewObj) {
  *				_vaadinUIBinder.readBean(viewObj);
  *			}
  *			@Override
- *			public MyViewObj getViewObject() {
- *				return _vaadinUIBinder.getBean();
- *			}
- *			@Override
- *			public boolean writeIfValidFromUIControlsTo(final MyViewObj viewObj) {
- *				return _vaadinUIBinder.writeBeanIfValid(viewObj);
+ *			public void writeAsDraftEditedViewObjectTo(final MyViewObj viewObj) {
+ *				_vaadinUIBinder.writeAsDraft(viewObj);
  *			}
  *		}
  * 
@@ -191,8 +183,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * @param <V>
  * @param <F>
  */
-abstract class VaadinCRUDGridBase<// The view object
-								  V extends UIViewObject>
+abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	   extends Composite 
 	implements HasDataProvider<V>, 
   	 		   SortNotifier<GridSortOrder<V>>,
@@ -237,13 +228,15 @@ abstract class VaadinCRUDGridBase<// The view object
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
 	<F extends VaadinDetailForm<V>
-			 & VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridBase(final UII18NService i18n,
-					   						 					  final VaadinViewFactory<F> formFactory,
-					   						 					  final Class<V> viewObjType,final Factory<V> viewObjFactory,
-					   						 					  final String... viewObjPropertyNames) {	
+			 & VaadinFormEditsViewObject<V>> VaadinCRUDGridBase(final UII18NService i18n,
+					   						 					final VaadinViewFactory<F> formFactory,
+					   						 					final Class<V> viewObjType,final Factory<V> viewObjFactory,
+					   						 					final String... viewObjPropertyNames) {	
 		this(i18n,
 			 // edit form popup factories
-			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,formFactory.from(i18n)) {
+			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
+					 									   formFactory.from(i18n),	// form 
+					 									   viewObjFactory) {		// view obj factory
 							private static final long serialVersionUID = -5628170580725614674L;
 				   },
 			 // view object factory
@@ -495,8 +488,7 @@ abstract class VaadinCRUDGridBase<// The view object
 		_enabledStatusHandler.setEnabled(false);
 		
 		// puts the [detail form] (a pop up or just a form) into [create-new mode]
-		_detailEditForm.forCreating(_viewObjFactory,
-								    // What happens when the edit form is closed after creating a new [view object]
+		_detailEditForm.forCreating(// What happens when the edit form is closed after creating a new [view object]
 								    // ...add the created obj and refresh
 								    viewObjToCreate -> {
 								    	// enable again

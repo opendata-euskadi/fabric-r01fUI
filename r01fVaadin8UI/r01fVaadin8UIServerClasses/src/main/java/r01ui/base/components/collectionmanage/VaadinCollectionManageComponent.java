@@ -32,7 +32,7 @@ import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.HasVaadinManagedCollectionItemChangeEventListener;
 import r01ui.base.components.collectionmanage.VaadinCollectionManageComponent.VaadinCollectionItemSummaryComponent;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * A grid component like:
@@ -50,7 +50,7 @@ public class VaadinCollectionManageComponent<// the view object type
 											 V extends UIViewObject,
 											 // the editor component
 											 F extends Component 
-											 		 & VaadinFormHasVaadinUIBinder<V>
+											 		 & VaadinFormEditsViewObject<V>
 													 & HasVaadinManagedCollectionItemChangeEventListener<V>,
 											 // the summary component
 											 CS extends VaadinCollectionItemSummaryComponent<V>>
@@ -171,7 +171,7 @@ public class VaadinCollectionManageComponent<// the view object type
 		// add 
 		VaadinCollectionManageRowComponent editRow = new VaadinCollectionManageRowComponent();
 		// edit
-		editRow.edit(viewObj);
+		editRow.editViewObject(viewObj);
 		
 		// layout
 		_vlyGrid.addComponent(editRow);
@@ -201,10 +201,11 @@ public class VaadinCollectionManageComponent<// the view object type
 		Collection<V> outViewObjs = Lists.newArrayList();
 		_vlyGrid.iterator()
 				.forEachRemaining(comp -> {
-										// every row is like: [x] [DishEdit]
+										// get the object being edited
 										VaadinCollectionManageRowComponent editRow = (VaadinCollectionManageRowComponent)comp;
-										V viewRel = editRow.getViewObject();
-										outViewObjs.add(viewRel);
+										V viewObj = _viewObjFactory.create();
+										editRow.writeAsDraftEditedViewObjectTo(viewObj);
+										outViewObjs.add(viewObj);
 								  });
 		return outViewObjs;
 	}
@@ -247,7 +248,9 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 	private class VaadinCollectionManageRowComponent 
 		  extends Composite
-	   implements VaadinViewI18NMessagesCanBeUpdated {
+	   implements VaadinFormEditsViewObject<V>,
+	   			  VaadinViewI18NMessagesCanBeUpdated {
+		
 		private static final long serialVersionUID = 8093451147953767189L;
 		
 		private final Button _btnHandler;
@@ -337,8 +340,9 @@ public class VaadinCollectionManageComponent<// the view object type
 											// store the view objs BEFORE removing
 											Collection<V> viewObjsBefore = VaadinCollectionManageComponent.this.getAll();
 											
-								   			// get the removed rel
-								   			V removedViewObj = this.getViewObject();
+								   			// get the removed view obj
+											V removedViewObj = _viewObjFactory.create();
+								   			this.writeAsDraftEditedViewObjectTo(removedViewObj);
 								   			
 								   			// remove the row
 								   			_vlyGrid.removeComponent(this);
@@ -379,19 +383,28 @@ public class VaadinCollectionManageComponent<// the view object type
 														   _summary.setSummaryOf(val);	
 													  });
 		}
-		public void setMoveButtonsStatusIfRowAt(final int index) {
-			_btnUp.setEnabled(index > 0);
-			_btnDown.setEnabled(index < (_vlyGrid.getComponentCount() - 1));
-		}
-		public void edit(final V viewObj) {
+		@Override
+		public void editViewObject(final V viewObj) {
 			// bind the form to the view object
-			_editComponent.bindUIControlsTo(viewObj);
+			_editComponent.editViewObject(viewObj);
 			_summary.setSummaryOf(viewObj);
 			_new = false;
+		}
+		@Override
+		public void writeAsDraftEditedViewObjectTo(final V viewObj) {
+			_editComponent.writeAsDraftEditedViewObjectTo(viewObj);
+		}
+		@Override
+		public boolean writeIfValidEditedViewObjectTo(final V viewObj) {
+			return _editComponent.writeIfValidEditedViewObjectTo(viewObj);
 		}
 		public void setNew(final boolean isNew) {
 			_new = isNew;
 			this.expand();
+		}
+		public void setMoveButtonsStatusIfRowAt(final int index) {
+			_btnUp.setEnabled(index > 0);
+			_btnDown.setEnabled(index < (_vlyGrid.getComponentCount() - 1));
 		}
 		public void expand() {
 			_getHandlerButton().setIcon(VaadinIcons.CHEVRON_UP);
@@ -419,9 +432,6 @@ public class VaadinCollectionManageComponent<// the view object type
 		@SuppressWarnings("unused")
 		public boolean isCollapsed() {
 			return !this.isExpanded();
-		}
-		public V getViewObject() {
-			return _editComponent.getViewObject();
 		}
 		private HorizontalLayout _getSummaryComponent() {
 			VerticalLayout ly = (VerticalLayout)this.getCompositionRoot();

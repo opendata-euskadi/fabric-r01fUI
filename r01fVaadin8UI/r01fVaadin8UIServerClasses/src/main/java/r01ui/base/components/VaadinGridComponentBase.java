@@ -132,8 +132,7 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		_btnNew.addClickListener(event -> {
 									// open the [edit] window in ADDITION MODE
 									UIPresenterSubscriber<V> subscriber = _afterAddSubscriber(_winDetailEdit);
-									_winDetailEdit.forCreating(viewObjFactory,
-															   subscriber);		// what to do after save
+									_winDetailEdit.forCreating(subscriber);		// what to do after save
 									UI.getCurrent()
 									  .addWindow((Window)_winDetailEdit);
 							  	});

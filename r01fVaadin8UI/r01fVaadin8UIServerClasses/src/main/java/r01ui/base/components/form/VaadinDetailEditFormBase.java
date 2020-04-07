@@ -3,13 +3,11 @@ package r01ui.base.components.form;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.VerticalLayout;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -21,7 +19,6 @@ import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.Strings;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * Creates a detail edit form like:
@@ -41,7 +38,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
 @Accessors(prefix="_")
 public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 											   F extends VaadinDetailForm<V>
-												       & VaadinFormHasVaadinUIBinder<V>>
+												       & VaadinFormEditsViewObject<V>>
      		  extends Composite
      	   implements VaadinDetailEditForm<V> {
 
@@ -56,6 +53,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter protected final F _form;
+			protected final Factory<V> _viewObjFactory;
 			protected final VaadinAcceptCancelDeleteButtons _btnAcepCancDelete;
 
 	// OUTSIDE WORLD SUBSCRIBERS
@@ -68,11 +66,13 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinDetailEditFormBase(final UII18NService i18n,
-									final F form) {
+									final F form,
+									final Factory<V> viewObjFactory) {
 		_i18n = i18n;
-
-		// Form
+		
+		// Form & view obj factory
 		_form = form;
+		_viewObjFactory = viewObjFactory;
 
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
@@ -86,9 +86,9 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 	}
 	private void _setAcceptCancelDeleteButtonsBehavior() {
 		// - CANCEL
-		_btnAcepCancDelete.addCancelButtonClickListner(event -> VaadinDetailEditFormBase.this.close());
+		_btnAcepCancDelete.addCancelButtonClickListner(clickEvent -> VaadinDetailEditFormBase.this.close());
 		// - OK
-		_btnAcepCancDelete.addAcceptButtonClickListner(event -> {
+		_btnAcepCancDelete.addAcceptButtonClickListner(clickEvent -> {
 															// collect ui controls values & tell
 															Binder<V> vaadinBinder = null;
 															try {
@@ -109,30 +109,35 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 																}
 															}
 															// is valid or maybe not if not implementing VaadinValidatesForm
-															_form.writeIfValidFromUIControlsTo(_viewObj);
+															_form.writeAsDraftEditedViewObjectTo(_viewObj);
 															if (_saveSubscriber != null) _saveSubscriber.onSuccess(_viewObj);
 															this.close();
 											  		  });
 		// - DELETE
 		_btnAcepCancDelete.addDeleteButtonClickListner(event -> {
-															if (_deleteSubscriber != null) _deleteSubscriber.onSuccess(_form.getViewObject());
+															if (_deleteSubscriber != null) {
+																// copy the edited object to a new [view object]
+																V deletedViewObj = _viewObjFactory.create();
+																_form.writeAsDraftEditedViewObjectTo(deletedViewObj);
+																// tell the subscriber
+																_deleteSubscriber.onSuccess(deletedViewObj);
+															}
 													   });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public void forCreating(final Factory<V> viewObjFactory,
-							final UIPresenterSubscriber<V> saveSubscriber) {		
+	public void forCreating(final UIPresenterSubscriber<V> saveSubscriber) {		
 		// what to do after saving
 		_saveSubscriber = saveSubscriber;
 		_deleteSubscriber = null;		// cannot delete from a create window
 		
 		// create the view object
-		_viewObj = viewObjFactory.create();		// set _viewObj BEFORE binding!
+		_viewObj = _viewObjFactory.create();		// set _viewObj BEFORE binding!
 
 		// bind the view object to the view
-		_form.bindUIControlsTo(_viewObj);
+		_form.editViewObject(_viewObj);
 		
 		// set window caption
 		this.setCaption(_i18n.getMessage(this.getNewItemCaptionI18NKey()));
@@ -155,7 +160,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		_viewObj = viewObj;						// set _viewObj BEFORE binding!
 		
 		// bind the view object to the view
-		_form.bindUIControlsTo(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
+		_form.editViewObject(_viewObj);		// BEWARE!!! the given [view object] will NOT be modified when the UI controls are updated!
 
 		// sets window caption
 		if (viewObj instanceof HasCaptionLanguageDependent) {

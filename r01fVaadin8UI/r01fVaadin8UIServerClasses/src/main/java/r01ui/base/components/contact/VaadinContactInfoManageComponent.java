@@ -18,6 +18,7 @@ import r01ui.base.components.contact.email.VaadinContactEMailManage;
 import r01ui.base.components.contact.phone.VaadinContactPhoneManage;
 import r01ui.base.components.contact.socialnetwork.VaadinContactSocialNetworkManage;
 import r01ui.base.components.contact.website.VaadinContactWebSiteManage;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * A configurable [contact info] component like:
@@ -43,7 +44,8 @@ import r01ui.base.components.contact.website.VaadinContactWebSiteManage;
  */
 public class VaadinContactInfoManageComponent
 	 extends VerticalLayout
-  implements VaadinViewI18NMessagesCanBeUpdated {
+  implements VaadinFormEditsViewObject<VaadinViewContactInfo>,
+  			 VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -543903229607808643L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -59,16 +61,16 @@ public class VaadinContactInfoManageComponent
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactInfo.PREFERED_LANGUAGE_CHANNELS_FIELD,
 					 bindStringConverter=false,
 					 required=true)
-	private final ComboBox<Language> _cmbPreferedLanguage = new ComboBox<Language>();
+	private final ComboBox<Language> _cmbPreferedLanguage = new ComboBox<>();
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BINDED OBJECT
 /////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * This field ONLY is set when calling #bindViewTo
-	 * and is ONLY readed when calling #getViewObject
-	 */
-	private VaadinViewContactInfo _viewObject;
+//	/**
+//	 * This field ONLY is set when calling #bindViewTo
+//	 * and is ONLY readed when calling #getViewObject
+//	 */
+//	private VaadinViewContactInfo _viewObject;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -112,46 +114,37 @@ public class VaadinContactInfoManageComponent
 		this.addStyleName(VaadinValoTheme.NO_PADDING);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	[VIEW OBJECT] > [UI-CONTROLS]
+//	Binding
 /////////////////////////////////////////////////////////////////////////////////////////
-	public void setViewObject(final VaadinViewContactInfo viewObj) {
+	////////// [viewObject] > [UI control] --------------
+	@Override
+	public void editViewObject(final VaadinViewContactInfo viewObj) {
 		// Set the [ui control] values from [view object]'s properties
-		// (unlike binder.readBean [ui controls] are binded to [view object]'s properties
-		//  so when an [ui control] changes, the [view object property] is also changed)
 		if (viewObj == null) throw new IllegalArgumentException("Cannot bind a null object!");
 
-		// store the view object
-		_viewObject = viewObj;
-
-		// Ensure the [view object] contains a collection for each underlying contact object
-		if (_viewObject.getWrappedModelObject().getContactMails() == null) _viewObject.setViewContactMails(Lists.newArrayList());
-		if (_viewObject.getWrappedModelObject().getContactPhones() == null) _viewObject.setViewContactPhones(Lists.newArrayList());
-		if (_viewObject.getWrappedModelObject().getContactSocialNetworks() == null) _viewObject.setViewContactSocialNetworks(Lists.newArrayList());
-		if (_viewObject.getWrappedModelObject().getContactWebSites() == null) _viewObject.setViewContactWebSites(Lists.newArrayList());
-
 		// bind the individual components to the [view object] underlying collection
-		_emailsComponent.setItems(_viewObject.getViewContactMails());
-		_phonesComponent.setItems(_viewObject.getViewContactPhones());
-		_socialNetworksComponent.setItems(_viewObject.getViewContactSocialNetworks());
-		_webSitesComponent.setItems(_viewObject.getViewContactWebSites());
-		if (_viewObject.getWrappedModelObject().getPreferedLanguage() != null) {
-			_cmbPreferedLanguage.setSelectedItem(_viewObject.getPreferedLanguage());
+		_emailsComponent.setItems(viewObj.getViewContactMails());
+		_phonesComponent.setItems(viewObj.getViewContactPhones());
+		_socialNetworksComponent.setItems(viewObj.getViewContactSocialNetworks());
+		_webSitesComponent.setItems(viewObj.getViewContactWebSites());
+		if (viewObj.getWrappedModelObject().getPreferedLanguage() != null) {
+			_cmbPreferedLanguage.setSelectedItem(viewObj.getPreferedLanguage());
 		}
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	[UI-CONTROLS] > [VIEW OBJECT]
-/////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinViewContactInfo getViewObject() {
-		// update the wrapped view object with the individual components values
-		if (_viewObject == null) throw new IllegalStateException("There's NO binded [view object]: the [view object] MUST have been binded using #bindViewTo() (do NOT use #readBean())");
-
+	////////// [UI control] > [viewObject] --------------
+	@Override
+	public void writeAsDraftEditedViewObjectTo(final VaadinViewContactInfo viewObj) {
 		// ensure the binded [view object] is updated
-		_viewObject.setViewContactMails(_emailsComponent.getItems());
-		_viewObject.setViewContactPhones(_phonesComponent.getItems());
-		_viewObject.setViewContactSocialNetworks(_socialNetworksComponent.getItems());
-		_viewObject.setViewContactWebSites(_webSitesComponent.getItems());
-		_viewObject.setPreferedLanguage(_cmbPreferedLanguage.getValue());
-		return _viewObject;
+		viewObj.setViewContactMails(_emailsComponent.getItems());
+		viewObj.setViewContactPhones(_phonesComponent.getItems());
+		viewObj.setViewContactSocialNetworks(_socialNetworksComponent.getItems());
+		viewObj.setViewContactWebSites(_webSitesComponent.getItems());
+		viewObj.setPreferedLanguage(_cmbPreferedLanguage.getValue());
+	}
+	@Override
+	public boolean writeIfValidEditedViewObjectTo(final VaadinViewContactInfo viewObj) {
+		this.writeAsDraftEditedViewObjectTo(viewObj);
+		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

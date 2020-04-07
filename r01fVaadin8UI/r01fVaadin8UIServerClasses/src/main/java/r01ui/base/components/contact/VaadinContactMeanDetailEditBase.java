@@ -126,41 +126,20 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 		_uiInitialized = true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	[viewObject] > [UI control]                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
+//	Binding
+/////////////////////////////////////////////////////////////////////////////////////////
+	////////// [viewObject] > [UI control] --------------
 	@Override
-	public void bindUIControlsTo(final V viewObj) {
-		// Set the [ui control] values from [view object]'s properties
-		// [ui controls] are binded to [view object] properties so when an [ui control] changes 
-		// the corresponding [view object]'s property is changed 
-		// BUT contrary to #readBean(bean) method, if a [view object]'s property changes,
-		// the [ui control] is ALSO CHANGED
-		// ... so changes in the [UI controls] are immediatly reflected to the received [view object] 
-		// so it's NOT possible to CANCEL editions
-		_vaadinUIBinder.setBean(viewObj);
-	}
-	@Override
-	public void readUIControlsFrom(final V viewObj) {
-		// Set the [ui control] values from [view object]'s properties
-		// [ui controls] are binded to [view object] properties so when an [ui control] changes 
-		// the corresponding [view object]'s property is changed 
-		// BUT contrary to #bindViewTo(bean) method, if a [view object]'s property changes,
-		// the [ui control] is NOT CHANGED
-		// ... so changes in the [UI controls] are NOT reflected to the received [view object] 
-		// so it's possible to CANCEL editions
+	public void editViewObject(final V viewObj) {
 		_vaadinUIBinder.readBean(viewObj);
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	[UI-CONTROLS] > [VIEW OBJECT]                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
+	////////// [UI control] > [viewObject] --------------
 	@Override
-	public V getViewObject() {
-		// Returns the [ui control]s binded [view object]
-		return _vaadinUIBinder.getBean();
+	public void writeAsDraftEditedViewObjectTo(final V viewObj) {
+		_vaadinUIBinder.writeBeanAsDraft(viewObj);		
 	}
 	@Override
-	public boolean writeIfValidFromUIControlsTo(final V viewObj) {
-		// writes the [ui contro] field values to the corresponding [view object]'s properties
+	public boolean writeIfValidEditedViewObjectTo(final V viewObj) {
 		return _vaadinUIBinder.writeBeanIfValid(viewObj);
 	}
 }

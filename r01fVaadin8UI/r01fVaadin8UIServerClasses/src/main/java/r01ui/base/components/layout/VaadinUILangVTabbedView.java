@@ -24,7 +24,7 @@ import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01f.util.types.locale.Languages;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 /**
  * Base type for lang-dependent VERTICAL tabbed views
  * <pre>
@@ -43,7 +43,7 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
 									 F extends Component & VaadinComponent & HasLanguage
-									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
+									 		 & VaadinFormEditsViewObject<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]

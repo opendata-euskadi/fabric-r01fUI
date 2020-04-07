@@ -11,7 +11,7 @@ import r01f.facets.HasLanguage;
 import r01f.ui.vaadin.view.VaadinView;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * <pre>
@@ -27,20 +27,13 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * @param <VO>
  */
 public interface VaadinHierarchicalDataInLangDetailView<VO extends UIViewObjectInLanguage> 
-	     extends Component,
-	    		 VaadinView,
+	     extends VaadinView,
 	    		 HasLanguage,
-				 VaadinFormHasVaadinUIBinder<VO>, 		// the view uses vaadin ui binder
+				 VaadinFormEditsViewObject<VO>, 		// the view uses vaadin ui binder
 				 VaadinViewI18NMessagesCanBeUpdated {			// the view i18n messages can be updated{
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUBLIC INTERFACE                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * Enter editing an object
-	 * @param viewObj
-	 */
-	public void enterEdit(final VO viewObj);
-	
 	/**
 	 * Sets a listener on changes of the form-edited view obj
 	 * @param listener

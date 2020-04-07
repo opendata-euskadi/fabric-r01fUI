@@ -3,7 +3,6 @@ package r01ui.base.components.layout;
 import java.util.Collection;
 
 import com.vaadin.shared.Registration;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
@@ -16,7 +15,7 @@ import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.ui.viewobject.UIViewObjectByLanguage;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * lang-dependent HORIZONTAL tabbed views
@@ -38,7 +37,7 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 									 D extends UIViewObject,
 									 // the component used to edit / show the [lang-dependent] view object (VIL)
 									 F extends Component & VaadinComponent & HasLanguage
-									 		 & VaadinFormHasVaadinUIBinder<D>, 		// the view uses vaadin ui binder
+									 		 & VaadinFormEditsViewObject<D>, 		// the view uses vaadin ui binder
 									 // the [view obj] that contains [lang dependent view objs] (VIL)
 									 VBL extends UIViewObjectByLanguage<VIL>,				// the view obj that contains lang dependent view objs
 									 // the [lang dependent view obj]

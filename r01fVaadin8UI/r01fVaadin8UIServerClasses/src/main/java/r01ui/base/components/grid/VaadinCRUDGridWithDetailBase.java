@@ -11,7 +11,7 @@ import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.form.VaadinDetailEditForm;
 import r01ui.base.components.form.VaadinDetailEditFormBase;
 import r01ui.base.components.form.VaadinDetailForm;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * A grid / detail component
@@ -51,28 +51,29 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-							  		   		 					   				   final VaadinViewFactory<F> formFactory,
-							  		   		 					   				   final Factory<V> viewObjFactory) {
+			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
+							  		   		 					   				 final VaadinViewFactory<F> formFactory,
+							  		   		 					   				 final Factory<V> viewObjFactory) {
 		this(i18n,
 			 // edit detail factory
 			 () -> new VaadinDetailEditFormBase<V,F>(i18n,
-					 								 formFactory.from(i18n)) {
+					 								 formFactory.from(i18n),	// form
+					 								 viewObjFactory) {			// view obj factory
 				 			private static final long serialVersionUID = 442840240106223037L;
 				   },
 			 // view obj factory
 			 viewObjFactory);
 	}
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
-							  		   		 					   				   final VaadinViewFactory<F> formFactory,
-							  		   		 					   				   final Class<V> viewObjType,
-							  		   		 					   				   final Factory<V> viewObjFactory,
-							  		   		 					   				   final String... viewObjPropertyNames) {	
+			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithDetailBase(final UII18NService i18n,
+							  		   		 					   				 final VaadinViewFactory<F> formFactory,
+							  		   		 					   				 final Class<V> viewObjType,final Factory<V> viewObjFactory,
+							  		   		 					   				 final String... viewObjPropertyNames) {	
 		super(i18n,
 			  // edit detail factory
 			  () -> new VaadinDetailEditFormBase<V,F>(i18n,
-					 								  formFactory.from(i18n)) {
+					 								  formFactory.from(i18n),	// form
+					 								  viewObjFactory) {			// view obj factory
 							private static final long serialVersionUID = -5628170580725614674L;
 			  },
 			  // view object factory

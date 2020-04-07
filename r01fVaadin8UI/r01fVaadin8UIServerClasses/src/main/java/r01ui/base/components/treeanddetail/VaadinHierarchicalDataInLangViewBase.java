@@ -18,7 +18,7 @@ import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinView;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.viewobject.UIViewObjectInLanguage;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 import r01ui.base.components.tree.VaadinTree.VaadinTreeChangedEventListener;
 import r01ui.base.components.tree.VaadinTreeData;
 
@@ -54,13 +54,13 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 	 		  extends CustomField<VaadinTreeData<VO>> 		// BEWARE! TreeData<VIL>
   		   implements HasLanguage,
   			 		  VaadinView,
-  			 		  VaadinFormHasVaadinUIBinder<VaadinTreeData<VO>>,	// BEWARE!! this is binding a TreeData<VIL>
+  			 		  VaadinFormEditsViewObject<VaadinTreeData<VO>>,	// BEWARE!! this is binding a TreeData<VIL>
   			 		  VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -741879526211369538L;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
-//	STATE                                                                          
+//	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter @Setter private Language _language;
 	
@@ -112,15 +112,14 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 		////////// Events
 		// what happens when an item is selected (or created) at the tree
 		_treeGrid.setOnItemEditEventListener(itemEditReqEvt -> {
-												// the currently edited viewObj (this forces the binded object to be saved from the UI controls)
-												VO currEditedViewObj = _detailComponent != null 
-																			? _detailComponent.getViewObject()
-																			: null;
-																			
-												// tell the [detail component] to edit the item
-												VO viewObj = itemEditReqEvt.getItemToBeEdited();
-												_detailComponent.enterEdit(viewObj);
-												_detailComponent.setVisible(true);
+													// the currently edited viewObj (this forces the binded object to be saved from the UI controls)
+													VO currEditedViewObj = viewObjInLangFactory.create();
+													if (_detailComponent != null)  _detailComponent.writeAsDraftEditedViewObjectTo(currEditedViewObj);
+																				
+													// tell the [detail component] to edit the item
+													VO viewObj = itemEditReqEvt.getItemToBeEdited();
+													_detailComponent.editViewObject(viewObj);
+													_detailComponent.setVisible(true);
 											 });
 		// what happens when an item is deleted at the tree
 		_treeGrid.setOnItemDeletedEventListener(itemDeletedEvt -> {
@@ -152,39 +151,27 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 		_treeGrid.setValue(value);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	VIEW OBJECT -> UI CONTROLS
-/////////////////////////////////////////////////////////////////////////////////////////	
+//	Binding
+/////////////////////////////////////////////////////////////////////////////////////////
+	////////// [viewObject] > [UI control] --------------	
 	@Override
-	public void readUIControlsFrom(final VaadinTreeData<VO> viewObj) {
+	public void editViewObject(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
 		_detailComponent.setVisible(false);
 	}
+	////////// [UI control] > [viewObject] --------------	
 	@Override
-	public void bindUIControlsTo(final VaadinTreeData<VO> viewObj) {
-		this.readUIControlsFrom(viewObj);
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	UI CONTROLS -> VIEW OBJECT                                                                       
-/////////////////////////////////////////////////////////////////////////////////////////	
-	@Override
-	public VaadinTreeData<VO> getViewObject() {
-		return this.getValue();
-	}
-	@Override
-	public boolean writeIfValidFromUIControlsTo(final VaadinTreeData<VO> viewObject) {
+	public void writeAsDraftEditedViewObjectTo(final VaadinTreeData<VO> viewObj) {
 		// in order to keep the received [view object] the "internal" state of the [view object]
 		// is REPLACED with the [tree data]
-		viewObject.clear();
+		viewObj.clear();
 		VaadinTreeData<VO> currData = this.getValue();
-		viewObject.importTree(currData);
-		return true;
+		viewObj.importTree(currData);
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	BINDER ACCESS
-/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public Binder<VaadinTreeData<VO>> getVaadinUIBinder() {
-		throw new UnsupportedOperationException("No vaadin binder in use!");
+	public boolean writeIfValidEditedViewObjectTo(final VaadinTreeData<VO> viewObj) {
+		this.writeAsDraftEditedViewObjectTo(viewObj);
+		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

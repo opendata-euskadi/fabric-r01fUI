@@ -14,7 +14,7 @@ import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.form.VaadinDetailEditForm;
 import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 import r01ui.base.components.form.VaadinDetailForm;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
+import r01ui.base.components.form.VaadinFormEditsViewObject;
 
 /**
  * A grid with a popup to edit the row
@@ -57,8 +57,7 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  * 				</pre>
  */
 @Accessors(prefix="_")
-public abstract class VaadinCRUDGridWithPopUpDetailBase<// The view object
-										 		   	    V extends UIViewObject>
+public abstract class VaadinCRUDGridWithPopUpDetailBase<V extends UIViewObject>	// The view object
 	 		  extends VaadinCRUDGridBase<V> {
 
 	private static final long serialVersionUID = 7015895869617900059L;
@@ -67,30 +66,35 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter @Setter private Dimensions2D _winDimensions;
 	@Getter @Setter private Unit _winDimensionsUnit = Unit.PERCENTAGE;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
+// eclipse bug: crash while compiling in eclipse
+//	public <F extends VaadinDetailForm<V>
+//			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
+//							  		   		 					   					  final VaadinViewFactory<F> formFactory,
+//																					  final Factory<V> viewObjFactory) {
+//		this(i18n,
+//			 // edit popup factory
+//			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
+//					 									   formFactory.from(i18n),
+//					 									   viewObjFactory) {
+//							private static final long serialVersionUID = -5628170580725614674L;
+//				   },
+//			 // view obj factory
+//			 viewObjFactory);
+//	}
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
-							  		   		 					   						final VaadinViewFactory<F> formFactory,final Factory<V> viewObjFactory) {
-		this(i18n,
-			 // edit popup factory
-			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
-					 									   formFactory.from(i18n)) {
-							private static final long serialVersionUID = -5628170580725614674L;
-				   },
-			 // view obj factory
-			 viewObjFactory);
-	}
-	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
+			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
 							  		   		 					   						final VaadinViewFactory<F> formFactory,
 							  		   		 					   						final Class<V> viewObjType,final Factory<V> viewObjFactory,
 							  		   		 					   						final String... viewObjPropertyNames) {	
 		super(i18n,
 			  // edit popup factory
 			  () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
-					  										formFactory.from(i18n)) {
+					  										formFactory.from(i18n),
+					  										viewObjFactory) {
 							private static final long serialVersionUID = -5628170580725614674L;
 				    },
 			  // view object factory
@@ -102,11 +106,11 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<// The view object
 		// set the detail buttons behavior
 		_setEditFormButtonsBehavior();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 //	MORE CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>,
+			 		& VaadinFormEditsViewObject<V>,
 			W extends VaadinDetailEditFormWindowBase<V,F>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
 																			  		   		 final Factory<W> popUpFactory,
 																			  		   		 final Class<V> viewObjType,final Factory<V> viewObjFactory,
@@ -124,7 +128,7 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<// The view object
 		_setEditFormButtonsBehavior();
 	}
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>,
+			 		& VaadinFormEditsViewObject<V>,
 			W extends VaadinDetailEditFormWindowBase<V,F>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
 																			  		   		 final Factory<W> popUpFactory,
 																			  		   		 final Factory<V> viewObjFactory) {
@@ -132,15 +136,13 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<// The view object
 			  // edit popup factory
 			  popUpFactory,
 			  // view obj factory
-			  viewObjFactory,
-			  // grid & columns provider
-			  (VaadinGridColumnProvider<V>)null);		// no grid columns by default
+			  viewObjFactory);		// no grid columns by default
 		
 		// set the detail buttons behavior
 		_setEditFormButtonsBehavior();
 	}
 	public <F extends VaadinDetailForm<V>
-			 		& VaadinFormHasVaadinUIBinder<V>,
+			 		& VaadinFormEditsViewObject<V>,
 			W extends VaadinDetailEditFormWindowBase<V,F>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
 							  												  		   		 final Factory<W> popUpFactory,
 							  												  		   		 final Factory<V> viewObjFactory,

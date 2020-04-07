@@ -13,7 +13,8 @@ public class VaadinContactPhoneDetailEditWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactPhoneDetailEditWindow(final UII18NService i18n) {
 		super(i18n,
-			  new VaadinContactPhoneDetailEdit(i18n));
+			  new VaadinContactPhoneDetailEdit(i18n),
+			  VaadinViewContactPhone::new);				// view obj factory
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

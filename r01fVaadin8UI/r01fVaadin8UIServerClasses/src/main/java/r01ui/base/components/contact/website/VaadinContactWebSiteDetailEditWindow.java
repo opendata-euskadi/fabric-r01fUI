@@ -15,7 +15,8 @@ public class VaadinContactWebSiteDetailEditWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactWebSiteDetailEditWindow(final UII18NService i18n) {
 		super(i18n,
-			  new VaadinContactWebSiteDetailEdit(i18n));
+			  new VaadinContactWebSiteDetailEdit(i18n),		// form
+			  VaadinViewDirectoryContactWebSite::new);		// view obj factory
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

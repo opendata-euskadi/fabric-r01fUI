@@ -15,7 +15,8 @@ public class VaadinContactSocialNetworkDetailEditWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinContactSocialNetworkDetailEditWindow(final UII18NService i18n) {
 		super(i18n,
-			  new VaadinContactSocialNetworkDetailEdit(i18n));
+			  new VaadinContactSocialNetworkDetailEdit(i18n),	// form
+			  VaadinViewContactSocialNetwork::new);				// view obj factory
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          

@@ -1,15 +1,14 @@
 package r01ui.base.components.form;
 
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
-import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder;
 
 /**
  * Wraps a {@link VaadinDetailEditFormBase} and creates a detail edit popup-window like:
@@ -30,11 +29,15 @@ import r01ui.base.components.form.VaadinFormBindings.VaadinFormHasVaadinUIBinder
  */
 public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 												 	 F extends VaadinDetailForm<V>
-															 & VaadinFormHasVaadinUIBinder<V>>
+															 & VaadinFormEditsViewObject<V>>
      		  extends Window
      	   implements VaadinDetailEditForm<V> {
 
 	private static final long serialVersionUID = 7719084020409366076L;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	FIELDS
+/////////////////////////////////////////////////////////////////////////////////////////
+	protected final Factory<V> _viewObjFactory;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -47,10 +50,14 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
-									  	  final F form) {
+									  	  final F form,
+									  	  final Factory<V> viewObjFactory) {
+		_viewObjFactory = viewObjFactory;
+		
 		// ui
 		_editForm = new VaadinDetailEditFormBase<V,F>(i18n,
-												      form) {
+												      form,
+												      viewObjFactory) {
 							private static final long serialVersionUID = 7219012021409356071L;
 					};
 		_editForm.addCancelButtonClickListner(clickEvent -> this.close());
@@ -73,11 +80,9 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 //	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public void forCreating(final Factory<V> viewObjFactory,
-							final UIPresenterSubscriber<V> saveSubscriber) {
+	public void forCreating(final UIPresenterSubscriber<V> saveSubscriber) {
 		// just delegate
-		_editForm.forCreating(viewObjFactory,
-							  createdViewObj -> {
+		_editForm.forCreating(createdViewObj -> {
 								  if (saveSubscriber != null) saveSubscriber.onSuccess(createdViewObj);
 								  this.close();
 							  });

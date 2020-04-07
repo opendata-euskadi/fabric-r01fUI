@@ -608,7 +608,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
 		_grid.setDataProvider(DataProvider.ofCollection(Lists.newArrayList(items)));
-		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+//		 _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
 										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
 										// the new dataprovider instance won't have the listener and it will not be called.
 		_resetButtonStatus();	// all buttons disabled except the [create] button
@@ -616,7 +616,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	@Override
 	public void setItems(final Stream<V> streamOfItems) {
 		_grid.setDataProvider(DataProvider.fromStream(streamOfItems));
-		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+//		 _grid.setItems(streamOfItems);	// Calling setItems creates a NEW DataProvider instance.
 										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
 										// the new dataprovider instance won't have the listener and it will not be called.
 		_resetButtonStatus();	// all buttons disabled except the [create] button
@@ -625,7 +625,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	public void setItems(final Collection<V> items) {
 		Collection<V> theItems = items != null ? items : Lists.newArrayList();
 		_grid.setDataProvider(DataProvider.ofCollection(Lists.newArrayList(items)));
-		// _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
+//		 _grid.setItems(items);		// Calling setItems creates a NEW DataProvider instance.
 										// if a call to _grid.getDataProvider().addDataProviderListener(...) was previously made, 
 										// the new dataprovider instance won't have the listener and it will not be called.
 		this.setHeightByRows(theItems.size());
@@ -699,7 +699,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 			_btnDown.setEnabled(_downEnabled);
 		}
 		public boolean isEnabled() {
-			return _enabled;
+			return _gridEnabled;		// do not change by _enabled: it'll block everything and events will NOT be raised
 		}
 	}
 	@Override

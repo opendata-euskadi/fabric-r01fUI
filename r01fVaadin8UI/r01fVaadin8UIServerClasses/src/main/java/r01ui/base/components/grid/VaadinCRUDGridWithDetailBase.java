@@ -55,7 +55,7 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 							  		   		 					   				 final VaadinViewFactory<F> formFactory,
 							  		   		 					   				 final Factory<V> viewObjFactory) {
 		this(i18n,
-			 // edit detail factory
+			 // edit detail edit form factory (wraps the form with [accept] [cance] buttons
 			 () -> new VaadinDetailEditFormBase<V,F>(i18n,
 					 								 formFactory.from(i18n),	// form
 					 								 viewObjFactory) {			// view obj factory
@@ -70,7 +70,7 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 							  		   		 					   				 final Class<V> viewObjType,final Factory<V> viewObjFactory,
 							  		   		 					   				 final String... viewObjPropertyNames) {	
 		super(i18n,
-			  // edit detail factory
+			  // edit detail edit form factory (wraps the form with [accept] [cance] buttons
 			  () -> new VaadinDetailEditFormBase<V,F>(i18n,
 					 								  formFactory.from(i18n),	// form
 					 								  viewObjFactory) {			// view obj factory
@@ -187,7 +187,6 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 		VerticalLayout root = (VerticalLayout)this.getCompositionRoot();
 		
 		if (root.getComponentCount() == 2) {
-			// wrap the form with the [accept] | [cancel] | [delete] buttons
 			root.addComponent(form);
 		}
 		form.setVisible(true);

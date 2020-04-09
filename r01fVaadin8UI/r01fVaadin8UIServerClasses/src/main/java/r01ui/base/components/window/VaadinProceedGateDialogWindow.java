@@ -163,7 +163,7 @@ public class VaadinProceedGateDialogWindow
 	}
 	private void _initBehavior(final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
 							   final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
-		_btnNOTProceed.addClickListener(clickEvent ->{ 
+		_btnNOTProceed.addClickListener(clickEvent -> {
 											if (proceedGateClosedListener!=null)
 												proceedGateClosedListener.closed();
 											this.close();

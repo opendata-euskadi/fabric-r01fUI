@@ -90,7 +90,7 @@ public class VaadinTreeData<T>
 	 * @return
 	 */
 	public VaadinTreeData<T> addItemAfterSibling(final T parentNode,
-												 final T nodeToBeAdded,final T prevSibling)	{
+												 final T nodeToBeAdded,final T prevSibling)	 {
 		if (parentNode != null
 		 && prevSibling != null
 		 && this.getParent(prevSibling) != parentNode) throw new IllegalArgumentException("The given [parent node] is NOT the parent of the given [sibling node]");

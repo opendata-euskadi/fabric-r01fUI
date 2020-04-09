@@ -306,15 +306,19 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		
 		// all except the [create] button are disabled by default
 		_resetButtonStatus();
+		
 		// behavior
 		_setButtonsBehavior();
+		
 		// layout
 		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
+		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
+		CssLayout lyWrap = new CssLayout(lyButtonsEditRemove,_lyButtonsUpDown);
 		
-		_lyButtonsUpDown = new CssLayout(lyButtonsEditRemove,_btnUp,_btnDown);
-		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,_lyButtonsUpDown);
+		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyWrap);
 		lyButtons.setWidthFull();
-		lyButtons.setComponentAlignment(_lyButtonsUpDown, Alignment.BOTTOM_RIGHT);
+		lyButtons.setComponentAlignment(lyWrap,
+										Alignment.BOTTOM_RIGHT);
 		
 		////////// Form
 		_detailEditForm = detailFactory.create();
@@ -328,7 +332,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		this.setCompositionRoot(vly);
 		
 		////////// enable row movement by default
-		this.enableRowMovement();
+//		this.enableRowMovement();
 		
 		////////// Store the enable status 
 		_enabledStatusHandler = new VaadinCRUDGridEnableStatusHandler();		// enabled by default

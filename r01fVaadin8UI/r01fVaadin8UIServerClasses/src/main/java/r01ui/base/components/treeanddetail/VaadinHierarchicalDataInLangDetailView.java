@@ -30,7 +30,7 @@ public interface VaadinHierarchicalDataInLangDetailView<VO extends UIViewObjectI
 	     extends VaadinView,
 	    		 HasLanguage,
 				 VaadinFormEditsViewObject<VO>, 		// the view uses vaadin ui binder
-				 VaadinViewI18NMessagesCanBeUpdated {			// the view i18n messages can be updated{
+				 VaadinViewI18NMessagesCanBeUpdated {			// the view i18n messages can be updated {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUBLIC INTERFACE                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////

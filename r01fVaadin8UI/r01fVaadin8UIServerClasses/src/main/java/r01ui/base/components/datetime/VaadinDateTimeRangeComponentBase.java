@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Collection;
 
 import com.google.common.collect.Range;
 import com.vaadin.shared.Registration;
@@ -110,8 +109,6 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 	public void clear() {
 		_dateLowerBound.setValue(null);
 		_dateUperBound.setValue(null);
-
-		Collection<?> registeredEventListeners = this.getListeners(ValueChangeEvent.class);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BEWARE! if an event is NOT raised when the value changes, the vaadin binder
@@ -130,8 +127,9 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 														// if DateTimeField and up is before low, just set up to null
 														return;
 													}
-													Range<T> val = Ranges.guavaRangeFrom(_isDateTimeRangeComponent() && e.getValue()==null ? null 				//if DateTimeField and value is null, just set the new value to low
-																																		   : e.getOldValue(),	// old value
+													Range<T> val = Ranges.guavaRangeFrom(_isDateTimeRangeComponent() 
+																					   && e.getValue() == null ? null 				// if DateTimeField and value is null, just set the new value to low
+																											   : e.getOldValue(),	// old value
 																					     _dateUperBound.getValue());
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
@@ -148,8 +146,9 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 														return;
 													}
 													Range<T> val = Ranges.guavaRangeFrom(_dateLowerBound.getValue(),
-																					     _isDateTimeRangeComponent() && e.getValue()==null ? null				//if DateTimeField and value is null, just set the new value to up
-																					    												   : e.getOldValue());	// old value
+																					     _isDateTimeRangeComponent() 
+																					   && e.getValue()==null ? null		// if DateTimeField and value is null, just set the new value to up
+																					    					 : e.getOldValue());	// old value
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
 																											true);		// user originated
@@ -170,8 +169,8 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 ///////////////////////////////////////////////////////////////////////////////////////////
 //	PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private boolean _isNotValidRange(T currLow,
-								  T currUp) {
+	private boolean _isNotValidRange(final T currLow,
+								  final T currUp) {
 		if (_isDateTimeRangeComponent()) {
 			return currLow.get(ChronoField.HOUR_OF_DAY) > (currUp.get(ChronoField.HOUR_OF_DAY));
 		} else {

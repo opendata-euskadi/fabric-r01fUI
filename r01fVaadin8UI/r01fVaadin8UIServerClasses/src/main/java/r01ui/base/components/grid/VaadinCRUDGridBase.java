@@ -13,6 +13,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.DataProviderListener;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.GridSortOrderBuilder;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.SortEvent.SortListener;
 import com.vaadin.event.SortEvent.SortNotifier;
 import com.vaadin.event.selection.SelectionListener;
@@ -54,12 +55,14 @@ import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.extern.slf4j.Slf4j;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.subscriber.UISubscriber;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactory;
 import r01f.ui.viewobject.UIViewObject;
+import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.VaadinListDataProviders;
 import r01ui.base.components.form.VaadinDetailEditForm;
@@ -183,6 +186,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * @param <V>
  * @param <F>
  */
+@Slf4j
 abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	   extends Composite 
 	implements HasDataProvider<V>, 
@@ -221,8 +225,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	STATE
 /////////////////////////////////////////////////////////////////////////////////////////
-	
-	private final VaadinCRUDGridEnableStatusHandler _enabledStatusHandler;		// stores the enable/disable status for later restor
+	private final VaadinCRUDGridEnableStatusHandler _enabledStatusHandler;		// stores the enable/disable status for later restore
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
@@ -310,11 +313,17 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		// behavior
 		_setButtonsBehavior();
 		
-		// layout
+		////////// layout
+		// [edit] | [remove]
 		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
+		// [up] | [down]
 		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
+		_lyButtonsUpDown.setVisible(false);		// not visible by default (row movement is NOT enabled by default)
+		
+		// [edit] | [remove] | [up] | [down]
 		CssLayout lyWrap = new CssLayout(lyButtonsEditRemove,_lyButtonsUpDown);
 		
+		// [Caption] | [create] |        [edit] | [remove] | [up] | [down]
 		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyWrap);
 		lyButtons.setWidthFull();
 		lyButtons.setComponentAlignment(lyWrap,
@@ -392,6 +401,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		_btnDown.setEnabled(false);
 	}
 	private void _setUpDownButtonsStatusForSelectedItem() {
+		if (!this.isRowMovementEnabled()) return;
+		
 		V selectedItem = _grid.asSingleSelect()
 			   			  	  .getSelectedItem()
 			   			  	  .orElse(null);
@@ -418,9 +429,13 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 									});
 		// Up button
 		_btnUp.addClickListener(clickEvent -> {
+									if (!this.isRowMovementEnabled()) return;
+									
 									V selectedViewObj = _grid.asSingleSelect().getSelectedItem()
 																		   	  .orElse(null);
 									if (selectedViewObj != null) { 
+										if (!this.isRowMovementEnabled()) return;
+										
 										VaadinListDataProviders.collectionBackedOf(_grid)
 														   	   .moveItemUp(selectedViewObj);
 										_setUpDownButtonsStatusForSelectedItem();
@@ -428,6 +443,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 								});
 		// Down button
 		_btnDown.addClickListener(clickEvent -> {
+									if (!this.isRowMovementEnabled()) return;
+									
 									V selectedViewObj = _grid.asSingleSelect().getSelectedItem()
 																		   	  .orElse(null);
 									if (selectedViewObj != null) { 
@@ -450,7 +467,19 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	public void setCreateButtonIcon(final Resource icon) {
 		_btnCreate.setIcon(icon);
 	}
+	public void addStylesToGrid(final String... styles) {
+		_grid.addStyleNames(styles);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	ROW MOVEMENT
+/////////////////////////////////////////////////////////////////////////////////////////	
 	public void enableRowMovement() {
+		if (!(this.getDataProvider() instanceof ListDataProvider)) {
+			log.warn("[grid]: cannot enable row movement is the underlying data provider is NOT a {} instance " +
+					 "(maybe the call to grid#enableRowMovement() should be done AFTER calling grid#setItems(...) or grid#setDataProvider(...) with a {}",
+					 ListDataProvider.class.getName(),ListDataProvider.class.getName());
+			return;
+		}
 		// drag & drop
 		GridRowDragger<V> gridRowDragger = new GridRowDragger<>(_grid); 		//	drag and drop order
 		gridRowDragger.getGridDropTarget()
@@ -461,8 +490,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	public void disableRowMovement() {
 		_lyButtonsUpDown.setVisible(false);
 	}
-	public void addStylesToGrid(final String... styles) {
-		_grid.addStyleNames(styles);
+	public boolean isRowMovementEnabled() {
+		return _lyButtonsUpDown.isVisible();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ACTION METHODS (override if needed)
@@ -503,12 +532,17 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 														  // what to do after creating
 														  createdViewObj -> {
 																// refresh the grid
-											   					VaadinListDataProviders.collectionBackedOf(_grid)
-											   										   .addNewItem(createdViewObj);
-																this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
-																											.getUnderlyingItemsCollectionSize());
-																// setup buttons
-																_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+															  	if (this.getDataProvider() instanceof ListDataProvider) {
+												   					VaadinListDataProviders.collectionBackedOf(_grid)
+												   										   .addNewItem(createdViewObj);
+																	this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																												.getUnderlyingItemsCollectionSize());
+																	// setup up/down buttons
+																	_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+															  	} else {
+															  		_grid.getDataProvider()
+															  			 .refreshAll();
+															  	}
 														   });
 								    });
 		return (W)_detailEditForm;
@@ -536,10 +570,15 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 											  		 	// what to do after saving
 											  		  	savedViewObj -> {
 															// refresh the grid
-															 VaadinListDataProviders.collectionBackedOf(_grid)
-														  						 	.refreshItem(savedViewObj);
-															// setup buttons
-															_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+											  		  		if (this.getDataProvider() instanceof ListDataProvider) {
+																VaadinListDataProviders.collectionBackedOf(_grid)
+															  						   .refreshItem(savedViewObj);
+																// setup up/down buttons
+																_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+											  		  		} else {
+											  		  			_grid.getDataProvider()
+											  		  				 .refreshAll();
+											  		  		}
 											  		  	});
 								   });
 		return (W)_detailEditForm;
@@ -561,10 +600,15 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 																										  			// what to do after delete
 																										  			deletedViewObj -> {
 																													  	// remove the item
-																													  	VaadinListDataProviders.collectionBackedOf(_grid)
-																													  						   .removeItem(deletedViewObj);
-																														this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
-																																									.getUnderlyingItemsCollectionSize());
+																										  				if (this.getDataProvider() instanceof ListDataProvider) {
+																														  	VaadinListDataProviders.collectionBackedOf(_grid)
+																														  						   .removeItem(deletedViewObj);
+																															this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																																										.getUnderlyingItemsCollectionSize());
+																										  				} else {
+																										  					_grid.getDataProvider()
+																										  						 .refreshAll();
+																										  				}
 																														// now there's no selected item
 																														_resetButtonStatus();
 																													});
@@ -606,8 +650,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void refreshList() {
-		VaadinListDataProviders.collectionBackedOf(_grid)
-							   .refreshAll();
+		_grid.getDataProvider()
+			 .refreshAll();
 	}
 	@Override @SuppressWarnings("unchecked")
 	public void setItems(final V... items) {
@@ -635,17 +679,24 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		this.setHeightByRows(theItems.size());
 		_resetButtonStatus();	// all buttons disabled except the [create] button
 	}
+	public Collection<V> getItems() {
+		if (!(this.getDataProvider() instanceof ListDataProvider)) throw new IllegalStateException(Strings.customized("[grid]#getItems() can only be called if the underlying [data provider] is a {}",
+																								    				  ListDataProvider.class.getName()));
+		return VaadinListDataProviders.collectionBackedOf(_grid)
+									  .getUnderlyingItemsCollection();
+	}
 	@Override
 	public void setDataProvider(final DataProvider<V,?> dataProvider) {
 		_grid.setDataProvider(dataProvider);
+		
+		// if the [data provider] is NOT a ListDataProvider rows cannot be moved
+		if (!(dataProvider instanceof ListDataProvider)) {
+			this.disableRowMovement();
+		}
 	}
 	@Override
 	public DataProvider<V,?> getDataProvider() {
 		return _grid.getDataProvider();
-	}
-	public Collection<V> getItems() {
-		return VaadinListDataProviders.collectionBackedOf(_grid)
-									  .getUnderlyingItemsCollection();
 	}
 	public V getSelectedItem() {
 		return _grid.asSingleSelect()
@@ -976,17 +1027,21 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SORT
 /////////////////////////////////////////////////////////////////////////////////////////	
-	public void sort(final Column<V, ?> column) {
+	public void sort(final Column<V,?> column) {
 		_grid.sort(column);
 	}
-	public void sort(final Column<V, ?> column, final SortDirection direction) {
-		_grid.sort(column, direction);
+	public void sort(final Column<V,?> column, 
+					 final SortDirection direction) {
+		_grid.sort(column, 
+				   direction);
 	}
 	public void sort(final String columnId) {
 		_grid.sort(columnId);
 	}
-	public void sort(final String columnId, final SortDirection direction) {
-		_grid.sort(columnId, direction);
+	public void sort(final String columnId,
+					 final SortDirection direction) {
+		_grid.sort(columnId, 
+				   direction);
 	}
 	public void clearSortOrder() {
 		_grid.clearSortOrder();

@@ -37,7 +37,7 @@ public abstract class VaadinListDataProviders {
 	 */
 	public static <T> VaadinHasDataListProviderAccessor<T> collectionBackedOf(final HasDataProvider<T> hasDataProvider) {
 		return new VaadinListDataProviders() { /* nothing */ }
-					.new VaadinHasDataListProviderAccessor<T>(hasDataProvider);
+					.new VaadinHasDataListProviderAccessor<>(hasDataProvider);
 	}
 	/**
 	 * Provides access to a {@link Collection}-backed {@link DataProvider}
@@ -51,7 +51,7 @@ public abstract class VaadinListDataProviders {
 	 */
 	public static <T> VaadinFilterableListDataProviderAccessor<T> collectionBackedOf(final HasFilterableDataProvider<T,?> hasDataProvider) {
 		return new VaadinListDataProviders() { /* nothing */ }
-					.new VaadinFilterableListDataProviderAccessor<T>(hasDataProvider);
+					.new VaadinFilterableListDataProviderAccessor<>(hasDataProvider);
 	}
 	/**
 	 * Provides access to a {@link DataProvider}
@@ -71,10 +71,10 @@ public abstract class VaadinListDataProviders {
 	 */
 	public static <T> VaadinListDataProviderAccessor<T> ofListDataProvider(final ListDataProvider<T> dataProvider) {
 		return new VaadinListDataProviders() { /* nothing */ }
-					.new VaadinListDataProviderAccessor<T>(dataProvider);
+					.new VaadinListDataProviderAccessor<>(dataProvider);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//
+//	ACCESSORS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	public class VaadinHasDataListProviderAccessor<T>
@@ -88,9 +88,6 @@ public abstract class VaadinListDataProviders {
 			return (ListDataProvider<T>)_hasDataProvider.getDataProvider();
 		}
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////////////
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	public class VaadinFilterableListDataProviderAccessor<T> 
 		 extends VaadinDataProviderAccessorBase<T,
@@ -103,9 +100,6 @@ public abstract class VaadinListDataProviders {
 			return (ListDataProvider<T>)_hasDataProvider.getDataProvider();
 		}
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////////////
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	public class VaadinListDataProviderAccessor<T>
 		 extends VaadinDataProviderAccessorBase<T,
@@ -119,7 +113,7 @@ public abstract class VaadinListDataProviders {
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	BASE
 /////////////////////////////////////////////////////////////////////////////////////////
 	private interface VaadinDataProviderAccessor<T,SELF_TYPE extends VaadinDataProviderAccessor<T,SELF_TYPE>> {
 		public ListDataProvider<T> getDataProvider();

@@ -66,6 +66,7 @@ import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.VaadinListDataProviders;
 import r01ui.base.components.form.VaadinDetailEditForm;
+import r01ui.base.components.form.VaadinDetailEditFormBase;
 import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 import r01ui.base.components.form.VaadinDetailForm;
 import r01ui.base.components.form.VaadinFormEditsViewObject;
@@ -484,6 +485,31 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 								});
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the underlying form
+	 * @param <F>
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <F extends VaadinDetailForm<V>
+					& VaadinFormEditsViewObject<V>> F getForm() {
+		if (_detailEditForm == null) return null;
+		
+		F outForm = null;
+		if (_detailEditForm instanceof VaadinDetailEditFormWindowBase) {
+			VaadinDetailEditFormWindowBase<V,F> editWin = (VaadinDetailEditFormWindowBase<V,F>)_detailEditForm;
+			outForm = editWin.getForm();
+		} else if (_detailEditForm instanceof VaadinDetailEditFormBase) {
+			VaadinDetailEditFormBase<V,F> edit = (VaadinDetailEditFormBase<V,F>)_detailEditForm;
+			outForm = edit.getForm();
+		} else {
+			throw new IllegalStateException(_detailEditForm + " is NOT a valid [edit form]");
+		}
+		return outForm;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	CONFIGURE
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
@@ -758,6 +784,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 //	ENABLE & VISIBLE
 /////////////////////////////////////////////////////////////////////////////////////////
 	private class VaadinCRUDGridEnableStatusHandler {
+		@SuppressWarnings("unused")
 		private boolean _enabled;
 		
 		// the status BEFORE setting the [enabled] status to FALSE

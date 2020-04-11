@@ -60,11 +60,10 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 	 * The footer layout
 	 */
 	@Getter private final Component _footer;
-	
 	/**
 	 * The layout >> [left menu] [view display]
 	 */
-	private HorizontalLayout _splitLayout;
+	private final HorizontalLayout _splitLayout;
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////  
@@ -99,7 +98,7 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 		_splitLayout.setMargin(false);
 		_splitLayout.setSpacing(false);
 		_splitLayout.setResponsive(true);
-		_splitLayout.setWidth("100%");
+		_splitLayout.setWidthFull();
 		
 		_splitLayout.addComponent(_leftMenu);
 		_splitLayout.addComponent(_viewDisplay);
@@ -111,14 +110,20 @@ public class VaadinViewDisplayWithHeaderLeftMenuAndFooter
 		//		[ [left menu] | [view display]
 		//		[ footer                     ]
 		VerticalLayout ly = new VerticalLayout();
-		ly.addComponentAsFirst(_header);
-		ly.addComponent(_splitLayout);
-		ly.addComponent(_footer);
+		if (_header != null) ly.addComponentAsFirst(_header);
+							 ly.addComponent(_splitLayout);
+		if (_footer != null) ly.addComponent(_footer);
+		
+		// ensure 100% height
+		if (header != null)  ly.setExpandRatio(_header,0);
+							 ly.setExpandRatio(_splitLayout,100);
+		if (_footer != null) ly.setExpandRatio(_footer,0);
 		
 		// style
-		ly.setSizeFull();
 		ly.setMargin(false);
-		ly.setHeightUndefined();
+		ly.setSpacing(false);
+		ly.setWidthFull();
+		ly.setHeightFull();
 		
 		_splitLayout.addStyleName("r01-view-display-container");
 		_leftMenu.addStyleName("r01-view-display-left-menu");

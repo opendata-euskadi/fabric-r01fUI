@@ -103,7 +103,8 @@ public abstract class UII18NManagerBase
 	}
 	@Override
 	public String getMessage(final OID key,final Object... args) {
-		return this.getMessage(key.asString(),args);
+		return key != null ? this.getMessage(key.asString(),args)
+						   : null;
 	}
 	@Override
 	public String getMessage(final String key,final Object... args) {

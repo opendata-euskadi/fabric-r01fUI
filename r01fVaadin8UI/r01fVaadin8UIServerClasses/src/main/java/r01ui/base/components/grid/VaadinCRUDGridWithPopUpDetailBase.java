@@ -2,6 +2,7 @@ package r01ui.base.components.grid;
 
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -203,6 +204,14 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<V extends UIViewObject>	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the popup
+	 * @param <W>
+	 */
+	@SuppressWarnings("unchecked")
+	public <W extends Window> W getPopUp() {
+		return (W)_detailEditForm;
+	}
 	private <W extends VaadinDetailEditForm<V>> void _setWinDimensions(final W win) {
 		if (_winDimensions != null) {
 			Unit theUnit = _winDimensionsUnit != null ? _winDimensionsUnit : Unit.PERCENTAGE;

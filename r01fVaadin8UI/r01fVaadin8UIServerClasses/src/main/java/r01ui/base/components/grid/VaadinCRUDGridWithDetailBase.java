@@ -8,6 +8,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 
 import r01f.patterns.Factory;
@@ -221,10 +222,16 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 		vsplit.setSplitPosition(30,Unit.PERCENTAGE);
 		
 		// layoyt
-		CssLayout ly = new CssLayout(lyHeader,
-									 vsplit);
+		VerticalLayout ly = new VerticalLayout(lyHeader,
+									 		   vsplit);
+		// ... ensure 100% height
+		ly.setExpandRatio(lyHeader,0);
+		ly.setExpandRatio(vsplit,100);
 		ly.setWidthFull();
 		ly.setHeightFull();
+		ly.setMargin(false);
+		
+		
 		return ly;
 	}
 	private <E extends VaadinDetailEditForm<V>> void _showEditForm(final E form) {
@@ -233,7 +240,7 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 		form.setVisible(true);
 	}
 	private VerticalSplitPanel _splitPanel() {
-		CssLayout root = (CssLayout)this.getCompositionRoot();
+		VerticalLayout root = (VerticalLayout)this.getCompositionRoot();
 		VerticalSplitPanel gridAndForm = (VerticalSplitPanel)root.getComponent(1);	// second component
 		return gridAndForm;
 	}

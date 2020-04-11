@@ -22,6 +22,8 @@ public abstract class VaadinValoTheme
 	public static final String NO_MARGIN_TOP = "no-margin-top";
 	public static final String NO_MARGIN_BOTTOM = "no-margin-bottom";
 	
+	public static final String PADDING_TOP = "padding-top";
+	
 	public static final String WIDTH_AUTO = "width-auto";	
 	
 	public static final String NON_SELECT = "nonselect";
@@ -79,6 +81,7 @@ public abstract class VaadinValoTheme
 	public static final String TOOLBAR_ACTIONS_MENU = "toolbar-actions-menu";
 	public static final String TOOLBAR = "toolbar";
 	
+	public static final String CHECK_WITH_ICON = "check-with-icon";
 	
 	public static final String DANGER_COLOR = "danger-color";
 	public static final String SAVE_COLOR = "save-color";

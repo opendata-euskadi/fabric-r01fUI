@@ -71,32 +71,42 @@ public abstract class VaadinCRUDGridWithPopUpDetailBase<V extends UIViewObject>	
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 // eclipse bug: crash while compiling in eclipse
-//	public <F extends VaadinDetailForm<V>
-//			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
-//							  		   		 					   					  final VaadinViewFactory<F> formFactory,
-//																					  final Factory<V> viewObjFactory) {
-//		this(i18n,
-//			 // edit popup factory
-//			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
-//					 									   formFactory.from(i18n),
-//					 									   viewObjFactory) {
-//							private static final long serialVersionUID = -5628170580725614674L;
-//				   },
-//			 // view obj factory
-//			 viewObjFactory);
-//	}
 	public <F extends VaadinDetailForm<V>
 			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
-							  		   		 					   						final VaadinViewFactory<F> formFactory,
-							  		   		 					   						final Class<V> viewObjType,final Factory<V> viewObjFactory,
-							  		   		 					   						final String... viewObjPropertyNames) {	
+							  		   		 					   					  final VaadinViewFactory<F> formFactory,
+																					  final Factory<V> viewObjFactory) {
+		this(i18n,
+			 // edit popup factory
+			 new Factory<VaadinDetailEditFormWindowBase<V,F>>() {
+					@Override
+					public VaadinDetailEditFormWindowBase<V, F> create() {
+						return new VaadinDetailEditFormWindowBase<V,F>(i18n,
+							 									   	   formFactory.from(i18n),
+							 									   	   viewObjFactory) {
+								private static final long serialVersionUID = -5628170580725614674L;
+						};
+					}
+			 },
+			 // view obj factory
+			 viewObjFactory);
+	}
+	public <F extends VaadinDetailForm<V>
+			 		& VaadinFormEditsViewObject<V>> VaadinCRUDGridWithPopUpDetailBase(final UII18NService i18n,
+							  		   		 					   					  final VaadinViewFactory<F> formFactory,
+							  		   		 					   					  final Class<V> viewObjType,final Factory<V> viewObjFactory,
+							  		   		 					   					  final String... viewObjPropertyNames) {	
 		super(i18n,
 			  // edit popup factory
-			  () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
-					  										formFactory.from(i18n),
-					  										viewObjFactory) {
+			  new Factory<VaadinDetailEditFormWindowBase<V,F>>() {
+					@Override
+					public VaadinDetailEditFormWindowBase<V, F> create() {
+						return new VaadinDetailEditFormWindowBase<V,F>(i18n,
+					  												   formFactory.from(i18n),
+					  												   viewObjFactory) {
 							private static final long serialVersionUID = -5628170580725614674L;
-				    },
+						};
+					}
+			  },
 			  // view object factory
 			  viewObjFactory,
 			  // grid cols factory

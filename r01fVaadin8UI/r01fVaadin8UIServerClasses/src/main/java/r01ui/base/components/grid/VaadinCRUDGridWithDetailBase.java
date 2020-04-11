@@ -1,7 +1,14 @@
 package r01ui.base.components.grid;	
 
+import com.vaadin.shared.Registration;
+import com.vaadin.ui.AbstractSplitPanel.SplitPositionChangeListener;
+import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalSplitPanel;
 
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
@@ -56,11 +63,16 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 							  		   		 					   				 final Factory<V> viewObjFactory) {
 		this(i18n,
 			 // edit detail edit form factory (wraps the form with [accept] [cance] buttons
-			 () -> new VaadinDetailEditFormBase<V,F>(i18n,
-					 								 formFactory.from(i18n),	// form
-					 								 viewObjFactory) {			// view obj factory
+			 new Factory<VaadinDetailEditFormBase<V,F>>() {
+					@Override
+					public VaadinDetailEditFormBase<V, F> create() {
+						return new VaadinDetailEditFormBase<V,F>(i18n,
+					 								 			 formFactory.from(i18n),	// form
+					 								 			 viewObjFactory) {			// view obj factory
 				 			private static final long serialVersionUID = 442840240106223037L;
-				   },
+						};
+					}
+			 },
 			 // view obj factory
 			 viewObjFactory);
 	}
@@ -71,11 +83,16 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 							  		   		 					   				 final String... viewObjPropertyNames) {	
 		super(i18n,
 			  // edit detail edit form factory (wraps the form with [accept] [cance] buttons
-			  () -> new VaadinDetailEditFormBase<V,F>(i18n,
-					 								  formFactory.from(i18n),	// form
-					 								  viewObjFactory) {			// view obj factory
+			  new Factory<VaadinDetailEditFormBase<V,F>>() {
+					@Override
+					public VaadinDetailEditFormBase<V, F> create() {
+						return new VaadinDetailEditFormBase<V,F>(i18n,
+					 								  			 formFactory.from(i18n),	// form
+					 								  			 viewObjFactory) {			// view obj factory
 							private static final long serialVersionUID = -5628170580725614674L;
-			  },
+						};
+					}
+			  },	
 			  // view object factory
 			  viewObjFactory,
 			  // grid cols factory
@@ -181,14 +198,97 @@ public abstract class VaadinCRUDGridWithDetailBase<// The view object
 		return form;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	LAYOUT
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	protected Component _initComponentContent(final Label caption,
+											  final HorizontalLayout lyButtons,
+											  final Grid<V> grid) {
+		// Header: 
+		//		[caption]
+		//		[Buttons]
+		CssLayout lyHeader = new CssLayout(caption,
+									 	   lyButtons);
+		lyHeader.setWidthFull();
+		
+		// a vertical split panel:
+		//		[     Grid    ]
+		//		---------------
+		//		[     Form    ]
+		VerticalSplitPanel vsplit = new VerticalSplitPanel();
+		vsplit.setFirstComponent(grid);
+		vsplit.setResponsive(true);
+		vsplit.setSplitPosition(30,Unit.PERCENTAGE);
+		
+		// layoyt
+		CssLayout ly = new CssLayout(lyHeader,
+									 vsplit);
+		ly.setWidthFull();
+		ly.setHeightFull();
+		return ly;
+	}
+	private <E extends VaadinDetailEditForm<V>> void _showEditForm(final E form) {
+		VerticalSplitPanel gridAndForm = _splitPanel();
+		if (gridAndForm.getSecondComponent() == null) gridAndForm.setSecondComponent(form);
+		form.setVisible(true);
+	}
+	private VerticalSplitPanel _splitPanel() {
+		CssLayout root = (CssLayout)this.getCompositionRoot();
+		VerticalSplitPanel gridAndForm = (VerticalSplitPanel)root.getComponent(1);	// second component
+		return gridAndForm;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////
-	private <E extends VaadinDetailEditForm<V>> void _showEditForm(final E form) {
-		VerticalLayout root = (VerticalLayout)this.getCompositionRoot();
-		
-		if (root.getComponentCount() == 2) {
-			root.addComponent(form);
-		}
-		form.setVisible(true);
+	public void setSplitPosition(final float pos) {
+		_splitPanel().setSplitPosition(pos);
+	}
+	public void setSplitPosition(final float pos,
+								 final boolean reverse) {
+		_splitPanel().setSplitPosition(pos,
+									   reverse);
+	}
+	public void setSplitPosition(final float pos,final Unit unit,
+								 final boolean reverse) {
+		_splitPanel().setSplitPosition(pos, unit, reverse);
+	}
+	public void setSplitPosition(final float pos,final Unit unit) {
+		_splitPanel().setSplitPosition(pos,unit);
+	}
+	public void setMaxSplitPosition(final float pos,final Unit unit) {
+		_splitPanel().setMaxSplitPosition(pos,unit);
+	}
+	public void setMinSplitPosition(final float pos,final Unit unit) {
+		_splitPanel().setMinSplitPosition(pos,unit);
+	}
+	public float getSplitPosition() {
+		return _splitPanel().getSplitPosition();
+	}
+	public Unit getSplitPositionUnit() {
+		return _splitPanel().getSplitPositionUnit();
+	}
+	public boolean isSplitPositionReversed() {
+		return _splitPanel().isSplitPositionReversed();
+	}
+	public float getMinSplitPosition() {
+		return _splitPanel().getMinSplitPosition();
+	}
+	public Unit getMinSplitPositionUnit() {
+		return _splitPanel().getMinSplitPositionUnit();
+	}
+	public float getMaxSplitPosition() {
+		return _splitPanel().getMaxSplitPosition();
+	}
+	public Unit getMaxSplitPositionUnit() {
+		return _splitPanel().getMaxSplitPositionUnit();
+	}
+	public boolean isLocked() {
+		return _splitPanel().isLocked();
+	}
+	public Registration addSplitterClickListener(final SplitterClickListener listener) {
+		return _splitPanel().addSplitterClickListener(listener);
+	}
+	public Registration addSplitPositionChangeListener(final SplitPositionChangeListener listener) {
+		return _splitPanel().addSplitPositionChangeListener(listener);
 	}
 }

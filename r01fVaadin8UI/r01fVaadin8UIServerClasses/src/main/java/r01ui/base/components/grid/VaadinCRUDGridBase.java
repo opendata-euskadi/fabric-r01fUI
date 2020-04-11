@@ -22,6 +22,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.grid.ColumnResizeMode;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
@@ -39,7 +40,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.StyleGenerator;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.ColumnReorderListener;
 import com.vaadin.ui.components.grid.ColumnResizeListener;
 import com.vaadin.ui.components.grid.ColumnVisibilityChangeListener;
@@ -213,6 +213,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	
 	protected final Button _btnCreate;
 	
+	protected final CssLayout _lyButtonsEditRemove;
 	protected final Button _btnEdit;
 	protected final Button _btnRemove;
 	
@@ -237,11 +238,16 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 					   						 					final String... viewObjPropertyNames) {	
 		this(i18n,
 			 // edit form popup factories
-			 () -> new VaadinDetailEditFormWindowBase<V,F>(i18n,
-					 									   formFactory.from(i18n),	// form 
-					 									   viewObjFactory) {		// view obj factory
+			 new Factory<VaadinDetailEditFormWindowBase<V,F>>() {
+					@Override
+					public VaadinDetailEditFormWindowBase<V, F> create() {
+						return new VaadinDetailEditFormWindowBase<V,F>(i18n,
+					 									   			   formFactory.from(i18n),	// form 
+					 									   			   viewObjFactory) {		// view obj factory
 							private static final long serialVersionUID = -5628170580725614674L;
-				   },
+						};
+					}
+			 },
 			 // view object factory
 			 viewObjFactory,
 			 // grid cols factory
@@ -288,6 +294,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		
 		////////// Caption
 		_lblCaption = new Label();
+		_lblCaption.addStyleName(ValoTheme.LABEL_BOLD);
 		_lblCaption.setVisible(false);
 		
 		////////// Buttons
@@ -315,17 +322,18 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		
 		////////// layout
 		// [edit] | [remove]
-		CssLayout lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
+		_lyButtonsEditRemove = new CssLayout(_btnEdit,_btnRemove);
 		// [up] | [down]
 		_lyButtonsUpDown = new CssLayout(_btnUp,_btnDown);
 		_lyButtonsUpDown.setVisible(false);		// not visible by default (row movement is NOT enabled by default)
 		
 		// [edit] | [remove] | [up] | [down]
-		CssLayout lyWrap = new CssLayout(lyButtonsEditRemove,_lyButtonsUpDown);
+		CssLayout lyWrap = new CssLayout(_lyButtonsEditRemove,_lyButtonsUpDown);
 		
-		// [Caption] | [create] |        [edit] | [remove] | [up] | [down]
+		// [create] |        [edit] | [remove] | [up] | [down]
 		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyWrap);
 		lyButtons.setWidthFull();
+		lyButtons.setMargin(new MarginInfo(false,false,true,false));	// top | right | bottom | left
 		lyButtons.setComponentAlignment(lyWrap,
 										Alignment.BOTTOM_RIGHT);
 		
@@ -334,11 +342,10 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		_configureDetailEditForm(_detailEditForm);
 		
 		////////// Layout
-		VerticalLayout vly = new VerticalLayout(lyButtons,
-												_grid);
-		vly.setMargin(false);
-		vly.setSizeFull();
-		this.setCompositionRoot(vly);
+		Component rootComp = _initComponentContent(_lblCaption,
+												   lyButtons,
+												   _grid);
+		this.setCompositionRoot(rootComp);
 		
 		////////// enable row movement by default
 //		this.enableRowMovement();
@@ -350,6 +357,25 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		////////// Initial empty data
 		this.setItems(Lists.newArrayList());
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	METHODS THAT CAN BE OVERRIDEN
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**
+	 * Override this method to build a custom layout
+	 * @param caption
+	 * @param lyButtons
+	 * @param grid
+	 * @return
+	 */
+	protected Component _initComponentContent(final Label caption,
+											  final HorizontalLayout lyButtons,
+											  final Grid<V> grid) {
+		CssLayout ly = new CssLayout(caption,
+									 lyButtons,
+									 grid);
+		ly.setSizeFull();
+		return ly;
+	}
 	/**
 	 * Override this method to further configure the detail edit form
 	 * @param <W>
@@ -357,11 +383,14 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	protected <W extends VaadinDetailEditForm<V>> void _configureDetailEditForm(final W editForm) {
 		// do nothing by default
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
 	/**
 	 * Override this method to further configure the grid
 	 * @param grid
 	 */
-	protected void _configureGrid() {
+	private void _configureGrid() {
 		// sizing
 		_grid.setRowHeight(50.0);
 		_grid.setWidthFull();
@@ -459,19 +488,42 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void setCaption(final String caption) {
-		_lblCaption.setValue(caption);
+		_lblCaption.setCaption(caption);
+		_lblCaption.setVisible(true);
 	}
+	public void setCaptionIcon(final Resource resource) {
+		_lblCaption.setIcon(resource);
+		_lblCaption.setVisible(true);
+	}
+	public void addStylesToGrid(final String... styles) {
+		_grid.addStyleNames(styles);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CREATE BUTTON ENABLE / DISABLE
+/////////////////////////////////////////////////////////////////////////////////////////
 	public void setCreateButtonCaption(final String caption) {
 		_btnCreate.setCaption(caption);
 	}
 	public void setCreateButtonIcon(final Resource icon) {
 		_btnCreate.setIcon(icon);
 	}
-	public void addStylesToGrid(final String... styles) {
-		_grid.addStyleNames(styles);
+	public void enableCreate() {
+		_btnCreate.setVisible(true);
+	}
+	public void disableCreate() {
+		_btnCreate.setVisible(false);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	ROW MOVEMENT
+//	EDIT & REMOT BUTTONS ENABLE / DISABLE
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setEditAndRemoveButtonsVisible(final boolean visible) {
+		_lyButtonsEditRemove.setVisible(visible);
+	}
+	public boolean areEditAndRemoveButtonsVisible() {
+		return _lyButtonsEditRemove.isVisible();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	ROW MOVEMENT ENABLE / DISABLE
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void enableRowMovement() {
 		if (!(this.getDataProvider() instanceof ListDataProvider)) {

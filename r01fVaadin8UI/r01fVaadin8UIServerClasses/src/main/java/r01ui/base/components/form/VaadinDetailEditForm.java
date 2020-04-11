@@ -7,6 +7,23 @@ import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.viewobject.UIViewObject;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
 
+/**
+ * A {@link VaadinDetailForm} with [accept] | [cancel] | [delete] buttons like:
+ * <pre>
+ * 			+=======================================+
+ * 			| +-----------------------------------+ |
+ * 			| |									  | |
+ * 			| |									  | |
+ * 			| |			   The Form				  | |
+ * 			| |									  | |
+ * 			| |									  | |
+ * 			| |									  | |
+ * 			| +-----------------------------------+ |
+ * 			|			 [Delete] [Cancel] [Accept] |
+ *   		+=======================================+
+ * </pre>
+ * @param <V>
+ */
 public interface VaadinDetailEditForm<V extends UIViewObject> 
 		 extends VaadinDetailForm<V> {
 /////////////////////////////////////////////////////////////////////////////////////////

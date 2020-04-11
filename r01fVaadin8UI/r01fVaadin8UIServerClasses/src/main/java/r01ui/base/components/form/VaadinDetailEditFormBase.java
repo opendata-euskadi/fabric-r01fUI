@@ -1,13 +1,9 @@
 package r01ui.base.components.form;
 
-import com.vaadin.data.Binder;
-import com.vaadin.data.BinderValidationStatus;
-import com.vaadin.data.ValidationResult;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -76,6 +72,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 
 		// OK | CANCEL | DELETE
 		_btnAcepCancDelete = new VaadinAcceptCancelDeleteButtons(i18n);
+		_btnAcepCancDelete.setMargin(new MarginInfo(true,false,true,false));	// top / right / bottom / left
 		_setAcceptCancelDeleteButtonsBehavior();
 
 		// Layout
@@ -89,26 +86,16 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		_btnAcepCancDelete.addCancelButtonClickListner(clickEvent -> VaadinDetailEditFormBase.this.close());
 		// - OK
 		_btnAcepCancDelete.addAcceptButtonClickListner(clickEvent -> {
-															// collect ui controls values & tell
-															Binder<V> vaadinBinder = null;
-															try {
-																vaadinBinder = _form.getVaadinUIBinder();	// sometimes the binder is not available
-															} catch (Throwable th) {
-																/* ignored */
+															// do any validation
+															boolean valid = true;
+															
+															if (_form instanceof VaadinEditFormSelfValidates) {
+																VaadinEditFormSelfValidates validates = (VaadinEditFormSelfValidates)_form;
+																valid = validates.validate();
 															}
-															if (vaadinBinder != null) {
-																BinderValidationStatus<V> status = vaadinBinder.validate();
-																if (status.hasErrors()) {
-																	StringBuffer errorMessages = new StringBuffer();
-																	for (final ValidationResult v : status.getValidationErrors()) {
-																		errorMessages.append(v.getErrorMessage() + "\n\r");
-																	}
-																	Notification.show(errorMessages.toString(),
-																					  Type.WARNING_MESSAGE);
-																	return;
-																}
-															}
-															// is valid or maybe not if not implementing VaadinValidatesForm
+															if (!valid) return;	
+															
+															// is valid or maybe not if not implementing VaadinEditFormSelfValidates														
 															_form.writeAsDraftEditedViewObjectTo(_viewObj);
 															if (_saveSubscriber != null) _saveSubscriber.onSuccess(_viewObj);
 															this.close();
@@ -123,6 +110,17 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 																_deleteSubscriber.onSuccess(deletedViewObj);
 															}
 													   });
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Performs any validation of the data: override if needed
+	 * @param viewObj
+	 * @return
+	 */
+	protected boolean _doValidateFormData(final V viewObj) {
+		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENTRY POINT

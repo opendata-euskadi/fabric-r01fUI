@@ -2,9 +2,11 @@ package r01ui.base.components.button;
 
 import java.util.stream.Stream;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Layout.MarginHandler;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -22,7 +24,8 @@ import r01f.util.types.collections.CollectionUtils;
  */
 @Accessors( prefix="_" )
 public class VaadinAcceptCancelDeleteButtons
-	 extends Composite {
+	 extends Composite 
+ implements MarginHandler {
 
 	private static final long serialVersionUID = 5892967547409836937L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +86,7 @@ public class VaadinAcceptCancelDeleteButtons
 	}
 	public void cancel() {
 		_btnCancel.click();		// simulate the click event
-	}
+	}	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	VISIBLE                                                                         
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +168,24 @@ public class VaadinAcceptCancelDeleteButtons
 								throw new IllegalArgumentException();
 				  			}
 			  		   });
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	MARGIN
+/////////////////////////////////////////////////////////////////////////////////////////	
+	@Override
+	public void setMargin(final boolean enabled) {
+		HorizontalLayout hly = (HorizontalLayout)this.getCompositionRoot();
+		hly.setMargin(enabled);
+	}
+	@Override
+	public void setMargin(final MarginInfo marginInfo) {
+		HorizontalLayout hly = (HorizontalLayout)this.getCompositionRoot();
+		hly.setMargin(marginInfo);
+	}
+	@Override
+	public MarginInfo getMargin() {
+		HorizontalLayout hly = (HorizontalLayout)this.getCompositionRoot();	
+		return hly.getMargin();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

@@ -75,6 +75,10 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 	protected void _addLanguageTabComponent(final F view) {
 		_tabs.addComponent(view);
 	}
+	@Override
+	protected void _removeLanguageTabComponent(final F view) {
+		_tabs.removeComponent(view);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SELECTION
 /////////////////////////////////////////////////////////////////////////////////////////	

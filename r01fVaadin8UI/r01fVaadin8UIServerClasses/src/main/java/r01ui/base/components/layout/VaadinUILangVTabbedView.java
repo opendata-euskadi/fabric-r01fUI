@@ -2,6 +2,8 @@ package r01ui.base.components.layout;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -101,12 +103,36 @@ public class VaadinUILangVTabbedView<// the data being binded at the view; usual
 		// create a [button] for the language
 		Language lang = view.getLanguage();
 		Button btnLang = new Button(Languages.languageLowerCase(lang));
+		btnLang.setData(lang);
 		btnLang.setStyleName(ValoTheme.BUTTON_LINK);
 		btnLang.addClickListener(clickEvent -> this.setSelectedTab(view));
 		
 		// add to the handles [vertical layout]
 		_vlyTabHandles.addComponent(btnLang);
 	}
+	@Override
+	protected void _removeLanguageTabComponent(final F view) {
+		// remove the view component
+		_tabs.remove(view);
+		
+		// remove the [button] for the language
+		Iterable<Component> btns = () -> _vlyTabHandles.iterator();
+		Collection<Component> compsToBeRemoved = StreamSupport.stream(btns.spliterator(),
+																	 false)	// not parallel
+															  .filter(comp -> {
+																	 		// is the button for the view lang??
+																	 		Button btn = (Button)comp;
+																	 		Language btnLang = (Language)btn.getData();
+																	 		return btnLang.is(view.getLanguage());	
+															 		 })
+															  .collect(Collectors.toList());
+		for (Component comp : compsToBeRemoved) {
+			_vlyTabHandles.removeComponent(comp);
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Override @SuppressWarnings("unchecked")
 	public F getSelectedTab() {
 		F currentView = (F)_layout.getComponent(1);

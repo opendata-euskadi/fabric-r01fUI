@@ -291,25 +291,57 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		_langViews = new R01UITabbedLangViews(Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	GET
 /////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the list of languages
+	 * @return
+	 */
+	public Collection<Language> getLanguages() {
+		return _langViews.getLanguages();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	REMOVE
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Removes tab for the given lang
+	 * @param lang
+	 */
+	public void removeTabFor(final Language lang) {
+		VaadinTabbedLangView langTab = _langViews.tabFormFor(lang)
+												 .orNull();
+		if (langTab == null) return;	// nothing to do
+		F frmInLang = langTab.getView();
+		_removeLanguageTabComponent(frmInLang);
+	}
+	/**
+	 * Removes all tabs
+	 */
+	public void removeAllTabs() {
+		this.getLanguages()
+			.stream()
+			.forEach(lang -> this.removeTabFor(lang));
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	ADD
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@SuppressWarnings({ "rawtypes","unchecked" })
 	public void addTabsFor(final Collection<Language> langs) {
 		// store the language views ... using the view factory, create a view for each language 
 		Collection<VaadinTabbedLangView> tabs = langs.stream()
-													.map(lang -> {
-															// create the tab
-															F langView = _viewByLangFormFactory.from(_i18n,
-																								 lang);															
-															// set the tab caption
-															if (Strings.isNullOrEmpty(langView.getCaption())) {
-																String captionKey = Strings.customized("tab.caption.{}",
-																									   Languages.languageLowerCase(lang));
-																langView.setCaption(_i18n.getMessage(captionKey));
-															}
-															return new VaadinTabbedLangView(lang,langView);
+													 .map(lang -> {
+																// create the tab
+																F langView = _viewByLangFormFactory.from(_i18n,
+																									 lang);															
+																// set the tab caption
+																if (Strings.isNullOrEmpty(langView.getCaption())) {
+																	String captionKey = Strings.customized("tab.caption.{}",
+																										   Languages.languageLowerCase(lang));
+																	langView.setCaption(_i18n.getMessage(captionKey));
+																}
+																return new VaadinTabbedLangView(lang,langView);
 														})
-													.collect(Collectors.toList());
+													 .collect(Collectors.toList());
 		_langViews.addAll(tabs);
 		
 		// There exists view fields that has the same value no matter the language
@@ -382,6 +414,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	}
 	
 	protected abstract void _addLanguageTabComponent(final F view);
+	protected abstract void _removeLanguageTabComponent(final F view);
 	
 	public abstract void setSelectedTab(final F view);
 	public abstract void setSelectedTab(final int index);
@@ -579,7 +612,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	TAB ACCESS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @return an {@link Iterable} over the lang views
@@ -614,6 +647,12 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		}
 		public void addAll(final Collection<VaadinTabbedLangView> views) {
 			_langViews.addAll(views);
+		}
+		
+		public Collection<Language> getLanguages() {
+			return _langViews.stream()
+							 .map(VaadinTabbedLangView::getLang)
+							 .collect(Collectors.toList());
 		}
 		
 		@Override

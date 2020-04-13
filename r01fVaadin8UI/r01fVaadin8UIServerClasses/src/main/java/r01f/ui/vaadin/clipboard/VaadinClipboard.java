@@ -44,6 +44,29 @@ public abstract class VaadinClipboard {
 	public static void addCopyToClipboardScriptWhenClikckAnElementWithId(final String btnId) {
 		Page.getCurrent().getJavaScript().execute(_composeCopyToClipboardScript(btnId));
 	}
+	/**
+	 * Using:
+	 * <pre class='brush:java'>
+	 * 		TextField txt = new TextField();
+	 * 		txt.addStyleName("mytxt-copy-to-clipboard");		// beware! the style name is important
+	 * 
+	 *		Button btnCopy = new Button();						
+	 *		btnCopy.setId("mytxt-copy-button");					// beware!! the button id is important
+	 *		btnCopy.setIcon(VaadinIcons.COPY);
+	 *		btnCopy.addClickListener(clickEvent -> Notification.show("copied"));
+	 * @param id
+	 * @return
+	 */
+	public static String addCopyToClipboardScriptWhenClick(final String id) {
+		return Strings.customized("document.getElementById('{}-button')" +		
+								  	      ".addEventListener('click'," +
+								  	       					 "function() {" +
+								  	       					 		"var copyTextarea = document.querySelector('.{}-to-clipboard');" +
+								  	       					 		"copyTextarea.select();" +
+								  	       					 		"document.execCommand('copy');" +
+								   							  "})",
+								  id,id);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -54,9 +77,13 @@ public abstract class VaadinClipboard {
 				 				   "sessionStorage.setItem('r01VaadinTextToCopyToClipboard','{}');\n" +
 				 				   "console.log('[vaadin-clipboard]: a js session storage var with name [r01VaadinTextToCopyToClipboard] was set with the url');\n",
 				 				   textToBeCopiedToTheClipboardB64);
-	 }
-	 private static String _composeCopyToClipboardScript(final String btnId) {
-		 return Strings.customized(// add a click listener on an item with a given id
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	// TODO which is better????
+	private static String _composeCopyToClipboardScript(final String btnId) {
+		return Strings.customized(// add a click listener on an item with a given id
 				 				   "addClickListenerOnItemWithId('{}');\n" +
 				 				   // the click listener function:
 				 				   //		a) retrieve from the session storage

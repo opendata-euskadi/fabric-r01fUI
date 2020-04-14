@@ -26,7 +26,7 @@ import r01ui.base.components.form.VaadinFormEditsViewObject;
  * </pre>
  * @param <VO>
  */
-public interface VaadinHierarchicalDataInLangDetailView<VO extends UIViewObjectInLanguage> 
+public interface VaadinHierarchicalDataInLangForm<VO extends UIViewObjectInLanguage> 
 	     extends VaadinView,
 	    		 HasLanguage,
 				 VaadinFormEditsViewObject<VO>, 		// the view uses vaadin ui binder

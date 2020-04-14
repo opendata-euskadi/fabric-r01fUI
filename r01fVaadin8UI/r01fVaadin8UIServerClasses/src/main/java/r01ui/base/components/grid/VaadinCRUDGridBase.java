@@ -790,10 +790,10 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		// the status BEFORE setting the [enabled] status to FALSE
 		private boolean _gridEnabled = true;
 		private boolean _createEnabled = true;
-		private boolean _editEnabled = true;
-		private boolean _removeEnabled = true;
-		private boolean _upEnabled = true;
-		private boolean _downEnabled = true;
+		private boolean _editEnabled = false;
+		private boolean _removeEnabled = false;
+		private boolean _upEnabled = false;
+		private boolean _downEnabled = false;
 		
 		void setEnabled(final boolean status) {
 			if (!status) {

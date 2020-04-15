@@ -224,6 +224,7 @@ public class VaadinProceedGateDialogWindow
 		if (_puzzleCheck != null) {
 			_btnProceed.setEnabled(false);	// the button is NOT enabled by default
 			
+			_txtPuzzle.clear();
 			_txtPuzzle.setVisible(true);
 			_txtPuzzle.focus();
 			// only activate the operation button if the puzzle is solved

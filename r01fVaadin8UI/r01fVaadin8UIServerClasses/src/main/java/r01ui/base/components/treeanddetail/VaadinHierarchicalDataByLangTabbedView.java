@@ -11,12 +11,12 @@ import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01ui.base.components.layout.VaadinUILangHTabbedView;
 import r01ui.base.components.tree.VaadinTreeData;
 
-public abstract class VaadinHierarchicalDataByLangTabbedView<// the component used to edit [tree] + [detail]
-															 // the [view object] binded at the [tree] + [detail] component
+public abstract class VaadinHierarchicalDataByLangTabbedView<// the [view object] binded at the [tree] + [detail] component
 															 // (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
 													 		 VO extends UIViewObjectInLanguage
 													 		 		  & HasLangInDependentNamedFacet,
-													 		 WIL extends VaadinHierarchicalDataInLangViewBase<VO,? extends VaadinHierarchicalDataInLangDetailView<VO>>,
+													 		 // the component used to edit [tree] + [detail]
+													 		 WIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>,
 												 			 // the [view obj] that contains lang dependent view objs (VIL)
 													 		 // and the [view obj in lang] (the lang-dependent view obj)
 												 			 VBL extends UIViewObjectByLanguage<VIL>,	

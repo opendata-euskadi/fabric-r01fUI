@@ -2,7 +2,6 @@ package r01ui.base.components.treeanddetail;
 
 import java.util.Collection;
 
-import com.vaadin.data.Binder;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -32,26 +31,26 @@ import r01ui.base.components.tree.VaadinTreeData;
  * <pre>
  * 				 +-- This component that wraps the [tree] and the [detail]
  * 				 |
- * 		++++++++\/+++++++++++++++++++++++++++++++++++
- * 		+										   +
- * 		+ +--------+ +---------------------------+ +
- * 		+ | node   | |                           | +
- * 		+ |  +node | | D: Detail                 | +
- * 		+ |  +node | |                           | +
- * 		+ |        | |                           | +
- * 		+ +--------+ +---------------------------+ +
- * 		+ 										   +
+ * 		++++++++\/++++++++++++++++++++++++++++++++++
+ * 		|										   |
+ * 		| +--------+ +---------------------------+ |
+ * 		| | node   | |                           | |
+ * 		| |  +node | | D: Detail               <------- this is the form: D extends VaadinHierarchicalDataInLangForm<VO>
+ * 		| |  +node | |                           | |
+ * 		| |        | |                           | |
+ * 		| +--------+ +---------------------------+ |
+ * 		| 										   |
  * 		++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
 @Accessors(prefix="_")
-public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] binded at the [tree] + [detail] component
-														   // (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
-														   VO extends UIViewObjectInLanguage			// a view object (in a language)
-														          & HasLangInDependentNamedFacet,	// has a name (in a language)
-														   // the detail view where the view obj is edited
-														   D extends VaadinHierarchicalDataInLangDetailView<VO>> 
-	 		  extends CustomField<VaadinTreeData<VO>> 		// BEWARE! TreeData<VIL>
+public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view object] binded at the [tree] + [detail] component
+														   		// (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
+														   		VO extends UIViewObjectInLanguage			// a view object (in a language)
+														   				 & HasLangInDependentNamedFacet,	// has a name (in a language)
+														   		// the detail view where the view obj is edited
+														   		D extends VaadinHierarchicalDataInLangForm<VO>> 
+	 		  extends CustomField<VaadinTreeData<VO>> 	// BEWARE! TreeData<VIL>
   		   implements HasLanguage,
   			 		  VaadinView,
   			 		  VaadinFormEditsViewObject<VaadinTreeData<VO>>,	// BEWARE!! this is binding a TreeData<VIL>
@@ -73,7 +72,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinHierarchicalDataInLangViewBase(final UII18NService i18n,
+	public VaadinHierarchicalDataInLangComponentBase(final UII18NService i18n,
 												final VaadinHierarchicalDataEditConfig settings,
 												final Language lang,final Collection<Language> availableLangs,
 												final Factory<VO> viewObjInLangFactory,
@@ -85,7 +84,7 @@ public abstract class VaadinHierarchicalDataInLangViewBase<// the [view object] 
 			 detailComponent,
 			 null);	// no tree change event listener
 	}
-	public VaadinHierarchicalDataInLangViewBase(final UII18NService i18n,
+	public VaadinHierarchicalDataInLangComponentBase(final UII18NService i18n,
 												final VaadinHierarchicalDataEditConfig settings,
 												final Language lang,final Collection<Language> availableLangs,
 												final Factory<VO> viewObjInLangFactory,

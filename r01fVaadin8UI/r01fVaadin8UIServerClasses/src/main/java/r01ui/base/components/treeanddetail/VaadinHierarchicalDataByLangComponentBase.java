@@ -21,33 +21,32 @@ import r01ui.base.components.tree.VaadinTreeData;
 
 /**
  * <pre>
- * 		+++++++++++++++++++++++++++++++++++++++++++++++++++++
- * 		+ |es| [eu] [en]									+ 
- * 		+ |  +--------------------------------------------+ +
- * 		+ |											      | +
- * 		+ |												  | +
- * 		+ |	[WIL: in lang view   						  | +
- * 		+ |												  | +
- * 		+ |												  | +
- * 		+ +-----------------------------------------------+ +
- * 		+++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 		+===================================================+
+ * 		| |es| [eu] [en]									| 
+ * 		| |  +--------------------------------------------+ |
+ * 		| |											      | |
+ * 		| |												  | |
+ * 		| |	[WIL: in lang view   						  | |
+ * 		| |												  | |
+ * 		| |												  | |
+ * 		| +-----------------------------------------------+ |
+ * 		+===================================================+
  * </pre>
- *
  * @param <VBL>
  * @param <IL>
  * @param <VIL>
  * @param <WIL>
  */
 @Accessors(prefix="_")
-public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view object & in-lang view object shown in the [detail] view 
-														   VBL extends UIViewObjectByLanguage<VIL>,		// by-lang view obj
-														   VIL extends UIViewObjectInLanguage,			// lang dependent (in a lang)
-														   // the component used to edit [tree] + [detail]
-														   // the [view object] binded at the [tree] + [detail] component
-														   // (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
-														   VO extends UIViewObjectInLanguage
-														   			& HasLangInDependentNamedFacet,
-														   WIL extends VaadinHierarchicalDataInLangViewBase<VO,? extends VaadinHierarchicalDataInLangDetailView<VO>>>	
+public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view object & in-lang view object shown in the [detail] view 
+														   		VBL extends UIViewObjectByLanguage<VIL>,	// by-lang view obj
+														   		VIL extends UIViewObjectInLanguage,			// lang dependent (in a lang)
+														   		// the [view object] binded at the [tree] + [detail] component
+														   		// (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
+														   		VO extends UIViewObjectInLanguage
+														   				 & HasLangInDependentNamedFacet,
+														   		// the component used to edit [tree] + [detail] (form)
+														   		WIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>>	
 	 		  extends CustomComponent 
 	 	   implements VaadinView,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
@@ -64,7 +63,7 @@ public abstract class VaadinHierarchicalDataByLangViewBase<// by lang view objec
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinHierarchicalDataByLangViewBase(final UII18NService i18n, 
+	public VaadinHierarchicalDataByLangComponentBase(final UII18NService i18n, 
 												final Collection<Language> portalAvailableLangs,
 												final VaadinViewFactoryFrom<Language,WIL> inLangDetailViewFactory,
 												// transform 

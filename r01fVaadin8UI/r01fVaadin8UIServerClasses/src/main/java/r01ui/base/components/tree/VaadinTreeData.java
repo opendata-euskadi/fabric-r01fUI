@@ -2,11 +2,13 @@ package r01ui.base.components.tree;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.vaadin.data.TreeData;
 
+import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
 
@@ -121,6 +123,33 @@ public class VaadinTreeData<T>
 			currParent = this.getParent(currParent);	// up!
 		}
 		return ancestors;
+	}
+	public T recurseFindItem(final T item,
+							 final Predicate<T> match) {
+		return _recurseFindItem(item,this.getRootItems(),
+								match);
+	}
+	private T _recurseFindItem(final T item,final Collection<T> childItems,
+							   final Predicate<T> match) {
+		if (CollectionUtils.isNullOrEmpty(childItems)) return null;
+		T outItem = null;
+		for (T childItem : childItems) {
+			if (match.test(childItem)) {
+				outItem = childItem;
+				break;
+			} 
+			Collection<T> childsOfChild = this.getChildren(childItem);
+			outItem = _recurseFindItem(item,childsOfChild,match);
+		}
+		return outItem;
+	}
+	public int getItemDepth(final T item) {
+		return _recurseFindRoot(item,0);
+	}
+	private int _recurseFindRoot(final T item,final int currDepth) {
+		if (this.getParent(item) == null) return currDepth;
+		T parentItem = this.getParent(item);
+		return _recurseFindRoot(parentItem,currDepth+1);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET SUB-TREE
@@ -238,7 +267,7 @@ public class VaadinTreeData<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DEBUG
 /////////////////////////////////////////////////////////////////////////////////////////
-    public static <I extends VaadinTreeItem<?>> StringBuilder debugInfoOf(final TreeData<I> treeData) {
+    public static <T> StringBuilder debugInfoOf(final TreeData<T> treeData) {
 		StringBuilder sb = new StringBuilder();
 		if (CollectionUtils.hasData(treeData.getRootItems())) {
 			treeData.getRootItems()
@@ -248,14 +277,17 @@ public class VaadinTreeData<T>
 		}
 		return sb;
     }
-	private static <I extends VaadinTreeItem<?>>  void _recurseTreeDebugInfo(final TreeData<I> treeData,final I node,
-																	   		 final int deepth,
-																	   		 final StringBuilder sb) {
+	private static <T> void _recurseTreeDebugInfo(final TreeData<T> treeData,final T node,
+									   		  	  final int deepth,
+									   		  	  final StringBuilder sb) {
+		String name = (node instanceof HasLangInDependentNamedFacet)
+							? ((HasLangInDependentNamedFacet)node).getName()
+							: node.toString();
 		sb.append(_tabs(deepth))
 		  .append("- ")
-		  .append(node.getCaption())
+		  .append(name)
 		  .append("\n");
-		Collection<I> children = treeData.getChildren(node);
+		Collection<T> children = treeData.getChildren(node);
 		if (CollectionUtils.hasData(children )) {
 			int nextDeepth = deepth + 1;
 			children.forEach(child -> _recurseTreeDebugInfo(treeData,child,

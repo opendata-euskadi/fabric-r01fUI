@@ -12,6 +12,7 @@ import com.vaadin.shared.ui.dnd.DropEffect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -22,6 +23,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import r01f.facets.HasID;
 import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
@@ -52,7 +54,8 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * @param <VO>
  */
 public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage 
-												 & HasLangInDependentNamedFacet> 
+												 & HasID<?>							// an id is needed to match the edited [view obj] with a [tree view obj]
+												 & HasLangInDependentNamedFacet> 	// the name is needed to "paint" something at the tree
 	 extends Composite 
   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -70,6 +73,9 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	private final Button _btnAdd = new Button();
 	private final Button _btnRemove = new Button();
 	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	LISTENERS
+/////////////////////////////////////////////////////////////////////////////////////////	
 	private VaadinHiearchicalDataTreeOnItemEditEventListener<VO> _itemEditEventListener;
 	private VaadinHiearchicalDataTreeOnItemDeletedEventListener<VO> _itemDeletedEventListener;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -88,6 +94,11 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		
 		VerticalLayout vly = new VerticalLayout(hlyButtons,
 												_treeGrid);
+		vly.setWidthFull();
+		vly.setHeightUndefined();
+		vly.setExpandRatio(hlyButtons,0);
+		vly.setExpandRatio(_treeGrid,1);
+		vly.setMargin(false);
 		this.setCompositionRoot(vly);
 		
 		// configure events
@@ -103,6 +114,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		if (vaTypeSettings.isCollection() || 
 		   (vaTypeSettings.isNOTCollection() && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()))) {
 			// allow add a single item
+			_btnAdd.setIcon(VaadinIcons.PLUS);
 			_btnAdd.addStyleName(ValoTheme.BUTTON_LINK);
 			hlButtons.addComponent(_btnAdd);
 		}
@@ -123,8 +135,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											// if selecting an item at the max depth level, the [add button]
 											// should be disabled
 											VO treeSelectedItemViewObj = _treeGrid.getUniqueSelectedItem();
-											int treeSelectedItemDepth = _treeGrid.getItemDepth(treeSelectedItemViewObj);
-//											_btnAdd.setEnabled(treeSelectedItemDepth < (_settings.getMaxDepth() - 1));
+											int treeSelectedItemDepth = _treeGrid.getTreeData()
+																				 .getItemDepth(treeSelectedItemViewObj);
 											_btnAdd.setEnabled(treeSelectedItemDepth < _settings.getMaxDepth());
 											
 											if (treeSelectedItemViewObj == null) return;	// no selected item (should NOT happen)
@@ -246,12 +258,24 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 //	GET VALUE                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinTreeData<VO> getValue() {
-		return _treeGrid.getTreeData();
+		return this.getTreeData();
 	}
 	public void setValue(final VaadinTreeData<VO> treeData) {
+		this.setTreeData(treeData);
+	}
+	public VaadinTreeData<VO> getTreeData() {
+		return _treeGrid.getTreeData();
+	}
+	public void setTreeData(final VaadinTreeData<VO> treeData) {
 		_treeGrid.replaceDataWith(treeData);
 		_treeGrid.deselectAll();
 		_treeGrid.refreshAll();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	COLUMN CAPTION
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setGridCaption(final String str) {
+		_treeGrid.setColumnCaption(str);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENABLED / DISABLED																		  
@@ -263,15 +287,14 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnRemove.setEnabled(enabled);		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	TREE UPDATED 
+//	EVENT  LISTENERS 
 /////////////////////////////////////////////////////////////////////////////////////////
+	////////// Tree updated
 	public void setOnTreeChangedEventListener(final VaadinTreeChangedEventListener listener) {
 		// just pass the tree the event listener
 		_treeGrid.setTreeChangedEventListener(listener);
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	ITEM EDIT EVENT                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
+	////////// Item edit
 	public void setOnItemEditEventListener(final VaadinHiearchicalDataTreeOnItemEditEventListener<VO> listener) {
 		_itemEditEventListener = listener;
 	}
@@ -294,9 +317,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	
         public abstract void onItemEditRequested(final VaadinHiearchicalDataTreeOnItemEditEvent<VIL> event);
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	ITEM DELETE EVENT                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
+	////////// Item delete
 	public void setOnItemDeletedEventListener(final VaadinHiearchicalDataTreeOnItemDeletedEventListener<VO> listener) {
 		_itemDeletedEventListener = listener;
 	}
@@ -343,6 +364,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		private final TreeDataProvider<VO> _treeDataProvider;
 		private final VaadinTreeData<VO> _treeData;
 		
+		private Grid.Column<VO,String> _colMain;
+		
 		VaadinHierarchicalDataTreeImpl(final UII18NService i18n,
 									   final VaadinHierarchicalDataEditConfig vaTypeSettings) {
 			super();
@@ -354,18 +377,17 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			this.setDataProvider(_treeDataProvider);
 			
 			_configureTree(i18n);
-			
-			this.addStyleNames("stripes");
-			this.setWidth("340px");
-			this.setHeight("500px");
 		}
 		private void _configureTree(final UII18NService i18n) {
-			this.addColumn(vo -> vo.getName())		
-					.setId("column-text")
-					.setCaption(i18n.getMessage("portal.manager.newImageLink.text"))
-					.setSortable(false);
-			this.setHierarchyColumn("column-text");
+			Grid.Column<VO,String> col = this.addColumn(vo -> vo.getName())		
+											 .setId("caption-column")
+											 .setSortable(false);
+			_colMain = col;
+			this.setHierarchyColumn(col);
 			this.setSelectionMode(SelectionMode.SINGLE);
+		}
+		public void setColumnCaption(final String caption) {
+			_colMain.setCaption(caption);
 		}
 		public void refreshAll() {
 			_treeDataProvider.refreshAll();
@@ -398,24 +420,16 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			}
 			return outSelItem;
 		}
-		public int getItemDepth(final VO item) {
-			return _recurseFindRoot(item,0);
-		}
 		public boolean canSelectedItemContainChildItems() {
 			VO treeSelItem = this.getUniqueSelectedItem();
 			return this.canContainChildItems(treeSelItem);
 		}
 		public boolean canContainChildItems(final VO item) {
-			int itemDepth = item != null ? this.getItemDepth(item)
+			int itemDepth = item != null ? _treeData.getItemDepth(item)
 		  						  		 : -1;
 			return itemDepth < 0
 				|| _vaTypeSettings.getMaxDepth() == itemDepth ? false
 															  : true;
-		}
-		public int _recurseFindRoot(final VO item,final int currDepth) {
-			if (_treeData().getParent(item) == null) return currDepth;
-			VO parentItem = _treeData().getParent(item);
-			return _recurseFindRoot(parentItem,currDepth+1);
 		}
 		@Override
 		protected String _itemCaption(final VO item) {
@@ -441,11 +455,10 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			if (canDropIntoRootNode
 			 || canDroIntoLevel1Node) {
 				return true;
-			} else {
-				Notification.show(_i18n.getMessage("portal.manager.newImageLink.drag.no"), 
-								  Type.ERROR_MESSAGE);
-				return false;
-			}
+			} 
+			Notification.show(_i18n.getMessage("portal.manager.newImageLink.drag.no"), 
+							  Type.ERROR_MESSAGE);
+			return false;
 		}
 		/**
 		 * The branch max depth

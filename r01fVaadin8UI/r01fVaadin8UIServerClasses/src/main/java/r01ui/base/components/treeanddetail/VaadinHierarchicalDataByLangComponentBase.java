@@ -7,7 +7,6 @@ import com.vaadin.ui.CustomComponent;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.Language;
 import r01f.patterns.Transfer;
 import r01f.ui.i18n.UII18NService;
@@ -44,7 +43,7 @@ public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view 
 														   		// the [view object] binded at the [tree] + [detail] component
 														   		// (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
 														   		VO extends UIViewObjectInLanguage
-														   				 & HasLangInDependentNamedFacet,
+														   				 & VaadinHierarchicalDataViewObj<VO>,	
 														   		// the component used to edit [tree] + [detail] (form)
 														   		WIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>>	
 	 		  extends CustomComponent 
@@ -66,8 +65,9 @@ public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view 
 	public VaadinHierarchicalDataByLangComponentBase(final UII18NService i18n, 
 												final Collection<Language> portalAvailableLangs,
 												final VaadinViewFactoryFrom<Language,WIL> inLangDetailViewFactory,
-												// transform 
+												// transform from [view object] to [vaadin tree data]
 												final Function<VIL,VaadinTreeData<VO>> viewObjInLangToVaadinTreeData,
+												// transform from [vaadin tree data] to [view object]
 												final Transfer<VaadinTreeData<VO>,VIL> vaadinTreeDataToViewObjInLang) {
 		_inLangViewFactory = inLangDetailViewFactory;
 		_langTabbedView = new VaadinHierarchicalDataByLangTabbedView<VO,WIL,

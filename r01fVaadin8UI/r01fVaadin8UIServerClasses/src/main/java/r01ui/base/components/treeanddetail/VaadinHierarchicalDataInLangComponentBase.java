@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import r01f.facets.HasLanguage;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.Language;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
@@ -46,10 +45,10 @@ import r01ui.base.components.tree.VaadinTreeData;
 @Accessors(prefix="_")
 public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view object] binded at the [tree] + [detail] component
 														   		// (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
-														   		VO extends UIViewObjectInLanguage			// a view object (in a language)
-														   				 & HasLangInDependentNamedFacet,	// has a name (in a language)
+														   		VO extends UIViewObjectInLanguage			// a [view obj] (in a language)
+														   				 & VaadinHierarchicalDataViewObj<VO>,	
 														   		// the detail view where the view obj is edited
-														   		D extends VaadinHierarchicalDataInLangForm<VO>> 
+														   		F extends VaadinHierarchicalDataInLangForm<VO>> 
 	 		  extends CustomField<VaadinTreeData<VO>> 	// BEWARE! TreeData<VIL>
   		   implements HasLanguage,
   			 		  VaadinView,
@@ -66,30 +65,33 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI COMPONENTS
 /////////////////////////////////////////////////////////////////////////////////////////
+	// the tree
 	@Getter private final VaadinHierarchicalDataTree<VO> _treeGrid;
-	@Getter private final D _detailComponent;
+	
+	// the detail form
+	@Getter private final F _form;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHierarchicalDataInLangComponentBase(final UII18NService i18n,
-												final VaadinHierarchicalDataEditConfig settings,
-												final Language lang,final Collection<Language> availableLangs,
-												final Factory<VO> viewObjInLangFactory,
-												final D detailComponent) {
+													 final VaadinHierarchicalDataEditConfig settings,
+													 final Language lang,final Collection<Language> availableLangs,
+													 final Factory<VO> viewObjInLangFactory,
+													 final F form) {
 		this(i18n,
 			 settings,
 			 lang,availableLangs,
 			 viewObjInLangFactory,
-			 detailComponent,
+			 form,
 			 null);	// no tree change event listener
 	}
 	public VaadinHierarchicalDataInLangComponentBase(final UII18NService i18n,
-												final VaadinHierarchicalDataEditConfig settings,
-												final Language lang,final Collection<Language> availableLangs,
-												final Factory<VO> viewObjInLangFactory,
-												final D detailComponent,
-												final VaadinTreeChangedEventListener treeChangeEventListener) {
+													 final VaadinHierarchicalDataEditConfig settings,
+													 final Language lang,final Collection<Language> availableLangs,
+													 final Factory<VO> viewObjInLangFactory,
+													 final F form,
+													 final VaadinTreeChangedEventListener treeChangeEventListener) {
 		_language = lang;
 		
 		////////// UI
@@ -100,30 +102,45 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 													 lang,availableLangs,	
 													 // [view obj] factory
 													 viewObjInLangFactory);
-		_detailComponent = detailComponent;
-		_detailComponent.setVisible(false);		// not visible until a tree item is clicked
-		_detailComponent.setOnValueChangeEventListener(// Enable / disable the [tree] depending on the item validation status
-													   valChangeEvent -> {
-														   VO changedViewObj = valChangeEvent.getViewObject();
-														   _treeGrid.setEnabled(true);
-													   });
+		_form = form;
+		_form.setVisible(false);		// not visible until a tree item is clicked
 		
 		////////// Events
+		// what happens when an item is edited at the detail form
+		_form.setOnValueChangeEventListener(// Enable / disable the [tree] depending on the item validation status
+										    valChangeEvent -> {
+											   		// get the changed obj
+											   		VO changedViewObj = valChangeEvent.getViewObject();
+											   		
+											   		// get the corresponding item at the grid
+											   		VO viewObjAtGrid = _treeGrid.getTreeData()
+											   									.recurseFindItem(changedViewObj,
+											   													 viewObj -> {
+											   														 return viewObj.getId().is(changedViewObj.getId());
+											   													 });
+											   		if (viewObjAtGrid == null) throw new IllegalStateException("[tree grid]: could NOT find an item with id=" + changedViewObj.getId());
+											   		
+											   		// transfer the data from the edit form
+											   		viewObjAtGrid.copyDataFrom(changedViewObj);
+											   		
+											   		// enable the tree
+											   		_treeGrid.setEnabled(true);
+										    });
 		// what happens when an item is selected (or created) at the tree
 		_treeGrid.setOnItemEditEventListener(itemEditReqEvt -> {
 													// the currently edited viewObj (this forces the binded object to be saved from the UI controls)
 													VO currEditedViewObj = viewObjInLangFactory.create();
-													if (_detailComponent != null)  _detailComponent.writeAsDraftEditedViewObjectTo(currEditedViewObj);
-																				
+													_form.writeAsDraftEditedViewObjectTo(currEditedViewObj);
+													
 													// tell the [detail component] to edit the item
 													VO viewObj = itemEditReqEvt.getItemToBeEdited();
-													_detailComponent.editViewObject(viewObj);
-													_detailComponent.setVisible(true);
+													_form.editViewObject(viewObj);
+													_form.setVisible(true);
 											 });
 		// what happens when an item is deleted at the tree
 		_treeGrid.setOnItemDeletedEventListener(itemDeletedEvt -> {
 													// hide the [detail component]
-													_detailComponent.setVisible(false);
+													_form.setVisible(false);
 												});
 		// what happens when the tree is update (ie by drag & drop elements or by removing an item)
 		if (treeChangeEventListener != null) this.setOnTreeChangedEventListener(treeChangeEventListener);
@@ -133,7 +150,7 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 		////////// text & description split-panel layout
 		HorizontalSplitPanel hsplitPanel = new HorizontalSplitPanel();
 		hsplitPanel.setFirstComponent(_treeGrid);
-		hsplitPanel.setSecondComponent(_detailComponent);
+		hsplitPanel.setSecondComponent(_form);
 		hsplitPanel.setSplitPosition(30);
 		
 		return hsplitPanel;
@@ -156,7 +173,7 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 	@Override
 	public void editViewObject(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
-		_detailComponent.setVisible(false);
+		_form.setVisible(false);
 	}
 	////////// [UI control] > [viewObject] --------------	
 	@Override
@@ -173,7 +190,7 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	EVENTS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void setOnTreeChangedEventListener(final VaadinTreeChangedEventListener listener) {
 		_treeGrid.setOnTreeChangedEventListener(listener);

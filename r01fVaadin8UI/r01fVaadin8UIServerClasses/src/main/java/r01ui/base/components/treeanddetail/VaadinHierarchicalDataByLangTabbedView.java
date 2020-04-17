@@ -2,7 +2,6 @@ package r01ui.base.components.treeanddetail;
 
 import java.util.Collection;
 
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.Language;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
@@ -14,7 +13,7 @@ import r01ui.base.components.tree.VaadinTreeData;
 public abstract class VaadinHierarchicalDataByLangTabbedView<// the [view object] binded at the [tree] + [detail] component
 															 // (this [view object] MIGHT BE the VIL [view object in language] BUT is easier if NOT)
 													 		 VO extends UIViewObjectInLanguage
-													 		 		  & HasLangInDependentNamedFacet,
+													   				  & VaadinHierarchicalDataViewObj<VO>,	
 													 		 // the component used to edit [tree] + [detail]
 													 		 WIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>,
 												 			 // the [view obj] that contains lang dependent view objs (VIL)

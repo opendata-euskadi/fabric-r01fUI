@@ -276,7 +276,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 //	FIELDS	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected final VaadinViewFactoryFrom<Language,F> _viewByLangFormFactory;
-	protected final R01UITabbedLangViews _langViews;
+	protected final R01UITabbedLangForms _langForms;
 	
 	protected VBL _viewObject;
 	protected boolean _syncLangViews;	// stops the [lang view] lang-independent data sync-ing
@@ -288,7 +288,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 						       	  	  final VaadinViewFactoryFrom<Language,F> viewByLangFormFactory) {
 		_i18n = i18n;
 		_viewByLangFormFactory = viewByLangFormFactory;
-		_langViews = new R01UITabbedLangViews(Lists.newArrayList());
+		_langForms = new R01UITabbedLangForms(Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET
@@ -298,7 +298,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	 * @return
 	 */
 	public Collection<Language> getLanguages() {
-		return _langViews.getLanguages();
+		return _langForms.getLanguages();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	REMOVE
@@ -308,11 +308,12 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	 * @param lang
 	 */
 	public void removeTabFor(final Language lang) {
-		VaadinTabbedLangView langTab = _langViews.tabFormFor(lang)
+		VaadinTabbedLangView langTab = _langForms.tabFormFor(lang)
 												 .orNull();
 		if (langTab == null) return;	// nothing to do
 		F frmInLang = langTab.getView();
 		_removeLanguageTabComponent(frmInLang);
+		_langForms.removeTabFor(lang);
 	}
 	/**
 	 * Removes all tabs
@@ -342,12 +343,12 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 																return new VaadinTabbedLangView(lang,langView);
 														})
 													 .collect(Collectors.toList());
-		_langViews.addAll(tabs);
+		_langForms.addAll(tabs);
 		
 		// There exists view fields that has the same value no matter the language
 		// so when any of these fields is updated in any of the language views, 
 		// the value of the same field at the other language views must be updated
-		for (final F form : _langViews.viewIterable()) {
+		for (final F form : _langForms.viewIterable()) {
 			FieldAnnotated<LangIndependentVaadinViewField>[] annLangIndFields = ReflectionUtils.fieldsAnnotated(form.getClass(),
 																											    LangIndependentVaadinViewField.class);
 			if (CollectionUtils.hasData(annLangIndFields)) {
@@ -372,7 +373,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 																// Get the updated value
 																Object updatedVal = e.getValue();
 																// ... and set it to the corresponding field at the other language views
-																for (final F otherView : _langViews.viewIterable()) {																
+																for (final F otherView : _langForms.viewIterable()) {																
 																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherView,langIndField,false);
 																	otherLangIndHasValue.setValue(updatedVal);
 																	
@@ -398,15 +399,15 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		
 		// Set the first tab the one for the current language
 		// ... the other language tabs are set in the received order
-		VaadinTabbedLangView firstView = _langViews.tabFormFor(_i18n.getCurrentLanguage())
-												  .or(_langViews.tabFormFor(Language.DEFAULT)
+		VaadinTabbedLangView firstView = _langForms.tabFormFor(_i18n.getCurrentLanguage())
+												  .or(_langForms.tabFormFor(Language.DEFAULT)
 														  		.orNull());
 		if (firstView == null) throw new IllegalStateException("Could NOT find a view for " + _i18n.getCurrentLanguage() + " nor for " + Language.DEFAULT);
 		
 		firstView.setCurrent(true);
 		_addLanguageTabComponent(firstView.getView());		// first tab: current language
 		
-		Collection<VaadinTabbedLangView> remainingTabs = _langViews.allTabsExcept(firstView);
+		Collection<VaadinTabbedLangView> remainingTabs = _langForms.allTabsExcept(firstView);
 		for (final VaadinTabbedLangView otherView : remainingTabs) _addLanguageTabComponent(otherView.getView());
 		
 		// select the first tab
@@ -425,20 +426,20 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override 
 	public void selectedTabChange(final SelectedTabChangeEvent event) {
-		final VaadinTabbedLangView currTabView = _langViews.currentTab();
+		final VaadinTabbedLangView currTabView = _langForms.currentTab();
 		if (currTabView != null
 		 && this.getSelectedTab() == currTabView.getView()) return;	// no changed tab
 		
 		// change the view
 		final F newCurrView = this.getSelectedTab();
-		_langViews.changeCurrentTabTo(newCurrView);
+		_langForms.changeCurrentTabTo(newCurrView);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UIVaadinViewTracksChanges                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void setViewDataChanged(final boolean changed) {
-		_langViews.viewIterable()
+		_langForms.viewIterable()
 		  		  .forEach(view -> {
 		  			  			if (view instanceof VaadinViewTracksChanges) {
 			  			  			VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)view;
@@ -449,7 +450,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	@Override
 	public boolean hasViewDataChanged() {
 		final boolean outChanges = false;
-		for (final F view : _langViews.viewIterable()) {
+		for (final F view : _langForms.viewIterable()) {
 			if (view instanceof VaadinViewTracksChanges) {
 				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)view;
 				if (tracksChanges.hasViewDataChanged()) return true;
@@ -597,7 +598,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
-		for (final VaadinTabbedLangView view : _langViews) {
+		for (final VaadinTabbedLangView view : _langForms) {
 			// update the tab caption
 			final String newCaptionKey = Strings.customized("tab.caption.{}",
 													  Languages.languageLowerCase(view.getLang()));
@@ -618,10 +619,10 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	 * @return an {@link Iterable} over the lang views
 	 */
 	public Iterable<F> langViewIterable() {
-		return _langViews.viewIterable();
+		return _langForms.viewIterable();
 	}
 	public F getLangViewFor(final Language lang) {
-		return _langViews.tabFormFor(lang)
+		return _langForms.tabFormFor(lang)
 						 .orNull()
 						 .getView();
 	}
@@ -636,11 +637,23 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		@Getter @Setter private boolean _current;
 	}
 	@RequiredArgsConstructor
-	private class R01UITabbedLangViews
+	private class R01UITabbedLangForms
 	   implements Iterable<VaadinTabbedLangView> {
 		
 		private final Collection<VaadinTabbedLangView> _langViews;
 		
+		////////// remove
+		public boolean remove(final VaadinTabbedLangView view) {
+			return _langViews.remove(view);
+		}
+		public boolean removeTabFor(final Language lang) {
+			VaadinTabbedLangView toBeRemoved = this.tabFormFor(lang)
+												   .orNull();
+			return toBeRemoved != null ? this.remove(toBeRemoved)
+									   : false;
+		}
+		
+		////////// Add
 		@SuppressWarnings("unused")
 		public void add(final VaadinTabbedLangView view) {
 			_langViews.add(view);
@@ -648,7 +661,8 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		public void addAll(final Collection<VaadinTabbedLangView> views) {
 			_langViews.addAll(views);
 		}
-		
+
+		////////// get
 		public Collection<Language> getLanguages() {
 			return _langViews.stream()
 							 .map(VaadinTabbedLangView::getLang)

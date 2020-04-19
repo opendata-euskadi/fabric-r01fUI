@@ -42,7 +42,13 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 		_dateLowerBound = compFactory.create();
 		_dateUperBound = compFactory.create();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
+	public VaadinDateTimeRangeComponentBase(final Factory<C> compFactory,
+											final R dateResolution) {
+		this(compFactory);
+		_dateLowerBound.setResolution(dateResolution);
+		_dateUperBound.setResolution(dateResolution);
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override

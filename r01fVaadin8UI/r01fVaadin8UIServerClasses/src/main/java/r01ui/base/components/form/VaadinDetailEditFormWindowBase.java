@@ -103,13 +103,13 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 							 savedViewObj -> {
 								  if (saveSubscriber != null) saveSubscriber.onSuccess(savedViewObj);
 								  this.close();
-							  },
+							 },
 							 (deleteSubscriber != null) 
 								 ? deletedViewObj -> {
 									   deleteSubscriber.onSuccess(deletedViewObj);
 									   this.close();
 								   }
-								  : null);
+								 : null);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

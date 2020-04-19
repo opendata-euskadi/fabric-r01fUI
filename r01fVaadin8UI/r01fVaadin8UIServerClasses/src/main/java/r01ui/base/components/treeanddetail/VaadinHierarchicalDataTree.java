@@ -218,7 +218,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 				  new R01UIProceedPuzzleCheck() {
 				 	@Override
 				 	public boolean check(final String text) {
-				  	   return text.equals(i18n.getMessage("portal.manager.operation.delete.validateText"));
+				  	   return text.equals(i18n.getMessage("remove"));
 				 	}
 		  		});
 		}

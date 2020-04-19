@@ -41,7 +41,7 @@ import com.vaadin.data.Validator;
 public @interface VaadinViewField {
 	public String bindToViewObjectFieldNamed();
     public boolean required() default false;
-    public String i18nKeyForRequiredMessage() default "validation.field.required.default";
+    public String i18nKeyForRequiredMessage() default "required";
 	public Class<? extends Validator> useValidatorType() default VaadinVoidViewFieldValidator.class;
 	/**
 	 * The binder by default tries to bind a StringConverter

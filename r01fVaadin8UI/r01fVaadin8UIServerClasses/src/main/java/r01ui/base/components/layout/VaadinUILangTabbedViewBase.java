@@ -31,6 +31,7 @@ import r01f.reflection.ReflectionUtils;
 import r01f.reflection.ReflectionUtils.FieldAnnotated;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.LangIndependentVaadinViewField;
+import r01f.ui.vaadin.annotations.VaadinViewField;
 import r01f.ui.vaadin.view.VaadinComponent;
 import r01f.ui.vaadin.view.VaadinViewFactories.VaadinViewFactoryFrom;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
@@ -275,20 +276,20 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected final VaadinViewFactoryFrom<Language,F> _viewByLangFormFactory;
-	protected final R01UITabbedLangForms _langForms;
+	protected final VaadinViewFactoryFrom<Language,F> _formByLangFormFactory;
+	protected final formIterable _langForms;
 	
 	protected VBL _viewObject;
-	protected boolean _syncLangViews;	// stops the [lang view] lang-independent data sync-ing
+	protected boolean _syncLangForms;	// stops the [lang form] lang-independent data sync-ing
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public VaadinUILangTabbedViewBase(final UII18NService i18n,
-						       	  	  final VaadinViewFactoryFrom<Language,F> viewByLangFormFactory) {
+						       	  	  final VaadinViewFactoryFrom<Language,F> formByLangFormFactory) {
 		_i18n = i18n;
-		_viewByLangFormFactory = viewByLangFormFactory;
-		_langForms = new R01UITabbedLangForms(Lists.newArrayList());
+		_formByLangFormFactory = formByLangFormFactory;
+		_langForms = new formIterable(Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET
@@ -308,10 +309,10 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	 * @param lang
 	 */
 	public void removeTabFor(final Language lang) {
-		VaadinTabbedLangView langTab = _langForms.tabFormFor(lang)
+		VaadinTabbedLangForm langTab = _langForms.tabFormFor(lang)
 												 .orNull();
 		if (langTab == null) return;	// nothing to do
-		F frmInLang = langTab.getView();
+		F frmInLang = langTab.getForm();
 		_removeLanguageTabComponent(frmInLang);
 		_langForms.removeTabFor(lang);
 	}
@@ -328,66 +329,92 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@SuppressWarnings({ "rawtypes","unchecked" })
 	public void addTabsFor(final Collection<Language> langs) {
-		// store the language views ... using the view factory, create a view for each language 
-		Collection<VaadinTabbedLangView> tabs = langs.stream()
+		// store the language forms ... using the form factory, create a form for each language 
+		Collection<VaadinTabbedLangForm> tabs = langs.stream()
 													 .map(lang -> {
 																// create the tab
-																F langView = _viewByLangFormFactory.from(_i18n,
-																									 lang);															
+																F langForm = _formByLangFormFactory.from(_i18n,
+																									 	 lang);															
 																// set the tab caption
-																if (Strings.isNullOrEmpty(langView.getCaption())) {
+																if (Strings.isNullOrEmpty(langForm.getCaption())) {
 																	String captionKey = Strings.customized("tab.caption.{}",
 																										   Languages.languageLowerCase(lang));
-																	langView.setCaption(_i18n.getMessage(captionKey));
+																	langForm.setCaption(_i18n.getMessage(captionKey));
 																}
-																return new VaadinTabbedLangView(lang,langView);
+																return new VaadinTabbedLangForm(lang,langForm);
 														})
 													 .collect(Collectors.toList());
 		_langForms.addAll(tabs);
 		
-		// There exists view fields that has the same value no matter the language
-		// so when any of these fields is updated in any of the language views, 
-		// the value of the same field at the other language views must be updated
-		for (final F form : _langForms.viewIterable()) {
+		
+		for (final F form : _langForms.langFormIterable()) {
+			// if the form is tracking changes, update the when any @VaadinViewField is updated
+			if (form instanceof VaadinViewTracksChanges) {
+				FieldAnnotated<VaadinViewField>[] annFormFields = ReflectionUtils.fieldsAnnotated(form.getClass(),
+																								  VaadinViewField.class);
+				if (CollectionUtils.hasData(annFormFields)) {
+					for (final FieldAnnotated<VaadinViewField> annFormField : annFormFields) {
+						Field formField = annFormField.getField();		// a field annotated with @VaadinViewField
+						
+						if (!ReflectionUtils.isImplementing(formField.getType(),HasValue.class)) {
+							log.error("Error while registering [value change listener] for lang-INdependent form field {} of {}: it's is annotated with @{} BUT it's NOT an instance of {}: IGNORED",
+									  formField.getName(),form,
+									  VaadinViewField.class.getSimpleName(),
+									  HasValue.class.getSimpleName());
+							continue;
+						}
+						
+						HasValue<?> formFieldHasValue = (HasValue<?>)ReflectionUtils.fieldValue(form,formField,false);	// ... the field value on the form
+						
+						// add a value change listener so when the field gets updated the [tracking status] is updated
+						Object oldVal = formFieldHasValue.getValue();
+						Object updatedVal = formFieldHasValue.getValue();
+						boolean changed = oldVal != null && updatedVal != null ? oldVal.equals(updatedVal)
+																			   : oldVal != null && updatedVal == null ? true
+																					   								  : oldVal == null && updatedVal != null ? true
+																					   										  								 : false;	// both null
+						VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)form;
+						tracksChanges.setViewDataChanged(changed);
+					}
+				}																	
+			}
+			
+			// There exists form fields that has the same value no matter the language
+			// so when any of these fields is updated in any of the language forms, 
+			// the value of the same field at the other language forms must be updated
 			FieldAnnotated<LangIndependentVaadinViewField>[] annLangIndFields = ReflectionUtils.fieldsAnnotated(form.getClass(),
 																											    LangIndependentVaadinViewField.class);
 			if (CollectionUtils.hasData(annLangIndFields)) {
 				for (final FieldAnnotated<LangIndependentVaadinViewField> annLangIndField : annLangIndFields) {
-					Field langIndField = annLangIndField.getField();		// a field annotated with @R01UILangIndependentViewField
+					Field langIndField = annLangIndField.getField();		// a field annotated with @LangIndependentVaadinViewField
 					
 					if (!ReflectionUtils.isImplementing(langIndField.getType(),HasValue.class)) {
-						log.error("Error while registering [value change listener] for lang-dependent view: " + 
-								  "field {} of {} is annotated with @{} BUT it's NOT an instance of {}: IGNORED",
+						log.error("Error while registering [value change listener] for lang-INdependent form field {} of {}: it's is annotated with @{} BUT it's NOT an instance of {}: IGNORED",
 								  langIndField.getName(),form,
 								  LangIndependentVaadinViewField.class.getSimpleName(),
 								  HasValue.class.getSimpleName());
 						continue;
 					}
 					
-					HasValue<?> langIndHasValue = (HasValue<?>)ReflectionUtils.fieldValue(form,langIndField,false);	// ... the field value on the view
+					HasValue<?> langIndHasValue = (HasValue<?>)ReflectionUtils.fieldValue(form,langIndField,false);	// ... the field value on the form
+					
 					// add a value change listener so when the field gets updated, the corresponding
-					// fields at the other language dependent views are also updated with the same value					
-					langIndHasValue.addValueChangeListener((e) -> {
-																if (!_syncLangViews) return;
+					// fields at the other language dependent forms are also updated with the same value					
+					langIndHasValue.addValueChangeListener(valChangeEvent -> {
+																if (!_syncLangForms) return;
 																
 																// Get the updated value
-																Object updatedVal = e.getValue();
-																// ... and set it to the corresponding field at the other language views
-																for (final F otherView : _langForms.viewIterable()) {																
-																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherView,langIndField,false);
+																Object updatedVal = valChangeEvent.getValue();
+																// ... and set it to the corresponding field at the other language forms
+																for (final F otherForm : _langForms.langFormIterable()) {																
+																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherForm,langIndField,false);
 																	otherLangIndHasValue.setValue(updatedVal);
 																	
-																	// 
-																	if (otherView instanceof VaadinViewTracksChanges) {
-																		VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)otherView;
-																		tracksChanges.setViewDataChanged(false);	
+																	// the "other" form has change... so if if it's tracking changes update the state
+																	if (otherForm instanceof VaadinViewTracksChanges) {
+																		VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)otherForm;
+																		tracksChanges.setViewDataChanged(true);	
 																	}
-																}
-																if (form instanceof VaadinViewTracksChanges) {
-																	VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)form;
-																	tracksChanges.setViewDataChanged(langIndHasValue != null  
-																								  && updatedVal != null 
-																								  && langIndHasValue.getValue().equals(updatedVal));																	
 																}																
 														   });
 				}
@@ -399,25 +426,25 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		
 		// Set the first tab the one for the current language
 		// ... the other language tabs are set in the received order
-		VaadinTabbedLangView firstView = _langForms.tabFormFor(_i18n.getCurrentLanguage())
-												  .or(_langForms.tabFormFor(Language.DEFAULT)
-														  		.orNull());
-		if (firstView == null) throw new IllegalStateException("Could NOT find a view for " + _i18n.getCurrentLanguage() + " nor for " + Language.DEFAULT);
+		VaadinTabbedLangForm firstForm = _langForms.tabFormFor(_i18n.getCurrentLanguage())
+												   .or(_langForms.tabFormFor(Language.DEFAULT)
+														  		 .orNull());
+		if (firstForm == null) throw new IllegalStateException("Could NOT find a form for " + _i18n.getCurrentLanguage() + " nor for " + Language.DEFAULT);
 		
-		firstView.setCurrent(true);
-		_addLanguageTabComponent(firstView.getView());		// first tab: current language
+		firstForm.setCurrent(true);
+		_addLanguageTabComponent(firstForm.getForm());		// first tab: current language
 		
-		Collection<VaadinTabbedLangView> remainingTabs = _langForms.allTabsExcept(firstView);
-		for (final VaadinTabbedLangView otherView : remainingTabs) _addLanguageTabComponent(otherView.getView());
+		Collection<VaadinTabbedLangForm> remainingTabs = _langForms.allTabsExcept(firstForm);
+		for (final VaadinTabbedLangForm otherForm : remainingTabs) _addLanguageTabComponent(otherForm.getForm());
 		
 		// select the first tab
-		this.setSelectedTab(firstView.getView());
+		this.setSelectedTab(firstForm.getForm());
 	}
 	
-	protected abstract void _addLanguageTabComponent(final F view);
-	protected abstract void _removeLanguageTabComponent(final F view);
+	protected abstract void _addLanguageTabComponent(final F form);
+	protected abstract void _removeLanguageTabComponent(final F form);
 	
-	public abstract void setSelectedTab(final F view);
+	public abstract void setSelectedTab(final F form);
 	public abstract void setSelectedTab(final int index);
 	public abstract Registration addSelectedTabChangeListener(final SelectedTabChangeListener listener);
 	public abstract F getSelectedTab();
@@ -426,23 +453,23 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override 
 	public void selectedTabChange(final SelectedTabChangeEvent event) {
-		final VaadinTabbedLangView currTabView = _langForms.currentTab();
-		if (currTabView != null
-		 && this.getSelectedTab() == currTabView.getView()) return;	// no changed tab
+		final VaadinTabbedLangForm currTabForm = _langForms.currentTab();
+		if (currTabForm != null
+		 && this.getSelectedTab() == currTabForm.getForm()) return;	// no changed tab
 		
-		// change the view
-		final F newCurrView = this.getSelectedTab();
-		_langForms.changeCurrentTabTo(newCurrView);
+		// change the form
+		final F newCurrForm = this.getSelectedTab();
+		_langForms.changeCurrentTabTo(newCurrForm);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UIVaadinViewTracksChanges                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void setViewDataChanged(final boolean changed) {
-		_langForms.viewIterable()
-		  		  .forEach(view -> {
-		  			  			if (view instanceof VaadinViewTracksChanges) {
-			  			  			VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)view;
+		_langForms.langFormIterable()
+		  		  .forEach(form -> {
+		  			  			if (form instanceof VaadinViewTracksChanges) {
+			  			  			VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)form;
 			  			  			tracksChanges.setViewDataChanged(changed);
 		  			  			}
 		  		  		   });
@@ -450,9 +477,9 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	@Override
 	public boolean hasViewDataChanged() {
 		final boolean outChanges = false;
-		for (final F view : _langForms.viewIterable()) {
-			if (view instanceof VaadinViewTracksChanges) {
-				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)view;
+		for (final F form : _langForms.langFormIterable()) {
+			if (form instanceof VaadinViewTracksChanges) {
+				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)form;
 				if (tracksChanges.hasViewDataChanged()) return true;
 			}
 		}
@@ -497,9 +524,9 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		
 		// just "tell" all language-dependent view to bind to the corresponding
 		// language-dependent view object
-		_syncLangViews = false;	// BEWARE!	while setting the [view object] into the [lang view] 
+		_syncLangForms = false;	// BEWARE!	while setting the [view object] into the [lang view] 
 								//			STOP the [lang independent] components value sync-ing
-		for (final F langView : this.langViewIterable()) {
+		for (final F langView : this.langFormIterable()) {
 			Language lang = langView.getLanguage();
 			VIL viewObjInLang = viewObject.getViewObjectFor(lang);
 			
@@ -514,20 +541,20 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			// ... and read the data
 			langView.editViewObject(bindedViewObjInLang);
 		}
-		_syncLangViews = true;	// the [lang view] can now be sync-ed
+		_syncLangForms = true;	// the [lang form] can now be sync-ed
 	}
 	////////// [UI control] > [viewObject] --------------	
 	@Override
 	public void writeAsDraftEditedViewObjectTo(final VBL viewObj) {
 		// just "tell" all language-dependent view to write the corresponding
-		// language-dependent view object
-		for (final F langView : this.langViewIterable()) {
+		// language-dependent [view obj]
+		for (final F langView : this.langFormIterable()) {
 			if (langView instanceof VaadinViewTracksChanges) {
 				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)langView;
 				if (!tracksChanges.hasViewDataChanged()) continue;	// no changes
 			}
 			
-			// get the view object for the lang
+			// get the [view obj] for the lang
 			Language lang = langView.getLanguage();
 			VIL viewObjInLang = viewObj.getViewObjectFor(lang);
 			
@@ -545,15 +572,14 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	public boolean writeIfValidEditedViewObjectTo(final VBL viewObj) {
 		boolean allTabsValid = true;
 		
-		// just "tell" all language-dependent view to write the corresponding
-		// language-dependent view object
-		for (final F langView : this.langViewIterable()) {
+		// just "tell" all language-dependent form to write the corresponding
+		// language-dependent [view obj]
+		for (final F langView : this.langFormIterable()) {
 			if (langView instanceof VaadinViewTracksChanges) {
 				VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)langView;
 				if (!tracksChanges.hasViewDataChanged()) continue;	// no changes
 			}
-			
-			// get the view object for the lang
+			// get the [view obj] for the lang
 			Language lang = langView.getLanguage();
 			VIL viewObjInLang = viewObj.getViewObjectFor(lang);
 			
@@ -565,7 +591,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			if (!tabValid) allTabsValid = false;
 
 			// and now back from D to VIL
-			this.copyBindedObjDataToViewObjectInLang(bindedViewObjInLang,viewObjInLang);		
+			this.copyBindedObjDataToViewObjectInLang(bindedViewObjInLang,viewObjInLang);
 		}
 		return allTabsValid;
 	}
@@ -581,11 +607,11 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 	public boolean isValid() {
 		boolean allValid = true;
-		for (final F langView : this.langViewIterable()) {
-			Binder<D> vaadinUIBinder = langView.getVaadinUIBinder();
+		for (final F langForm : this.langFormIterable()) {
+			Binder<D> vaadinUIBinder = langForm.getVaadinUIBinder();
 			if (vaadinUIBinder != null) {
-				boolean langViewValid = vaadinUIBinder.isValid(); 
-				if (!langViewValid) {
+				boolean langFormValid = vaadinUIBinder.isValid(); 
+				if (!langFormValid) {
 					allValid = false;
 					break;
 				}
@@ -598,16 +624,16 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
-		for (final VaadinTabbedLangView view : _langForms) {
+		for (final VaadinTabbedLangForm form : _langForms) {
 			// update the tab caption
-			final String newCaptionKey = Strings.customized("tab.caption.{}",
-													  Languages.languageLowerCase(view.getLang()));
-			view.getView()
+			String newCaptionKey = Strings.customized("tab.caption.{}",
+													  Languages.languageLowerCase(form.getLang()));
+			form.getForm()
 				.setCaption(_i18n.getMessage(newCaptionKey));
 			
-			// update the tab view i18n messages
-			if (view.getView() instanceof VaadinViewI18NMessagesCanBeUpdated) {
-				VaadinViewI18NMessagesCanBeUpdated i18nUpdatable = (VaadinViewI18NMessagesCanBeUpdated)view.getView();
+			// update the tab form i18n messages
+			if (form.getForm() instanceof VaadinViewI18NMessagesCanBeUpdated) {
+				VaadinViewI18NMessagesCanBeUpdated i18nUpdatable = (VaadinViewI18NMessagesCanBeUpdated)form.getForm();
 				i18nUpdatable.updateI18NMessages(i18n);
 			}
 		}
@@ -616,38 +642,38 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 //	TAB ACCESS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * @return an {@link Iterable} over the lang views
+	 * @return an {@link Iterable} over the lang forms
 	 */
-	public Iterable<F> langViewIterable() {
-		return _langForms.viewIterable();
+	public Iterable<F> langFormIterable() {
+		return _langForms.langFormIterable();
 	}
 	public F getLangViewFor(final Language lang) {
 		return _langForms.tabFormFor(lang)
 						 .orNull()
-						 .getView();
+						 .getForm();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Accessors(prefix="_")
 	@RequiredArgsConstructor
-	private class VaadinTabbedLangView {
+	private class VaadinTabbedLangForm {
 		@Getter private final Language _lang;
-		@Getter private final F _view;
+		@Getter private final F _form;
 		@Getter @Setter private boolean _current;
 	}
 	@RequiredArgsConstructor
-	private class R01UITabbedLangForms
-	   implements Iterable<VaadinTabbedLangView> {
+	private class formIterable
+	   implements Iterable<VaadinTabbedLangForm> {
 		
-		private final Collection<VaadinTabbedLangView> _langViews;
+		private final Collection<VaadinTabbedLangForm> _theLangForms;
 		
 		////////// remove
-		public boolean remove(final VaadinTabbedLangView view) {
-			return _langViews.remove(view);
+		public boolean remove(final VaadinTabbedLangForm form) {
+			return _theLangForms.remove(form);
 		}
 		public boolean removeTabFor(final Language lang) {
-			VaadinTabbedLangView toBeRemoved = this.tabFormFor(lang)
+			VaadinTabbedLangForm toBeRemoved = this.tabFormFor(lang)
 												   .orNull();
 			return toBeRemoved != null ? this.remove(toBeRemoved)
 									   : false;
@@ -655,55 +681,57 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		
 		////////// Add
 		@SuppressWarnings("unused")
-		public void add(final VaadinTabbedLangView view) {
-			_langViews.add(view);
+		public void add(final VaadinTabbedLangForm form) {
+			_theLangForms.add(form);
 		}
-		public void addAll(final Collection<VaadinTabbedLangView> views) {
-			_langViews.addAll(views);
+		public void addAll(final Collection<VaadinTabbedLangForm> forms) {
+			_theLangForms.addAll(forms);
 		}
 
 		////////// get
 		public Collection<Language> getLanguages() {
-			return _langViews.stream()
-							 .map(VaadinTabbedLangView::getLang)
-							 .collect(Collectors.toList());
+			return _theLangForms.stream()
+								.map(VaadinTabbedLangForm::getLang)
+								.collect(Collectors.toList());
 		}
 		
 		@Override
-		public Iterator<VaadinTabbedLangView> iterator() {
-			return _langViews.iterator();
+		public Iterator<VaadinTabbedLangForm> iterator() {
+			return _theLangForms.iterator();
 		}
-		public Iterable<F> viewIterable() {
-			return Iterables.transform(this,
-									   (v) -> v.getView());
+		public Iterable<F> langFormIterable() {
+			Collection<F> forms = _theLangForms.stream()
+											   .map(langForm -> langForm.getForm())
+											   .collect(Collectors.toList());
+			return forms;
 		}
-		public Collection<VaadinTabbedLangView> allTabsExcept(final VaadinTabbedLangView view) {
-			return FluentIterable.from(_langViews)
-								 .filter((otherView) -> view == otherView ? false : true)	// not the given view
+		public Collection<VaadinTabbedLangForm> allTabsExcept(final VaadinTabbedLangForm form) {
+			return FluentIterable.from(_theLangForms)
+								 .filter((otherForm) -> form == otherForm ? false : true)	// not the given form
 								 .toList();
 		}
-		public Optional<VaadinTabbedLangView> tabFormFor(final Language lang) {
-			return Iterables.tryFind(_langViews,
-								 	 (v) -> v.getLang().is(lang));	
+		public Optional<VaadinTabbedLangForm> tabFormFor(final Language lang) {			
+			return Iterables.tryFind(_theLangForms,
+								 	 f -> f.getLang().is(lang));	
 		}
 		@SuppressWarnings("unused")
-		public Optional<VaadinTabbedLangView> tabFormFor(final F form) {
-			return Iterables.tryFind(_langViews,
-									 (v) -> v.getView() == form);
+		public Optional<VaadinTabbedLangForm> tabFormFor(final F form) {
+			return Iterables.tryFind(_theLangForms,
+									 f -> f.getForm() == form);
 		}
-		public VaadinTabbedLangView currentTab() {
-			final VaadinTabbedLangView langView = Iterables.tryFind(_langViews,
-																 (v) -> v.isCurrent())
-														  .orNull();
-			if (langView == null) log.warn("NOT currently selected tab view!");
-			return langView;
+		public VaadinTabbedLangForm currentTab() {
+			VaadinTabbedLangForm langForm = Iterables.tryFind(_theLangForms,
+															  f -> f.isCurrent())
+													 .orNull();
+			if (langForm == null) log.warn("NOT currently selected tab form!");
+			return langForm;
 		}
-		private VaadinTabbedLangView changeCurrentTabTo(final F view) {
-			final VaadinTabbedLangView langView = Iterables.tryFind(_langViews,
-															 	 (v) -> v.getView() == view)
+		private VaadinTabbedLangForm changeCurrentTabTo(final F form) {
+			VaadinTabbedLangForm langForm = Iterables.tryFind(_theLangForms,
+															  f -> f.getForm() == form)
 														  .orNull();
-			if (langView == null) throw new IllegalStateException("Could NOT find required tab view!");
-			return langView;
+			if (langForm == null) throw new IllegalStateException("Could NOT find required tab form!");
+			return langForm;
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -716,7 +744,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		// so since this object extends TabSheet (which in turn extends AbstractComponent), 
 		// all TabSheet components can be iterated over
 		// ... and since we're sure that the ONLY component added to the TabSheet are the 
-		// 	   language-dependent views (forms), we're sure that all components are of type F
+		// 	   language-dependent forms, we're sure that all components are of type F
 		final Iterator<Component> componentIt = this.iterator();
 		return Iterators.transform(componentIt,
 								   new Function<Component,F>() {

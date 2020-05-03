@@ -14,6 +14,8 @@ import com.vaadin.ui.Grid;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import r01f.facets.HasOID;
+import r01f.guids.OID;
 import r01f.util.types.collections.CollectionUtils;
 
 /**
@@ -121,6 +123,7 @@ public abstract class VaadinListDataProviders {
 		public List<T> getUnderlyingItemsCollectionAsList();
 		public int getUnderlyingItemsCollectionSize();
 		public SELF_TYPE refreshItem(final T item);
+		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid);
 		public SELF_TYPE refreshAll();
 		public SELF_TYPE setItems(final Collection<T> newItems);
 		public SELF_TYPE addNewItem(final T item);
@@ -160,6 +163,22 @@ public abstract class VaadinListDataProviders {
 			this.getDataProvider()
 				.refreshItem(item);
 			return (SELF_TYPE)this;
+		}
+		@Override @SuppressWarnings("unchecked")
+		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid) {
+			// find the item with the given oid
+			Collection<T> col = this.getUnderlyingItemsCollection();
+			T item = col.stream()
+						.filter(colItem -> {
+									if (!(colItem instanceof HasOID)) throw new IllegalStateException("Cannot find by oid if the underlying collection items DO NOT implement " + HasOID.class);
+									HasOID<O> hasOid = (HasOID<O>)colItem;
+									return hasOid.getOid().is(oid);
+								})
+						.findFirst().orElse(null);
+			// refresh the item
+			if (item != null) this.refreshItem(item);
+			
+			return (SELF_TYPE)this; 
 		}
 		@Override @SuppressWarnings("unchecked")
 		public SELF_TYPE refreshAll() {

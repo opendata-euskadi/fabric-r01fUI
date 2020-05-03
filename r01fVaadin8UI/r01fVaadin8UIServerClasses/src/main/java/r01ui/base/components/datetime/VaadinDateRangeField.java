@@ -13,15 +13,15 @@ import com.vaadin.ui.DateField;
  * 		+++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
-public class VaadinDateRangeComponent 
-	 extends VaadinDateTimeRangeComponentBase<LocalDate,DateResolution,
-	 										  DateField> {
+public class VaadinDateRangeField 
+	 extends VaadinDateTimeRangeFieldBase<LocalDate,DateResolution,
+	 									  DateField> {
 
 	private static final long serialVersionUID = -4908712937810703202L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinDateRangeComponent() {
+	public VaadinDateRangeField() {
 		super(DateField::new);
 	}
 }

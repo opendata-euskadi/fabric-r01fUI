@@ -13,15 +13,15 @@ import com.vaadin.ui.DateTimeField;
  * 		+++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
-public class VaadinDateTimeRangeComponent 
-	 extends VaadinDateTimeRangeComponentBase<LocalDateTime,DateTimeResolution,
+public class VaadinDateTimeRangeField 
+	 extends VaadinDateTimeRangeFieldBase<LocalDateTime,DateTimeResolution,
 	 										  DateTimeField> {
 
 	private static final long serialVersionUID = -4908712937810703202L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinDateTimeRangeComponent() {
+	public VaadinDateTimeRangeField() {
 		super(DateTimeField::new);	// component factory
 		
 		// BEWARE!! add these styles to the app stylesheet

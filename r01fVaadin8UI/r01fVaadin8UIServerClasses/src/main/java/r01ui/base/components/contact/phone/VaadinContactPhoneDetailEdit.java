@@ -12,7 +12,7 @@ import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
 import r01f.ui.vaadin.annotations.VaadinViewField;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01ui.base.components.contact.VaadinContactMeanDetailEditBase;
-import r01ui.base.components.datetime.VaadinDateTimeRangeComponent;
+import r01ui.base.components.datetime.VaadinDateTimeRangeField;
 
 public class VaadinContactPhoneDetailEdit
 	 extends VaadinContactMeanDetailEditBase<VaadinViewContactPhone> {
@@ -43,7 +43,7 @@ public class VaadinContactPhoneDetailEdit
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="contact.phone.available",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
-	protected final VaadinDateTimeRangeComponent _dateTimeRange = new VaadinDateTimeRangeComponent();
+	protected final VaadinDateTimeRangeField _dateTimeRange = new VaadinDateTimeRangeField();
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////

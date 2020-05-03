@@ -24,7 +24,7 @@ import r01f.util.types.collections.CollectionUtils;
  * 		[<] [date] [>]
  * </pre>
  */
-public class VaadinDateNavigator 
+public class VaadinDateNavigatorField 
 	 extends CustomField<LocalDate> 
   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -38,7 +38,7 @@ public class VaadinDateNavigator
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR	
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinDateNavigator(final UII18NService i18n) {
+	public VaadinDateNavigatorField(final UII18NService i18n) {
 		////////// Components
 		_btnPrevDate = new Button(VaadinIcons.ANGLE_LEFT);
 		_btnPrevDate.setDescription(i18n.getMessage("previous"));

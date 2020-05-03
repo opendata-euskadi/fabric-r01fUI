@@ -24,9 +24,9 @@ import r01f.util.types.Ranges;
  * 		+++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
-abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdjuster & Serializable & Comparable<? super T>,
-												R extends Enum<R>,
-												C extends AbstractDateField<T,R>>
+abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuster & Serializable & Comparable<? super T>,
+											R extends Enum<R>,
+											C extends AbstractDateField<T,R>>
 	   extends CustomField<Range<T>> {
 
 	private static final long serialVersionUID = -4908712937810703202L;
@@ -38,11 +38,11 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public VaadinDateTimeRangeComponentBase(final Factory<C> compFactory) {
+	public VaadinDateTimeRangeFieldBase(final Factory<C> compFactory) {
 		_dateLowerBound = compFactory.create();
 		_dateUperBound = compFactory.create();
 	}
-	public VaadinDateTimeRangeComponentBase(final Factory<C> compFactory,
+	public VaadinDateTimeRangeFieldBase(final Factory<C> compFactory,
 											final R dateResolution) {
 		this(compFactory);
 		_dateLowerBound.setResolution(dateResolution);
@@ -55,8 +55,8 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 	protected Component initContent() {
 		////////// Behavior
 		// set the upper bound to be at least the lower bound
-		_dateLowerBound.addValueChangeListener(e -> {
-													T currLow = e.getValue();
+		_dateLowerBound.addValueChangeListener(valChangeEvent -> {
+													T currLow = valChangeEvent.getValue();
 													T currUp = _dateUperBound.getValue();
 													if (currUp != null && currLow != null
 													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range
@@ -68,9 +68,9 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 														_dateUperBound.setRangeEnd(null);
 													}
 											   });
-		_dateUperBound.addValueChangeListener(e -> {
+		_dateUperBound.addValueChangeListener(valChangeEvent -> {
 													T currLow = _dateLowerBound.getValue();
-													T currUp = e.getValue();
+													T currUp = valChangeEvent.getValue();
 													if (currLow != null && currUp != null
 													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range
 														_dateLowerBound.setValue(null);
@@ -125,36 +125,36 @@ abstract class VaadinDateTimeRangeComponentBase<T extends Temporal & TemporalAdj
 		Registration reg = super.addValueChangeListener(listener);
 
 		// Raise an event when either the [lower bound] or [upper bound] change
-		_dateLowerBound.addValueChangeListener(e -> {
+		_dateLowerBound.addValueChangeListener(valChangeEvent -> {
 													if (_isDateTimeRangeComponent() 
-													 && _dateUperBound.getValue() != null && e.getValue() != null
-													 && _isNotValidRange(e.getValue(),
+													 && _dateUperBound.getValue() != null && valChangeEvent.getValue() != null
+													 && _isNotValidRange(valChangeEvent.getValue(),
 															 			 _dateUperBound.getValue())) { // is not a valid range
 														// if DateTimeField and up is before low, just set up to null
 														return;
 													}
 													Range<T> val = Ranges.guavaRangeFrom(_isDateTimeRangeComponent() 
-																					   && e.getValue() == null ? null 				// if DateTimeField and value is null, just set the new value to low
-																											   : e.getOldValue(),	// old value
+																					   && valChangeEvent.getValue() == null ? null 				// if DateTimeField and value is null, just set the new value to low
+																											   : valChangeEvent.getOldValue(),	// old value
 																					     _dateUperBound.getValue());
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
 																											true);		// user originated
 													listener.valueChange(evt);
 											   });
-		_dateUperBound.addValueChangeListener(e -> {
+		_dateUperBound.addValueChangeListener(valChangeEvent -> {
 													if (_isDateTimeRangeComponent() 
 													 && _dateLowerBound.getValue() != null 
-													 && e.getValue() != null
+													 && valChangeEvent.getValue() != null
 													 && _isNotValidRange(_dateLowerBound.getValue(),
-															 			 e.getValue()))  { // is not a valid range
+															 			 valChangeEvent.getValue()))  { // is not a valid range
 														//if DateTimeField and low is after up, just set low to null
 														return;
 													}
 													Range<T> val = Ranges.guavaRangeFrom(_dateLowerBound.getValue(),
 																					     _isDateTimeRangeComponent() 
-																					   && e.getValue()==null ? null		// if DateTimeField and value is null, just set the new value to up
-																					    					 : e.getOldValue());	// old value
+																					   && valChangeEvent.getValue()==null ? null		// if DateTimeField and value is null, just set the new value to up
+																					    					 : valChangeEvent.getOldValue());	// old value
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
 																											true);		// user originated

@@ -43,12 +43,12 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 		_dateUperBound = compFactory.create();
 	}
 	public VaadinDateTimeRangeFieldBase(final Factory<C> compFactory,
-											final R dateResolution) {
+										final R dateResolution) {
 		this(compFactory);
 		_dateLowerBound.setResolution(dateResolution);
 		_dateUperBound.setResolution(dateResolution);
 	}
-	/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
@@ -110,7 +110,6 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 			_dateUperBound.setValue(null);
 		}
 	}
-
 	@Override
 	public void clear() {
 		_dateLowerBound.setValue(null);

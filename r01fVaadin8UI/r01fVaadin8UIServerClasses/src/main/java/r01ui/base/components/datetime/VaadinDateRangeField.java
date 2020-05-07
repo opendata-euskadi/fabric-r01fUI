@@ -24,4 +24,8 @@ public class VaadinDateRangeField
 	public VaadinDateRangeField() {
 		super(DateField::new);
 	}
+	public VaadinDateRangeField(final String dateFormat) {
+		super(DateField::new,
+			  dateFormat);
+	}
 }

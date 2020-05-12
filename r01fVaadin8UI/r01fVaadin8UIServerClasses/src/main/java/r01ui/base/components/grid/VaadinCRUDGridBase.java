@@ -55,6 +55,8 @@ import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.AbstractRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.locale.I18NKey;
 import r01f.patterns.Factory;
@@ -188,6 +190,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * @param <F>
  */
 @Slf4j
+@Accessors (prefix = "_")
 abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	   extends Composite 
 	implements HasDataProvider<V>, 
@@ -208,7 +211,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI CONTROLS
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected final Grid<V> _grid;
+	@Getter protected final Grid<V> _grid;
 	
 	protected final Label _lblCaption;
 	

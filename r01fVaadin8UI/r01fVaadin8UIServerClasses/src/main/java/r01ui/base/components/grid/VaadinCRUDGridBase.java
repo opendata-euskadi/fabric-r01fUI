@@ -218,8 +218,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	protected final Button _btnCreate;
 	
 	protected final CssLayout _lyButtonsEditRemove;
-	protected final Button _btnEdit;
-	protected final Button _btnRemove;
+	@Getter protected final Button _btnEdit;
+	@Getter protected final Button _btnRemove;
 	
 	protected final CssLayout _lyButtonsUpDown; 
 	protected final Button _btnUp;

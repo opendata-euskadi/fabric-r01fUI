@@ -4,6 +4,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
@@ -27,6 +29,7 @@ import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAccept
  * This window just wraps a {@link VaadinDetailEditFormBase}
  * @param <V>
  */
+@Accessors (prefix = "_")
 public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 												 	 F extends VaadinDetailForm<V>
 															 & VaadinFormEditsViewObject<V>>
@@ -44,7 +47,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 	/**
 	 * The edit form layer
 	 */
-	protected final VaadinDetailEditFormBase<V,F> _editForm;
+	@Getter protected final VaadinDetailEditFormBase<V,F> _editForm;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR

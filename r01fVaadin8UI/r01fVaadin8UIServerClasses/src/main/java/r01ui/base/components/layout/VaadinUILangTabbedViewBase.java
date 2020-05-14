@@ -277,7 +277,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 //	FIELDS	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected final VaadinViewFactoryFrom<Language,F> _formByLangFormFactory;
-	protected final formIterable _langForms;
+	protected final FormIterable _langForms;
 	
 	protected VBL _viewObject;
 	protected boolean _syncLangForms;	// stops the [lang form] lang-independent data sync-ing
@@ -289,7 +289,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 						       	  	  final VaadinViewFactoryFrom<Language,F> formByLangFormFactory) {
 		_i18n = i18n;
 		_formByLangFormFactory = formByLangFormFactory;
-		_langForms = new formIterable(Lists.newArrayList());
+		_langForms = new FormIterable(Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET
@@ -407,7 +407,9 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 																Object updatedVal = valChangeEvent.getValue();
 																// ... and set it to the corresponding field at the other language forms
 																for (final F otherForm : _langForms.langFormIterable()) {																
-																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherForm,langIndField,false);
+																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherForm,
+																																		 langIndField,
+																																		 false);
 																	otherLangIndHasValue.setValue(updatedVal);
 																	
 																	// the "other" form has change... so if if it's tracking changes update the state
@@ -647,10 +649,13 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 	public Iterable<F> langFormIterable() {
 		return _langForms.langFormIterable();
 	}
-	public F getLangViewFor(final Language lang) {
+	public F getLangFormFor(final Language lang) {
 		return _langForms.tabFormFor(lang)
 						 .orNull()
 						 .getForm();
+	}
+	public F getLangViewFor(final Language lang) {
+		return this.getLangFormFor(lang);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
@@ -663,7 +668,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		@Getter @Setter private boolean _current;
 	}
 	@RequiredArgsConstructor
-	private class formIterable
+	private class FormIterable
 	   implements Iterable<VaadinTabbedLangForm> {
 		
 		private final Collection<VaadinTabbedLangForm> _theLangForms;

@@ -131,6 +131,7 @@ public abstract class VaadinListDataProviders {
 		public SELF_TYPE addNewItems(final Collection<T> newItems);
 		public SELF_TYPE removeItem(final T item);
 		public SELF_TYPE removeAll();
+		public SELF_TYPE replaceItem(final T replacedItem,final T replacingItem);
 		public <V extends Comparable<? super V>> SELF_TYPE setSortOrder(final ValueProvider<T,V> valueProvider,
 															   	        final SortDirection sortDirection);
 		public int getItemIndex(final T item);
@@ -237,6 +238,17 @@ public abstract class VaadinListDataProviders {
 			this.getUnderlyingItemsCollection()
 				.clear();
 			// refresh 
+			this.getDataProvider()
+				.refreshAll();
+			return (SELF_TYPE)this;
+		}
+		@Override
+		public SELF_TYPE replaceItem(final T replacedItem,final T replacingItem) {
+			this.getUnderlyingItemsCollection()
+				.remove(replacedItem);
+			this.getUnderlyingItemsCollection()
+				.add(replacingItem);
+			// refresh
 			this.getDataProvider()
 				.refreshAll();
 			return (SELF_TYPE)this;

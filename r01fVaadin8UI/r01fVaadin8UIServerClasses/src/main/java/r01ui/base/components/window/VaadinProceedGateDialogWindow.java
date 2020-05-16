@@ -11,6 +11,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
@@ -70,37 +71,37 @@ public class VaadinProceedGateDialogWindow
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
 									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
 									     // what happens when the user solves the puzzle
-									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener) {
+									     final R01UIProceedGateProceed proceed) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage,
-			 proceedGateOpenedListener,
+			 proceed,
 			 null,		// opened listener
 			 null);		// no puzzle
 	}
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
 									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-									     final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
+									     final R01UIProceedGateProceed proceed,
+									     final R01UIProceedGateCancel cancel) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage,
-			 proceedGateOpenedListener,
-			 proceedGateClosedListener,
+			 proceed,
+			 cancel,
 			 null);		// no puzzle
 	}
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
 									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
+									     final R01UIProceedGateProceed proceed,
 									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this(i18n,
 			 i18nKeyForCaption,i18nKeyForMessage, 
-			 proceedGateOpenedListener,
+			 proceed,
 			 null,		// closed listener
 			 puzzleCheck);
 	}	
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
 									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
-									     final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-									     final R01UIProceedGateClosedEventListener proceedGateClosedListener,
+									     final R01UIProceedGateProceed proceed,
+									     final R01UIProceedGateCancel cancel,
 									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this.setCaption(i18n.getMessage(i18nKeyForCaption));
 		this.setModal(true);
@@ -113,8 +114,8 @@ public class VaadinProceedGateDialogWindow
 		
 		_puzzleCheck = puzzleCheck;
 		_initLayout(i18n);
-		_initBehavior(proceedGateOpenedListener,
-					  proceedGateClosedListener);
+		_initBehavior(proceed,
+					  cancel);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
@@ -161,18 +162,24 @@ public class VaadinProceedGateDialogWindow
 		vLayout.setComponentAlignment(hLayoutForButtons,Alignment.BOTTOM_RIGHT);
 		this.setContent(vLayout);
 	}
-	private void _initBehavior(final R01UIProceedGateOpendEventListener proceedGateOpenedListener,
-							   final R01UIProceedGateClosedEventListener proceedGateClosedListener) {
+	private void _initBehavior(final R01UIProceedGateProceed proceed,
+							   final R01UIProceedGateCancel cancel) {
 		_btnNOTProceed.addClickListener(clickEvent -> {
-											if (proceedGateClosedListener!=null)
-												proceedGateClosedListener.closed();
+											if (cancel != null) cancel.cancel();
 											this.close();
 									    });
 		_btnProceed.addClickListener(clickEvent -> {	// pass the event & close
-										proceedGateOpenedListener.opened();
+										if (proceed != null) proceed.proceed();
 										this.close();	
 									});
 	}	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SHOW
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void show() {
+		UI.getCurrent()
+		  .addWindow(this);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -203,14 +210,14 @@ public class VaadinProceedGateDialogWindow
 //	EVENT                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	@FunctionalInterface
-	public interface R01UIProceedGateOpendEventListener 
+	public interface R01UIProceedGateProceed 
 	  		 extends Serializable {
-		void opened();
+		void proceed();
 	}
 	@FunctionalInterface
-	public interface R01UIProceedGateClosedEventListener 
+	public interface R01UIProceedGateCancel 
 	  		 extends Serializable {
-		void closed();
+		void cancel();
 	}	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUZZLE CHECK

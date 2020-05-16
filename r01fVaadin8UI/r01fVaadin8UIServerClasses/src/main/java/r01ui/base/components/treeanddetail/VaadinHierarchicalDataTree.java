@@ -208,7 +208,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		private static final long serialVersionUID = -7534910999703683273L;
 
 		TreeProceedGateDialogWindow(final UII18NService i18n,
-									final R01UIProceedGateOpendEventListener proceedGateOpenedListener) {
+									final R01UIProceedGateProceed proceedGateOpenedListener) {
 			super(i18n,
 		  		  I18NKey.forId("portal.manager.delete.confirm.required"),
 		  		  I18NKey.forId("portal.manager.operation.delete.captcha"),

@@ -140,7 +140,7 @@ public class VaadinCollectionManageComponent<// the view object type
 									// add a new obj
 									V viewObj = _viewObjFactory.create();
 									
-									VaadinCollectionManageRowComponent newRow = this.add(viewObj);
+									VaadinCollectionManageRowComponent newRow = this.addItem(viewObj);
 									newRow.setNew(true);
 									
 									// set the move buttons status
@@ -159,14 +159,30 @@ public class VaadinCollectionManageComponent<// the view object type
 		if (_itemAddedOrRemovedEventListeners == null) _itemAddedOrRemovedEventListeners = Lists.newArrayList();
 		_itemAddedOrRemovedEventListeners.add(listener);
 	}
-	public void addAll(final Collection<V> viewObjs) {
+	public void clear() {
+		// store the objs BEFORE adding
+		Collection<V> viewObjsBefore = this.getItems();
+		
+		// clear
+		_vlyGrid.removeAllComponents();
+		
+		// raise an event
+		if (CollectionUtils.hasData(_itemAddedOrRemovedEventListeners)) {
+			VaadinCollectionItemAddedOrRemovedEvent<V> event = new VaadinCollectionItemAddedOrRemovedEvent<>(VaadinCollectionItemOperation.CLEAR, // remove
+																											 null,
+																											 viewObjsBefore);
+			_itemAddedOrRemovedEventListeners.stream()
+											 .forEach(listener -> listener.onItemAddedOrRemoved(event));
+		}
+	}
+	public void setItems(final Collection<V> viewObjs) {
 		_vlyGrid.removeAllComponents();
 		if (CollectionUtils.hasData(viewObjs)) viewObjs.stream()
-				  									   .forEach(viewObj -> this.add(viewObj));
+				  									   .forEach(viewObj -> this.addItem(viewObj));
 	}
-	public VaadinCollectionManageRowComponent add(final V viewObj) {
+	public VaadinCollectionManageRowComponent addItem(final V viewObj) {
 		// store the objs BEFORE adding
-		Collection<V> viewObjsBefore = this.getAll();
+		Collection<V> viewObjsBefore = this.getItems();
 		
 		// add 
 		VaadinCollectionManageRowComponent editRow = new VaadinCollectionManageRowComponent();
@@ -197,7 +213,7 @@ public class VaadinCollectionManageComponent<// the view object type
 								   comp -> (VaadinCollectionManageRowComponent)comp);
 	}
 	@SuppressWarnings("unchecked")
-	public Collection<V> getAll() {
+	public Collection<V> getItems() {
 		Collection<V> outViewObjs = Lists.newArrayList();
 		_vlyGrid.iterator()
 				.forEachRemaining(comp -> {
@@ -338,7 +354,7 @@ public class VaadinCollectionManageComponent<// the view object type
 			// Remove
 			_btnRemove.addClickListener(clickEvent -> {
 											// store the view objs BEFORE removing
-											Collection<V> viewObjsBefore = VaadinCollectionManageComponent.this.getAll();
+											Collection<V> viewObjsBefore = VaadinCollectionManageComponent.this.getItems();
 											
 								   			// get the removed view obj
 											V removedViewObj = _viewObjFactory.create();
@@ -491,7 +507,8 @@ public class VaadinCollectionManageComponent<// the view object type
 	}
 	public static enum VaadinCollectionItemOperation {
 		ADD,
-		REMOVE;
+		REMOVE,
+		CLEAR;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	TEXTS

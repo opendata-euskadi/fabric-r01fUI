@@ -122,6 +122,7 @@ public abstract class VaadinListDataProviders {
 		public Collection<T> getUnderlyingItemsCollection();
 		public List<T> getUnderlyingItemsCollectionAsList();
 		public int getUnderlyingItemsCollectionSize();
+		public <O extends OID> T getItemWithOid(final O oid);
 		public SELF_TYPE refreshItem(final T item);
 		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid);
 		public SELF_TYPE refreshAll();
@@ -132,6 +133,8 @@ public abstract class VaadinListDataProviders {
 		public SELF_TYPE removeItem(final T item);
 		public SELF_TYPE removeAll();
 		public SELF_TYPE replaceItem(final T replacedItem,final T replacingItem);
+		public <O extends OID> SELF_TYPE replaceItemWithOid(final O oid,
+															final T replacingItem);
 		public <V extends Comparable<? super V>> SELF_TYPE setSortOrder(final ValueProvider<T,V> valueProvider,
 															   	        final SortDirection sortDirection);
 		public int getItemIndex(final T item);
@@ -158,15 +161,8 @@ public abstract class VaadinListDataProviders {
 			Collection<T> col = this.getUnderlyingItemsCollection();
 			return col != null ? col.size() : 0;
 		}
-		
-		@Override @SuppressWarnings("unchecked")
-		public SELF_TYPE refreshItem(final T item) {
-			this.getDataProvider()
-				.refreshItem(item);
-			return (SELF_TYPE)this;
-		}
-		@Override @SuppressWarnings("unchecked")
-		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid) {
+		@Override
+		public <O extends OID> T getItemWithOid(final O oid) {
 			// find the item with the given oid
 			Collection<T> col = this.getUnderlyingItemsCollection();
 			T item = col.stream()
@@ -176,6 +172,18 @@ public abstract class VaadinListDataProviders {
 									return hasOid.getOid().is(oid);
 								})
 						.findFirst().orElse(null);
+			return item;
+		}
+		@Override @SuppressWarnings("unchecked")
+		public SELF_TYPE refreshItem(final T item) {
+			this.getDataProvider()
+				.refreshItem(item);
+			return (SELF_TYPE)this;
+		}
+		@Override @SuppressWarnings("unchecked")
+		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid) {
+			// find the item with the given oid
+			T item = this.getItemWithOid(oid);
 			// refresh the item
 			if (item != null) this.refreshItem(item);
 			
@@ -251,6 +259,15 @@ public abstract class VaadinListDataProviders {
 			// refresh
 			this.getDataProvider()
 				.refreshAll();
+			return (SELF_TYPE)this;
+		}
+		@Override
+		public <O extends OID> SELF_TYPE replaceItemWithOid(final O oid,
+															final T replacingItem) {
+			// find the item with the given oid
+			T item = this.getItemWithOid(oid);
+			// replace
+			this.replaceItem(item,replacingItem);
 			return (SELF_TYPE)this;
 		}
 		@Override @SuppressWarnings("unchecked")

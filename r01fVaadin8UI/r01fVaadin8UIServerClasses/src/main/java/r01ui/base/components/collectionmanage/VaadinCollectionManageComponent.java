@@ -2,6 +2,8 @@ package r01ui.base.components.collectionmanage;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -22,6 +24,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import r01f.facets.HasOID;
+import r01f.guids.OID;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
 import r01f.patterns.Factory;
@@ -47,7 +51,7 @@ import r01ui.base.components.form.VaadinFormEditsViewObject;
  * </pre>
  */
 public class VaadinCollectionManageComponent<// the view object type
-											 V extends UIViewObject,
+											 V extends UIViewObject & HasOID<?>,
 											 // the editor component
 											 F extends Component 
 											 		 & VaadinFormEditsViewObject<V>
@@ -207,6 +211,29 @@ public class VaadinCollectionManageComponent<// the view object type
 		// return
 		return editRow;
 	}
+	public VaadinCollectionManageRowComponent updateItem(final V viewObj) {
+		if (viewObj == null) throw new IllegalArgumentException("view object is mandatory!");
+		VaadinCollectionManageRowComponent row = _findRowFor(viewObj.getOid());
+		if (row != null) row.editViewObject(viewObj);
+		return row;
+	}
+	public boolean removeItem(final V viewObj) {
+		return this.removeItem(viewObj.getOid());
+	}
+	public <O extends OID> boolean removeItem(final O oid) {
+		if (oid == null) throw new IllegalArgumentException("The oid cannot be null!");
+		VaadinCollectionManageRowComponent row = _findRowFor(oid);
+		if (row != null) _vlyGrid.removeComponent(row);
+		return row != null;
+	}
+	protected <O extends OID> VaadinCollectionManageRowComponent _findRowFor(final O oid) {
+		Stream<VaadinCollectionManageRowComponent> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(this.getRowsIterator(),
+																													 Spliterator.ORDERED),
+																				 false);	// not parallel
+		VaadinCollectionManageRowComponent row = stream.filter(r -> r.getViewObjOid().is(oid))
+													   .findFirst().orElse(null);
+		return row;
+	}
 	@SuppressWarnings("unchecked")
 	public Iterator<VaadinCollectionManageRowComponent> getRowsIterator() {
 		return Iterators.transform(_vlyGrid.iterator(), 
@@ -262,6 +289,7 @@ public class VaadinCollectionManageComponent<// the view object type
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ROW COMPONENT
 /////////////////////////////////////////////////////////////////////////////////////////
+	@Accessors(prefix="_")
 	private class VaadinCollectionManageRowComponent 
 		  extends Composite
 	   implements VaadinFormEditsViewObject<V>,
@@ -276,6 +304,8 @@ public class VaadinCollectionManageComponent<// the view object type
 		private final Button _btnUp;
 		private final Button _btnDown;
 		private final F _editComponent;
+		
+		@Getter private OID _viewObjOid;
 		
 		@SuppressWarnings("unused")
 		private boolean _new;
@@ -401,6 +431,9 @@ public class VaadinCollectionManageComponent<// the view object type
 		}
 		@Override
 		public void editViewObject(final V viewObj) {
+			if (viewObj.getOid() == null) throw new IllegalArgumentException("The object MUST have an oid!");
+			_viewObjOid = viewObj.getOid();
+			
 			// bind the form to the view object
 			_editComponent.editViewObject(viewObj);
 			_summary.setSummaryOf(viewObj);

@@ -87,7 +87,19 @@
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-themes</artifactId>
 		</dependency>
-
+		
+		<!-- ///////////////////////////////////////// -->
+		<!-- Vaadin Add-ons                            -->
+		<!-- ///////////////////////////////////////// -->
+		<!-- https://vaadin.com/directory/component/inputmask/ -->
+		<!-- https://github.com/RobinHerbots/Inputmask -->
+		<!--
+		<dependency>
+		   <groupId>org.vaadin.addons</groupId>
+		   <artifactId>inputmask</artifactId>
+		   <version>1.0.2</version>
+		</dependency>
+		-->
 
 		<!-- ///////////////////////////////////////// -->
 		<!-- ServletAPI                                -->

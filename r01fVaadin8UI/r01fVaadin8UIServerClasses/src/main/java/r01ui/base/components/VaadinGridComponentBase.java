@@ -177,9 +177,9 @@ public abstract class VaadinGridComponentBase<V extends UIViewObject,
 		protected R01UIGridMenu(final UII18NService i18n,
 								final V viewObj) {
 			super.setResponsive(true);
-			super.addStyleName(ValoTheme.BUTTON_PRIMARY);
-			super.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-			super.addStyleName(VaadinValoTheme.GRID_DOTS_MENU);
+			super.addStyleNames(ValoTheme.BUTTON_PRIMARY,
+								ValoTheme.BUTTON_BORDERLESS,
+								VaadinValoTheme.GRID_DOTS_MENU);
 			MenuItem menu = super.addItem("",			// text
 										  VaadinIcons.ELLIPSIS_DOTS_V,
 										  null);		// command

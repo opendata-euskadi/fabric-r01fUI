@@ -29,6 +29,7 @@ public abstract class VaadinValoTheme
 	public static final String NON_SELECT = "nonselect";
 	public static final String NON_SELECT_ALL = "nonselect-all";
 
+	public static final String TEXT_FIELD_UPPERCASE = "upper-case";
 	public static final String COMBO_SMALL_SIZE = "combo-small";
 	public static final String COMBO_MEDIUM_SIZE = "combo-medium";
 	public static final String COMBO_BIG_SIZE = "combo-big";

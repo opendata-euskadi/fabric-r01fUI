@@ -107,7 +107,7 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 		T low = _dateLowerBound.getValue();
 		T up = _dateUperBound.getValue();
 		return low == null && up == null ? null
-										 : ((low != null && up != null) && _isNotValidRange(low, up)) ? null							//if values are not valid, do not create de Range
+										 : ((low != null && up != null) && _isNotValidRange(low, up)) ? null							//if values are not valid, do not create the Range
 												 											   		: Ranges.guavaRangeFrom(low,up);
 	}
 	@Override
@@ -149,10 +149,16 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 														// if DateTimeField and up is before low, just set up to null
 														return;
 													}
-													Range<T> val = Ranges.guavaRangeFrom(_isDateTimeRangeComponent() 
-																					   && valChangeEvent.getValue() == null ? null 				// if DateTimeField and value is null, just set the new value to low
-																											   : valChangeEvent.getOldValue(),	// old value
-																					     _dateUperBound.getValue());
+													T currLow = _isDateTimeRangeComponent() 
+																	&& valChangeEvent.getValue() == null ? null 							// if DateTimeField and value is null, just set the new value to low
+																										 : valChangeEvent.getOldValue();	// old value
+													T currUp = _dateUperBound.getValue();
+													if (currUp != null && currLow != null
+													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range
+														currLow = null;
+													}
+													Range<T> val = Ranges.guavaRangeFrom(currLow,
+																						 currUp);
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
 																											true);		// user originated
@@ -167,10 +173,16 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 														//if DateTimeField and low is after up, just set low to null
 														return;
 													}
-													Range<T> val = Ranges.guavaRangeFrom(_dateLowerBound.getValue(),
-																					     _isDateTimeRangeComponent() 
-																					   && valChangeEvent.getValue()==null ? null		// if DateTimeField and value is null, just set the new value to up
-																					    					 : valChangeEvent.getOldValue());	// old value
+													T currLow = _dateLowerBound.getValue();
+													T currUp = _isDateTimeRangeComponent() 
+																	&& valChangeEvent.getValue()==null ? null							// if DateTimeField and value is null, just set the new value to up
+																									   : valChangeEvent.getOldValue();	// old value
+													if (currUp != null && currLow != null
+													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range
+														currUp = null;
+													}
+													Range<T> val = Ranges.guavaRangeFrom(currLow,
+																						 currUp);
 													ValueChangeEvent<Range<T>> evt = new ValueChangeEvent<>(this,		// component
 																											val,
 																											true);		// user originated

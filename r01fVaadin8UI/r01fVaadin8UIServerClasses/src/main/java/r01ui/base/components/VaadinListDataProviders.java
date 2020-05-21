@@ -161,7 +161,7 @@ public abstract class VaadinListDataProviders {
 			Collection<T> col = this.getUnderlyingItemsCollection();
 			return col != null ? col.size() : 0;
 		}
-		@Override
+		@Override @SuppressWarnings("unchecked")
 		public <O extends OID> T getItemWithOid(final O oid) {
 			// find the item with the given oid
 			Collection<T> col = this.getUnderlyingItemsCollection();
@@ -250,7 +250,7 @@ public abstract class VaadinListDataProviders {
 				.refreshAll();
 			return (SELF_TYPE)this;
 		}
-		@Override
+		@Override @SuppressWarnings("unchecked")
 		public SELF_TYPE replaceItem(final T replacedItem,final T replacingItem) {
 			this.getUnderlyingItemsCollection()
 				.remove(replacedItem);
@@ -261,11 +261,12 @@ public abstract class VaadinListDataProviders {
 				.refreshAll();
 			return (SELF_TYPE)this;
 		}
-		@Override
+		@Override @SuppressWarnings("unchecked")
 		public <O extends OID> SELF_TYPE replaceItemWithOid(final O oid,
 															final T replacingItem) {
 			// find the item with the given oid
 			T item = this.getItemWithOid(oid);
+			if (item == null) throw new IllegalStateException("item with oid=" + oid + " does NOT exist!");
 			// replace
 			this.replaceItem(item,replacingItem);
 			return (SELF_TYPE)this;

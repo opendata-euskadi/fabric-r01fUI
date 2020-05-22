@@ -422,9 +422,9 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 								   });
 		// double click listener
 		_grid.addItemClickListener(event -> {
-			if (event.getMouseEventDetails().isDoubleClick())
-				this.enterEdit(event.getItem());
-		});
+										if (event.getMouseEventDetails().isDoubleClick())
+											this.enterEdit(event.getItem());
+								   });
 	}
 	private void _resetButtonStatus() {
 		_btnCreate.setEnabled(true);
@@ -700,6 +700,10 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LISTENERS
 /////////////////////////////////////////////////////////////////////////////////////////
+	public void addDataProviderListener(final DataProviderListener<V> listener) {
+		_grid.getDataProvider()
+			 .addDataProviderListener(listener);
+	}
 	public void addValueChangeListener(final ValueChangeListener<V> listener) {
 		_grid.asSingleSelect()
 			 .addValueChangeListener(listener);
@@ -769,7 +773,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	@Override
 	public void setDataProvider(final DataProvider<V,?> dataProvider) {
 		_grid.setDataProvider(dataProvider);
-		
+
 		// if the [data provider] is NOT a ListDataProvider rows cannot be moved
 		if (!(dataProvider instanceof ListDataProvider)) {
 			this.disableRowMovement();

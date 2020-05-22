@@ -59,6 +59,11 @@ public class VaadinDateNavigatorField
 		_btnPrevDate.addClickListener(ClickEvent -> this.gotoPrevious());
 		_btnNextDate.addClickListener(clickEvent -> this.gotoNext());
 	}
+	public VaadinDateNavigatorField(final UII18NService i18n,
+									final String dateFormat) {
+		this(i18n);
+		_date.setDateFormat(dateFormat);
+	}
 	@Override
 	protected Component initContent() {
 		////////// Layout

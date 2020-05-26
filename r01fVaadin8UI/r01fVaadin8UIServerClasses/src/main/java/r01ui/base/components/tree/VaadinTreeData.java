@@ -2,6 +2,7 @@ package r01ui.base.components.tree;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -124,12 +125,16 @@ public class VaadinTreeData<T>
 		}
 		return ancestors;
 	}
-	public T recurseFindItem(final T item,
-							 final Predicate<T> match) {
-		return _recurseFindItem(item,this.getRootItems(),
+	/**
+	 * Finds the first item matching the given {@link Predicate}
+	 * @param match
+	 * @return
+	 */
+	public T recurseFindItemFirstMatch(final Predicate<T> match) {
+		return _recurseFindItem(this.getRootItems(),
 								match);
 	}
-	private T _recurseFindItem(final T item,final Collection<T> childItems,
+	private T _recurseFindItem(final Collection<T> childItems,
 							   final Predicate<T> match) {
 		if (CollectionUtils.isNullOrEmpty(childItems)) return null;
 		T outItem = null;
@@ -139,10 +144,22 @@ public class VaadinTreeData<T>
 				break;
 			} 
 			Collection<T> childsOfChild = this.getChildren(childItem);
-			outItem = _recurseFindItem(item,childsOfChild,match);
+			outItem = _recurseFindItem(childsOfChild,match);
 		}
 		return outItem;
 	}
+	/**
+	 * Return all nodes below the given one
+	 * @param node
+	 * @return
+	 */
+	public Collection<T> getAllItemsBelow(final T node) {
+		TreeData<T> subTree = this.getSubTreeOf(node);
+		return VaadinTreeData.allItemsOf(subTree);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
 	public int getItemDepth(final T item) {
 		return _recurseFindRoot(item,0);
 	}
@@ -150,6 +167,32 @@ public class VaadinTreeData<T>
 		if (this.getParent(item) == null) return currDepth;
 		T parentItem = this.getParent(item);
 		return _recurseFindRoot(parentItem,currDepth+1);
+	}
+	public static <T> int countItemUsages(final TreeData<T> treeData,
+										  final Predicate<T> match) {
+		AtomicInteger counter = new AtomicInteger(0);
+		_recurseCountItemUsages(counter,
+								treeData,
+								treeData.getRootItems(),
+								match);
+		return counter.get();
+	}
+	private static <T> void _recurseCountItemUsages(final AtomicInteger count,
+													final TreeData<T> treeData,
+										 			final Collection<T> childItems,
+										 			final Predicate<T> match) {
+		if (CollectionUtils.isNullOrEmpty(childItems)) return;
+		for (T childItem : childItems) {
+			if (match.test(childItem)) count.incrementAndGet();
+			_recurseCountItemUsages(count,
+									treeData,
+									treeData.getChildren(childItem),
+							 	    match);
+		}
+	}
+	public int getItemUsagesCount(final Predicate<T> match) {
+		return VaadinTreeData.countItemUsages(this,
+											  match);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GET SUB-TREE
@@ -160,7 +203,7 @@ public class VaadinTreeData<T>
 	 * @return
 	 */
 	public TreeData<T> getSubTreeOf(final T item) {
-		TreeData<T> outSubTreeData = new TreeData<T>();
+		TreeData<T> outSubTreeData = new TreeData<>();
 		_recurseGetSubTreeItem(null,	// root node > parent = null
 							   item,
 							   outSubTreeData);
@@ -263,6 +306,28 @@ public class VaadinTreeData<T>
 		}
 		// LAST!! remove the item
 		this.removeItem(item);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public static <T> Collection<T> allItemsOf(final TreeData<T> tree) {
+		Collection<T> outNodes = Lists.newArrayList();
+		_recurseAddAllItemsBelow(tree,
+								 tree.getRootItems(),
+								 outNodes);
+		return outNodes;
+	}
+	public static <T> void _recurseAddAllItemsBelow(final TreeData<T> tree,
+													final Collection<T> nodes,
+										  			final Collection<T> outNodes) {
+		if (CollectionUtils.isNullOrEmpty(nodes)) return;
+		nodes.stream()
+			 .forEach(node -> {
+				 		outNodes.add(node);
+				 		_recurseAddAllItemsBelow(tree,
+				 								 tree.getChildren(node),
+				 								 outNodes);
+			 		  });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DEBUG

@@ -114,10 +114,9 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 											   		
 											   		// get the corresponding item at the grid
 											   		VO viewObjAtGrid = _treeGrid.getTreeData()
-											   									.recurseFindItem(changedViewObj,
-											   													 viewObj -> {
-											   														 return viewObj.getId().is(changedViewObj.getId());
-											   													 });
+											   									.recurseFindItemFirstMatch(viewObj -> {
+											   														 			return viewObj.getId().is(changedViewObj.getId());
+											   													 		   });
 											   		if (viewObjAtGrid == null) throw new IllegalStateException("[tree grid]: could NOT find an item with id=" + changedViewObj.getId());
 											   		
 											   		// transfer the data from the edit form

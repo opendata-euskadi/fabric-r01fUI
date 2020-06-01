@@ -5,7 +5,9 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
 import com.vaadin.server.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout.AlignmentHandler;
 import com.vaadin.ui.Layout.MarginHandler;
 import com.vaadin.ui.Layout.SpacingHandler;
 
@@ -28,8 +30,7 @@ public abstract class VaadinStyler {
 	 * @return
 	 */
 	public static VaadinStylerStyleStep on(final Collection<? extends Component> comps) {
-		return new VaadinStyler() { /* nothing */ }
-					.new VaadinStylerStyleStep(comps);
+		return new VaadinStylerStyleStep(comps);
 	}
 	/**
 	 * Multiple ops in a row
@@ -73,7 +74,7 @@ public abstract class VaadinStyler {
 //	MARGIN & SPACING
 /////////////////////////////////////////////////////////////////////////////////////////
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public class VaadinStylerStyleStep {
+	public static class VaadinStylerStyleStep {
 		private final Collection<? extends Component> _components;
 		
 		public VaadinStylerStyleStep setNoMargin() {
@@ -96,6 +97,45 @@ public abstract class VaadinStyler {
   				((Sizeable)comp).setSizeFull();
 			}
 			return this;
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Sets alignment of multiple child components
+	 * <pre>
+	 * 		VerticalLayout vly = new VerticalLayout(comp1,comp2,comp3);
+	 * 		VaadinStyler.alignmentOfChildComponentsOf(vly)
+	 * 					.setAlignment(Alignment.BOTOM_LEFT)
+	 * 					.on(comp1,comp2,comp3);
+	 * </pre>
+	 * @param container
+	 * @return
+	 */
+	public static VaadinStylerAlginmentStep alignmentOfChildComponentsOf(final AlignmentHandler container) {
+		return new VaadinStylerAlginmentStep(container);
+	}
+	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+	public static class VaadinStylerAlginmentStep {
+		private final AlignmentHandler _container;
+		
+		public VaadinStylerChildComponentStep setAlignment(final Alignment alignment) {
+			return new VaadinStylerChildComponentStep(_container,
+													  alignment);
+		}
+	}
+	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+	public static class VaadinStylerChildComponentStep {
+		private final AlignmentHandler _container;
+		private final Alignment _alignment;
+		
+		public void to(final Component... comps) {
+			if (CollectionUtils.hasData(comps)) {
+				for (Component comp : comps) {
+					_container.setComponentAlignment(comp,_alignment);
+				}
+			}
 		}
 	}
 }

@@ -23,6 +23,7 @@ public abstract class VaadinValoTheme
 	public static final String NO_MARGIN_BOTTOM = "no-margin-bottom";
 	
 	public static final String PADDING_TOP = "padding-top";
+	public static final String PADDING_BOTTOM = "padding-bottom";
 	
 	public static final String WIDTH_AUTO = "width-auto";	
 	

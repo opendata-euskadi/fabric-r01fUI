@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Layout.AlignmentHandler;
 import com.vaadin.ui.Layout.MarginHandler;
 import com.vaadin.ui.Layout.SpacingHandler;
@@ -120,7 +121,7 @@ public abstract class VaadinStyler {
 	public static class VaadinStylerAlginmentStep {
 		private final AlignmentHandler _container;
 		
-		public VaadinStylerChildComponentStep setAlignment(final Alignment alignment) {
+		public VaadinStylerChildComponentStep set(final Alignment alignment) {
 			return new VaadinStylerChildComponentStep(_container,
 													  alignment);
 		}
@@ -135,6 +136,13 @@ public abstract class VaadinStyler {
 				for (Component comp : comps) {
 					_container.setComponentAlignment(comp,_alignment);
 				}
+			}
+		}
+		public void toAllChildComponents() {
+			if (!(_container instanceof ComponentContainer)) throw new IllegalArgumentException(_container.getClass() + " is NOT a " + ComponentContainer.class + " instance!");
+			ComponentContainer compContainer = (ComponentContainer)_container;
+			for (Component c : compContainer) {
+				_container.setComponentAlignment(c,_alignment);
 			}
 		}
 	}

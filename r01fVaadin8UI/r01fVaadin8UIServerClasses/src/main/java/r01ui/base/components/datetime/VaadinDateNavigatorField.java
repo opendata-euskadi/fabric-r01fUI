@@ -150,6 +150,9 @@ public class VaadinDateNavigatorField
 		_raiseValueChangeEvent(ldate);	// manually raise a [value change event]
 		return outDate;
 	}
+	public void setTextFieldEnabled(final boolean value) {
+		_date.setTextFieldEnabled(value);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BEWARE! if an event is NOT raised when the value changes, the vaadin binder 
 //			does NOT works

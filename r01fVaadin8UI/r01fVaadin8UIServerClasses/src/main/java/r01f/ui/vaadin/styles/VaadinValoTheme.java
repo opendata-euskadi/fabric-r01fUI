@@ -73,6 +73,8 @@ public abstract class VaadinValoTheme
 	
 	public static final String CHECKBOX_DEFAULT = "checkbox-default";
 	
+	public static final String OPTION_GROUP_INLINE = "option-group-inline";
+	
 	public static final String MENU_HIDE = "hide";
 	public static final String MENU_ITEM_CHECKED = "checked";
 

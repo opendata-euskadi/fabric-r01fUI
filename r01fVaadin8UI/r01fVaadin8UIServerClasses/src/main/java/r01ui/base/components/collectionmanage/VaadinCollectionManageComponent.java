@@ -85,6 +85,11 @@ public class VaadinCollectionManageComponent<// the view object type
 	
 	private final VerticalLayout _vlyGrid;		// maybe this can be an Accordion
 	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	STATUS (avoid as much as possible)
+/////////////////////////////////////////////////////////////////////////////////////////
+	private Collection<String> _rowStyleNames;
+	
 	private Collection<VaadinCollectionItemAddedOrRemovedEventListener<V>> _itemAddedOrRemovedEventListeners;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +258,17 @@ public class VaadinCollectionManageComponent<// the view object type
 		return outViewObjs;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	STYLING METHODS
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void addRowStyleName(final String style) {
+		if (_rowStyleNames == null) _rowStyleNames = Lists.newArrayList();
+		_rowStyleNames.add(style);
+	}
+	public boolean removeRowStyleName(final String style) {
+		if (_rowStyleNames == null) return false;
+		return _rowStyleNames.remove(style);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	private void _rowExpanded(final VaadinCollectionManageRowComponent expandedRowComp) {
@@ -365,7 +381,7 @@ public class VaadinCollectionManageComponent<// the view object type
 			VerticalLayout ly = new VerticalLayout(hlySummary,
 										 		   _editComponent);
 			ly.setMargin(false);
-			//ly.setMargin(new MarginInfo(false,false,true,false));		// bottom margin
+			if (CollectionUtils.hasData(_rowStyleNames)) _rowStyleNames.forEach(style -> ly.addStyleName(style));
 			
 			this.setCompositionRoot(ly);
 			

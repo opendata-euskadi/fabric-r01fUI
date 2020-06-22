@@ -403,21 +403,26 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 					langIndHasValue.addValueChangeListener(valChangeEvent -> {
 																if (!_syncLangForms) return;
 																
+																_syncLangForms = false;	// BEWARE!|
+																
 																// Get the updated value
 																Object updatedVal = valChangeEvent.getValue();
+																
 																// ... and set it to the corresponding field at the other language forms
-																for (final F otherForm : _langForms.langFormIterable()) {																
+																for (final F otherForm : _langForms.langFormIterable()) {
 																	HasValue otherLangIndHasValue = (HasValue)ReflectionUtils.fieldValue(otherForm,
 																																		 langIndField,
 																																		 false);
-																	otherLangIndHasValue.setValue(updatedVal);
+																	if (valChangeEvent.getSource() == otherLangIndHasValue) continue;	// do NOT sync the source
+																	otherLangIndHasValue.setValue(updatedVal);		// update
 																	
 																	// the "other" form has change... so if if it's tracking changes update the state
 																	if (otherForm instanceof VaadinViewTracksChanges) {
 																		VaadinViewTracksChanges tracksChanges = (VaadinViewTracksChanges)otherForm;
 																		tracksChanges.setViewDataChanged(true);	
 																	}
-																}																
+																}	
+																_syncLangForms = true;	// BEWARE!!
 														   });
 				}
 			}

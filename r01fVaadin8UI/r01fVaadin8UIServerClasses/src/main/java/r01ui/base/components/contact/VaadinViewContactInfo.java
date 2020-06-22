@@ -12,12 +12,14 @@ import r01f.types.contact.ContactMail;
 import r01f.types.contact.ContactPhone;
 import r01f.types.contact.ContactSocialNetwork;
 import r01f.types.contact.ContactWeb;
+import r01f.types.geo.GeoPosition;
 import r01f.ui.viewobject.UIViewObjectWrappedBase;
 import r01f.util.types.collections.CollectionUtils;
 import r01ui.base.components.contact.email.VaadinViewContactEmail;
 import r01ui.base.components.contact.phone.VaadinViewContactPhone;
 import r01ui.base.components.contact.socialnetwork.VaadinViewContactSocialNetwork;
 import r01ui.base.components.contact.website.VaadinViewDirectoryContactWebSite;
+import r01ui.base.components.geo.VaadinViewGeoPosition;
 
 @Accessors(prefix = "_")
 public class VaadinViewContactInfo
@@ -33,6 +35,16 @@ public class VaadinViewContactInfo
 	}
 	public VaadinViewContactInfo(final ContactInfo contactInfo) {
 		super(contactInfo);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	GEO POSITION
+/////////////////////////////////////////////////////////////////////////////////////////
+	public VaadinViewGeoPosition getViewGeoPosition() {
+		if (_wrappedModelObject.getGeoPosition() == null) _wrappedModelObject.setGeoPosition(new GeoPosition());
+		return new VaadinViewGeoPosition(_wrappedModelObject.getGeoPosition());
+	}
+	public void setViewGeoPosition(final VaadinViewGeoPosition viewGeoPos) {
+		_wrappedModelObject.setGeoPosition(viewGeoPos.getWrappedModelObject());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONTACT INFO - emailChannels

@@ -112,7 +112,11 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 	}
 	@Override
 	protected void doSetValue(final Range<T> value) {
-		if (value == null) return;
+		if (value == null) {
+			_dateLowerBound.setValue(null);
+			_dateUperBound.setValue(null);
+			return;
+		};
 
 		if (value.hasLowerBound()) {
 			_dateLowerBound.setValue(value.lowerEndpoint());

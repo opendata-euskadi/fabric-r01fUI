@@ -56,7 +56,8 @@ public class VaadinProceedGateDialogWindow
 //	FIELDS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final I18NKey _i18nKeyForCaption; 
-	private final I18NKey _i18nKeyForMessage; 
+	private final I18NKey _i18nKeyForMessage;
+	private Object[] _paramsForMessage;
 	private I18NKey _i18nKeyForBtnProceed = I18NKey.forId("yes");
 	private I18NKey _i18nKeyForBtnNOTProceed = I18NKey.forId("no");
 	
@@ -65,6 +66,7 @@ public class VaadinProceedGateDialogWindow
 	private final Label _lblWindowMessage = new Label();
 	private final TextField _txtPuzzle = new TextField();
 	private R01UIProceedPuzzleCheck _puzzleCheck;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -103,6 +105,21 @@ public class VaadinProceedGateDialogWindow
 									     final R01UIProceedGateProceed proceed,
 									     final R01UIProceedGateCancel cancel,
 									     final R01UIProceedPuzzleCheck puzzleCheck) {
+		this(i18n,
+			i18nKeyForCaption,
+			i18nKeyForMessage,
+			proceed,
+			cancel,
+			puzzleCheck,
+			null);
+	}
+	
+	public VaadinProceedGateDialogWindow(final UII18NService i18n,
+									     final I18NKey i18nKeyForCaption,final I18NKey i18nKeyForMessage, 
+									     final R01UIProceedGateProceed proceed,
+									     final R01UIProceedGateCancel cancel,
+									     final R01UIProceedPuzzleCheck puzzleCheck,
+									     final Object... paramsForMessage) {
 		this.setCaption(i18n.getMessage(i18nKeyForCaption));
 		this.setModal(true);
 		this.setResizable(false);
@@ -111,12 +128,14 @@ public class VaadinProceedGateDialogWindow
 		
 		_i18nKeyForCaption = i18nKeyForCaption;
 		_i18nKeyForMessage = i18nKeyForMessage;
+		_paramsForMessage = paramsForMessage;
 		
 		_puzzleCheck = puzzleCheck;
 		_initLayout(i18n);
 		_initBehavior(proceed,
 					  cancel);
 	}
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -126,7 +145,10 @@ public class VaadinProceedGateDialogWindow
 	 */
 	private void _initLayout(final UII18NService i18n) {
 		// label
-		_lblWindowMessage.setValue(i18n.getMessage(_i18nKeyForMessage));
+		
+		_lblWindowMessage.setValue(_paramsForMessage == null
+									 ? i18n.getMessage(_i18nKeyForMessage)
+									 : i18n.getMessage(_i18nKeyForMessage, _paramsForMessage));
 		_lblWindowMessage.setContentMode(ContentMode.HTML);
 		
 		// buttons

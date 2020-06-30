@@ -64,8 +64,6 @@ public abstract class VaadinContactMeanDetailEditBase<V extends VaadinContactMea
 		
 		////////// form
 		// usage
-		_cmbUsage.setWidth(100,Unit.PERCENTAGE);
-		_cmbUsage.addStyleName(VaadinValoTheme.COMBO_MEDIUM_SIZE);
 		_cmbUsage.setReadOnly(false);
 		_cmbUsage.setItems(ContactInfoUsage.values());
 		_cmbUsage.setItemCaptionGenerator(usage -> usage.nameUsing(i18n));

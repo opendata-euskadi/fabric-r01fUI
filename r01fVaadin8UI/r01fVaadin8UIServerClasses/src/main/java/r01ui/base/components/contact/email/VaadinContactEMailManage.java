@@ -27,7 +27,7 @@ public class VaadinContactEMailManage
 		// email
 		_grid.addColumn(VaadinViewContactEmail::getMail)
 			 .setCaption(i18n.getMessage("contact.email.email"))
-			 .setExpandRatio(0)
+			 .setExpandRatio(2)
 			 .setResizable(false)
 			 .setId("email");
 	}

@@ -6,7 +6,6 @@ import com.vaadin.ui.TextField;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
 import r01f.ui.vaadin.annotations.VaadinViewField;
-import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01ui.base.components.contact.VaadinContactMeanDetailEditBase;
 
 public class VaadinContactEmailDetailEdit
@@ -30,10 +29,13 @@ public class VaadinContactEmailDetailEdit
 		// email
 		_txtEmail.setWidth(100,Unit.PERCENTAGE);
 		_txtEmail.setReadOnly(false);
-		_txtEmail.addStyleName(VaadinValoTheme.INPUT_MEDIUM_SIZE);
 		
 		// layout: DO NOT FORGET! 
-		super.addComponents(new HorizontalLayout(_cmbUsage,_txtEmail),
+		HorizontalLayout hl = new HorizontalLayout(_cmbUsage,_txtEmail);
+		hl.setSizeFull();
+		hl.setExpandRatio(_txtEmail, 2);
+		hl.setExpandRatio(_cmbUsage, 1);
+		super.addComponents(hl,
 						    new HorizontalLayout(_chkDefault,_chkPrivate));
 
 		////////// Init the form components (DO NOT FORGET!!)

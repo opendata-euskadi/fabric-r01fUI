@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-			 
+
 	<modelVersion>4.0.0</modelVersion>
 
 <!-- ====================================================================== -->
@@ -11,7 +11,7 @@
 		<artifactId>r01fUI</artifactId>
 		<version>${revision}</version>
 	</parent>
-	
+
 <!-- ====================================================================== -->
 <!-- ARTIFACT                                                               -->
 <!-- ====================================================================== -->
@@ -19,7 +19,7 @@
 	<name>r01fVaadin7UI</name>
 	<artifactId>r01fVaadin7UI</artifactId>
 	<packaging>pom</packaging>				<!-- it's a parent project -->
-	
+
 <!-- ====================================================================== -->
 <!-- MODULES                                                                -->
 <!-- ====================================================================== -->
@@ -27,4 +27,20 @@
 		<module>r01fVaadin7UIClientClasses</module>
 		<module>r01fVaadin7UIServerClasses</module>
 	</modules>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- ///////////////////////////////////////// -->
+			<!-- R01f: UI                                  -->
+			<!-- ///////////////////////////////////////// -->
+			<dependency>
+				<groupId>r01.r01f.ui</groupId>
+				<artifactId>r01fUIClasses</artifactId>
+				<version>${revision}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

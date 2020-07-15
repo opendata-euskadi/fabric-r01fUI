@@ -103,7 +103,8 @@ public abstract class UII18NManagerBase
 	}
 	@Override
 	public String getMessage(final OID key,final Object... args) {
-		return this.getMessage(key.asString(),args);
+		return key != null ? this.getMessage(key.asString(),args)
+						   : null;
 	}
 	@Override
 	public String getMessage(final String key,final Object... args) {
@@ -111,9 +112,22 @@ public abstract class UII18NManagerBase
 							   key,args);
 	}
 	@Override
+	public String getMessage(final Language lang,
+							 final OID key,final Object... args) {
+		return this.getMessage(Languages.getLocale(lang),
+							   key,args);
+	}
+	@Override
+	public String getMessage(final Language lang,
+							 final String key,final Object... args) {
+		return this.getMessage(Languages.getLocale(lang),
+						   	   key,args);
+	}
+	@Override
 	public String getMessage(final Locale locale,
 							 final OID key,final Object... args) {
-		return this.getMessage(key.asString(),args);
+		return _getMessage(locale,
+						   key.asString(),args);
 	}
 	@Override
 	public String getMessage(final Locale locale,

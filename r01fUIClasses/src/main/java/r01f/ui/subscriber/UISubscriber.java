@@ -26,6 +26,25 @@ public interface UISubscriber<T>
 //	UTIL
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
+	 * Utility to create a {@link Subscriber} from another {@link Subscriber}
+	 * @param <S>
+	 * @param <T>
+	 * @param other
+	 * @return
+	 */
+	public static <S extends Subscriber<T>,T> UISubscriber<T> wrap(final S other) {
+		return new UISubscriber<T>() {
+						@Override
+						public void onSuccess(final T result) {
+							other.onSuccess(result);
+						}
+						@Override
+						public void onError(final Throwable th) {
+							other.onError(th);
+						}
+			   };
+	}
+	/**
 	 * Utility to create a {@link Subscriber} from an {@link OnSuccessSubscriber} and
 	 * an {@link OnErrorSubscriber}
 	 * ... this is handy when a {@link Subscriber} is required as a method param but

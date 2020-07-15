@@ -5,6 +5,7 @@ package r01ui.base.components.layout;
 
 
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Panel;
@@ -70,20 +71,35 @@ public class VaadinViewDisplayWithHeaderAndFooter
 	public VaadinViewDisplayWithHeaderAndFooter(final Component header,
 												final Component footer) {
 		super();
-		
+
 		_header = header;
 		_viewDisplay = new Panel();
 		_footer = footer;
 		
+		////////// layout
 		VerticalLayout ly = new VerticalLayout();
+		ly.setDefaultComponentAlignment(Alignment.TOP_LEFT);
+		
+		// add components
+		if (_header != null) 	ly.addComponentAsFirst(_header);
+							    ly.addComponent(_viewDisplay);
+		if (_footer != null)	ly.addComponent(_footer);
+		
+		// expand ratio
+		if (_header != null)	ly.setExpandRatio(_header,0);			// exact fit
+								ly.setExpandRatio(_viewDisplay,100);
+		if (_footer != null)	ly.setExpandRatio(_footer,0);			// exact fit
+		
+		// styling
 		ly.setMargin(false);
-		ly.addComponentAsFirst(_header);
-		ly.addComponent(_viewDisplay);
-		ly.addComponent(_footer);
+		ly.setSpacing(false);
+		ly.setWidthFull();
+		ly.setHeightFull();		// IMPORTANT!! if the TOP layout does not have 100% height all content inside it cannot have 100% height	
 		
 		this.setCompositionRoot(ly);
 		
 		// style
+		_viewDisplay.setHeight(100,Unit.PERCENTAGE);
 		_viewDisplay.setStyleName(ValoTheme.PANEL_BORDERLESS);
 		_viewDisplay.addStyleName(VaadinValoTheme.VIEW_CONTAINER);
 	}

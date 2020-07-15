@@ -2,6 +2,14 @@
 # ==============================
 /docs/secret/*.*
 
+# General
+# ===============================
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
 # Binaries
 # ===============================
 *.7z
@@ -16,14 +24,15 @@
 *.ear
 *.sar
 *.class
+bin/
 
 # Maven
 # ===============================
+!maven-wrapper.jar
 target/
 
 # Misc
 # ===============================
-*.swp
 release.properties
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -35,6 +44,16 @@ pom.xml.tag
 .settings/
 .classpath
 .project
+.metadata
+.loadpath
+.recommenders
+workingCopy*
+# Java annotation processor (APT)
+.factorypath
+.apt_generated/
+.apt_generated_test/
+# Locally stored [Eclipse launch configurations]
+*.launch
 
 # IntelliJ IDEA
 # ===============================
@@ -50,6 +69,30 @@ pom.xml.tag
 *.iml
 *.ipr
 
+# STS
+# ===============================
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+# NetBeans
+# ===============================
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+build/
+
+# VSCode
+# ===============================
+.vscode/
+
 # AppServer
 # ===============================
 tomcat
+
+# Node Modules 
+node_modules
+.externalToolBuilders

@@ -1,8 +1,8 @@
 package r01ui.base.components.text;
 
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Creates an horizontal labeled text like
@@ -11,7 +11,7 @@ import com.vaadin.ui.VerticalLayout;
  * </pre>@author adminw7local
  */
 public class VaadinHLabeledText 
-	 extends VerticalLayout
+	 extends HorizontalLayout
   implements VaadinLabeledText {
 
 	private static final long serialVersionUID = 5756703218221304345L;
@@ -24,11 +24,13 @@ public class VaadinHLabeledText
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHLabeledText(final String label,final String text) {
 		_delegated = new VaadinLabeledTextDelegate(this);
+		this.setSpacing(true);
 		this.addComponents(// the label
 						   new Label(VaadinLabeledTextDelegate.createLabelValue(label), 
 						  			 ContentMode.HTML),
 						   // the text
 						   new Label(text));
+		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	METHODS                                                                        

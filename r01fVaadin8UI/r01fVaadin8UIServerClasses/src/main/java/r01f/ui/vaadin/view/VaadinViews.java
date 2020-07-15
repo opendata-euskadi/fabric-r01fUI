@@ -49,6 +49,7 @@ import r01f.ui.vaadin.annotations.VaadinVoidViewFieldValidator;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
+import r01ui.base.components.form.VaadinViewTracksChanges;
 
 /**
  * Utils for vaadin views
@@ -153,16 +154,16 @@ public abstract class VaadinViews {
 													Component.class)) continue;		// do NOT process fields that are NOT vaadin component
 
 				// [0] - Get the @VaadinViewField annotation which contains the viewObject's field data
-				final VaadinViewField viewFieldAnnotation = viewCompField.getAnnotation(VaadinViewField.class);
+				VaadinViewField viewFieldAnnotation = viewCompField.getAnnotation(VaadinViewField.class);
 				if (viewFieldAnnotation == null) continue;
 
 				boolean canBeBinded = _canBeBinded(viewCompField);
 
 				// [1] - Get the view object field name from the @VaadinViewField annotation
-				final String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
+				String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
 				
 				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,		// BEWARE!! there MUST exist a GETTER for the [view obj] field
-																	 viewObjFieldName);
+																	  viewObjFieldName);
 
 				if (!canBeBinded) log.warn("{} view's component field {} of type {} cannot be 'automatically' binded to {}'s {} property of type {} since the component does NOT implement {}: it should be binded MANUALLY",
 										   view.getClass(),viewCompField.getName(),viewCompField.getType(),
@@ -219,7 +220,7 @@ public abstract class VaadinViews {
 				// BEWARE!!! Order matters
 				// [a] - Get the @UIViewComponentValueCannotBeNull annotation: cannot be null
 				_bindRequiredFor(bindingBuilder,
-								 hasValueComp,viewObjFieldType,
+								 hasValueComp,
 								 viewFieldAnnotation,
 								 i18n);
 				// [b] - Null representation
@@ -261,9 +262,11 @@ public abstract class VaadinViews {
 	@SuppressWarnings({ "unchecked","rawtypes" })
 	private static <M extends UIViewObject,T> void _bindStringConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 											  					     	   final Class<T> viewObjPropertyType) {	// view object property
+		if (viewObjPropertyType == null) return;
+		
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
-			
+		
 		if (String.class.isAssignableFrom(viewObjPropertyType)) {
 			// do nothing
 		}
@@ -339,7 +342,6 @@ public abstract class VaadinViews {
 	}
 	private static <M extends UIViewObject,T> void _bindRequiredFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 													  				final HasValue<?> viewComp,
-													  				final Class<T> viewObjPropertyType,
 													  				final VaadinViewField viewFieldAnnot,
 													  				final UII18NService i18n) {
 		if (viewFieldAnnot != null

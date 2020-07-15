@@ -38,7 +38,9 @@
 		<module>r01fVaadin7UI</module>
 		<module>r01fVaadin8UI</module>
 		<module>r01fUIClasses</module>
-	</modules>
+		<module>r01fGWTClientClasses</module>
+    <module>r01fGWTServerClasses</module>
+  </modules>
 
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
@@ -290,7 +292,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -379,6 +381,12 @@
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 			<layout>default</layout>
+		</repository>
+		
+		<!-- Vaadin addons -->
+		<repository>
+		   <id>vaadin-addons</id>
+		   <url>https://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 	</repositories>
 

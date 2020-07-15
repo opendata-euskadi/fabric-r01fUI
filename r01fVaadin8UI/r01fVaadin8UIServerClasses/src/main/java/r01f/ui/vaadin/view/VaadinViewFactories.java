@@ -1,6 +1,6 @@
 package r01f.ui.vaadin.view;
 
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ public abstract class VaadinViewFactories {
 	 * Interface for factory types
 	 * @param <V> the view type to create
 	 */
-	public interface VaadinViewFactory<V extends AbstractComponent> {
+	public interface VaadinViewFactory<V extends Component> {
 		/**
 		 * @return an instance of type T built from other
 		 */
@@ -29,7 +29,7 @@ public abstract class VaadinViewFactories {
 	 * @param <T> the type neede to create the view
 	 * @param <V> the view type to create
 	 */
-	public interface VaadinViewFactoryFrom<T,V extends AbstractComponent> {
+	public interface VaadinViewFactoryFrom<T,V extends Component> {
 		/**
 		 * @return an instance of type T built from other
 		 */

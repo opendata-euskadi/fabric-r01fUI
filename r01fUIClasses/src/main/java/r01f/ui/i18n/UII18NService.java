@@ -6,6 +6,7 @@
  */
 package r01f.ui.i18n;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import r01f.guids.OID;
@@ -32,7 +33,32 @@ public interface UII18NService
 	 * Returns a message in the given locale
 	 * @param locale
 	 * @param key
-	 * @param args
+	 * @param args see {@link MessageFormat} 
+	 * @return
+	 */
+	public String getMessage(final Language locale,
+						 	 final OID key, final Object... args);
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args see {@link MessageFormat} 
+	 * @return
+	 */
+	public String getMessage(final Language locale,
+							 final String key, final Object... args);
+	/**
+	 * @return the current language
+	 */
+	public Language getCurrentLanguage();
+/////////////////////////////////////////////////////////////////////////////////////////
+//	                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**
+	 * Returns a message in the given locale
+	 * @param locale
+	 * @param key
+	 * @param args see {@link MessageFormat} 
 	 * @return
 	 */
 	public String getMessage(final Locale locale,
@@ -41,7 +67,7 @@ public interface UII18NService
 	 * Returns a message in the given locale
 	 * @param locale
 	 * @param key
-	 * @param args
+	 * @param args see {@link MessageFormat} 
 	 * @return
 	 */
 	public String getMessage(final Locale locale,
@@ -50,11 +76,6 @@ public interface UII18NService
 	 * @return the current locale
 	 */
 	public Locale getCurrentLocale();
-	
-	/**
-	 * @return the current language
-	 */
-	public Language getCurrentLanguage();
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////

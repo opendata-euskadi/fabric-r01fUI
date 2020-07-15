@@ -2,6 +2,7 @@ package r01f.ui.viewobject;
 
 import r01f.locale.Language;
 
+@Deprecated // use UIViewObjectByLanguage
 public interface UIViewObjectHasLanguageDependentData<L extends UIViewObjectLanguageDependent>
 		 extends UIViewObject {
 	/**

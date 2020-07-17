@@ -397,7 +397,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	private void _configureGrid() {
 		// sizing
 		_grid.setRowHeight(50.0);
-		_grid.setWidthFull();
+		_grid.setSizeFull();
 		_grid.setResponsive(true);
 		
 		// no column sortable
@@ -428,6 +428,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	}
 	private void _resetButtonStatus() {
 		_btnCreate.setEnabled(true);
+		_btnEdit.setVisible(false);
+		_btnRemove.setVisible(false);
 		_btnEdit.setEnabled(false);
 		_btnRemove.setEnabled(false);
 		_btnUp.setEnabled(false);

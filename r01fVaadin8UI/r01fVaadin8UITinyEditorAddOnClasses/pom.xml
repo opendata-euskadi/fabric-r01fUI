@@ -7,7 +7,7 @@
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
 	<properties>
-		<vaadin.version>8.8.5</vaadin.version>
+		<vaadin.version>8.10.4</vaadin.version>
 	</properties>
 
 <!-- ====================================================================== -->
@@ -65,35 +65,8 @@
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-client</artifactId>
 		    <scope>provided</scope>	<!-- BEWARE! provided -->
-		</dependency>
+		</dependency>				
 		
-		<!--
-		A shared library for server-side and client-side development. It is always needed 
-		-->
-		<dependency>
-		    <groupId>com.vaadin</groupId>
-		    <artifactId>vaadin-shared</artifactId>
-		</dependency>
-		
-		<!-- 
-		Vaadin built-in themes both as SCSS source files and precompiled CSS files. 
-		The library is required both for basic use with CSS themes and for compiling custom Sass themes
-		-->
-		<dependency>
-		    <groupId>com.vaadin</groupId>
-		    <artifactId>vaadin-themes</artifactId>
-		</dependency>
-		
-		<!--
-		The Vaadin Client Compiler is a Java-to-JavaScript compiler that allows building client-side modules, 
-		such as the Client-Side Engine (widget set) required for server-side applications.
-		The compiler is needed, for example, for compiling add-on components to the application widget set 
-		-->
-		<dependency>
-		    <groupId>com.vaadin</groupId>
-		    <artifactId>vaadin-client-compiler</artifactId>
-		</dependency>
-
 		<!-- ///////////////////////////////////////// -->
 		<!-- ServletAPI                                -->
 		<!-- ///////////////////////////////////////// -->
@@ -111,6 +84,16 @@
 <!-- BUILD                                                                  -->
 <!-- ====================================================================== -->
 	<build>
+		<!--  This is needed for the sources required by the GWT compiler to be 
+        		included in the produced JARs  -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<!--

@@ -144,10 +144,10 @@ public class TinyMCEService {
 			 
 			setup: function(editor) {
 				editor.on('change', function(e) {
-					listener.@com.ejie.r01v.tinymce.client.ui.R01VTinyMCEService.OnChangeListener::onChange()();
+					listener.@r01f.ui.vaadin.tinymceeditor.client.ui.TinyMCEService.OnChangeListener::onChange()();
 				});
 				editor.on('setContent', function(e) {
-					listener.@com.ejie.r01v.tinymce.client.ui.R01VTinyMCEService.OnChangeListener::onChange()();
+					listener.@r01f.ui.vaadin.tinymceeditor.client.ui.TinyMCEService.OnChangeListener::onChange()();
 				});
 			}
 		}; 

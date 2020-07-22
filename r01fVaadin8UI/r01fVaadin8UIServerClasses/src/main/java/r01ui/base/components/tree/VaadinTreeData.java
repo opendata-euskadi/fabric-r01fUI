@@ -24,6 +24,7 @@ public class VaadinTreeData<T>
   implements UIViewObject {
 
 	private static final long serialVersionUID = 7385317969673861714L;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +138,7 @@ public class VaadinTreeData<T>
 	private T _recurseFindItem(final Collection<T> childItems,
 							   final Predicate<T> match) {
 		if (CollectionUtils.isNullOrEmpty(childItems)) return null;
-		T outItem = null;
+		T outItem = null;		
 		for (T childItem : childItems) {
 			if (match.test(childItem)) {
 				outItem = childItem;
@@ -145,6 +146,7 @@ public class VaadinTreeData<T>
 			} 
 			Collection<T> childsOfChild = this.getChildren(childItem);
 			outItem = _recurseFindItem(childsOfChild,match);
+			if (outItem != null) break;
 		}
 		return outItem;
 	}

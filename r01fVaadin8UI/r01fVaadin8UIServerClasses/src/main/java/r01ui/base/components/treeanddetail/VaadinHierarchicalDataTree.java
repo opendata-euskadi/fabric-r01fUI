@@ -55,7 +55,7 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  */
 public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage 
 												 & HasID<?>							// an id is needed to match the edited [view obj] with a [tree view obj]
-												 & HasLangInDependentNamedFacet> 	// the name is needed to "paint" something at the tree
+												 & HasLangInDependentNamedFacet /*& VaadinHierarchicalDataViewObj<VO>*/> 	// the name is needed to "paint" something at the tree
 	 extends Composite 
   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -67,7 +67,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	private final VaadinHierarchicalDataEditConfig _settings;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
+	Button _btnRootNode = new Button();
 	private final VaadinHierarchicalDataTreeImpl _treeGrid;
 	
 	private final Button _btnAdd = new Button();
@@ -78,6 +79,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private VaadinHiearchicalDataTreeOnItemEditEventListener<VO> _itemEditEventListener;
 	private VaadinHiearchicalDataTreeOnItemDeletedEventListener<VO> _itemDeletedEventListener;
+	private RootNodeSelectedListener _rootNodeSelectedListener;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR																		  
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -90,9 +92,15 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		
 		_treeGrid = new VaadinHierarchicalDataTreeImpl(i18n,
 													   settings);
+		_treeGrid.removeHeaderRow(0);
+		
 		HorizontalLayout hlyButtons = _configureButtonsLayout(settings);
 		
+		_btnRootNode.setIcon(VaadinIcons.FILE_TREE);
+		_btnRootNode.setSizeFull();
+		
 		VerticalLayout vly = new VerticalLayout(hlyButtons,
+												_btnRootNode,
 												_treeGrid);
 		vly.setWidthFull();
 		vly.setHeightUndefined();
@@ -137,7 +145,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											VO treeSelectedItemViewObj = _treeGrid.getUniqueSelectedItem();
 											int treeSelectedItemDepth = _treeGrid.getTreeData()
 																				 .getItemDepth(treeSelectedItemViewObj);
-											_btnAdd.setEnabled(treeSelectedItemDepth < _settings.getMaxDepth());
+											_btnAdd.setEnabled(_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth());
 											
 											if (treeSelectedItemViewObj == null) return;	// no selected item (should NOT happen)
 											
@@ -201,6 +209,23 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 										_deleteTreeItem(i18n,
 														draggedItem);
 								  });
+		_btnRootNode.addClickListener(e -> {
+			_selectRootNode();
+			_rootNodeSelectedListener.onRootNodeSelected();
+		});
+	}
+	private void _selectRootNode() {
+		_treeGrid.deselectAll();
+	    _treeGrid.refreshAll();
+	     
+	   // If NOT a collection the [add button] must be
+	   // enabled or disabled depending on whether there's an item or not
+	   boolean addEnabled = _settings.isCollection() 
+			   		   || (_settings.isNOTCollection() 
+			   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
+	   this.setEnabled(addEnabled);
+	   _btnAdd.setEnabled(addEnabled); 
+	   _btnAdd.setVisible(true);
 	}
 	private class TreeProceedGateDialogWindow
 		  extends VaadinProceedGateDialogWindow {
@@ -238,6 +263,11 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 																   	_itemDeletedEventListener.onItemsDeleted(event);
 															   }
 															   
+															   // remove from parent(viewObj)
+//															    VO parent = _treeGrid._treeData.getParent(item);
+//															   	if (parent != null) {
+//															   		parent.removeChild(item);															   		
+//															   	}
 															   // remove the item from the tree
 															    _treeGrid.removeItem(item);
 															    _treeGrid.deselectAll();
@@ -250,6 +280,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 																	   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
 															   this.setEnabled(addEnabled);
 													  		   _btnAdd.setEnabled(addEnabled); 
+													  		   _btnAdd.setVisible(true);
 													  	    });
 		UI.getCurrent()
 		  .addWindow(proceedGateDialog);
@@ -270,12 +301,16 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_treeGrid.replaceDataWith(treeData);
 		_treeGrid.deselectAll();
 		_treeGrid.refreshAll();
+		boolean addEnabled = _settings.isCollection() 
+				   		   || (_settings.isNOTCollection() 
+				   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
+		_btnAdd.setEnabled(addEnabled); 
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	COLUMN CAPTION
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void setGridCaption(final String str) {
-		_treeGrid.setColumnCaption(str);
+		_btnRootNode.setCaption(str);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	ENABLED / DISABLED																		  
@@ -341,6 +376,14 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	
         public abstract void onItemsDeleted(final VaadinHiearchicalDataTreeOnItemDeletedEvent<VIL> event);
 	} 
+	////////// Tree root node selected
+	public void setOnTreeRootNodeSelectedEventListener(final RootNodeSelectedListener listener) {
+		_rootNodeSelectedListener = listener;
+	}
+	@FunctionalInterface
+	public interface RootNodeSelectedListener {
+		public void onRootNodeSelected();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //																			  
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -385,9 +428,6 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			_colMain = col;
 			this.setHierarchyColumn(col);
 			this.setSelectionMode(SelectionMode.SINGLE);
-		}
-		public void setColumnCaption(final String caption) {
-			_colMain.setCaption(caption);
 		}
 		public void refreshAll() {
 			_treeDataProvider.refreshAll();

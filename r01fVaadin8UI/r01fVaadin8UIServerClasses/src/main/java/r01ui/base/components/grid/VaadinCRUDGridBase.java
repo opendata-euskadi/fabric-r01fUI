@@ -35,9 +35,11 @@ import com.vaadin.ui.DescriptionGenerator;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.Column.NestedNullBehavior;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.StyleGenerator;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.components.grid.ColumnReorderListener;
@@ -397,7 +399,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	private void _configureGrid() {
 		// sizing
 		_grid.setRowHeight(50.0);
-		_grid.setWidthFull();
+		_grid.setSizeFull();
 		_grid.setResponsive(true);
 		
 		// no column sortable
@@ -428,6 +430,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	}
 	private void _resetButtonStatus() {
 		_btnCreate.setEnabled(true);
+		_btnEdit.setVisible(false);
+		_btnRemove.setVisible(false);
 		_btnEdit.setEnabled(false);
 		_btnRemove.setEnabled(false);
 		_btnUp.setEnabled(false);
@@ -614,12 +618,21 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 														  createdViewObj -> {
 																// refresh the grid
 															  	if (this.getDataProvider() instanceof ListDataProvider) {
-												   					VaadinListDataProviders.collectionBackedOf(_grid)
-												   										   .addNewItem(createdViewObj);
-																	this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
-																												.getUnderlyingItemsCollectionSize());
-																	// setup up/down buttons
-																	_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+															  		//checks if object exists in grid for not to add twice
+															  		boolean exits = VaadinListDataProviders.collectionBackedOf(_grid)
+															  											   .getUnderlyingItemsCollectionAsList()
+															  											   .contains(viewObjToCreate);
+															  											   
+												   					if(exits) {
+												   						Notification.show(_i18n.getMessage("uiCommon.elto.exists"), Type.WARNING_MESSAGE);
+												   					} else {
+																  		VaadinListDataProviders.collectionBackedOf(_grid)
+													   										   .addNewItem(createdViewObj);
+																		this.setHeightByRows(VaadinListDataProviders.collectionBackedOf(_grid)
+																													.getUnderlyingItemsCollectionSize());
+																		// setup up/down buttons
+																		_setUpDownButtonsStatusForSelectedItem();	// maybe there existed a selected item... now there exists more than a single item and buttons need to be updated
+												   					}
 															  	} else {
 															  		_grid.getDataProvider()
 															  			 .refreshAll();

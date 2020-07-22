@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		<vaadin.version>8.10.4</vaadin.version>
+	</properties>
+
+<!-- ====================================================================== -->
+<!-- PARENT                                                                 -->
+<!-- ====================================================================== -->
+	<parent>
+		<groupId>r01.r01f.ui.vaadin</groupId>
+		<artifactId>r01fVaadin8UI</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<name>r01fVaadin8UITinyEditorAddOnClasses</name>
+	<artifactId>r01fVaadin8UITinyEditorAddOnClasses</artifactId>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<version>${vaadin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>																         												         
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01F: UI                                  -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.r01f.ui</groupId>
+			<artifactId>r01fUIClasses</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<!-- ///////////////////////////////////////// -->
+		<!-- Vaadin                                    -->
+		<!-- ///////////////////////////////////////// -->
+		<!-- see: https://vaadin.com/docs/v7/framework/getting-started/getting-started-libraries.html  -->
+		
+		<!--
+		The client-side Vaadin framework, including the basic GWT API and Vaadin-specific widgets and other additions.
+		It is required when using the vaadin-client-compiler to compile client-side modules.
+		It is NOT needed if just using the server-side framework with the pre-compiled Client-Side Engine. 
+		Should NOT be deployed with a web application.
+		-->
+		<dependency>
+		    <groupId>com.vaadin</groupId>
+		    <artifactId>vaadin-client</artifactId>
+		    <scope>provided</scope>	<!-- BEWARE! provided -->
+		</dependency>				
+		
+		<!-- ///////////////////////////////////////// -->
+		<!-- ServletAPI                                -->
+		<!-- ///////////////////////////////////////// -->
+		<!-- BEWARE! it's SCOPE is PROVIDED so it has to be defined
+			     	 where this dep is used -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>4.0.1</version>
+		    <scope>provided</scope>		<!-- BEWARE!!! -->
+		</dependency>
+	</dependencies>
+	
+<!-- ====================================================================== -->
+<!-- BUILD                                                                  -->
+<!-- ====================================================================== -->
+	<build>
+		<!--  This is needed for the sources required by the GWT compiler to be 
+        		included in the produced JARs  -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--
+				ECLIPSE (see main pom.xml for further info) ===================
+				This plugin has NO effects in maven build:
+					m2e ONLY runs some 'standard' goals of the maven pom.xml since the aim of m2e is NOT to be a complete CI tool
+					... in order to include 'non-standard' goals in m2e execution and avoid [plugin execution not covered by the eclipse m2e plugin project build lifecycle mapping]
+						the 'non-standard' plugin MUST be explicitly included in m2e execution
+				-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration> 
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- flatten plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>flatten-maven-plugin</artifactId>
+										<versionRange>[1.1.0,)</versionRange>
+										<goals>
+											<goal>flatten</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

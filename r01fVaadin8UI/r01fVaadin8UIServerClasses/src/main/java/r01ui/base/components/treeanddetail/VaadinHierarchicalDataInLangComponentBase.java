@@ -176,7 +176,7 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 	@Override
 	public void editViewObject(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
-		_form.setVisible(false);
+		_treeGrid.init();
 	}
 	////////// [UI control] > [viewObject] --------------	
 	@Override

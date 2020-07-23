@@ -24,7 +24,6 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import r01f.facets.HasID;
 import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
@@ -55,8 +54,8 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * @param <VO>
  */
 public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage 
-												 //& HasID<?>							// an id is needed to match the edited [view obj] with a [tree view obj]
-												 & HasLangInDependentNamedFacet & VaadinHierarchicalDataViewObj<VO>> 	// the name is needed to "paint" something at the tree
+												 & HasLangInDependentNamedFacet // the name is needed to "paint" something at the tree
+												 & VaadinHierarchicalDataViewObj<VO>> 	
 	 extends Composite 
   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -102,11 +101,14 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnRootNode.addFocusListener(e -> _btnRootNode.setStyleName(ValoTheme.BUTTON_PRIMARY));
 		_btnRootNode.addBlurListener(e -> _btnRootNode.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED));
 		_btnRootNode.setVisible(settings.isCollection());
+		_btnRootNode.setSizeFull();
+		_btnRootNode.focus();
 		if (!settings.isCollection()) _treeGrid.setHeightByRows(1);
 		
 		VerticalLayout vly = new VerticalLayout(hlyButtons,
 												_btnRootNode,
 												_treeGrid);
+		_treeGrid.setSizeFull();
 		vly.setWidthFull();
 		vly.setSpacing(false);
 		vly.setComponentAlignment(_btnRootNode, Alignment.BOTTOM_LEFT);
@@ -114,7 +116,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		this.setCompositionRoot(vly);
 		
 		// configure events
-		_initBehavior(i18n,
+		_setBehavior(i18n,
 					  settings);
 		
 		// init i18n
@@ -140,7 +142,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		return hlButtons;
 	}
 	@SuppressWarnings("unchecked")
-	private void _initBehavior(final UII18NService i18n,
+	private void _setBehavior(final UII18NService i18n,
 							   final VaadinHierarchicalDataEditConfig vaTypeSettings) {
 		////////// when an item is selected
 		_treeGrid.addSelectionListener(selEvent -> {
@@ -157,6 +159,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											VaadinHiearchicalDataTreeOnItemEditEvent<VO> event = new VaadinHiearchicalDataTreeOnItemEditEvent<>(this,
 																																				treeSelectedItemViewObj);
 											if (_itemEditEventListener != null) _itemEditEventListener.onItemEditRequested(event);
+											
+											_btnRootNode.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 									   });
 		////////// add
 		if (vaTypeSettings.isCollection() 
@@ -195,8 +199,9 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 										if (vaTypeSettings.isNOTCollection()
 										 && _treeGrid.getRootItems()
 											  	     .size() == 1) {
-										  _btnAdd.setVisible(false);
 										}
+										
+										_btnRootNode.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 									 });
 		}
 		////////// Trash button
@@ -267,12 +272,6 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 																   			  																								  deletedTree);
 																   	_itemDeletedEventListener.onItemsDeleted(event);
 															   }
-															   
-															   // remove from parent(viewObj)
-															    VO parent = _treeGrid._treeData.getParent(item);
-															   	if (parent != null) {
-															   		parent.removeChild(item);															   		
-															   	}
 															   // remove the item from the tree
 															    _treeGrid.removeItem(item);
 															    _treeGrid.deselectAll();
@@ -289,6 +288,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 													  		   _btnAdd.setEnabled(addEnabled); 
 													  		   _btnAdd.setVisible(true);
 													  		   _treeGrid.setVisible(!CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));
+													  		   
+													  		   _btnRootNode.setStyleName(ValoTheme.BUTTON_PRIMARY);
 													  	    });
 		UI.getCurrent()
 		  .addWindow(proceedGateDialog);
@@ -314,6 +315,25 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 				   		   || (_settings.isNOTCollection() 
 				   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
 		_btnAdd.setEnabled(addEnabled); 
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	INIT
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void init() {
+		if (!_settings.isCollection()) {
+			this.selectFirstChildIfExists();
+		} else {
+			_btnRootNode.setStyleName(ValoTheme.BUTTON_PRIMARY);
+		}
+	}
+	public void selectFirstChildIfExists() {
+		if (_treeGrid.isNotEmpty()) {
+			VO selectedItem = _treeGrid.selectFirstChild();
+			// tell the detail view to enter editing the new view object
+			VaadinHiearchicalDataTreeOnItemEditEvent<VO> event = new VaadinHiearchicalDataTreeOnItemEditEvent<>(this,
+																												selectedItem);
+			if (_itemEditEventListener != null) _itemEditEventListener.onItemEditRequested(event);			
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	COLUMN CAPTION
@@ -452,6 +472,12 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			_treeData.addItem(parent,item);
 		}
 		public void removeItem(final VO item) {
+			// remove from parent(viewObj)
+		    VO parent = _treeData.getParent(item);
+		   	if (parent != null) {
+		   		parent.removeChild(item);															   		
+		   	}	
+		   	// remove item
 			_treeData.removeItem(item);
 			_treeDataUpdated();
 		}
@@ -479,6 +505,15 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			return itemDepth < 0
 				|| _vaTypeSettings.getMaxDepth() == itemDepth ? false
 															  : true;
+		}
+		public VO selectFirstChild() {
+			Collection<VO> rootItems = this.getRootItems();
+			VO firstItem = rootItems.iterator().next();
+			this.select(firstItem);
+			return firstItem;
+		}
+		public boolean isNotEmpty() {
+			return !CollectionUtils.isNullOrEmpty(this.getRootItems());
 		}
 		@Override
 		protected String _itemCaption(final VO item) {

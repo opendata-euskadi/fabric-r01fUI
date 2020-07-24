@@ -126,6 +126,10 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 											   		_treeGrid.setEnabled(true);
 										    });
 		// what happens when an item is selected (or created) at the tree
+		_treeGrid.setOnTreeRootNodeSelectedEventListener(() -> {
+															// hide the [detail component]
+															_form.setVisible(false);
+														});
 		_treeGrid.setOnItemEditEventListener(itemEditReqEvt -> {
 													// the currently edited viewObj (this forces the binded object to be saved from the UI controls)
 													VO currEditedViewObj = viewObjInLangFactory.create();
@@ -172,7 +176,7 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 	@Override
 	public void editViewObject(final VaadinTreeData<VO> viewObj) {
 		_treeGrid.setValue(viewObj);
-		_form.setVisible(false);
+		_treeGrid.init();
 	}
 	////////// [UI control] > [viewObject] --------------	
 	@Override

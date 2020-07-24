@@ -161,6 +161,7 @@ public class VaadinProceedGateDialogWindow
 		
 		// Puzzle
 		_txtPuzzle.setValueChangeMode(ValueChangeMode.TIMEOUT);
+		_txtPuzzle.setWidth(90, Unit.PERCENTAGE);
 		_txtPuzzle.setVisible(false);
 		if (_puzzleCheck != null) {
 			_btnProceed.setEnabled(false);	// the button is NOT enabled by default

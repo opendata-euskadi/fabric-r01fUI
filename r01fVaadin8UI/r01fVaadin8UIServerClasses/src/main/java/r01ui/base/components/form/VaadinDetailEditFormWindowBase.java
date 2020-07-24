@@ -49,7 +49,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * The edit form layer
+	 * The edit form layer 
 	 */
 	@Getter protected final VaadinDetailEditFormBase<V,F> _editForm;
 	

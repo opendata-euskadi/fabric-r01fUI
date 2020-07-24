@@ -87,7 +87,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 			vl.addComponent(new CssLayout(_editForm._btnAcepCancDelete));
 			vl.setComponentAlignment(vl.getComponent(vl.getComponentCount()-1), Alignment.MIDDLE_RIGHT);
 			
-			vl.setExpandRatio(p, 1);
+			vl.setExpandRatio(p, 1); 
 			
 			this.setContent(vl);		// wrap into a VerticalLayout to get a bit of margin
 		}else {

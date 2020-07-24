@@ -5,7 +5,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Notification;
-
+ 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.model.facets.view.HasCaptionLanguageDependent;

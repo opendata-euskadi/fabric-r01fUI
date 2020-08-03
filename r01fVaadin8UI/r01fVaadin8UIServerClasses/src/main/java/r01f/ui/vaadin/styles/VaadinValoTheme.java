@@ -57,6 +57,7 @@ public abstract class VaadinValoTheme
 	public static final String GRID_CONTAINER_BIG_SIZE = "grid-container-big";
 	public static final String GRID_NO_RESULTS_LABEL = "grid-lbl-no-results";
 	public static final String GRID_DOTS_MENU = "grid-dots-menu";
+	public static final String LAYOUT_WHITE_BORDERED = "r01ui-white-bordered-layout";
 	
 	public static final String MAIN_MENU_BAR = "main-menu-bar";
 	public static final String SIDE_BAR = "sidebar";

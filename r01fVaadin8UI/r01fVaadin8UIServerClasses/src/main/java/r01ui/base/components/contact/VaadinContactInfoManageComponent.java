@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.VerticalLayout;
 
@@ -121,8 +120,8 @@ public class VaadinContactInfoManageComponent
 		// others
 		VerticalLayout vlOthers = new VerticalLayout(_cmbPreferedLanguage);
 		vlOthers.setCaption(i18n.getMessage("contact.others").toUpperCase());
-		vlOthers.addStyleName(VaadinValoTheme.NO_PADDING_TOP);
-		vlOthers.addStyleName(VaadinValoTheme.NO_PADDING_LEFT);
+		vlOthers.setMargin(true);
+		vlOthers.addStyleName(VaadinValoTheme.LAYOUT_WHITE_BORDERED);
 
 		// main layout
 		this.addComponent(_txtGeoPosition);

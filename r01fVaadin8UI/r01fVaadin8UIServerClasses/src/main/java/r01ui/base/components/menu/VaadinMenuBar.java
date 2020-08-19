@@ -147,8 +147,8 @@ public class VaadinMenuBar
 							item.setSelected();
 							
 							// [3] - use the key as vaadin id
-							final VaadinViewID viewId = item != null ? VaadinViewID.forId(item.getKey().asString())
-																	 : null;
+							VaadinViewID viewId = item != null ? VaadinViewID.forId(item.getKey().asString())
+															   : null;
 							if (viewId != null) {
 								String viewUrlPathParam = VaadinNavigator.vaadinViewUrlPathFragmentOf(viewId,
 								                                                                      navParams);

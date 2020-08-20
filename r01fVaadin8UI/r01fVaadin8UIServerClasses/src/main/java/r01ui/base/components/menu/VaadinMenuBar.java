@@ -147,8 +147,6 @@ public class VaadinMenuBar
 							item.setSelected();
 							
 							// [3] - use the key as vaadin id
-							VaadinViewID viewId = item != null ? VaadinViewID.forId(item.getKey().asString())
-															   : null;
 							if (viewId != null) {
 								String viewUrlPathParam = VaadinNavigator.vaadinViewUrlPathFragmentOf(viewId,
 								                                                                      navParams);
@@ -260,8 +258,8 @@ public class VaadinMenuBar
 													 command,
 													 _subItems,
 													 (theCaption,theIcon,theCommand) -> {
-													 return _menuItem.addItem(theCaption,theIcon,
-															 				  theCommand);
+															 return _menuItem.addItem(theCaption,theIcon,
+																	 				  theCommand);
 													 });
 		}
 		@Override

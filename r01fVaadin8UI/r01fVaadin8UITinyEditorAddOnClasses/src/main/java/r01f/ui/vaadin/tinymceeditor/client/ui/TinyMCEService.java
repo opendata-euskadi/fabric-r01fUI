@@ -7,7 +7,6 @@ import com.google.gwt.dom.client.NativeEvent;
  *
  */
 public class TinyMCEService {
-
 	/**
 	 * Use this method to load editor to given identifier.
 	 * 
@@ -174,7 +173,9 @@ public class TinyMCEService {
 	/*-{
 		return $wnd.tinymce.get(id);
 	}-*/;
-
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public interface OnChangeListener {
 		
 		public void onChange();

@@ -10,24 +10,27 @@ import com.google.gwt.core.client.JavaScriptObject;
  * See http://wiki.moxiecode.com/index.php/TinyMCE:API/tinymce.Editor for
  * documentation and the rest of the api
  */
-public class TinyMCEditor extends JavaScriptObject {
-
+public class TinyMCEditor 
+	 extends JavaScriptObject {
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////////
 	protected TinyMCEditor() {
+		// default no-args constructor
 	}
-
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public final native boolean isDirty()
 	/*-{
 		return this.isDirty();
 	}-*/;
-
 	public final native String getContent()
 	/*-{
 		return this.getContent();
 	}-*/;
-
 	public final native void setContent(String stringVariable)
 	/*-{
 		return this.setContent(stringVariable);
 	}-*/;
-
 }

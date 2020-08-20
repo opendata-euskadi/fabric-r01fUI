@@ -7,12 +7,13 @@ package r01f.ui.vaadin.tinymceeditor.shared;
 
 import com.vaadin.shared.ui.textfield.TextFieldState;
 
-/**
- *
- * @author mstahv
- */
-public class TinymceState extends TextFieldState {
-    
+public class TinymceState 
+	 extends TextFieldState {
+
+	private static final long serialVersionUID = -5184104896749904987L;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	FIELDS
+/////////////////////////////////////////////////////////////////////////////////////////    
     public String conf;
     
 }

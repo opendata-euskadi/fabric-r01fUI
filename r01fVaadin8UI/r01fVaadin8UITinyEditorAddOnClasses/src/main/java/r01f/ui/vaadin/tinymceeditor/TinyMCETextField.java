@@ -10,26 +10,32 @@ import r01f.ui.vaadin.tinymceeditor.shared.TinymceState;
  */
 //@JavaScript({"vaadin://../../../comun/tinymce4/js/tinymce/tinymce.min.js", "client/ui/r01vtinymce.js"})
 @JavaScript({"vaadin://scripts/tinymce4/js/tinymce/tinymce.min.js", "client/ui/r01vtinymce.js"})
-public class TinyMCETextField extends TextField{	  
+public class TinyMCETextField 
+	 extends TextField{	  
 	private static final long serialVersionUID = -384040888446323186L;
-
+/////////////////////////////////////////////////////////////////////////////////////////
+//	FIELDS
+/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * TinyMCE configuration values. 
 	 */
-	private String config;
-	
+	private String _config;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////////
 	public TinyMCETextField() {
-        super();
-        setWidth("100%");
-        setHeight("280px");
-    }
-
-    public void setConfig(String jsConfig) {
-        getState().conf = jsConfig;
-    }
-
-    @Override
-    protected TinymceState getState() {
-        return (TinymceState) super.getState();
-    }
+		super();
+		this.setWidth("100%");
+		this.setHeight("280px");
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setConfig(final String jsConfig) {
+		this.getState().conf = jsConfig;
+	}
+	@Override
+	protected TinymceState getState() {
+		return (TinymceState)super.getState();
+	}
 }

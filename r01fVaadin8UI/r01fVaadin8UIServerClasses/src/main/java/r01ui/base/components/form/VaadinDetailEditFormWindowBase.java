@@ -59,14 +59,14 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
 									  	  final F form,
 									  	  final Factory<V> viewObjFactory) {
-		this(i18n, form, viewObjFactory, false);
+		this(i18n,
+			 form,viewObjFactory,
+			 false);	// not bottom sticky buttons
 	}
-	
-	//set buttons fix at the end of the window
 	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
 									  	  final F form,
 									  	  final Factory<V> viewObjFactory,
-									  	  final boolean setButtonsFixAtBottom) {
+									  	  final boolean bottomStickyButtons) {
 		_viewObjFactory = viewObjFactory;
 
 		// ui
@@ -76,10 +76,11 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 							private static final long serialVersionUID = 7219012021409356071L;
 					};
 		_editForm.addCancelButtonClickListner(clickEvent -> this.close());
-		if(setButtonsFixAtBottom) {
+		if (bottomStickyButtons) {
 			VerticalLayout vl = new VerticalLayout();
 			vl.setSizeFull();
 			vl.setSpacing(false);
+			
 			Panel p = new Panel(_editForm);
 			p.setSizeFull();
 			p.addStyleName(ValoTheme.PANEL_BORDERLESS);
@@ -87,10 +88,10 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 			vl.addComponent(new CssLayout(_editForm._btnAcepCancDelete));
 			vl.setComponentAlignment(vl.getComponent(vl.getComponentCount()-1), Alignment.MIDDLE_RIGHT);
 			
-			vl.setExpandRatio(p, 1); 
+			vl.setExpandRatio(p,1); 
 			
 			this.setContent(vl);		// wrap into a VerticalLayout to get a bit of margin
-		}else {
+		} else {
 			this.setContent(new VerticalLayout(_editForm));
 		}
 		// style window

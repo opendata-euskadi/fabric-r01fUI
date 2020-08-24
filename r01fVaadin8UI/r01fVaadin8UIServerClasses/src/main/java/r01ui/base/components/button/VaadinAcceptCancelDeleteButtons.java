@@ -6,11 +6,12 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Layout.MarginHandler;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout.MarginHandler;
 
 import lombok.experimental.Accessors;
+import r01f.locale.I18NKey;
 import r01f.ui.i18n.UII18NService;
 import r01f.util.types.collections.CollectionUtils;
 
@@ -62,6 +63,16 @@ public class VaadinAcceptCancelDeleteButtons
 		////////// composition
 		this.setCompositionRoot(hly);
 		this.setSizeFull();
+	}
+	public VaadinAcceptCancelDeleteButtons(final UII18NService i18n,
+										   final I18NKey acceptButtonCaptionKey,
+										   final I18NKey cancelButtonCaptionKey,
+										   final I18NKey deleteButtonCaptionKey) {
+		this(i18n);
+		if(acceptButtonCaptionKey != null) _btnAccept.setCaption(i18n.getMessage(acceptButtonCaptionKey));
+		if(cancelButtonCaptionKey != null) _btnCancel.setCaption(i18n.getMessage(cancelButtonCaptionKey));
+		if(deleteButtonCaptionKey != null) _btnDelete.setCaption(i18n.getMessage(deleteButtonCaptionKey));
+		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

@@ -8,6 +8,8 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.GridLayout.Area;
 import com.vaadin.ui.Layout.AlignmentHandler;
 import com.vaadin.ui.Layout.MarginHandler;
 import com.vaadin.ui.Layout.SpacingHandler;
@@ -114,11 +116,11 @@ public abstract class VaadinStyler {
 	 * @param container
 	 * @return
 	 */
-	public static VaadinStylerAlginmentStep alignmentOfChildComponentsOf(final AlignmentHandler container) {
-		return new VaadinStylerAlginmentStep(container);
+	public static VaadinStylerAlignmentStep alignmentOfChildComponentsOf(final AlignmentHandler container) {
+		return new VaadinStylerAlignmentStep(container);
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public static class VaadinStylerAlginmentStep {
+	public static class VaadinStylerAlignmentStep {
 		private final AlignmentHandler _container;
 		
 		public VaadinStylerChildComponentStep set(final Alignment alignment) {
@@ -143,6 +145,35 @@ public abstract class VaadinStyler {
 			ComponentContainer compContainer = (ComponentContainer)_container;
 			for (Component c : compContainer) {
 				_container.setComponentAlignment(c,_alignment);
+			}
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public static VaaadinStyleGridAlignmentStep alignmentOfGridComponents(final GridLayout grid) {
+		return new VaaadinStyleGridAlignmentStep(grid);
+	}
+	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+	public static class VaaadinStyleGridAlignmentStep {
+		private final GridLayout _grid;
+		
+		public void toAllGridComponents(final Alignment alignment) {
+			Iterable<Component> compIterable = () -> _grid.iterator();
+			for (Component comp : compIterable) {
+				_grid.setComponentAlignment(comp,alignment);
+			}
+		}
+		public void toAllGridColumnComponents(final int colIndex,final Alignment alignment) {
+			int rows = _grid.getRows();
+			for (int i = 0; i < rows; ) {
+				Component compAt = _grid.getComponent(colIndex,i);
+				if (compAt != null) _grid.setComponentAlignment(compAt,alignment);
+				
+				Area area = _grid.getComponentArea(compAt);		
+				int incr = area != null ? (area.getRow2() - area.getRow1()) + 1
+										: 1;
+				i = i + incr;
 			}
 		}
 	}

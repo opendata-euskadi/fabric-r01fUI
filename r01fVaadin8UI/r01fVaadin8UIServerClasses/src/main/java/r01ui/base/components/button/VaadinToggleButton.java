@@ -77,7 +77,7 @@ public class VaadinToggleButton
 	}
 	@Override
 	protected void doSetValue(final Boolean value) {
-		this.toggle(_value);
+		this.toggle(value);
 	}	
 	public void toggle(final boolean value) {
 		_value = value;

@@ -96,7 +96,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 																valid = validates.validate();
 															}
 															if (!valid)  {
-																Notification.show("Hay campos sin rellenar");
+																//Notification.show("Hay campos sin rellenar");
 																return;
 															}	
 															

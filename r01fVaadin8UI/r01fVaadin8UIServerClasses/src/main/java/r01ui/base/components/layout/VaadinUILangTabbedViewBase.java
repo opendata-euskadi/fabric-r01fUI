@@ -13,7 +13,9 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.TabSheet;
@@ -595,7 +597,10 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 			
 			// UI -> object
 			boolean tabValid = langView.writeIfValidEditedViewObjectTo(bindedViewObjInLang);
-			if (!tabValid) allTabsValid = false;
+			if (!tabValid) {
+				allTabsValid = false;
+				setSelectedTab(langView);
+			}
 
 			// and now back from D to VIL
 			this.copyBindedObjDataToViewObjectInLang(bindedViewObjInLang,viewObjInLang);

@@ -23,7 +23,7 @@ import r01f.util.types.collections.CollectionUtils;
  * 		+++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
-@Accessors( prefix="_" )
+@Accessors( prefix="_" ) 
 public class VaadinAcceptCancelDeleteButtons
 	 extends Composite 
  implements MarginHandler {

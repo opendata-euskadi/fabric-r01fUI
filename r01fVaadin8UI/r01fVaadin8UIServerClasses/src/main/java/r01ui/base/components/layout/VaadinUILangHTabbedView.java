@@ -59,7 +59,7 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 		super(i18n,
 			  viewByLangFactory);
 		_tabs.setResponsive(true);
-		super.setCompositionRoot(_tabs);		
+		super.setCompositionRoot(_tabs);	
 	}
 	public VaadinUILangHTabbedView(final UII18NService i18n,
 								   final Collection<Language> langs,

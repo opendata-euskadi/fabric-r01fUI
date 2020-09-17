@@ -23,7 +23,7 @@ import r01f.util.types.collections.CollectionUtils;
  * 		+++++++++++++++++++++++++++++++++++++++++++++
  * </pre>
  */
-@Accessors( prefix="_" )
+@Accessors( prefix="_" ) 
 public class VaadinAcceptCancelDeleteButtons
 	 extends Composite 
  implements MarginHandler {
@@ -201,6 +201,21 @@ public class VaadinAcceptCancelDeleteButtons
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////
+	public void setButtonId(VaadinAcceptCancelDeleteButton btn, String id) {
+		switch (btn) {
+					case ACCEPT:
+						_btnAccept.setId(id);
+						break;
+					case CANCEL:
+						_btnCancel.setId(id);
+						break;
+					case DELETE:
+						_btnDelete.setId(id);
+						break;
+					default:
+						throw new IllegalArgumentException();
+		  			}
+	}
 	public enum VaadinAcceptCancelDeleteButton {
 		ACCEPT,
 		CANCEL,

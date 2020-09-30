@@ -13,7 +13,7 @@ import r01f.util.types.collections.CollectionUtils;
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public abstract class VaadinNavigator {
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Gets a Vaadin {@link Navigator} url parm
@@ -32,6 +32,11 @@ public abstract class VaadinNavigator {
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Creates a Vaadin {@link Navigator} url params from the view id and params
+	 *
+	 * Starting from Vaadin 8.1 multiple [parameters] can be used separated by & after the [view name]
+	 * 		navigateTo(DashBoard.NAME + "/mail=" + email.getValue()+ "&param2=xyz")
+	 * [parameters] can be get through ParametersViewChangeEvent.getParameterMap.
+ 	 * A different separator than & can be used and then call ViewChangeEvent.getParameterMap(separator)
 	 * @param viewId
 	 * @param navParams
 	 * @return
@@ -47,7 +52,7 @@ public abstract class VaadinNavigator {
 				paramsStr.append(me.getKey())
 				   		 .append("=")
 						 .append(me.getValue());
-				if (meIt.hasNext()) paramsStr.append("/");
+				if (meIt.hasNext()) paramsStr.append("&");
 			}
 			outUrlPathParam = paramsStr.toString();
 		} else {

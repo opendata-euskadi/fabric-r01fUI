@@ -15,6 +15,7 @@ import r01f.ui.weblink.IsUIViewUrl;
 import r01f.ui.weblink.UIViewUrl;
 import r01ui.base.components.form.VaadinDetailForm;
 import r01ui.base.components.form.VaadinFormEditsViewObject;
+import r01ui.base.components.url.customfield.VaadinUrlField;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /**

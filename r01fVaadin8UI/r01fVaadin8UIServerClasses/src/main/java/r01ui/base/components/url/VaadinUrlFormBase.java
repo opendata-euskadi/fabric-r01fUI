@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.types.url.Url;
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.vaadin.annotations.VaadinViewComponentLabels;
 import r01f.ui.vaadin.annotations.VaadinViewField;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.ui.weblink.IsUIViewUrl;
@@ -48,6 +49,8 @@ public abstract class VaadinUrlFormBase<V extends IsUIViewUrl>
 	@VaadinViewField(bindToViewObjectFieldNamed = UIViewUrl.URL_FIELD,
 					 bindStringConverter = false, 
 					 required = false)
+	@VaadinViewComponentLabels(captionI18NKey="url",
+							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	protected final VaadinUrlField _txtUrl;
 	
 	@Getter protected final Binder<V> _vaadinUIBinder;

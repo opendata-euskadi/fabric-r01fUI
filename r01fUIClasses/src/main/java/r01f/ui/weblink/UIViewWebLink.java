@@ -21,7 +21,7 @@ public class UIViewWebLink
   	 extends UIViewObjectWrappedBase<WebLink>
   implements IsUIViewWebLink {
 
-	private static final long serialVersionUID = -2958846330336464208L;	
+	private static final long serialVersionUID = -2958846330336464208L;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -45,26 +45,36 @@ public class UIViewWebLink
 		if (linkCol == null) return Lists.newArrayList();
 
 		Collection<WebLink> links = linkCol.getUrlsIn(lang);
-		Collection<UIViewWebLink> outViewObjs = CollectionUtils.hasData(links) ? links.stream()
-																						 .map(UIViewWebLink::new)
+		return UIViewWebLink.uiWebLinkCollectionFromModelObject(links);
+	}
+	public static Collection<UIViewWebLink> uiWebLinkCollectionFromModelObject(final Collection<WebLink> linkCol) {
+		if (linkCol == null) return Lists.newArrayList();
+
+		Collection<UIViewWebLink> outViewObjs = CollectionUtils.hasData(linkCol) ? linkCol.stream()
+																						  .map(UIViewWebLink::new)
 																						 .collect(Collectors.toList())
-																				  : Lists.newArrayList();
+																				 : Lists.newArrayList();
 		return outViewObjs;
 	}
 	public static WebLinkCollection uiWebLinkCollectionToModelObject(final Collection<UIViewWebLink> uiWebLinkCol,
 																	 final Language lang) {
+		Collection<WebLink> links = UIViewWebLink.uiWebLinkCollectionToModelObject(uiWebLinkCol);
+		return uiWebLinkCol != null ? new WebLinkCollection(links.stream()
+																 .map(link -> {
+																	 		link.setLanguage(lang);	// ensure the link has the correct lang
+																	 		return link;
+																 	  })
+																 .collect(Collectors.toList()))
+									: new WebLinkCollection();
+	}
+	public static Collection<WebLink> uiWebLinkCollectionToModelObject(final Collection<UIViewWebLink> uiWebLinkCol) {
 		if (uiWebLinkCol == null) return new WebLinkCollection();
 		Collection<WebLink> links = CollectionUtils.hasData(uiWebLinkCol)
 											? uiWebLinkCol.stream()
 												 .map(UIViewWebLink::getWrappedModelObject)
-												 .map(webLink -> {
-													 		// ensure the link has the correct lang
-													 		webLink.setLanguage(lang);
-													 		return webLink;
-												 	  })
 												 .collect(Collectors.toList())
 											: Lists.newArrayList();
-		return new WebLinkCollection(links);
+		return links;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	URL

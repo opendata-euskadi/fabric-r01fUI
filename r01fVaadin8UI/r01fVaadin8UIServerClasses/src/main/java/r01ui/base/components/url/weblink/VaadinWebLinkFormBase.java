@@ -12,6 +12,7 @@ import r01f.html.HtmlLinkRenderer;
 import r01f.types.url.Url;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.weblink.IsUIViewWebLink;
+import r01f.util.types.Strings;
 import r01ui.base.components.url.VaadinUrlForm;
 import r01ui.base.components.url.VaadinUrlFormBase;
 
@@ -44,11 +45,11 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 /////////////////////////////////////////////////////////////////////////////////////////
 	// a form with the presentation data
 	protected final VaadinWebLinkPresentationForm<V> _formLinkPresentation;
-	
+
 	// a link preview
 	protected final Label _lblWebLinkPreview = new Label();
 	protected final HorizontalLayout _lyPreview;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +59,9 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 								 final VaadinWebLinkFormFeatures linkBuilderFeatures) {
 		super(viewObjType,
 			  i18n);
-		
-		////////// UI 
-		// the [web link] presentation 
+
+		////////// UI
+		// the [web link] presentation
 		_formLinkPresentation = new VaadinWebLinkPresentationForm<>(i18n,
 																   viewObjType,
 																   linkBuilderFeatures);
@@ -72,8 +73,8 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 					     		 _lblWebLinkPreview);
 		_lyPreview.setExpandRatio(_lblWebLinkPreview,1);
 		_lyPreview.setVisible(false);
-		
-		////////// Layout 
+
+		////////// Layout
 //		CssLayout vly = new CssLayout(_urlBuilder,
 //									  _formLinkPresentation,
 //									  _lyPreview);
@@ -82,7 +83,7 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 												_lyPreview);
 		this.setCompositionRoot(vly);	// the layout just contains the url builder
 		vly.addStyleName("r01platea-url-builder");
-		
+
 		////////// behavior
 		_setBehavior();
 	}
@@ -92,35 +93,35 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 		this.addWebLinkPresentationValueChangeListener(valChangeEvent -> _updateLinkPreview());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void clear() {
-		super.clear();		// clear the url builder 
+		super.clear();		// clear the url builder
 		_formLinkPresentation.clear();
 	}
-	
+
 	public Url getUrl() {
 		return _txtUrl.getUrl();
 	}
 	public void setUrl(final Url url) {
 		_txtUrl.setValue(url);
 	}
-	
+
 	public String getLinkText() {
 		return _formLinkPresentation.getLinkText();
 	}
 	public void setLinkText(final String text) {
 		_formLinkPresentation.setLinkText(text);
 	}
-	
+
 	public String getLinkDescription() {
 		return _formLinkPresentation.getLinkDescription();
 	}
 	public void setLinkDescription(final String desc) {
 		_formLinkPresentation.setLinkDescription(desc);
 	}
-	
+
 	public boolean isOpeningInNewWindow() {
 		return _formLinkPresentation.isOpeningInNewWindow();
 	}
@@ -138,7 +139,7 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 
 		// tell the [link presentation] form to edit
 		_formLinkPresentation.editViewObject(viewObj);
-		
+
 		// show the link preview
 		_updateLinkPreview();
 	}
@@ -147,7 +148,7 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 	public void writeAsDraftEditedViewObjectTo(final V viewObject) {
 		// write the url
 		super.writeAsDraftEditedViewObjectTo(viewObject);
-		
+
 		// write the presentation
 		_formLinkPresentation.writeAsDraftEditedViewObjectTo(viewObject);
 	}
@@ -155,19 +156,22 @@ public abstract class VaadinWebLinkFormBase<V extends IsUIViewWebLink>
 	public boolean writeIfValidEditedViewObjectTo(final V viewObj) {
 		// write the url
 		boolean urlValid = super.writeIfValidEditedViewObjectTo(viewObj);
-		
+
 		// write the presentation
 		boolean presentationValid = super.writeIfValidEditedViewObjectTo(viewObj);
-		
+
 		return urlValid && presentationValid;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
-/////////////////////////////////////////////////////////////////////////////////////////	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 	private void _urlChange() {
+		if (Strings.isNullOrEmpty(this.getLinkText())) {
+			this.setLinkText(_txtUrl.getUrlAsString());
+		}
 		_updateLinkPreview();
 	}
-	
+
 	private void _updateLinkPreview() {
 		String htmlLink = this.getUrl() != null
 								? HtmlLinkRenderer.of(this.getUrl(),

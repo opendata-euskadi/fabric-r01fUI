@@ -13,7 +13,7 @@ import r01ui.base.components.url.weblink.VaadinWebLinkGrid;
 /**
  * A vaadin field used to include a {@link VaadinWebLinkGrid} ([web link] grid) in a form
  */
-public class VaadinWebLinksField 
+public class VaadinWebLinksField
 	 extends CustomField<Collection<UIViewWebLink>> {
 
 	private static final long serialVersionUID = -6020522807343940165L;
@@ -21,15 +21,15 @@ public class VaadinWebLinksField
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * A [web link] grid 
+	 * A [web link] grid
 	 */
 	private final VaadinWebLinkGrid _weblinkGrid;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected VaadinWebLinksField(final UII18NService i18n) {
+	public VaadinWebLinksField(final UII18NService i18n) {
 		_weblinkGrid = new VaadinWebLinkGrid(i18n);
-		// fire a value change event whenever something changes 
+		// fire a value change event whenever something changes
 		_weblinkGrid.addValueChangeListener(valChangeEvent -> {
 												ValueChangeEvent<Collection<UIViewWebLink>> evt = new ValueChangeEvent<>(this,			// source component
 																														 this.getValue(),// before & after
@@ -53,7 +53,7 @@ public class VaadinWebLinksField
 	@Override
 	public Collection<UIViewWebLink> getValue() {
 		// do not return empty picks
-		Collection<UIViewWebLink> links = _weblinkGrid.getItems(); 
+		Collection<UIViewWebLink> links = _weblinkGrid.getItems();
 		return links;
 	}
 	@Override

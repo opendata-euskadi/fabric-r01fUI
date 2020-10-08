@@ -4,7 +4,8 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.CssLayout;
-
+import com.vaadin.ui.Notification;
+ 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.model.facets.view.HasCaptionLanguageDependent;
@@ -81,6 +82,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		layout.setWidthFull();
 		this.setCompositionRoot(layout);
 	}
+
 	private void _setAcceptCancelDeleteButtonsBehavior() {
 		// - CANCEL
 		_btnAcepCancDelete.addCancelButtonClickListner(clickEvent -> VaadinDetailEditFormBase.this.close());
@@ -93,7 +95,10 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 																VaadinEditFormSelfValidates validates = (VaadinEditFormSelfValidates)_form;
 																valid = validates.validate();
 															}
-															if (!valid) return;	
+															if (!valid)  {
+																//Notification.show("Hay campos sin rellenar");
+																return;
+															}	
 															
 															// is valid or maybe not if not implementing VaadinEditFormSelfValidates														
 															_form.writeAsDraftEditedViewObjectTo(_viewObj);

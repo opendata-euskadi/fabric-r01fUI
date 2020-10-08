@@ -347,7 +347,13 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	@Override
 	public void setEnabled(final boolean enabled) {
 		_treeGrid.setEnabled(enabled);
-		_btnAdd.setEnabled(enabled);
+		VO treeSelectedItemViewObj = _treeGrid.getUniqueSelectedItem();
+		int treeSelectedItemDepth = _treeGrid.getTreeData()
+											 .getItemDepth(treeSelectedItemViewObj);
+		_btnAdd.setEnabled(_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth());
+		boolean addEnabled = (_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth())
+				   		   	 || (_settings.isNOTCollection() && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));
+		_btnAdd.setEnabled(addEnabled);
 		_btnRemove.setEnabled(enabled);		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -161,7 +161,7 @@ public abstract class VaadinViews {
 
 				// [1] - Get the view object field name from the @VaadinViewField annotation
 				String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
-				
+
 				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,		// BEWARE!! there MUST exist a GETTER for the [view obj] field
 																	  viewObjFieldName);
 
@@ -174,8 +174,8 @@ public abstract class VaadinViews {
 				HasValue<?> hasValueComp = (HasValue<?>)ReflectTools.getJavaFieldValue(view,
 																					   viewCompField,HasValue.class);
 				if (hasValueComp == null) continue;
-				
-				// BEWARE!	If the component is null maybe the call to 
+
+				// BEWARE!	If the component is null maybe the call to
 				// 						VaadinViews.using(_i18n)
 				//								   .setI18NLabelsOf(this);
 				// 			is done in the WRONG place:
@@ -191,7 +191,7 @@ public abstract class VaadinViews {
 				//	public class MyEditor
 				//		 extends MyEditorBase {
 				//
-				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false) 
+				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false)
 				//		@LangIndependentVaadinViewField
 				//		@VaadinViewComponentLabels(captionI18NKey="myKey",useCaptionI18NKeyAsPlaceHolderKey=true)
 				//		protected final TextField _txtMyField = new TextField();
@@ -201,17 +201,17 @@ public abstract class VaadinViews {
 				//				  MyViewObj.class);
 				//		}
 				//	}
-				//	Since the call to 
+				//	Since the call to
 				//			VaadinViews.using(_binder,_i18n)
 				//					   .bindComponentsOf(this)
 				//					   .toViewObjectOfType(viewObjType);
 				//	is done at the BASE type, the _txtMyField field IS NOT YET initialized!
 				//	... so it's NULL!!
-				//	ensure to call 
+				//	ensure to call
 				//			VaadinViews.using(_binder,_i18n)
 				//					   .bindComponentsOf(this)
 				//					   .toViewObjectOfType(viewObjType);
-				//	at the MyEditor constructor 
+				//	at the MyEditor constructor
 
 				// [2] - Get the binding builder
 				Binder.BindingBuilder<M,?> bindingBuilder = binder.forField(hasValueComp);
@@ -228,7 +228,7 @@ public abstract class VaadinViews {
 										   hasValueComp);
 				// [c] - String converter
 				//		 BEWARE! Vaadin fields are instances of HasValue<?>
-				//				 convert ONLY HasValue<String> fields like TextFields 
+				//				 convert ONLY HasValue<String> fields like TextFields
 				//				 (ie: do NOT convert on combos)
 				if (viewFieldAnnotation.bindStringConverter()) {
 					_bindStringConverterFor(bindingBuilder,
@@ -263,10 +263,10 @@ public abstract class VaadinViews {
 	private static <M extends UIViewObject,T> void _bindStringConverterFor(final Binder.BindingBuilder<M,?> bindingBuilder,
 											  					     	   final Class<T> viewObjPropertyType) {	// view object property
 		if (viewObjPropertyType == null) return;
-		
+
 		// Converters
 		Binder.BindingBuilder<M,String> strBindingBuilder = (Binder.BindingBuilder<M,String>)bindingBuilder;
-		
+
 		if (String.class.isAssignableFrom(viewObjPropertyType)) {
 			// do nothing
 		}
@@ -274,36 +274,36 @@ public abstract class VaadinViews {
 		      || int.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToIntegerConverter(null,
 														 		  	  	 "Must be a number"));
-		} 
+		}
 		else if (Float.class.isAssignableFrom(viewObjPropertyType)
 			  || float.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToFloatConverter(null,
 																	   "Must be a number"));
-		} 
+		}
 		else if (Double.class.isAssignableFrom(viewObjPropertyType)
 			  || double.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToDoubleConverter(null,
 																		"Must be a number"));
-		} 
+		}
 		else if (Long.class.isAssignableFrom(viewObjPropertyType)
 			  || long.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToLongConverter(null,
 																	  "Must be a number"));
-		} 
+		}
 		else if (BigDecimal.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToBigDecimalConverter(null,
 																		    "Must be a number"));
-		} 
+		}
 		else if (BigInteger.class.isAssignableFrom(viewObjPropertyType)) {
 			strBindingBuilder.withConverter(new StringToBigIntegerConverter(null,
 																			"Must be a number"));
-		} 
+		}
 		else if (Date.class.isAssignableFrom(viewObjPropertyType)) {
 			Binder.BindingBuilder<M,LocalDate> dateBindingBuilder = (Binder.BindingBuilder<M,LocalDate>)bindingBuilder;
 
 			dateBindingBuilder.withConverter(new LocalDateToDateConverter());
-			
-		} 
+
+		}
 		else if (OID.class.isAssignableFrom(viewObjPropertyType)) {
 			FactoryFrom<String,T> oidFactory = new FactoryFrom<String,T>() {
 														@Override
@@ -314,15 +314,15 @@ public abstract class VaadinViews {
 											  };
 			Converter<String,T> converter = new VaadinOIDConverter(oidFactory);
 			strBindingBuilder.withConverter(converter);
-			
-		} 
+
+		}
 		else if (ReflectionUtils.canBeCreatedFromString(viewObjPropertyType)) {
 			// try to see if the [view obj] property type has a valueOf or a constructor from String
 			Converter<String,T> converter = new Converter<String,T>() {
 													private static final long serialVersionUID = -2471867717063606318L;
 
 													@Override
-													public Result<T> convertToModel(final String value,final ValueContext context) {													
+													public Result<T> convertToModel(final String value,final ValueContext context) {
 														T instance = value != null ? ReflectionUtils.createInstanceFromString(viewObjPropertyType,
 																											  				  value)
 																				   : null;
@@ -352,7 +352,7 @@ public abstract class VaadinViews {
 																	if (Strings.isNOTNullOrEmpty(strVal)) return ValidationResult.ok();
 																	return ValidationResult.error(i18n.getMessage(viewFieldAnnot.i18nKeyForRequiredMessage()));
 															  });
-			} else if (MultiSelect.class.isAssignableFrom(viewComp.getClass())) {	
+			} else if (MultiSelect.class.isAssignableFrom(viewComp.getClass())) {
 				bindingBuilder.asRequired((value,context) -> {
 																	Collection<?> v = (Collection<?>) value;
 																	if (value != null && CollectionUtils.hasData(v)) return ValidationResult.ok();
@@ -459,16 +459,16 @@ public abstract class VaadinViews {
 		final Class<?> viewType = view.getClass();
 		final Field[] viewFields = ReflectionUtils.allFields(viewType);
 		for (final Field viewCompField : viewFields) {
-			try {				
+			try {
 				if (!ReflectionUtils.isImplementing(viewCompField.getType(),Component.class)) continue;
 
 				// [1] - Get the component field and the corresponding view obj type
 				Component vaadinComponent = ReflectionUtils.fieldValue(view,viewCompField,
-																	   false);		// do not use Accessors 
+																	   false);		// do not use Accessors
 //				Component vaadinComponent = (Component)ReflectTools.getJavaFieldValue(view,
 //																					  viewCompField,Component.class);
-				
-				// BEWARE!	If the component is null maybe the call to 
+
+				// BEWARE!	If the component is null maybe the call to
 				// 						VaadinViews.using(_i18n)
 				//								   .setI18NLabelsOf(this);
 				// 			is done in the WRONG place:
@@ -483,7 +483,7 @@ public abstract class VaadinViews {
 				//	public class MyEditor
 				//		 extends MyEditorBase {
 				//
-				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false) 
+				// 		@VaadinViewField(bindToViewObjectFieldNamed="myField",required=false)
 				//		@LangIndependentVaadinViewField
 				//		@VaadinViewComponentLabels(captionI18NKey="myKey",useCaptionI18NKeyAsPlaceHolderKey=true)
 				//		protected final TextField _txtMyField = new TextField();
@@ -493,20 +493,20 @@ public abstract class VaadinViews {
 				//				  MyViewObj.class);
 				//		}
 				//	}
-				//	Since the call to 
+				//	Since the call to
 				// 				VaadinViews.using(_i18n)
 				//						   .setI18NLabelsOf(this);
 				//	is done at the BASE type, the _txtMyField field IS NOT YET initialized!
 				//	... so it's NULL!!
-				//	ensure to call 
+				//	ensure to call
 				// 				VaadinViews.using(_i18n)
 				//						   .setI18NLabelsOf(this);
-				//	at the MyEditor constructor 
+				//	at the MyEditor constructor
 				if (vaadinComponent == null) continue;		// parent field on AbstractComponent
 
 				// [2] - Get the @R01UIViewComponentCaption annotation which contains the view component's caption (label)
 				//		 and place holder values
-				final VaadinViewComponentLabels labelsAnnot = viewCompField.getAnnotation(VaadinViewComponentLabels.class);
+				VaadinViewComponentLabels labelsAnnot = viewCompField.getAnnotation(VaadinViewComponentLabels.class);
 				if (labelsAnnot != null) {
 					String viewCompCaption =  i18n.getMessage(labelsAnnot.captionI18NKey());
 					String viewCompPlaceHolder = labelsAnnot.useCaptionI18NKeyAsPlaceHolderKey()
@@ -519,8 +519,8 @@ public abstract class VaadinViews {
 					_setViewComponentPlaceHolder(i18n,
 												 vaadinComponent,
 												 viewCompPlaceHolder);
-				} 
-				
+				}
+
 				// [3] - Style
 				_styleViewComponent(vaadinComponent);
 

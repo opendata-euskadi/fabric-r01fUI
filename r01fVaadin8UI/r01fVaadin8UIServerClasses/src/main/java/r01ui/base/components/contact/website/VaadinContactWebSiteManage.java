@@ -26,7 +26,7 @@ public class VaadinContactWebSiteManage
 		// user
 		_grid.addColumn(VaadinViewDirectoryContactWebSite::getUrl)
 			 .setCaption(i18n.getMessage("contact.web.url"))
-			 .setExpandRatio(0)
+			 .setExpandRatio(1)
 			 .setResizable(false)
 			 .setId("url");
 	}

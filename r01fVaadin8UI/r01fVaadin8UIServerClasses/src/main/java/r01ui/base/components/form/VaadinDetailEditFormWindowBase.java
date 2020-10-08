@@ -1,8 +1,12 @@
 package r01ui.base.components.form;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -45,7 +49,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * The edit form layer
+	 * The edit form layer 
 	 */
 	@Getter protected final VaadinDetailEditFormBase<V,F> _editForm;
 	
@@ -55,8 +59,16 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
 									  	  final F form,
 									  	  final Factory<V> viewObjFactory) {
+		this(i18n,
+			 form,viewObjFactory,
+			 false);	// not bottom sticky buttons
+	}
+	public VaadinDetailEditFormWindowBase(final UII18NService i18n,
+									  	  final F form,
+									  	  final Factory<V> viewObjFactory,
+									  	  final boolean bottomStickyButtons) {
 		_viewObjFactory = viewObjFactory;
-		
+
 		// ui
 		_editForm = new VaadinDetailEditFormBase<V,F>(i18n,
 												      form,
@@ -64,9 +76,24 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 							private static final long serialVersionUID = 7219012021409356071L;
 					};
 		_editForm.addCancelButtonClickListner(clickEvent -> this.close());
-		
-		this.setContent(new VerticalLayout(_editForm));		// wrap into a VerticalLayout to get a bit of margin
-		
+		if (bottomStickyButtons) {
+			VerticalLayout vl = new VerticalLayout();
+			vl.setSizeFull();
+			vl.setSpacing(false);
+			
+			Panel p = new Panel(_editForm);
+			p.setSizeFull();
+			p.addStyleName(ValoTheme.PANEL_BORDERLESS);
+			vl.addComponent(p);
+			vl.addComponent(new CssLayout(_editForm._btnAcepCancDelete));
+			vl.setComponentAlignment(vl.getComponent(vl.getComponentCount()-1), Alignment.MIDDLE_RIGHT);
+			
+			vl.setExpandRatio(p,1); 
+			
+			this.setContent(vl);		// wrap into a VerticalLayout to get a bit of margin
+		} else {
+			this.setContent(new VerticalLayout(_editForm));
+		}
 		// style window
 		this.center();
 		this.setModal(true);

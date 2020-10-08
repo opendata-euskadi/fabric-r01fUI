@@ -55,7 +55,7 @@ public class VaadinDownloadButton
 	@Getter @Setter private FileNameProvider _fileNameProvider;
 	
 	// override a vaadin's StreamResource used for download from a stream
-	private final StreamResource _streamResource = new StreamResource(// the stream source
+	protected final StreamResource _streamResource = new StreamResource(// the stream source
 																	  new StreamResource.StreamSource() {
 																				private static final long serialVersionUID = 3641967669172064511L;
 																		

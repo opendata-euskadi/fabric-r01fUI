@@ -32,7 +32,7 @@ public abstract class UII18NManagerBase
 		   implements UII18NService {
 
 	private static final long serialVersionUID = -6836336412769588264L;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -149,7 +149,7 @@ public abstract class UII18NManagerBase
 		return _getLanguageOf(this.getCurrentLocale());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public I18NBundleAccess getCurrentI18NBundleAccess() {
@@ -159,7 +159,7 @@ public abstract class UII18NManagerBase
 	public I18NBundleAccess getI18NBundleAccessFor(final Locale locale) {
 		return new I18NBundleAccess() {
 						private static final long serialVersionUID = 3423325910848819274L;
-						
+
 						@Override
 						public boolean hasKey(final OID key) {
 							return _hasKey(locale,
@@ -196,7 +196,7 @@ public abstract class UII18NManagerBase
 			   };
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE METHODS
+// 	PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private boolean _hasKey(final Locale locale,
 							final String key) {
@@ -206,7 +206,7 @@ public abstract class UII18NManagerBase
 													locale);
 			containsKey = bundle.containsKey(key);
 			if (containsKey) break;
-		} 
+		}
 		return containsKey;
 	}
 	private List<String> _keys(final Locale locale) {
@@ -223,7 +223,7 @@ public abstract class UII18NManagerBase
 							   final String key, final Object... args) {
 		// if the key starts with $! just return the key
 		if (key.startsWith("$!")) return key.substring(2);
-		
+
 		String outMessage = null;
 		for (final String i18nBundleName : _i18nBundleNames) {
 			try {
@@ -239,10 +239,10 @@ public abstract class UII18NManagerBase
 	}
 	private Map<String, String> _getMessagesWithKeysStartingWith(final Locale locale,
 																 final String keyPrefix) {
-		if (keyPrefix == null) throw new IllegalArgumentException("Cannot load bundle key: Missing key!");  
+		if (keyPrefix == null) throw new IllegalArgumentException("Cannot load bundle key: Missing key!");
 		Map<String,String> outMessages = new HashMap<String,String>();
 		for (String bundleName : _i18nBundleNames) {
-			// Load the resourceBundle and iterate for every key 
+			// Load the resourceBundle and iterate for every key
 			ResourceBundle bundle = _retrieveBundle(bundleName,
 													locale);
 			Enumeration<String> keys = bundle.getKeys();
@@ -315,7 +315,7 @@ public abstract class UII18NManagerBase
 									final String key,final Object... args) {
 		final ResourceBundle bundle = _retrieveBundle(i18nBundleName,
 													  locale);
-		String outMessage = bundle.getString(key); 
+		String outMessage = bundle.getString(key);
 		if (Strings.isNOTNullOrEmpty(outMessage)
 		 && CollectionUtils.hasData(args)) {
 			final MessageFormat msg = new MessageFormat(outMessage);

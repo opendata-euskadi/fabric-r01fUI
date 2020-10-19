@@ -143,6 +143,7 @@ public class VaadinMenuBar
 					   		
 							// [2] - Find an item with the given menu
 							VaadinMenuItem item = VaadinMenuBar.this.itemOf(selectedItem);
+							
 							if (item == null) throw new IllegalStateException();
 							item.setSelected();
 							
@@ -206,15 +207,14 @@ public class VaadinMenuBar
 			VaadinMenuItem outItem = null;
 			for (VaadinMenuItem item : _subItems) {
 				if (pred.apply(item)) {
-					outItem = item;
-					break;
+					return item;
 				}
 				for (VaadinMenuItem subItem : item.getSubItems()) {
 					outItem = subItem.itemOf(pred);		// BEWARE!! recursion
-					if (outItem != null) break;
+					if (outItem != null) return outItem;
 				}
 			}
-			return outItem;
+			return null;
 		}
 		public void setEnabled(final boolean enabled) {
 			_menuItem.setEnabled(enabled);

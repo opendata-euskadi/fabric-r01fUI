@@ -178,6 +178,7 @@ public abstract class VaadinDetailEditFormBase<V extends UIViewObject,
 		// set the buttons status
 		_btnAcepCancDelete.setEditingExistingRecordStatus();
 		
+		
 		// if no delete subscriber is handed, do NOT show the delete button
 		if (_deleteSubscriber == null) _btnAcepCancDelete.setDeleteButtonVisible(false);
 		this.setVisible(true);

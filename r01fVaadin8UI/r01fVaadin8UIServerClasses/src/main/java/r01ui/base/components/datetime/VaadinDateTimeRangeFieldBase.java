@@ -204,6 +204,18 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 		_dateLowerBound.setResolution(res);
 		_dateUperBound.setResolution(res);
 	}
+	public void setDateFormat(final String dateFormat) {
+		_dateLowerBound.setDateFormat(dateFormat);
+		_dateUperBound.setDateFormat(dateFormat);	
+	}
+	public void setDateOutOfRangeMessage(final String dateOutOfRangeMessage) {
+		_dateLowerBound.setDateOutOfRangeMessage(dateOutOfRangeMessage);
+		_dateUperBound.setDateOutOfRangeMessage(dateOutOfRangeMessage);
+	}
+	public void setParseErrorMessage(final String parsingErrorMessage) {
+		_dateLowerBound.setParseErrorMessage(parsingErrorMessage);
+		_dateUperBound.setParseErrorMessage(parsingErrorMessage);		
+	}
 ///////////////////////////////////////////////////////////////////////////////////////////
 //	PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////////

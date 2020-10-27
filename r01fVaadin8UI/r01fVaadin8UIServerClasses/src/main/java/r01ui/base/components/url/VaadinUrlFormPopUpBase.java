@@ -4,6 +4,7 @@ import r01f.patterns.Factory;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.weblink.IsUIViewUrl;
+import r01f.util.types.Strings;
 import r01ui.base.components.button.VaadinAcceptCancelDeleteButtons.VaadinAcceptCancelDeleteButton;
 import r01ui.base.components.form.VaadinDetailEditFormWindowBase;
 
@@ -38,7 +39,10 @@ public abstract class VaadinUrlFormPopUpBase<V extends IsUIViewUrl,
 		////////// styling
 		this.setHeight(85,Unit.PERCENTAGE);
 		this.setWidth(85,Unit.PERCENTAGE);
-		
+		this.setButtonsVisibleStatus(false,
+									 VaadinAcceptCancelDeleteButton.ACCEPT);
+		form.addUrlValueChangeListener(event -> this.setButtonsVisibleStatus(Strings.isNOTNullOrEmpty(event.getValue().asString()),
+									                                         VaadinAcceptCancelDeleteButton.ACCEPT));
 		////////// behavior
 		_setBehavior();
 	}

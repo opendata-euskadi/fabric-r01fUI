@@ -2,6 +2,7 @@ package r01ui.base.components;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.vaadin.data.HasDataProvider;
 import com.vaadin.data.HasFilterableDataProvider;
@@ -131,6 +132,7 @@ public abstract class VaadinListDataProviders {
 		public SELF_TYPE addNewItemAt(final T item,final int index);
 		public SELF_TYPE addNewItems(final Collection<T> newItems);
 		public SELF_TYPE removeItem(final T item);
+		public SELF_TYPE removeItemIf(final Predicate<T> pred);
 		public SELF_TYPE removeAll();
 		public SELF_TYPE replaceItem(final T replacedItem,final T replacingItem);
 		public <O extends OID> SELF_TYPE replaceItemWithOid(final O oid,
@@ -237,6 +239,15 @@ public abstract class VaadinListDataProviders {
 			this.getUnderlyingItemsCollection()
 				.remove(item);
 			// refresh 
+			this.getDataProvider()
+				.refreshAll();
+			return (SELF_TYPE)this;
+		}
+		@Override @SuppressWarnings("unchecked")
+		public SELF_TYPE removeItemIf(final Predicate<T> pred) {
+			this.getUnderlyingItemsCollection()
+			 	.removeIf(pred);
+			// refresh
 			this.getDataProvider()
 				.refreshAll();
 			return (SELF_TYPE)this;

@@ -86,7 +86,7 @@ public abstract class VaadinDetailEditFormWindowBase<V extends UIViewObject,
 			p.addStyleName(ValoTheme.PANEL_BORDERLESS);
 			vl.addComponent(p);
 			vl.addComponent(new CssLayout(_editForm._btnAcepCancDelete));
-			vl.setComponentAlignment(vl.getComponent(vl.getComponentCount()-1), Alignment.MIDDLE_RIGHT);
+			vl.setComponentAlignment(vl.getComponent(vl.getComponentCount()-1),Alignment.MIDDLE_RIGHT);
 			
 			vl.setExpandRatio(p,1); 
 			

@@ -145,6 +145,7 @@ public abstract class VaadinListDataProviders {
 		public SELF_TYPE moveItemDown(final T item);
 		public boolean canMoveItemUp(final T item);
 		public boolean canMoveItemDown(final T item);
+		public boolean containsItem(final T item);
 	}
 	private abstract class VaadinDataProviderAccessorBase<T,
 														  SELF_TYPE extends VaadinDataProviderAccessorBase<T,SELF_TYPE>> 
@@ -327,6 +328,11 @@ public abstract class VaadinListDataProviders {
 			int itemIndex = this.getItemIndex(item);
 			int itemCount = this.getUnderlyingItemsCollectionSize();
 			return itemIndex < (itemCount - 1);
+		}
+		@Override
+		public boolean containsItem(final T item) {
+			return this.getUnderlyingItemsCollection()
+					   .contains(item);
 		}
 	}
 }

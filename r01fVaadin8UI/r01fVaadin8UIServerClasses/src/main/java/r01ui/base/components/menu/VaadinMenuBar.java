@@ -219,6 +219,9 @@ public class VaadinMenuBar
 		public void setEnabled(final boolean enabled) {
 			_menuItem.setEnabled(enabled);
 		}
+		public void setVisible(final boolean visible) {
+			_menuItem.setVisible(visible);
+		}		
 		public void setSelected() {
 			_selected = true;
 			_menuItem.setStyleName(VaadinValoTheme.MENU_ITEM_CHECKED);

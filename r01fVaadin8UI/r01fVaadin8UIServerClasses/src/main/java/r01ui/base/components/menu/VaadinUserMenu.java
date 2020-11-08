@@ -99,12 +99,12 @@ public class VaadinUserMenu
 		_lblLastConnection = new Label();
 		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
 		
-		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
 								  					  securityContext != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
 								  							  					     .formatDateWithTimeToSeconds(securityContext.getCreateDate())  
 										  						   	    	  : "not known"));
 		ly.addComponent(_lblLastConnection);
-		_lblLanguageChange = new Label(i18n.getMessage("uiCommon.languageChange"));
+		_lblLanguageChange = new Label(i18n.getMessage("language.change"));
 		_lblLanguageChange.addStyleName(ValoTheme.LABEL_BOLD);
 		hlLangs.addComponent(_lblLanguageChange);
 		hlLangs.setExpandRatio(_lblLanguageChange,1);
@@ -115,7 +115,7 @@ public class VaadinUserMenu
 			ly.addComponent(hlLangs);
 		}
 		// sign out
-		_btnSignOut = new Button(i18n.getMessage("uiCommon.signout"),
+		_btnSignOut = new Button(i18n.getMessage("session.close"),
 									   VaadinIcons.SIGN_OUT);
 		
 		_btnSignOut.addStyleNames(ValoTheme.BUTTON_LINK,
@@ -278,9 +278,9 @@ public class VaadinUserMenu
 			VaadinViewI18NMessagesCanBeUpdated i18nAwareComp = (VaadinViewI18NMessagesCanBeUpdated)_component;
 			i18nAwareComp.updateI18NMessages(i18n);
 		}
-		_btnSignOut.setCaption(i18n.getMessage("uiCommon.signout"));
-		_lblLanguageChange.setValue(i18n.getMessage("uiCommon.languageChange"));
-		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("uiCommon.lastConnection"),
+		_btnSignOut.setCaption(i18n.getMessage("session.close"));
+		_lblLanguageChange.setValue(i18n.getMessage("language.change"));
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
 								  					  SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
 								  							  					     								 .formatDate(SecurityContextStoreAtThreadLocalStorage.get()
 								  							  					     										 											 .getCreateDate()

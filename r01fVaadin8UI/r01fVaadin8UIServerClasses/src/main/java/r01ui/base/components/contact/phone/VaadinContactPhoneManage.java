@@ -29,13 +29,15 @@ public class VaadinContactPhoneManage
 		// phone
 		_grid.addColumn(VaadinViewContactPhone::getNumber)
 			 .setCaption(i18n.getMessage("contact.phone.number"))
-			 .setExpandRatio(1)
+			 .setExpandRatio(0)
+			 .setMinimumWidth(150)
 			 .setResizable(false)
 			 .setId("number");
 		// type
 		_grid.addColumn(VaadinViewContactPhone::getType)
 			 .setCaption(i18n.getMessage("contact.phone.type"))
-			 .setExpandRatio(1)
+			 .setExpandRatio(0)
+			 .setMinimumWidth(150)
 			 .setResizable(false)
 			 .setId("type");
 		// availability range
@@ -43,7 +45,7 @@ public class VaadinContactPhoneManage
 			 .setRenderer(VaadinViewContactPhone::availableRangeAsString,
 					 	  new HtmlRenderer(""))
 			 .setCaption(i18n.getMessage("contact.phone.available"))
-			 .setExpandRatio(0)
+			 .setExpandRatio(1)
 			 .setResizable(false)
 			 .setId("availability");
 	}

@@ -87,6 +87,7 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 				.setEditorBinding(usageBinding)
 				.setCaption(i18n.getMessage("contact.mean.usage"))
 				.setExpandRatio(0)
+				.setMinimumWidth(150)
 				.setResizable(false)
 				.setId("usage");
 		 // default
@@ -95,6 +96,7 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 				.setEditorBinding(defaultBindig)
 			   	.setCaption(i18n.getMessage("contact.mean.default"))
 			   	.setExpandRatio(0)
+			   	.setMinimumWidth(100)
 			   	.setResizable(false)
 			   	.setId("default");
 		 // private
@@ -103,6 +105,7 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 				.setEditorBinding(privateBindig)
 				.setCaption(i18n.getMessage("contact.mean.private"))
 				.setExpandRatio(0)
+				.setMinimumWidth(100)
 				.setResizable(false)
 				.setId("private");
 

@@ -624,7 +624,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 															  											   .contains(viewObjToCreate);
 
 												   					if (exits) {
-												   						Notification.show(_i18n.getMessage("uiCommon.elto.exists"), Type.WARNING_MESSAGE);
+												   						Notification.show(_i18n.getMessage("collection.item.already-exists"), Type.WARNING_MESSAGE);
 												   					} else {
 																  		VaadinListDataProviders.collectionBackedOf(_grid)
 													   										   .addNewItem(createdViewObj);

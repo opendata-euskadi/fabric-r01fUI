@@ -58,7 +58,8 @@ public class VaadinToggleButton
 	public void addClickListener(final ClickListener listener) {
 		_btnToggle.addClickListener(clickEvent -> {
 									this.setValue(!_value);
-									listener.buttonClick(clickEvent);
+									if (listener != null)
+										listener.buttonClick(clickEvent);
 								 });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

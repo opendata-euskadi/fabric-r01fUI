@@ -26,7 +26,7 @@ public abstract class VaadinViewFactories {
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Interface for factory types
-	 * @param <T> the type neede to create the view
+	 * @param <T> the type needed to create the view
 	 * @param <V> the view type to create
 	 */
 	public interface VaadinViewFactoryFrom<T,V extends Component> {

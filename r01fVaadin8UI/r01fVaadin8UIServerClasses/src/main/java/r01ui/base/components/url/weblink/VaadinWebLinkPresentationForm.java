@@ -138,6 +138,13 @@ public class VaadinWebLinkPresentationForm<P extends IsUIViewWebLinkPresentation
 	public void setOpeiningInNewWindow(final boolean val) {
 		_chkOpenNewWindow.setValue(val);
 	}
+	
+	@Override
+	public void setEnabled(final boolean isEnabled) {
+		_txtLinkText.setEnabled(isEnabled);
+		_txtLinkDescription.setEnabled(isEnabled);
+		_chkOpenNewWindow.setEnabled(isEnabled);
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LISTENERS
 /////////////////////////////////////////////////////////////////////////////////////////

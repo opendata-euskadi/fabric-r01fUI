@@ -36,5 +36,11 @@ public class VaadinContactSocialNetworkManage
 			 .setExpandRatio(1)
 			 .setResizable(false)
 			 .setId("user");
+		// profile
+		_grid.addColumn(VaadinViewContactSocialNetwork::getProfileUrl)
+			 .setCaption(i18n.getMessage("contact.socialNetwork.profile.url"))
+			 .setExpandRatio(1)
+			 .setResizable(false)
+			 .setId("profileUrl");
 	}
 }

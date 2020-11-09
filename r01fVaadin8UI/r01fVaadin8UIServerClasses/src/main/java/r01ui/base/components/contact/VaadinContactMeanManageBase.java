@@ -86,7 +86,7 @@ public abstract class VaadinContactMeanManageBase<V extends VaadinContactMeanObj
 		_grid.addColumn(viewObj -> viewObj.getUsage() != null ? viewObj.getUsage().nameUsing(i18n) : null)
 				.setEditorBinding(usageBinding)
 				.setCaption(i18n.getMessage("contact.mean.usage"))
-				.setExpandRatio(1)
+				.setExpandRatio(0)
 				.setResizable(false)
 				.setId("usage");
 		 // default

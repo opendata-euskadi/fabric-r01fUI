@@ -156,7 +156,17 @@ public abstract class VaadinUIHeaderBase
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@SuppressWarnings("unchecked")
+	public <C extends Component> C getLeftComponent() {
+		return (C)_leftComponent;
+	}
+	public VaadinTranslatableLabel getTitle() {
+		return _lblTitle;
+	}
+	public VaadinUserMenu getUserMenu() {
+		return _userMenu;
+	}
 	@Override 
 	protected HorizontalLayout getCompositionRoot() {
 		return (HorizontalLayout)super.getCompositionRoot();

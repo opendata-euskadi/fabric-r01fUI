@@ -52,7 +52,6 @@ import r01ui.base.components.menu.VaadinMenuBar;
 public class VaadinUIHeader
 	 extends VaadinUIHeaderBase {
 	
-
 	private static final long serialVersionUID = 2584139654619115128L;
 	
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -57,7 +57,7 @@ public class VaadinProceedGateDialogWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final I18NKey _i18nKeyForCaption; 
 	private final I18NKey _i18nKeyForMessage;
-	private Object[] _paramsForMessage;
+	private final Object[] _paramsForMessage;
 	private I18NKey _i18nKeyForBtnProceed = I18NKey.forId("yes");
 	private I18NKey _i18nKeyForBtnNOTProceed = I18NKey.forId("no");
 	
@@ -106,12 +106,11 @@ public class VaadinProceedGateDialogWindow
 									     final R01UIProceedGateCancel cancel,
 									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this(i18n,
-			i18nKeyForCaption,
-			i18nKeyForMessage,
+			i18nKeyForCaption,i18nKeyForMessage,
 			proceed,
 			cancel,
 			puzzleCheck,
-			null);
+			(Object[])null);
 	}
 	
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
@@ -148,7 +147,7 @@ public class VaadinProceedGateDialogWindow
 		
 		_lblWindowMessage.setValue(_paramsForMessage == null
 									 ? i18n.getMessage(_i18nKeyForMessage)
-									 : i18n.getMessage(_i18nKeyForMessage, _paramsForMessage));
+									 : i18n.getMessage(_i18nKeyForMessage,_paramsForMessage));
 		_lblWindowMessage.setContentMode(ContentMode.HTML);
 		
 		// buttons

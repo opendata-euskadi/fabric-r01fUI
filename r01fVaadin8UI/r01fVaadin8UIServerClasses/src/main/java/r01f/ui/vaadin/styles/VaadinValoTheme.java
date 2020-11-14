@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public abstract class VaadinValoTheme 
 			  extends ValoTheme {
 /////////////////////////////////////////////////////////////////////////////////////////
-// STYLES CONSTANTS
+// 	STYLES CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String CUSTOM_WINDOW = "r01ui-window";
 	public static final String CREATE_EDIT_WINDOW = "r01ui-create-edit-detail-view";
@@ -48,6 +48,8 @@ public abstract class VaadinValoTheme
 	public static final String LABEL_AND_ADD_BUTTON = "lbl-add-button";
 	public static final String LABEL_WITH_ICON = "label-with-icon";
 	
+	
+	public static final String GRID_NO_CELL_HEADERS = "r01ui-grid-no-cell-headers";
 	public static final String GRID_COMPONENT = "r01ui-object-grid-component";
 	public static final String GRID_STRIPPED = "stripes";
 	public static final String GRID_NO_BORDER = "r01ui-grid-no-border";

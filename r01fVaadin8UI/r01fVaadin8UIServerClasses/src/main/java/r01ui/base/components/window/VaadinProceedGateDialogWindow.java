@@ -203,15 +203,23 @@ public class VaadinProceedGateDialogWindow
 		  .addWindow(this);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	BUTTONS & MESSAGES 
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void setMessage(final String message) {
 		_lblWindowMessage.setValue(message);
+	}
+	public void setupProceedButtonWith(final I18NKey proceedBtnI18NKey) {
+		this.setupProceedButtonWith(proceedBtnI18NKey,
+									null);		// no icon
 	}
 	public void setupProceedButtonWith(final I18NKey proceedBtnI18NKey,
 									   final Resource proceedBtnIcon) {
 		_i18nKeyForBtnProceed = proceedBtnI18NKey;
 		_btnProceed.setIcon(proceedBtnIcon);
+	}
+	public void setupNOTProceedButtonWith(final I18NKey notProceedBtnI18NKey) {
+		this.setupNOTProceedButtonWith(notProceedBtnI18NKey,
+									   null);	// no icon
 	}
 	public void setupNOTProceedButtonWith(final I18NKey notProceedBtnI18NKey,
 										  final Resource notProceedBtnIcon) {

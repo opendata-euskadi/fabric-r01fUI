@@ -248,8 +248,12 @@ public class VaadinMenuBar
 								_createVaadinNavigateCommand(viewId,navParams));
 		}
 		public VaadinMenuItemBuilderI18NStep addItem(final I18NKey key) {
-			return this.addItem(key,
+			return this.addItem(key,null,
 								null);		// no command
+		}
+		public VaadinMenuItemBuilderI18NStep addItem(final I18NKey key,final Resource icon) {
+			return this.addItem(key,icon,	// no icon
+								null);
 		}
 		public VaadinMenuItemBuilderI18NStep addItem(final I18NKey key,
 									  				 final MenuBar.Command command) {

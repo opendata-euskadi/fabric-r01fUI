@@ -100,18 +100,6 @@
 		   <version>1.0.2</version>
 		</dependency>
 		-->
-
-		<!-- ///////////////////////////////////////// -->
-		<!-- ServletAPI                                -->
-		<!-- ///////////////////////////////////////// -->
-		<!-- BEWARE! it's SCOPE is PROVIDED so it has to be defined
-			     	 where this dep is used -->
-		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
-		    <version>4.0.1</version>
-		    <scope>provided</scope>		<!-- BEWARE!!! -->
-		</dependency>
 	</dependencies>
 	
 <!-- ====================================================================== -->

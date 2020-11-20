@@ -41,7 +41,7 @@ public abstract class VaadinUrlFormPopUpBase<V extends IsUIViewUrl,
 		this.setWidth(85,Unit.PERCENTAGE);
 		this.setButtonsVisibleStatus(false,
 									 VaadinAcceptCancelDeleteButton.ACCEPT);
-		form.addUrlValueChangeListener(event -> this.setButtonsVisibleStatus(Strings.isNOTNullOrEmpty(event.getValue().asString()),
+		form.addUrlValueChangeListener(event -> this.setButtonsVisibleStatus(event.getValue() != null && Strings.isNOTNullOrEmpty(event.getValue().asString()),
 									                                         VaadinAcceptCancelDeleteButton.ACCEPT));
 		////////// behavior
 		_setBehavior();

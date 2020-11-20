@@ -5,9 +5,8 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.UserCode;
-import r01f.model.security.oids.SecurityOIDs.UserOID;
 import r01f.model.security.user.User;
+import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.types.contact.ContactInfo;
 import r01f.types.contact.ContactInfoUsage;
 import r01f.types.contact.ContactMail;
@@ -35,14 +34,6 @@ public abstract class VaadinViewUser<U extends User>
 	public static final String OID_FIELD = "oid";
 	public UserOID getOid() {
 		return _wrappedModelObject.getOid();
-	}
-	
-	public static final String USER_CODE_FIELD = "userCode";
-	public UserCode getUserCode() {
-		return _wrappedModelObject.getUserCode();
-	}
-	public void setUserCode(final UserCode userCode) {
-		_wrappedModelObject.setUserCode(userCode);
 	}
 	
 	public static final String PERSON_ID_FIELD = "personId";
@@ -176,11 +167,7 @@ public abstract class VaadinViewUser<U extends User>
 		boolean oidEqs = this.getOid() != null ? this.getOid().is(vObj.getOid())
 									 		   : vObj.getOid() != null ? false
 											 				 		   : true;	// both null
-		if (!oidEqs) return false;
-		boolean userCodeEqs = this.getUserCode() != null ? this.getUserCode().is(vObj.getUserCode())
-														 : vObj.getUserCode() != null ? false
-																 					  : true;	// both null
-		return userCodeEqs;
+		return oidEqs;
 	}
 	@Override
 	public int hashCode() {

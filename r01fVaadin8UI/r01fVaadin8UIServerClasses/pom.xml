@@ -87,7 +87,7 @@
 		    <groupId>com.vaadin</groupId>
 		    <artifactId>vaadin-themes</artifactId>
 		</dependency>
-		
+
 		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin Add-ons                            -->
 		<!-- ///////////////////////////////////////// -->
@@ -107,13 +107,14 @@
 		<!-- BEWARE! it's SCOPE is PROVIDED so it has to be defined
 			     	 where this dep is used -->
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
-		    <version>4.0.1</version>
-		    <scope>provided</scope>		<!-- BEWARE!!! -->
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>		<!-- BEWARE!!! -->
 		</dependency>
+
 	</dependencies>
-	
+
 <!-- ====================================================================== -->
 <!-- BUILD                                                                  -->
 <!-- ====================================================================== -->
@@ -131,7 +132,7 @@
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
-					<configuration> 
+					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
 								<!-- flatten plugin -->

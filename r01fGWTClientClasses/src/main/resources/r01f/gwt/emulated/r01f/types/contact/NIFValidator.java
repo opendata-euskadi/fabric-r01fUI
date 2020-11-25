@@ -5,12 +5,12 @@ import r01f.validation.ObjectValidationResultBuilder;
 import r01f.validation.Validates;
 
 public class NIFValidator
-  implements Validates<NIFPersonID> {
+  implements Validates<PersonID> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public ObjectValidationResult<NIFPersonID> validate(final NIFPersonID nif) {
+	public ObjectValidationResult<PersonID> validate(final PersonID nif) {
 		boolean nifValid = _validateNif(nif);
 		return nifValid ? ObjectValidationResultBuilder.on(nif)
 													   .isValid()
@@ -20,23 +20,23 @@ public class NIFValidator
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////	
-	public boolean _validateNif(final NIFPersonID nif) {
+	public boolean _validateNif(final PersonID nif) {
 		String nifStr = nif.asString();
 
-		String letraMayuscula = ""; // Guardar la letra introducida en formato mayúscula
+		String letraMayuscula = ""; // Guardar la letra introducida en formato mayï¿½scula
 
-		// Aquí excluimos cadenas distintas a 9 caracteres que debe tener un dni y
-		// también si el último caracter no es una letra
+		// Aquï¿½ excluimos cadenas distintas a 9 caracteres que debe tener un dni y
+		// tambiï¿½n si el ï¿½ltimo caracter no es una letra
 		if (nifStr.length() != 9 || Character.isLetter(nifStr.charAt(8)) == false) {
 			return false;
 		}
 
-		// Al superar la primera restricción, la letra la pasamos a mayúscula
+		// Al superar la primera restricciï¿½n, la letra la pasamos a mayï¿½scula
 		letraMayuscula = (nifStr.substring(8)).toUpperCase();
 
-		// Por último validamos que sólo tengo 8 dígitos entre los 8 primeros caracteres
-		// y que la letra introducida es igual a la de la ecuación
-		// Llamamos a los métodos privados de la clase soloNumeros() y letraDNI()
+		// Por ï¿½ltimo validamos que sï¿½lo tengo 8 dï¿½gitos entre los 8 primeros caracteres
+		// y que la letra introducida es igual a la de la ecuaciï¿½n
+		// Llamamos a los mï¿½todos privados de la clase soloNumeros() y letraDNI()
 		if (_onlyNumbers(nifStr) == true && _dniLetter(nifStr).equals(letraMayuscula)) {
 			return true;
 		} else {
@@ -46,9 +46,9 @@ public class NIFValidator
 
 	private boolean _onlyNumbers(final String nifStr) {
 		int i, j = 0;
-		String numero = ""; // Es el número que se comprueba uno a uno por si hay alguna letra entre los 8
-							// primeros dígitos
-		String miDNI = ""; // Guardamos en una cadena los números para después calcular la letra
+		String numero = ""; // Es el nï¿½mero que se comprueba uno a uno por si hay alguna letra entre los 8
+							// primeros dï¿½gitos
+		String miDNI = ""; // Guardamos en una cadena los nï¿½meros para despuï¿½s calcular la letra
 		String[] unoNueve = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 		for (i = 0; i < nifStr.length() - 1; i++) {
@@ -68,7 +68,7 @@ public class NIFValidator
 		}
 	}
 	private String _dniLetter(final String nifStr) {
-		// El método es privado porque lo voy a usar internamente en esta clase, no se
+		// El mï¿½todo es privado porque lo voy a usar internamente en esta clase, no se
 		// necesita fuera de ella
 
 		// pasar miNumero a integer

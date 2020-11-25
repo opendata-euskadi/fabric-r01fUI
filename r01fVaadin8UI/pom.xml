@@ -27,5 +27,6 @@
 		<module>r01fVaadin8UIServerClasses</module>
 		<module>r01fVaadin8UIClientClasses</module>
 		<module>r01fVaadin8UITinyEditorAddOnClasses</module>
-	</modules>
+    <module>r01fVaadin8UISecurityClasses</module>
+  </modules>
 </project>

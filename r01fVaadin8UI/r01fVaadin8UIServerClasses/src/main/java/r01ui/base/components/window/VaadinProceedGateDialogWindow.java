@@ -57,7 +57,7 @@ public class VaadinProceedGateDialogWindow
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final I18NKey _i18nKeyForCaption; 
 	private final I18NKey _i18nKeyForMessage;
-	private Object[] _paramsForMessage;
+	private final Object[] _paramsForMessage;
 	private I18NKey _i18nKeyForBtnProceed = I18NKey.forId("yes");
 	private I18NKey _i18nKeyForBtnNOTProceed = I18NKey.forId("no");
 	
@@ -106,12 +106,11 @@ public class VaadinProceedGateDialogWindow
 									     final R01UIProceedGateCancel cancel,
 									     final R01UIProceedPuzzleCheck puzzleCheck) {
 		this(i18n,
-			i18nKeyForCaption,
-			i18nKeyForMessage,
+			i18nKeyForCaption,i18nKeyForMessage,
 			proceed,
 			cancel,
 			puzzleCheck,
-			null);
+			(Object[])null);
 	}
 	
 	public VaadinProceedGateDialogWindow(final UII18NService i18n,
@@ -148,7 +147,7 @@ public class VaadinProceedGateDialogWindow
 		
 		_lblWindowMessage.setValue(_paramsForMessage == null
 									 ? i18n.getMessage(_i18nKeyForMessage)
-									 : i18n.getMessage(_i18nKeyForMessage, _paramsForMessage));
+									 : i18n.getMessage(_i18nKeyForMessage,_paramsForMessage));
 		_lblWindowMessage.setContentMode(ContentMode.HTML);
 		
 		// buttons
@@ -204,15 +203,23 @@ public class VaadinProceedGateDialogWindow
 		  .addWindow(this);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	BUTTONS & MESSAGES 
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void setMessage(final String message) {
 		_lblWindowMessage.setValue(message);
+	}
+	public void setupProceedButtonWith(final I18NKey proceedBtnI18NKey) {
+		this.setupProceedButtonWith(proceedBtnI18NKey,
+									null);		// no icon
 	}
 	public void setupProceedButtonWith(final I18NKey proceedBtnI18NKey,
 									   final Resource proceedBtnIcon) {
 		_i18nKeyForBtnProceed = proceedBtnI18NKey;
 		_btnProceed.setIcon(proceedBtnIcon);
+	}
+	public void setupNOTProceedButtonWith(final I18NKey notProceedBtnI18NKey) {
+		this.setupNOTProceedButtonWith(notProceedBtnI18NKey,
+									   null);	// no icon
 	}
 	public void setupNOTProceedButtonWith(final I18NKey notProceedBtnI18NKey,
 										  final Resource notProceedBtnIcon) {

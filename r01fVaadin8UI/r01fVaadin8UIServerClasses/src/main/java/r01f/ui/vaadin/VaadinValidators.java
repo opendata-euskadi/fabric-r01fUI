@@ -20,9 +20,9 @@ public abstract class VaadinValidators {
 	   	 	 implements Validator<String> {
 
 		private static final long serialVersionUID = -6088142603048630416L;
-
+		
 		private final UII18NService _i18n;
-
+		
 		@Override
 		public ValidationResult apply(final String value,
 									  final ValueContext context) {

@@ -13,7 +13,10 @@ import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DateTimeField;
 import com.vaadin.ui.HorizontalLayout;
 
+import r01f.locale.Language;
 import r01f.patterns.Factory;
+import r01f.ui.i18n.UII18NService;
+import r01f.util.types.Dates;
 import r01f.util.types.Ranges;
 
 /**
@@ -203,6 +206,13 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 	public void setResolution(final R res) {
 		_dateLowerBound.setResolution(res);
 		_dateUperBound.setResolution(res);
+	}
+	public void setDateFormatInLang(final UII18NService i18n) {
+		String dateFormat = i18n.getCurrentLanguage().isIn(Language.SPANISH) 
+							? Dates.ES_DEFAULT_FORMAT 
+							: Dates.EU_DEFAULT_FORMAT;
+		_dateLowerBound.setDateFormat(dateFormat);
+		_dateUperBound.setDateFormat(dateFormat);	
 	}
 	public void setDateFormat(final String dateFormat) {
 		_dateLowerBound.setDateFormat(dateFormat);

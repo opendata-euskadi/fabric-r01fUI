@@ -19,20 +19,20 @@ public abstract class VaadinContactMeanValidators {
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@RequiredArgsConstructor
 	public static class VaadinPhoneValidator
-	   	      implements Validator<String> {
+	   	     implements Validator<Phone> {
 
 		private static final long serialVersionUID = -6088142603048630416L;
 
 		private final UII18NService _i18n;
 
 		@Override
-		public ValidationResult apply(final String value,
+		public ValidationResult apply(final Phone phone,
 									  final ValueContext context) {
-			if (Strings.isNullOrEmpty(value)) return ValidationResult.error(_i18n.getMessage("user.login.registry.validation.phone.mandatory"));
+			if (phone == null || Strings.isNullOrEmpty(phone.asString())) return ValidationResult.error(_i18n.getMessage("user.login.registry.validation.phone.mandatory"));
 
 			// beware!! this is called for every keystroke on the text field
-			return VaadinContactMeanValidators.isValidPhones(value) ? ValidationResult.ok()
-																	: ValidationResult.error(_i18n.getMessage("user.login.registry.validation.phone"));
+			return phone.isValid() ? ValidationResult.ok()
+								   : ValidationResult.error(_i18n.getMessage("user.login.registry.validation.phone"));
 		}
 	}
 	public static boolean isValidPhones(final String value) {
@@ -49,20 +49,20 @@ public abstract class VaadinContactMeanValidators {
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@RequiredArgsConstructor
 	public static class VaadinEMailValidator
-	   	 	 implements Validator<String> {
+	   	 	 implements Validator<EMail> {
 
 		private static final long serialVersionUID = -6088142603048630416L;
 
 		private final UII18NService _i18n;
 
 		@Override
-		public ValidationResult apply(final String value,
+		public ValidationResult apply(final EMail email,
 									  final ValueContext context) {
-			if (Strings.isNullOrEmpty(value)) return ValidationResult.error(_i18n.getMessage("user.login.registry.validation.email.mandatory"));
+			if (email == null || Strings.isNullOrEmpty(email.asString())) return ValidationResult.error(_i18n.getMessage("user.login.registry.validation.email.mandatory"));
 
 			// beware!! this is called for every keystroke on the text field
-			return VaadinContactMeanValidators.isValidEmails(value) ? ValidationResult.ok()
-																	: ValidationResult.error(_i18n.getMessage("user.login.registry.validation.email"));
+			return email.isValid() ? ValidationResult.ok()
+								   : ValidationResult.error(_i18n.getMessage("user.login.registry.validation.email"));
 		}
 	}
 	public static boolean isValidEmails(final String value) {

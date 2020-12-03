@@ -23,20 +23,20 @@ public class NIFValidator
 	public boolean _validateNif(final PersonID nif) {
 		String nifStr = nif.asString();
 
-		String letraMayuscula = ""; // Guardar la letra introducida en formato may�scula
+		String letraMayuscula = ""; // Guardar la letra introducida en formato mayscula
 
-		// Aqu� excluimos cadenas distintas a 9 caracteres que debe tener un dni y
-		// tambi�n si el �ltimo caracter no es una letra
+		// Aqu excluimos cadenas distintas a 9 caracteres que debe tener un dni y
+		// tambin si el ltimo caracter no es una letra
 		if (nifStr.length() != 9 || Character.isLetter(nifStr.charAt(8)) == false) {
 			return false;
 		}
 
-		// Al superar la primera restricci�n, la letra la pasamos a may�scula
+		// Al superar la primera restriccin, la letra la pasamos a mayscula
 		letraMayuscula = (nifStr.substring(8)).toUpperCase();
 
-		// Por �ltimo validamos que s�lo tengo 8 d�gitos entre los 8 primeros caracteres
-		// y que la letra introducida es igual a la de la ecuaci�n
-		// Llamamos a los m�todos privados de la clase soloNumeros() y letraDNI()
+		// Por ltimo validamos que slo tengo 8 dgitos entre los 8 primeros caracteres
+		// y que la letra introducida es igual a la de la ecuacin
+		// Llamamos a los mtodos privados de la clase soloNumeros() y letraDNI()
 		if (_onlyNumbers(nifStr) == true && _dniLetter(nifStr).equals(letraMayuscula)) {
 			return true;
 		} else {
@@ -46,9 +46,9 @@ public class NIFValidator
 
 	private boolean _onlyNumbers(final String nifStr) {
 		int i, j = 0;
-		String numero = ""; // Es el n�mero que se comprueba uno a uno por si hay alguna letra entre los 8
-							// primeros d�gitos
-		String miDNI = ""; // Guardamos en una cadena los n�meros para despu�s calcular la letra
+		String numero = ""; // Es el nmero que se comprueba uno a uno por si hay alguna letra entre los 8
+							// primeros dgitos
+		String miDNI = ""; // Guardamos en una cadena los nmeros para despus calcular la letra
 		String[] unoNueve = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 		for (i = 0; i < nifStr.length() - 1; i++) {
@@ -68,7 +68,7 @@ public class NIFValidator
 		}
 	}
 	private String _dniLetter(final String nifStr) {
-		// El m�todo es privado porque lo voy a usar internamente en esta clase, no se
+		// El mtodo es privado porque lo voy a usar internamente en esta clase, no se
 		// necesita fuera de ella
 
 		// pasar miNumero a integer

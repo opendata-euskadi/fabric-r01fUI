@@ -1,7 +1,7 @@
 /**
  * Created on 15/07/2014
  *
- * @author iayerbeg - I�aki Ayerbe
+ * @author iayerbeg - Iaki Ayerbe
  * (c) 2014 EJIE: Eusko Jaurlaritzako Informatika Elkartea
  */
 package r01f.ui.vaadin.i18n;

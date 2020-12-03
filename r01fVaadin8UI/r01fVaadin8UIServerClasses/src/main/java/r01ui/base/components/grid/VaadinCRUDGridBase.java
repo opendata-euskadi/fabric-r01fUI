@@ -228,6 +228,8 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 	protected final Button _btnDown;
 
 	protected final VaadinDetailEditForm<V> _detailEditForm;
+	
+	protected final HorizontalLayout _lyButtons;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	STATE
@@ -337,10 +339,10 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 		CssLayout lyWrap = new CssLayout(_lyButtonsEditRemove,_lyButtonsUpDown);
 
 		// [create] |        [edit] | [remove] | [up] | [down]
-		HorizontalLayout lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyWrap);
-		lyButtons.setWidthFull();
-		lyButtons.setMargin(new MarginInfo(false,false,true,false));	// top | right | bottom | left
-		lyButtons.setComponentAlignment(lyWrap,
+		_lyButtons = new HorizontalLayout(_lblCaption,_btnCreate,lyWrap);
+		_lyButtons.setWidthFull();
+		_lyButtons.setMargin(new MarginInfo(false,false,true,false));	// top | right | bottom | left
+		_lyButtons.setComponentAlignment(lyWrap,
 										Alignment.BOTTOM_RIGHT);
 
 		////////// Form
@@ -349,7 +351,7 @@ abstract class VaadinCRUDGridBase<V extends UIViewObject>		// The view object
 
 		////////// Layout
 		Component rootComp = _initComponentContent(_lblCaption,
-												   lyButtons,
+												   _lyButtons,
 												   _grid);
 		this.setCompositionRoot(rootComp);
 

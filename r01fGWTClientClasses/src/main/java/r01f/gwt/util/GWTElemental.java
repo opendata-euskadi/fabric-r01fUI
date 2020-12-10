@@ -61,7 +61,7 @@ public class GWTElemental {
 	public static void disableInputs(final Collection<InputElement> inputEls) {
 		if (CollectionUtils.isNullOrEmpty(inputEls)) return;
 		for (InputElement inputEl : inputEls) {
-			inputEl.setChecked(false);	// ?¿ this is NOT the same as getValue
+			inputEl.setChecked(false);	// ? this is NOT the same as getValue
 			inputEl.setDisabled(true);
 		}
 	}
@@ -72,7 +72,7 @@ public class GWTElemental {
 	public static void enableInputs(final Collection<InputElement> inputEls) {
 		if (CollectionUtils.isNullOrEmpty(inputEls)) return;
 		for (InputElement inputEl : inputEls) {
-			inputEl.setChecked(true);	// ?¿ this is NOT the same as getValue
+			inputEl.setChecked(true);	// ? this is NOT the same as getValue
 			inputEl.setDisabled(false);
 		}
 	}

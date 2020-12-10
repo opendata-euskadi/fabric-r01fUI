@@ -164,11 +164,10 @@ public class VaadinUserMenu
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	private Button _createUserInfo(final UII18NService i18n,
-								   final SecurityContext securityContext) {
-		String userName = securityContext != null ? securityContext.getUserCode() != null 
-														? securityContext.getUserCode().asString()
-														: null
+	private static Button _createUserInfo(final UII18NService i18n,
+								   		  final SecurityContext securityContext) {
+		String userName = securityContext != null ? securityContext.asForUser()
+																   .getDisplayName()
 												  : null;
 		userName = userName != null ? userName
 									: i18n.getMessage("unknown_user");

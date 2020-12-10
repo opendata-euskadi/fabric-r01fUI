@@ -424,7 +424,7 @@ public class TreeViewItem<T extends CanBePainted>
 		_paintChildren(this,		// parent item
 					   paintables,	// the child items
 					   _viewObjectToWidgetTransformer);
-		// TODO informar al widget de que se le han a�adido hijos...
+		// TODO informar al widget de que se le han aadido hijos...
 	}
 	private static <T extends CanBePainted> TreeViewItem<T> _findItemFor(final Collection<TreeViewItem<T>> children,
 											 							 final T paintable) {

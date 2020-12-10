@@ -8,6 +8,7 @@ import com.vaadin.ui.Notification;
 import lombok.Getter;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
@@ -29,30 +30,23 @@ public abstract class VaadinUserFormBase<U extends User,V extends VaadinViewUser
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
-	
+			protected final Class<V> _viewObjType;
 	@Getter protected final Binder<V> _vaadinUIBinder;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUserFormBase(final Class<V> viewObjType,
-						  final UII18NService i18n) {
+						  	  final UII18NService i18n) {
 		////////// services
 		_i18n = i18n;
+		_viewObjType = viewObjType;
 		
 		_vaadinUIBinder = new Binder<>(viewObjType);
-		
-		//////////// Build the ui
-		Component ui = _buildUI(i18n);
-		this.setCompositionRoot(ui);
-		
-		//////////// set ui labels
-		VaadinViews.using(i18n)
-				   .setI18NLabelsOf(this);
-		
-		////////// Bind
-		VaadinViews.using(_vaadinUIBinder,i18n)
+	}
+	protected void _bindFormUIControls() {
+		VaadinViews.using(_vaadinUIBinder,_i18n)
 	 			   .bindComponentsOf(this)
-	 			   .toViewObjectOfType(viewObjType);
+	 			   .toViewObjectOfType(_viewObjType);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
@@ -104,5 +98,13 @@ public abstract class VaadinUserFormBase<U extends User,V extends VaadinViewUser
 		if (Strings.isNullOrEmpty(confirmPassword)) return false;
 		
 		return password.equals(confirmPassword);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	I18N
+/////////////////////////////////////////////////////////////////////////////////////////	
+	@Override
+	public void updateI18NMessages(final UII18NService i18n) {
+		VaadinViews.using(_i18n)
+				   .setI18NLabelsOf(this);
 	}
 }

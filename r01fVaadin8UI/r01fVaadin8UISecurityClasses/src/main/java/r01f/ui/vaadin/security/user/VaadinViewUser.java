@@ -1,13 +1,14 @@
-package r01ui.base.components.user;
+package r01f.ui.vaadin.security.user;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.UserCode;
-import r01f.model.security.oids.SecurityOIDs.UserOID;
 import r01f.model.security.user.User;
+import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.types.contact.ContactInfo;
 import r01f.types.contact.ContactInfoUsage;
 import r01f.types.contact.ContactMail;
@@ -30,21 +31,21 @@ public abstract class VaadinViewUser<U extends User>
 		super(user);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	USER SOURCE
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * The directory from which this user was loaded (if any)
+	 * useful when picking uses and the source directory is used in other layers
+	 */
+	@Getter @Setter private VaadinSecurityUserDirectory _sourceUserDirectory;
+/////////////////////////////////////////////////////////////////////////////////////////
 //	OID & USER CODE
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String OID_FIELD = "oid";
 	public UserOID getOid() {
 		return _wrappedModelObject.getOid();
 	}
-	
-	public static final String USER_CODE_FIELD = "userCode";
-	public UserCode getUserCode() {
-		return _wrappedModelObject.getUserCode();
-	}
-	public void setUserCode(final UserCode userCode) {
-		_wrappedModelObject.setUserCode(userCode);
-	}
-	
+
 	public static final String PERSON_ID_FIELD = "personId";
 	public PersonID getPersonId() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getPersonalData().getPersonId()
@@ -55,8 +56,16 @@ public abstract class VaadinViewUser<U extends User>
 		_wrappedModelObject.getPersonalData().setPersonId(personId);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	DESCRIPTION
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Used when presenting an user's summary in places like grids
+	 * @return
+	 */
+	public abstract String getDescription();
+/////////////////////////////////////////////////////////////////////////////////////////
 //	NAME & SURNAME
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public static final String NAME_FIELD = "name";
 	public String getName() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getPersonalData()
@@ -66,7 +75,7 @@ public abstract class VaadinViewUser<U extends User>
 	public void setName(final String name) {
 		_wrappedModelObject.setName(name);
 	}
-	
+
 	public static final String SURNAME1_FIELD = "surname1";
 	public String getSurname1() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getPersonalData()
@@ -76,7 +85,7 @@ public abstract class VaadinViewUser<U extends User>
 	public void setSurname1(final String surname1) {
 		_wrappedModelObject.setSurname1(surname1);
 	}
-	
+
 	public static final String SURNAME2_FIELD = "surname2";
 	public String getSurname2() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getPersonalData()
@@ -88,13 +97,13 @@ public abstract class VaadinViewUser<U extends User>
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DISPLAY NAME
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public static final String DISPLAY_NAME_FIELD = "displayName";
 	public String getDisplayName() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getDisplayName()
 															 : null;
 	}
-	
+
 	public static final String SURNAME_FIELD = "surname";
 	public String getSurname() {
 		return _wrappedModelObject.getPersonalData() != null ? _wrappedModelObject.getPersonalData()
@@ -127,7 +136,7 @@ public abstract class VaadinViewUser<U extends User>
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PHONE
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public static final String PHONE_FIELD = "phone";
 	public Phone getPhone() {
 		return _wrappedModelObject.getContactInfo() != null ? _wrappedModelObject.getContactInfo()
@@ -147,7 +156,7 @@ public abstract class VaadinViewUser<U extends User>
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EMAIL
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public static final String MAIL_FIELD = "eMail";
 	public EMail getEMail() {
 		return _wrappedModelObject.getContactInfo() != null ? _wrappedModelObject.getContactInfo()
@@ -176,11 +185,7 @@ public abstract class VaadinViewUser<U extends User>
 		boolean oidEqs = this.getOid() != null ? this.getOid().is(vObj.getOid())
 									 		   : vObj.getOid() != null ? false
 											 				 		   : true;	// both null
-		if (!oidEqs) return false;
-		boolean userCodeEqs = this.getUserCode() != null ? this.getUserCode().is(vObj.getUserCode())
-														 : vObj.getUserCode() != null ? false
-																 					  : true;	// both null
-		return userCodeEqs;
+		return oidEqs;
 	}
 	@Override
 	public int hashCode() {

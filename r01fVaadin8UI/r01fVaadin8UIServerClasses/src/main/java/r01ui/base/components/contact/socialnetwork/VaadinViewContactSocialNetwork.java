@@ -1,7 +1,7 @@
 package r01ui.base.components.contact.socialnetwork;
 
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.UserCode;
+import r01f.securitycontext.SecurityIDS.LoginID;
 import r01f.types.contact.ContactSocialNetwork;
 import r01f.types.contact.ContactSocialNetworkType;
 import r01f.types.url.Url;
@@ -17,20 +17,20 @@ public class VaadinViewContactSocialNetwork
 // 	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String USER_FIELD = "user";
-	public UserCode getUser() {
+	public LoginID getUser() {
 		return _wrappedModelObject.getUser();
 	}
 	public String getUserAsString() {
 		return this.getUser() != null ? this.getUser().asString() : null;
 	}
-	public void setUser(final UserCode userCode) {
+	public void setUser(final LoginID userCode) {
 		_wrappedModelObject.setUser(userCode);
 	}
 	public void setUserFromString(final String userCode) {
 		if (Strings.isNullOrEmpty(userCode)) {
 			_wrappedModelObject.setUser(null);
 		} else {
-			_wrappedModelObject.setUser(UserCode.forId(userCode));
+			_wrappedModelObject.setUser(LoginID.forId(userCode));
 		}
 	}
 

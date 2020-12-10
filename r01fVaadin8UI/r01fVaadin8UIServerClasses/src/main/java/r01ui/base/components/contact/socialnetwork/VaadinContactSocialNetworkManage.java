@@ -26,11 +26,11 @@ public class VaadinContactSocialNetworkManage
 		////////// Columns
 		// type
 		_grid.addColumn(VaadinViewContactSocialNetwork::getType)
-		   	 .setCaption(i18n.getMessage("contact.socialNetwork.type"))
-		   	 .setExpandRatio(0)
-		   	 .setMinimumWidth(150)
-		   	 .setResizable(false)
-		   	 .setId("type");
+			 .setCaption(i18n.getMessage("contact.socialNetwork.type"))
+			 .setExpandRatio(0)
+			 .setMinimumWidth(150)
+			 .setResizable(false)
+			 .setId("type");
 		// user
 		_grid.addColumn(VaadinViewContactSocialNetwork::getUser)
 			 .setCaption(i18n.getMessage("contact.socialNetwork.user"))

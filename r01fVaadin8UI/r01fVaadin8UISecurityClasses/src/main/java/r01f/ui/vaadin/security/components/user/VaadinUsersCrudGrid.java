@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.components;
+package r01f.ui.vaadin.security.components.user;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -8,6 +8,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
@@ -24,16 +25,16 @@ import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.subscriber.UISubscriber;
 import r01f.ui.vaadin.VaadinComponents;
-import r01f.ui.vaadin.security.components.search.VaadinSecurityUserSearchCOREMediator;
-import r01f.ui.vaadin.security.components.search.VaadinSecurityUserSearchForm;
-import r01f.ui.vaadin.security.components.search.VaadinSecurityUserSearchPresenter;
+import r01f.ui.vaadin.security.components.user.search.VaadinSecurityUserSearchCOREMediator;
+import r01f.ui.vaadin.security.components.user.search.VaadinSecurityUserSearchForm;
+import r01f.ui.vaadin.security.components.user.search.VaadinSecurityUserSearchPresenter;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.collections.Lists;
 import r01ui.base.components.VaadinListDataProviders;
 import r01ui.base.components.form.VaadinViewTracksChanges;
 import r01ui.base.components.grid.VaadinGridButton;
-import r01ui.base.components.user.VaadinViewUser;
 
 
 /**
@@ -72,9 +73,9 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final Button _btnAddUser = new Button();
-	private final Grid<V> _gridUsers = new Grid<>();
-	private final VaadinServiceCatalogUserSearchPopUp _popUpSearch;
+	protected final Button _btnAddUser = new Button();
+	protected final Grid<V> _gridUsers = new Grid<>();
+	protected final VaadinIsUserSearchPopUp _popUpSearch;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	STATUS (avoid whenever possible)
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -82,19 +83,19 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 	 * Stores the items set into the grid
 	 * It's used to track changes: items added & removed
 	 */
-	private Collection<V> _originalItems;
+	protected Collection<V> _originalItems;
 	/**
 	 * Is enabled
 	 */
-	private boolean _enabled = true;
+	protected boolean _enabled = true;
 	/**
 	 * Control data change
 	 */
-	private boolean _viewDataChange = false;
+	protected boolean _viewDataChange = false;
 	/**
 	 * Listener of user additions
 	 */
-	private VaadinUsersGridModifiedListener<U,V,SELF_TYPE> _gridModifiedListener;
+	protected VaadinUsersGridModifiedListener<U,V,SELF_TYPE> _gridModifiedListener;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -111,19 +112,19 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 		_gridModifiedListener = addUserToOtherRoleListener;
 		////////// UI
 		_configureGrid(i18n);
-		_popUpSearch = new VaadinServiceCatalogUserSearchPopUp(i18n,
-															   userSearchPresenter,
-															   // what happens when an uses is selected at the popup
-															   viewUser -> {
-																  if (_gridModifiedListener != null) {
-																	  // tell the listener that a user is to be added
-																	  // ... the listener is in charge of adding (or not) the user to the grid
-																	  _gridModifiedListener.onGridModified((SELF_TYPE)this,
-																			  							   VaadinUsersGridAction.USER_ADDITION,viewUser);
-																  } else {
-																	  this.addItem(viewUser);
-																  }
-															   });
+		_popUpSearch = _createUserSearchPopUp(i18n,
+											  userSearchPresenter,
+											  // what happens when an uses is selected at the popup
+											  viewUser -> {
+												  if (_gridModifiedListener != null) {
+													  // tell the listener that a user is to be added
+													  // ... the listener is in charge of adding (or not) the user to the grid
+													  _gridModifiedListener.onGridModified((SELF_TYPE)this,
+															  							   VaadinUsersGridAction.USER_ADDITION,viewUser);
+												  } else {
+													  this.addItem(viewUser);
+												  }
+											  });
 
 		////////// Layout
 		VerticalLayout vly = new VerticalLayout(_btnAddUser,
@@ -281,15 +282,19 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 		_btnAddUser.setCaption(i18n.getMessage("add"));
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	POPUP
+//	USER SEARCH POPUP
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected abstract <F extends VaadinSecurityUserSearchForm<U,V,P>> F _createUsersSearchFormUsing(final UII18NService i18n,
-																									 final P userSearchPresenter,
-																								     final UISubscriber<V> onSelectSubscriber,
-																								     final UISubscriber<V> onDoubleClickSubscriber);
-	private class VaadinServiceCatalogUserSearchPopUp
-		  extends Window
-	   implements VaadinViewI18NMessagesCanBeUpdated {
+	protected abstract VaadinIsUserSearchPopUp _createUserSearchPopUp(final UII18NService i18n,
+																	  final P userSearchPresenter,
+																	  final UISubscriber<V> selectSubscriber);
+	protected interface VaadinIsUserSearchPopUp
+				extends Component,
+						VaadinViewI18NMessagesCanBeUpdated {
+		public void show();
+	}
+	protected abstract class VaadinUserSearchPopUpBase<F extends VaadinSecurityUserSearchForm<U,V,P>>
+		  			 extends Window
+		  		  implements VaadinIsUserSearchPopUp {
 
 		private static final long serialVersionUID = -5423050396649827819L;
 
@@ -303,9 +308,9 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 		////////// State (avoid as much as possible)
 		private V _selectedViewUser = null;
 
-		private VaadinServiceCatalogUserSearchPopUp(final UII18NService i18n,
-												    final P userSearchPresenter,
-												    final UISubscriber<V> selectSubscriber) {
+		protected VaadinUserSearchPopUpBase(final UII18NService i18n,
+											final P userSearchPresenter,
+											final UISubscriber<V> selectSubscriber) {
 			_selectSubscriber = selectSubscriber;
 
 			// create the form
@@ -363,6 +368,7 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 				this.close();
 			}
 		}
+		@Override
 		public void show() {
 			_frmSearch.clear();
 			UI.getCurrent()
@@ -374,5 +380,9 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 			_btnPopUpOK.setCaption(i18n.getMessage("select"));
 			_btnPopUpCancel.setCaption(i18n.getMessage("cancel"));
 		}
+		protected abstract F _createUsersSearchFormUsing(final UII18NService i18n,
+														 final P userSearchPresenter,
+													     final UISubscriber<V> onSelectSubscriber,
+													     final UISubscriber<V> onDoubleClickSubscriber);
 	}
 }

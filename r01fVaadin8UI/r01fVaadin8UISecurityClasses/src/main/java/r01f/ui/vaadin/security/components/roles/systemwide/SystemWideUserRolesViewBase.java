@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.roles.systemwide;
+package r01f.ui.vaadin.security.components.roles.systemwide;
 
 
 import com.vaadin.icons.VaadinIcons;
@@ -15,9 +15,12 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.experimental.Accessors;
 import r01f.locale.I18NKey;
+import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.security.VaadinUIIsSecurityContextAware;
-import r01f.ui.vaadin.security.components.VaadinUserRolesFormBase;
+import r01f.ui.vaadin.security.components.roles.VaadinUserRolesFormBase;
+import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01ui.base.components.window.VaadinProceedGateDialogWindow;
 
@@ -42,7 +45,9 @@ import r01ui.base.components.window.VaadinProceedGateDialogWindow;
  * </pre>
  */
 @Accessors(prefix = "_")
-public abstract class SystemWideUserRolesViewBase<F extends VaadinUserRolesFormBase>
+public abstract class SystemWideUserRolesViewBase<U extends User,V extends VaadinViewUser<U>,
+												  F extends VaadinUserRolesFormBase<U,V,
+												  									? extends VaadinUsersCrudGrid<U,V,?,?>>>
 	 		  extends VerticalLayout
 	 	   implements View,
   			 		  VaadinViewI18NMessagesCanBeUpdated,

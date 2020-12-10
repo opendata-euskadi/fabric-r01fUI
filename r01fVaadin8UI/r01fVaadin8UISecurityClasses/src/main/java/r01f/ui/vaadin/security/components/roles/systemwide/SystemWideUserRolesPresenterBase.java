@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.roles.systemwide;
+package r01f.ui.vaadin.security.components.roles.systemwide;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,9 +14,9 @@ import r01f.securitycontext.SecurityIDS.UserRole;
 import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.ui.presenter.UIPresenter;
 import r01f.ui.presenter.UIPresenterSubscriber;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.collections.Lists;
-import r01ui.base.components.user.VaadinViewUser;
 
 @Slf4j
 public abstract class SystemWideUserRolesPresenterBase<U extends User,V extends VaadinViewUser<U>,

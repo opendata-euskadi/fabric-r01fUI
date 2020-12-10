@@ -1,29 +1,38 @@
-package r01f.ui.vaadin.security.components.search;
+package r01f.ui.vaadin.security.components.user.search;
 
 import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
+import r01f.patterns.FactoryFrom;
 import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityIDS.SecurityProviderID;
 import r01f.ui.coremediator.UICOREMediator;
+import r01f.ui.vaadin.security.user.VaadinSecurityUserDirectory;
 import r01f.util.types.Strings;
-import r01ui.base.components.user.VaadinSecurityUserDirectory;
 
+/**
+ * A core mediator for [users]
+ * Finds users at the LOCAL user db or at a CORPORATE user directory (ie XLNets)
+ * @param <U>
+ * @param <A>
+ */
 @Slf4j
 public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 												 		   A extends SecurityAPIBase<U,?,?,?,?,?>>
-  implements UICOREMediator {
+  		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected final A _securityApi;
+	protected final FactoryFrom<U,LoginID> _loginIdFromCorporateUser;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected VaadinSecurityUserSearchCOREMediator(final A securityApi) {
+	protected VaadinSecurityUserSearchCOREMediator(final A securityApi,
+												   final FactoryFrom<U,LoginID> loginIdFromCorporateUser) {
 		_securityApi = securityApi;
+		_loginIdFromCorporateUser = loginIdFromCorporateUser;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIND
@@ -53,8 +62,8 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 		if (Strings.isNullOrEmpty(text)) return null;
 
 		Collection<U> users = _securityApi.getUsersApi()
-												 .getForFind()
-												 .findByText(text);
+										  .getForFind()
+										  .findByText(text);
 		return users;
 	}
 	public abstract Collection<U> findCorporateUsersFilteringByText(final String text);
@@ -66,49 +75,40 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 	 * ... so the user is tried to be found at the LOCAL db using the XLNets user code.
 	 * If the user DOES NOT exists at the LOCAL db (maybe the user has NEVER logged-in using XLNets), the user is CREATED
 	 * otherwise, the existing LOCAL user is returned
-	 * @param xlnetsPickedUser
+	 * @param corporatePickedUser
 	 * @return
 	 */
-	public U ensureThereExistsLocalUserForXLNetsUser(final U xlnetsPickedUser) {
+	public U ensureThereExistsLocalUserForCorporateUser(final U corporatePickedUser) {
 		U outUser = null;
 
-		// remember the DIRTY TRICK:
-		// When searching for a [user] at the [xlnets directory], the [xlnets loginId] is set as UserOID (see above)
-		LoginID xlnetsLoginId = LoginID.forId(xlnetsPickedUser.getOid().asString());
+		// get the [coporate loginId] from the [corporate-picked] user
+		LoginID corporateLoginId = _loginIdFromCorporateUser.from(corporatePickedUser);
 
-		log.info("[roles by area core mediator] > ensure there exists a LOCAL user for XLNets user={}",xlnetsLoginId);
-		U existingLocalUser = this.findLocalUserForXLNetsUser(xlnetsLoginId);
+		// try to find the user locally
+		log.info("[roles by area core mediator] > ensure there exists a LOCAL user for XLNets user={}",corporateLoginId);
+		U existingLocalUser = this.findLocalUserForCorporateLogin(corporateLoginId);
+
+		// if the user exists locally, just do nothing
 		if (existingLocalUser != null) {
-			log.info("\t - there DOES exists a LOCAL user for XLNets user={}",xlnetsLoginId);
+			log.info("\t - there DOES exists a LOCAL user for XLNets user={}",corporateLoginId);
 			outUser = existingLocalUser;
-		} else {
-			log.info("\t - there DOES NOT exists a LOCAL user for XLNets user={}: create it",xlnetsLoginId);
+		}
+		// if the user DOES NOT exists locally, create it
+		else {
+			log.info("\t - there DOES NOT exists a LOCAL user for XLNets user={}: create it",corporateLoginId);
 			// create the user
 			U createdLocalUser = _securityApi.getUsersApi()
-											   .getForCrud()
-											   .create(xlnetsPickedUser);
+											 .getForCrud()
+											 .create(corporatePickedUser);
 
 			outUser = createdLocalUser;
 		}
 		return outUser;
 	}
 	/**
-	 * Tries to find a LOCAL user for an XLNets user
-	 * @param xlnetsUserCode
+	 * Tries to find a LOCAL user for a corporate user
+	 * @param corporateLoginId
 	 * @return
 	 */
-	public U findLocalUserForXLNetsLogin(final LoginID xlnetsLoginId) {
-		U user = _securityApi.getUsersApi()
-							 .getForCrud()
-							 .loadByOrNull(SecurityProviderID.XLNETS,xlnetsLoginId);
-		return user;
-	}
-	/**
-	 * Tries to find a LOCAL user for an XLNets user
-	 * @param xlnetsUserCode
-	 * @return
-	 */
-	public U findLocalUserForXLNetsUser(final LoginID xlnetsUserCode) {
-		return this.findLocalUserForXLNetsLogin(xlnetsUserCode);
-	}
+	public abstract U findLocalUserForCorporateLogin(final LoginID corporateLoginId);
 }

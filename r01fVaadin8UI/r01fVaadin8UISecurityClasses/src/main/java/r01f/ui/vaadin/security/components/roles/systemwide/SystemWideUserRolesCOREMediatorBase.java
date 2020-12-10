@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.roles.systemwide;
+package r01f.ui.vaadin.security.components.roles.systemwide;
 
 import java.util.Collection;
 import java.util.Map;

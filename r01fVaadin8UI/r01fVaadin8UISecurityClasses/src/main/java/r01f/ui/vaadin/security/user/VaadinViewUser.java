@@ -1,4 +1,4 @@
-package r01ui.base.components.user;
+package r01f.ui.vaadin.security.user;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

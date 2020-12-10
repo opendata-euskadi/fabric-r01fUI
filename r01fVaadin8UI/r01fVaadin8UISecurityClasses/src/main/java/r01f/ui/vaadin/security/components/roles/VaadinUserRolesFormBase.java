@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.components;
+package r01f.ui.vaadin.security.components.roles;
 
 import java.util.Collection;
 import java.util.Map;
@@ -15,12 +15,13 @@ import r01f.locale.HasI18NKey;
 import r01f.locale.I18NKey;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.security.components.VaadinUsersCrudGrid.VaadinUsersGridModifiedListener;
+import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid;
+import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid.VaadinUsersGridModifiedListener;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.collections.Lists;
 import r01ui.base.components.form.VaadinViewTracksChanges;
-import r01ui.base.components.user.VaadinViewUser;
 import r01ui.base.components.window.VaadinProceedGateDialogWindow;
 
 /**

@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.components.search;
+package r01f.ui.vaadin.security.components.user.search;
 
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Composite;
@@ -13,11 +13,11 @@ import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.subscriber.UISubscriber;
+import r01f.ui.vaadin.security.user.VaadinSecurityUserDirectory;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.Lists;
-import r01ui.base.components.user.VaadinSecurityUserDirectory;
-import r01ui.base.components.user.VaadinViewUser;
 
 /**
  * A fom used to search for users
@@ -44,8 +44,8 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 										  		   P extends VaadinSecurityUserSearchPresenter<U,V,
 										  											  		   ? extends VaadinSecurityUserSearchCOREMediator<U,
 																									   								 		  ? extends SecurityAPIBase<U,?,?,?,?,?>>>>
-	 extends Composite
-  implements VaadinViewI18NMessagesCanBeUpdated {
+	 		  extends Composite
+	 	   implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -4256416248999437390L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 											VaadinSecurityUserDirectory userDirectory = _radioUserDirectory.getValue();
 
 											V selectedViewUser = rowSelectedEvent.getFirstSelectedItem()
-																							 .orElse(null);
+																				 .orElse(null);
 											if (selectedViewUser != null) selectedViewUser.setSourceUserDirectory(userDirectory);
 											_return(selectedViewUser,
 													_onSelectSubscriber);

@@ -8,6 +8,7 @@ import com.vaadin.ui.Notification;
 import lombok.Getter;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;

@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.security.components.search;
+package r01f.ui.vaadin.security.components.user.search;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -8,10 +8,10 @@ import r01f.model.security.user.User;
 import r01f.patterns.FactoryFrom;
 import r01f.ui.presenter.UIPresenter;
 import r01f.ui.presenter.UIPresenterSubscriber;
+import r01f.ui.vaadin.security.user.VaadinSecurityUserDirectory;
+import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.collections.Lists;
-import r01ui.base.components.user.VaadinSecurityUserDirectory;
-import r01ui.base.components.user.VaadinViewUser;
 
 public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends VaadinViewUser<U>,
 														C extends VaadinSecurityUserSearchCOREMediator<U,
@@ -22,8 +22,8 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final C _coreMediator;
-	private final FactoryFrom<U,V> _viewUserFactory;
+	protected final C _coreMediator;
+	protected final FactoryFrom<U,V> _viewUserFactory;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 	 * @param textFilter
 	 * @param subscriber
 	 */
-	public void onSearchXLNetsUserRequested(final String textFilter,
-									  		final UIPresenterSubscriber<Collection<V>> subscriber) {
+	public void onSearchCorporateUserRequested(final String textFilter,
+									  		   final UIPresenterSubscriber<Collection<V>> subscriber) {
 		try {
 			Collection<U> users = _coreMediator.findCorporateUsersFilteringByText(textFilter);
 			Collection<V> viewUsers = CollectionUtils.hasData(users) ? users.stream()
@@ -75,7 +75,7 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	public V ensureThereExistsLocalUserForCorporateDirectoryUser(final V xlnetsPickedUser) {
-		U outUser = _coreMediator.ensureThereExistsLocalUserForXLNetsUser(xlnetsPickedUser.getWrappedModelObject());
+		U outUser = _coreMediator.ensureThereExistsLocalUserForCorporateUser(xlnetsPickedUser.getWrappedModelObject());
 		return outUser != null ? _viewUserFactory.from(outUser)
 							   : null;
 	}

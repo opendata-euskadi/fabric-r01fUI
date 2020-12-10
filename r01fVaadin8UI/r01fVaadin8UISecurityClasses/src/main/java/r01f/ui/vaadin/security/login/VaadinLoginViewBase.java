@@ -58,10 +58,10 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 /////////////////////////////////////////////////////////////////////////////////////////
 //  SERVICES
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final transient UII18NService _i18n;
-	private final transient P _presenter;
+	protected final transient UII18NService _i18n;
+	protected final transient P _presenter;
 
-	private final transient SecurityLoginFilterConfig _securityLoginConfig;
+	protected final transient SecurityLoginFilterConfig _securityLoginConfig;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTOR
@@ -121,7 +121,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		// Google login
 		String gLoginUrl = Strings.customized("{}?to={}/{}/",		// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 											  _securityLoginConfig.getProvider(SecurityProviderID.forId("google")).getLoginUrl(),
-											  _securityLoginConfig.getUrlVars().getProperty("frontEndUrlProvidersBase"),
+											  _securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase"),
 											  _getWebAppUrlPath());
 		Link lnkGoogleLogin = new Link("Google Login",
 							 		   new ExternalResource(gLoginUrl));
@@ -129,7 +129,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		// XLNets login
 		String xlLoginUrl = Strings.customized("{}?to={}/{}/",		// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 											   _securityLoginConfig.getProvider(SecurityProviderID.forId("xlnets")).getLoginUrl(),
-											   _securityLoginConfig.getUrlVars().getProperty("frontEndUrlProvidersBase"),
+											   _securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase"),
 											   _getWebAppUrlPath());
 		Link lnkXLNetsLogin = new Link("XLNets Login",
 							 		    new ExternalResource(xlLoginUrl));

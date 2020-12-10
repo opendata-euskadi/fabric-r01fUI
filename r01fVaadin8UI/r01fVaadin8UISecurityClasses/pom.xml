@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-			 
+
 	<modelVersion>4.0.0</modelVersion>
 <!-- ====================================================================== -->
 <!-- PROPERTIES                                                             -->
 <!-- ====================================================================== -->
 	<properties>
-		<vaadin.version>8.10.4</vaadin.version>	
+		<vaadin.version>8.10.4</vaadin.version>
 	</properties>
-	
+
 <!-- ====================================================================== -->
 <!-- PARENT                                                                 -->
 <!-- ====================================================================== -->
@@ -18,13 +18,13 @@
 		<artifactId>r01fVaadin8UI</artifactId>
 		<version>${revision}</version>
 	</parent>
-	
+
 <!-- ====================================================================== -->
 <!-- ARTIFACT                                                               -->
 <!-- ====================================================================== -->
 	<name>r01fVaadin8UISecurityClasses</name>
 	<artifactId>r01fVaadin8UISecurityClasses</artifactId>
-	
+
 <!-- ====================================================================== -->
 <!-- DEPENDENCIES                                                           -->
 <!-- ====================================================================== -->
@@ -35,9 +35,9 @@
 		<dependency>
 			<groupId>r01.r01f.ui.vaadin</groupId>
 			<artifactId>r01fVaadin8UIServerClasses</artifactId>
-			<version>${revision}</version> 
+			<version>${revision}</version>
 		</dependency>
-		
+
 		<!-- ///////////////////////////////////////// -->
 		<!-- R01F: Security API                        -->
 		<!-- ///////////////////////////////////////// -->
@@ -46,7 +46,21 @@
 			<artifactId>r01fSecurityAPIClasses</artifactId>
 			<version>${revision}</version>
 		</dependency>
-		
+
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01F: SECURITY FILTERS				       -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.r01f.security.webapp.filter</groupId>
+			<artifactId>r01fSecurityLoginWebFilterClasses</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>r01.r01f.security.webapp.filter</groupId>
+			<artifactId>r01fSecurityAuthorizationWebFilterClasses</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
 		<!-- ///////////////////////////////////////// -->
 		<!-- ServletAPI                                -->
 		<!-- ///////////////////////////////////////// -->
@@ -59,7 +73,7 @@
 		    <scope>provided</scope>		<!-- BEWARE!!! -->
 		</dependency>
 	</dependencies>
-	
+
 <!-- ====================================================================== -->
 <!-- BUILD                                                                  -->
 <!-- ====================================================================== -->
@@ -77,7 +91,7 @@
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
-					<configuration> 
+					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
 								<!-- flatten plugin -->

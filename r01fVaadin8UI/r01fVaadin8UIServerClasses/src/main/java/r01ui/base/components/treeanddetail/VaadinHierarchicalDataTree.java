@@ -80,6 +80,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 	private VaadinHiearchicalDataTreeOnItemEditEventListener<VO> _itemEditEventListener;
 	private VaadinHiearchicalDataTreeOnItemDeletedEventListener<VO> _itemDeletedEventListener;
 	private RootNodeSelectedListener _rootNodeSelectedListener;
+	private boolean _readOnly;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR																		  
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 											VO treeSelectedItemViewObj = _treeGrid.getUniqueSelectedItem();
 											int treeSelectedItemDepth = _treeGrid.getTreeData()
 																				 .getItemDepth(treeSelectedItemViewObj);
-											_btnAdd.setEnabled(_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth());
+											boolean addEnabled = _settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth();
+											_btnAdd.setEnabled(addEnabled && !_readOnly);
 											
 											if (treeSelectedItemViewObj == null) return;	// no selected item (should NOT happen)
 											
@@ -192,7 +194,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 										// while adding a new item, do not allow clicking in another item
 										// neither click to the add button
 										this.setEnabled(false);
-										_btnRemove.setEnabled(true);
+										_btnRemove.setEnabled(true && !_readOnly);
 										
 										// if not a collection and an item has already been added, 
 										// DO NOT allow additions
@@ -234,7 +236,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			   		   || (_settings.isNOTCollection() 
 			   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
 	   this.setEnabled(addEnabled);
-	   _btnAdd.setEnabled(addEnabled); 
+	   _btnAdd.setEnabled(addEnabled && !_readOnly); 
 	   _btnAdd.setVisible(true);
 	}
 	private class TreeProceedGateDialogWindow
@@ -314,7 +316,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		boolean addEnabled = _settings.isCollection() 
 				   		   || (_settings.isNOTCollection() 
 				   				 && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));	// no root items = no items
-		_btnAdd.setEnabled(addEnabled); 
+		_btnAdd.setEnabled(addEnabled && !_readOnly); 
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	INIT
@@ -342,7 +344,7 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnRootNode.setCaption(str);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	ENABLED / DISABLED																		  
+//	ENABLED / DISABLED / READONLY
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	public void setEnabled(final boolean enabled) {
@@ -353,8 +355,15 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnAdd.setEnabled(_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth());
 		boolean addEnabled = (_settings.isCollection() && treeSelectedItemDepth +1 < _settings.getMaxDepth())
 				   		   	 || (_settings.isNOTCollection() && CollectionUtils.isNullOrEmpty(_treeGrid.getRootItems()));
-		_btnAdd.setEnabled(addEnabled);
-		_btnRemove.setEnabled(enabled);		
+		_btnAdd.setEnabled(addEnabled && !_readOnly);
+		_btnRemove.setEnabled(enabled && !_readOnly);	
+	}
+	@Override
+	public void setReadOnly(final boolean readOnly) {
+		_readOnly = readOnly;
+		_btnAdd.setEnabled(!readOnly);
+		_btnRemove.setEnabled(!readOnly);
+		_btnRootNode.setVisible(_settings.isCollection() && !_readOnly);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EVENT  LISTENERS 

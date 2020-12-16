@@ -64,9 +64,9 @@ public class TinyMCEService {
 		}; 
 
 		try {
-			if(cc) {
+			if (cc) {
 				var customConfig = eval('('+cc+')');
-				for(var j in customConfig) {
+				for (var j in customConfig) {
 					conf[j] = customConfig[j];
 				}
 			}

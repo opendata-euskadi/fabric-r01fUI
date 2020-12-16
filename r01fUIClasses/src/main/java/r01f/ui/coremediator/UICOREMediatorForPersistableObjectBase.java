@@ -22,7 +22,7 @@ public abstract class UICOREMediatorForPersistableObjectBase<O extends Persistab
 		try {
 			M loadedObj = this.load(oid);
 			subscriber.onSuccess(loadedObj);
-		} catch(Throwable th) {
+		} catch (Throwable th) {
 			subscriber.onError(th);
 		}
 	}
@@ -33,7 +33,7 @@ public abstract class UICOREMediatorForPersistableObjectBase<O extends Persistab
 		try {
 			M savedObj = this.save(obj);
 			subscriber.onSuccess(savedObj);
-		} catch(Throwable th) {
+		} catch (Throwable th) {
 			subscriber.onError(th);
 		}
 	}
@@ -44,7 +44,7 @@ public abstract class UICOREMediatorForPersistableObjectBase<O extends Persistab
 		try {
 			M deletedObj = this.delete(oid);
 			subscriber.onSuccess(deletedObj);
-		} catch(Throwable th) {
+		} catch (Throwable th) {
 			subscriber.onError(th);
 		}
 	}

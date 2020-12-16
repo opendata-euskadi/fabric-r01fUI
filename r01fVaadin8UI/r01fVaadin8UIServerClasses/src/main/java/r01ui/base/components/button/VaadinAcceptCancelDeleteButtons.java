@@ -69,9 +69,9 @@ public class VaadinAcceptCancelDeleteButtons
 										   final I18NKey cancelButtonCaptionKey,
 										   final I18NKey deleteButtonCaptionKey) {
 		this(i18n);
-		if(acceptButtonCaptionKey != null) _btnAccept.setCaption(i18n.getMessage(acceptButtonCaptionKey));
-		if(cancelButtonCaptionKey != null) _btnCancel.setCaption(i18n.getMessage(cancelButtonCaptionKey));
-		if(deleteButtonCaptionKey != null) _btnDelete.setCaption(i18n.getMessage(deleteButtonCaptionKey));
+		if (acceptButtonCaptionKey != null) _btnAccept.setCaption(i18n.getMessage(acceptButtonCaptionKey));
+		if (cancelButtonCaptionKey != null) _btnCancel.setCaption(i18n.getMessage(cancelButtonCaptionKey));
+		if (deleteButtonCaptionKey != null) _btnDelete.setCaption(i18n.getMessage(deleteButtonCaptionKey));
 		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

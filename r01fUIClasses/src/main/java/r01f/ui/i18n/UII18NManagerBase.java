@@ -64,7 +64,7 @@ public abstract class UII18NManagerBase
 					if ( !_i18nBundleNames.contains(i18nBundleName) ) _i18nBundleNames.add(i18nBundleName);
 				}
 			}
-		} catch(final Exception e) {
+		} catch (final Exception e) {
 			log.warn("Error while finding i18n bundle names at @{}-annotated types: {}",
 					 UIMessageBundle.class.getSimpleName(),
 					 e.getMessage(),e);

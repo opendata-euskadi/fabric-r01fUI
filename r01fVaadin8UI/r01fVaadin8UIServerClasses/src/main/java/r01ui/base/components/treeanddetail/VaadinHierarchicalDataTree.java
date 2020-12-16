@@ -358,12 +358,12 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 		_btnAdd.setEnabled(addEnabled && !_readOnly);
 		_btnRemove.setEnabled(enabled && !_readOnly);	
 	}
-	@Override
-	public void setReadOnly(final boolean readOnly) {
+	
+	public void setNotEditable(final boolean readOnly) {
 		_readOnly = readOnly;
 		_btnAdd.setEnabled(!readOnly);
 		_btnRemove.setEnabled(!readOnly);
-		_btnRootNode.setVisible(_settings.isCollection() && !_readOnly);
+		_btnRootNode.setVisible(_settings.isCollection() && !readOnly);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EVENT  LISTENERS 

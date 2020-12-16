@@ -7,7 +7,7 @@ import com.vaadin.ui.UI;
 
 import lombok.experimental.Accessors;
 import r01f.client.api.security.SecurityAPIBase;
-import r01f.guids.CommonOIDs.WebSessionOID;
+import r01f.guids.CommonOIDs.WebSessionID;
 import r01f.locale.Language;
 import r01f.model.security.login.userpassword.UserPasswordLoginResponseOK;
 import r01f.model.security.user.User;
@@ -44,7 +44,7 @@ public abstract class VaadinLoginPresenterBase<U extends User,
 		// b) compose the login session
 		WrappedSession vaadinWrappedSession = UI.getCurrent().getSession()	// vaadin session
 															 .getSession();	// unwrap the web session;
-		LoginSession<U> outLoginSession = new LoginSession<>(WebSessionOID.forId(vaadinWrappedSession.getId()),
+		LoginSession<U> outLoginSession = new LoginSession<>(WebSessionID.forId(vaadinWrappedSession.getId()),
 															 SecurityProviderID.USER_PASSWORD,loginId,
 															 loginResponse.getUser());
 		// c) attach the [login session] to the [thread local] & [web session] storage where the [servlet filter]

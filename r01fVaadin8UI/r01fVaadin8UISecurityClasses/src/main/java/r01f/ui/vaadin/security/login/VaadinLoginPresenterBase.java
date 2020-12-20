@@ -41,6 +41,8 @@ public abstract class VaadinLoginPresenterBase<U extends User,
 	public LoginSession<U> userPasswordLogin(final LoginID loginId,final Password password) {
 		// a) get the user from the [login response]
 		UserPasswordLoginResponseOK<U> loginResponse = _coreMediator.userPasswordLogin(loginId,password);
+		if (loginResponse == null) return null;		// error while login
+		
 		// b) compose the login session
 		WrappedSession vaadinWrappedSession = UI.getCurrent().getSession()	// vaadin session
 															 .getSession();	// unwrap the web session;

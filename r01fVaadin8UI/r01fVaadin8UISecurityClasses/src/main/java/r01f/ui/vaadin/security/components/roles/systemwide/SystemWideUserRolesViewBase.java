@@ -147,11 +147,12 @@ public abstract class SystemWideUserRolesViewBase<U extends User,V extends Vaadi
 																							   			  		  () -> {
 																							   			  			  // Load the data again
 																							   			  			  _loadUsersByRole();
+																							   			  			  // reset data change
+																							   			  			  _form.setViewDataChanged(false);
+																							   			  			  // disable the cancel button
+																							   			  			  _btnCancel.setEnabled(false);
 																							   			  		  },
-																							   			  		  // cancel listener
-																							   			  		  () -> {
-																							   			  			  _showNotification(_i18n.getMessage("saved"));
-																												  },
+																							   			  		  null,
 																							   			  		  // puzzle
 																							   			  		  null);
 										UI.getCurrent().addWindow(window);

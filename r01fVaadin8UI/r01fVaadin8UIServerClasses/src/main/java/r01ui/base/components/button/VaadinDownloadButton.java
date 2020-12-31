@@ -16,6 +16,7 @@ import com.vaadin.server.UserError;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.UI;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -56,25 +57,25 @@ public class VaadinDownloadButton
 	
 	// override a vaadin's StreamResource used for download from a stream
 	protected final StreamResource _streamResource = new StreamResource(// the stream source
-																	  new StreamResource.StreamSource() {
-																				private static final long serialVersionUID = 3641967669172064511L;
-																		
-																				@Override @SuppressWarnings("resource")
-																				public InputStream getStream() {
-																					try {
-																						// data is writtern to the outputstream
-																						// and readed at the inputstream
-																						PipedOutputStream out = new PipedOutputStream();
-																						PipedInputStream in = new PipedInputStream(out);
-																						VaadinDownloadButton.this.writeResponse(out);
-																						return in;
-																					} catch (IOException ex) {
-																						throw new RuntimeException(ex);
+																		new StreamResource.StreamSource() {
+																					private static final long serialVersionUID = 3641967669172064511L;
+																			
+																					@Override @SuppressWarnings("resource")
+																					public InputStream getStream() {
+																						try {
+																							// data is writtern to the outputstream
+																							// and readed at the inputstream
+																							PipedOutputStream out = new PipedOutputStream();
+																							PipedInputStream in = new PipedInputStream(out);
+																							VaadinDownloadButton.this.writeResponse(out);
+																							return in;
+																						} catch (IOException ex) {
+																							throw new RuntimeException(ex);
+																						}
 																					}
-																				}
-																	  },
-																	  // the file name
-																	  "") {
+																		},
+																		// the file name
+																		"") {
 			private static final long serialVersionUID = -8221900203840804581L;
 	
 			@Override
@@ -177,9 +178,10 @@ public class VaadinDownloadButton
 						_writer.write(out);
 						out.close();
 					} catch (Exception e) {
-						getUI().access(() -> {
-											_handleErrorInFileGeneration(e);
-									   });
+						UI.getCurrent()
+						  .access(() -> {
+										_handleErrorInFileGeneration(e);
+								  });
 					}
 				}
 		}.start();
@@ -209,12 +211,12 @@ public class VaadinDownloadButton
 	}
 	public VaadinDownloadButton setFileName(final String fileName) {
 		_fileNameProvider = new FileNameProvider() {
-								private static final long serialVersionUID = -3449552786114328636L;
-					
-								@Override
-								public String getFileName() {
-									return fileName;
-								}
+									private static final long serialVersionUID = -3449552786114328636L;
+						
+									@Override
+									public String getFileName() {
+										return fileName;
+									}
 							};
 		return this;
 	}

@@ -5,7 +5,6 @@ import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.login.userpassword.UserPasswordLoginRequest;
 import r01f.model.security.login.userpassword.UserPasswordLoginRequestBuilder;
 import r01f.model.security.login.userpassword.UserPasswordLoginResponse;
-import r01f.model.security.login.userpassword.UserPasswordLoginResponseBuilder;
 import r01f.model.security.login.userpassword.UserPasswordLoginResponseOK;
 import r01f.model.security.user.User;
 import r01f.securitycontext.SecurityIDS.LoginID;
@@ -14,7 +13,7 @@ import r01f.ui.coremediator.UICOREMediator;
 
 @Slf4j
 public abstract class VaadinLoginCOREMediatorBase<U extends User,
-												  A extends SecurityAPIBase<U,?,?,?,?,?>>
+												  A extends SecurityAPIBase<U,?,?,?,?,?,?,?>>
 		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS

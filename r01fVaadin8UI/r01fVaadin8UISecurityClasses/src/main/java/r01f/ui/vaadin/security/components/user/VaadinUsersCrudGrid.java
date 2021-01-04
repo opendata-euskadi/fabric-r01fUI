@@ -63,7 +63,7 @@ import r01ui.base.components.grid.VaadinGridButton;
 public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUser<U>,
 								 		  P extends VaadinSecurityUserSearchPresenter<U,V,
 								 											 		  ? extends VaadinSecurityUserSearchCOREMediator<U,
-																									   								 ? extends SecurityAPIBase<U,?,?,?,?,?>>>,
+																									   								 ? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>,
 								 		  SELF_TYPE extends VaadinUsersCrudGrid<U,V,P,SELF_TYPE>>
 	 		  extends Composite
 	 	   implements VaadinViewTracksChanges,

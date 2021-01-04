@@ -21,7 +21,7 @@ import r01f.util.types.collections.Lists;
 @Slf4j
 public abstract class SystemWideUserRolesPresenterBase<U extends User,V extends VaadinViewUser<U>,
 													   C extends SystemWideUserRolesCOREMediatorBase<U,
-													   												 ? extends SecurityAPIBase<U,?,?,?,?,?>>>
+													   												 ? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>
   		   implements UIPresenter {
 
 	private static final long serialVersionUID = 2059320036793300763L;

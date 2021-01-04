@@ -21,7 +21,7 @@ import r01f.util.types.locale.Languages;
 
 @Accessors(prefix="_")
 public abstract class VaadinLoginPresenterBase<U extends User,
-											   C extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?>>>
+											   C extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>
 		   implements UIPresenter {
 
 	private static final long serialVersionUID = -4290934932756711025L;

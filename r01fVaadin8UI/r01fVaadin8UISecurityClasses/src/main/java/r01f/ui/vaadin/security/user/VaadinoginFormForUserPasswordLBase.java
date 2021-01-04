@@ -23,7 +23,12 @@ import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.Strings;
 
 /**
- * An [user password login] form
+ * An [user password login] data form that allows the user to configure the [user password login]
+ * ie:
+ * 		- Create a [user password login] (if the user does NOT have one)
+ * 		- Set the [loginId]
+ * 		- Change the [password]
+ * 
  * It can work in TWO modes:
  * 
  * a) The [user password login] already exists > the [loginId] or [password] can be changed
@@ -54,20 +59,15 @@ import r01f.util.types.Strings;
  * 			                                                        | [cancel]             [Create] |
  * 			                                                        +-------------------------------+
  */
-public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends UserPasswordLogin,
-												  	  VU extends VaadinViewUser<U>,VL extends VaadinViewUserPasswordLogin<L>,
-													  P extends VaadinUserEditPresenterBase<U,L,
-													  										VU,VL,
-													  										? extends VaadinUserEditCOREMediatorBase<U,L,?>>> 
-     		  extends Composite
-     	   implements VaadinViewI18NMessagesCanBeUpdated {
+public abstract class VaadinoginFormForUserPasswordLBase<U extends User,L extends UserPasswordLogin,
+												  	     VU extends VaadinViewUser<U>,VL extends VaadinViewUserPasswordLogin<L>,
+												  	     P extends VaadinUserEditPresenterBase<U,L,?,?,
+													  										   VU,VL,?,?,
+													  										   ? extends VaadinUserEditCOREMediatorBase<U,L,?,?,?>>> 
+     		  extends VaadinLoginFormBase<P> {
 
 	private static final long serialVersionUID = -2996792475557413032L;
-/////////////////////////////////////////////////////////////////////////////////////////
-//	SERVICES
-/////////////////////////////////////////////////////////////////////////////////////////
-	private final transient UII18NService _i18n;
-	private final transient P _presenter;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -79,18 +79,13 @@ public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends U
 	private final VaadinUserPasswordLoginCreateForm _frmUserPasswordLoginCreate;
 	
 /////////////////////////////////////////////////////////////////////////////////////////
-//	STATE avoid as much as possible
-/////////////////////////////////////////////////////////////////////////////////////////	
-	private UserOID _userOid;
-	
-/////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected VaadinUserPasswordLoginFormBase(final UII18NService i18n,
+	protected VaadinoginFormForUserPasswordLBase(final UII18NService i18n,
 										 	  final P presenter) {
 		////////// services
-		_i18n = i18n;
-		_presenter = presenter;
+		super(i18n,
+			  presenter);
 		
 		////////// UI
 		_detailLogin = new VaadinUserPasswordLoginDetailComponent(i18n);

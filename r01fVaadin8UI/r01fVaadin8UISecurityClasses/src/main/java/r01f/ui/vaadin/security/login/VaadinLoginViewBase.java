@@ -54,7 +54,7 @@ import r01f.util.types.locale.Languages;
 @Accessors(prefix = "_")
 public abstract class VaadinLoginViewBase<U extends User,S extends SecurityContext,
 										  P extends VaadinLoginPresenterBase<U,
-												  							 ? extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?>>>>
+												  							 ? extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>>
      		  extends Composite
      	   implements View,
      	   			  VaadinViewI18NMessagesCanBeUpdated {

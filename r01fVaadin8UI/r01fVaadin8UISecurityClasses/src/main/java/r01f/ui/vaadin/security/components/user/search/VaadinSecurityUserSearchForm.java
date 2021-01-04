@@ -123,7 +123,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 															   .setResizable(false)
 															   .setSortable(false)
 															   .setId("phone");
-		Grid.Column<V,String> colEMail = _gridUsers.addColumn(V::getEMailAsStringOrNull)
+		Grid.Column<V,String> colEMail = _gridUsers.addColumn(V::getMailAsStringOrNull)
 															   .setResizable(false)
 															   .setSortable(false)
 															   .setId("email");

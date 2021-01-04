@@ -239,7 +239,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 							  _instructions,
 							  _googleLoginBtn,
 							  _xlnetsLoginBtn, 
-							  _justiziaLoginBtn, //future implementation
+							  //_justiziaLoginBtn, //future implementation
 							  _userPassLink);
 
 		return buttons;
@@ -286,10 +286,10 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		
 		private Component _buildFields() {
 			VerticalLayout mainLayout = new VerticalLayout();
-			//mainLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-			mainLayout.setMargin(false);
+			mainLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+			mainLayout.setMargin(true);
+			mainLayout.setSpacing(false);
 			mainLayout.addStyleName("fields");
-			
 			
 			// User password
 			TextField txtUser = new TextField(_i18n.getMessage("security.login.field.user"));
@@ -299,6 +299,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 			PasswordField txtPassword = new PasswordField(_i18n.getMessage("security.login.field.pass"));
 			txtPassword.setIcon(VaadinIcons.LOCK);
 			txtPassword.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+			
 			
 			Button btnSignIn = new Button(_i18n.getMessage("security.login.button.enter"));
 			btnSignIn.addStyleName(ValoTheme.BUTTON_PRIMARY);

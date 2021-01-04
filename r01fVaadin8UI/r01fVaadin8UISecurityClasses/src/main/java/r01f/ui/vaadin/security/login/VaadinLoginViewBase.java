@@ -288,7 +288,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 			VerticalLayout mainLayout = new VerticalLayout();
 			mainLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 			mainLayout.setMargin(true);
-			mainLayout.setSpacing(false);
+			mainLayout.setSpacing(true);
 			mainLayout.addStyleName("fields");
 			
 			// User password

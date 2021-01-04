@@ -67,6 +67,8 @@ public class VaadinUserMenu
 	private final VaadinLangButtons _langChangeButtons;
 	private final Button _btnSignOut; 
 	
+	private final PopupView _popup; 
+	
 	private R01UILanguageChangeEventListener _langEventListener;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR                                                                          
@@ -148,32 +150,30 @@ public class VaadinUserMenu
 		ly.addComponent(_btnSignOut);
 		
 		////////// Popup
-		PopupView popup = new PopupView(null,
-        								ly);
-		popup.setStyleName("r01ui-userMenu");
-		popup.setHideOnMouseOut(false);
+		_popup = new PopupView(null,
+        					   ly);
+		_popup.setStyleName("r01ui-userMenu");
+		_popup.setHideOnMouseOut(false);
 		
 		this.getCompositionRoot()
-			.addComponent(popup);
+			.addComponent(_popup);
 		
 		////////// User
-		_btnUser = _createUserInfo(i18n,
-								   securityContext);
-		if (_btnUser != null) {			
-			_btnUser.addClickListener(click -> popup.setPopupVisible(true));
-			this.getCompositionRoot()
-				.addComponent(_btnUser);
-		}
+		_btnUser = _createUserInfoButton(i18n,
+								   		 securityContext);
+		_btnUser.addClickListener(click -> _popup.setPopupVisible(true));
+		this.getCompositionRoot()
+			.addComponent(_btnUser);
 	}
 	@Override
 	public HorizontalLayout getCompositionRoot() {
 		return (HorizontalLayout)super.getCompositionRoot();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	USER BUTTON                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static Button _createUserInfo(final UII18NService i18n,
-								   		  final SecurityContext securityContext) {
+	private static Button _createUserInfoButton(final UII18NService i18n,
+								   		  		final SecurityContext securityContext) {
 		String userName = securityContext != null ? securityContext.asForUser()
 																   .getDisplayName()
 												  : null;
@@ -185,6 +185,9 @@ public class VaadinUserMenu
 		btnUser.setCaption(userName);
 		return btnUser;
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	LANGUAGE BUTTONS
+/////////////////////////////////////////////////////////////////////////////////////////	
 	private Collection<R01UILangButton> _createLanguageChangeButtons(final Language... supportedLangs) {
 		if (CollectionUtils.isNullOrEmpty(supportedLangs)) return null;
 		
@@ -214,9 +217,6 @@ public class VaadinUserMenu
 							  })
 					.toList();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	private class VaadinLangButtons
 	   implements Iterable<R01UILangButton>, 
@@ -270,7 +270,10 @@ public class VaadinUserMenu
 //	EVENTS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void addEditUserButtonClickListener(final ClickListener clickListener) {
-		_btnUserEdit.addClickListener(clickListener);
+		_btnUserEdit.addClickListener(clickEvent -> {
+											clickListener.buttonClick(clickEvent);
+											_popup.setPopupVisible(false);	
+									  });
 	}
 	public void setLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
 		_langEventListener = langEventListener;

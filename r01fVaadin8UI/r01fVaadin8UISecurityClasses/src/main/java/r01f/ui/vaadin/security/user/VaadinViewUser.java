@@ -173,23 +173,4 @@ public abstract class VaadinViewUser<U extends User>
 		EMail email = this.getEMail();
 		return email != null ? email.asString() : null;
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	EQUALS & HASHCODE
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof VaadinViewUser)) return false;
-		VaadinViewUser<?> vObj = (VaadinViewUser<?>)obj;
-		boolean oidEqs = this.getOid() != null ? this.getOid().is(vObj.getOid())
-									 		   : vObj.getOid() != null ? false
-											 				 		   : true;	// both null
-		return oidEqs;
-	}
-	@Override
-	public int hashCode() {
-		return this.getOid() != null ? this.getOid().hashCode()
-									 : super.hashCode();
-	}
 }

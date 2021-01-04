@@ -1,4 +1,4 @@
-package r01ui.base.components.user;
+package r01f.ui.vaadin.security.user;
 
 import com.vaadin.data.Binder;
 import com.vaadin.ui.Component;
@@ -8,7 +8,6 @@ import com.vaadin.ui.Notification;
 import lombok.Getter;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
-import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
@@ -82,7 +81,6 @@ public abstract class VaadinUserFormBase<U extends User,V extends VaadinViewUser
 											   Notification.Type.ERROR_MESSAGE);
 			return false;
 		}
-		
 		// writes the [ui control] field values to the corresponding [view object properties]
 		return _vaadinUIBinder.writeBeanIfValid(viewObj);
 	}

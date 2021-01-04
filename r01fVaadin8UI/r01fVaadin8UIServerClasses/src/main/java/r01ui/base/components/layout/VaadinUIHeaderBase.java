@@ -1,6 +1,7 @@
 package r01ui.base.components.layout;
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -112,9 +113,9 @@ public abstract class VaadinUIHeaderBase
 		
 		// right user menu
 		_userMenu = new VaadinUserMenu(i18n,
-									  securityContext,
-									  rightComponent,
-									  supportedLangs);
+									   securityContext,
+									   rightComponent,
+									   supportedLangs);
 		
 		////////// Left [menu] [title]
 		HorizontalLayout lyLeft = new HorizontalLayout();
@@ -142,10 +143,17 @@ public abstract class VaadinUIHeaderBase
 		this.getCompositionRoot().setComponentAlignment(lyRight,Alignment.MIDDLE_RIGHT);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	LANGUAGE CHANGE EVENT LISTENER                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
+//	EVENT LISTENER                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Deprecated
 	public void addLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
-		_userMenu.addLanguageChangeEventListener(langEventListener);
+		_userMenu.setLanguageChangeEventListener(langEventListener);
+	}
+	public void setLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
+		_userMenu.setLanguageChangeEventListener(langEventListener);
+	}
+	public void addUserEditButtonClickListener(final ClickListener clickListener) {
+		_userMenu.addEditUserButtonClickListener(clickListener);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UIViewI18NMessagesCanBeUpdated                                                                          

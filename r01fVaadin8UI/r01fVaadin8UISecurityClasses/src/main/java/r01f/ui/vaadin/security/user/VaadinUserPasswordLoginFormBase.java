@@ -8,6 +8,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -161,6 +162,9 @@ public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends U
 													_btnChangePasswd);
 			this.setCompositionRoot(vly);
 			
+			// style
+			_txtLoginId.setReadOnly(true);	// cannot change
+			
 			// i18n
 			this.updateI18NMessages(_i18n);
 			
@@ -231,6 +235,9 @@ public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends U
 																																							  // the login has changed
 																																							  _detailLogin.setLoginId(viewLogin.getLoginId());
 																																							  this.hide();
+																																							  
+																																							  Notification.show(i18n.getMessage("securith.login.changed"),
+																																									  			Type.TRAY_NOTIFICATION);
 																																					    });
 																								  });
 										});
@@ -308,7 +315,11 @@ public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends U
 											Password oldPwd = Password.forId(_txtOldPassword.getValue());
 											Password newPwd = Password.forId(_txtNewPassword.getValue());
 											_presenter.onUserPasswordLoginPasswordChangeRequested(loginId,oldPwd,newPwd,
-																						    	  viewLogin -> this.hide());
+																						    	  viewLogin -> { 
+																										this.hide();
+																										Notification.show(i18n.getMessage("security.password.changed"),
+																														  Type.TRAY_NOTIFICATION);
+																						    	  });
 										});
 		}
 		////////// show / hide
@@ -438,7 +449,11 @@ public abstract class VaadinUserPasswordLoginFormBase<U extends User,L extends U
 																										VL viewLogin = _createViewUserPasswordLoginFrom(_userOid,
 																																						loginId,password);
 																										_presenter.onUserPasswordLoginCreateRequested(viewLogin,
-																																					  createdViewLogin -> this.hide());
+																																					  createdViewLogin -> {
+																																						  this.hide();
+																																						  Notification.show(i18n.getMessage("securith.login.created"),
+																																								  			Type.TRAY_NOTIFICATION);
+																																					  });
 																								  });
 										});
 		}

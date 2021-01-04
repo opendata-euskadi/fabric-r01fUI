@@ -135,6 +135,25 @@ public abstract class VaadinViewUser<U extends User>
 						   .setBirthDate(date);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	EMAIL
+/////////////////////////////////////////////////////////////////////////////////////////
+	public static final String MAIL_FIELD = "mail";
+	public EMail getMail() {
+		return _wrappedModelObject.getContactInfo() != null ? _wrappedModelObject.getContactInfo()
+																				 .getMailAddress()
+															: null;
+	}
+	public void setMail(final EMail mail) {
+		if (_wrappedModelObject.getContactInfo() == null) _wrappedModelObject.setContactInfo(new ContactInfo());
+		_wrappedModelObject.getContactInfo()
+						   .addMailAddress(ContactMail.createToBeUsedFor(ContactInfoUsage.PERSONAL)
+								   					  .mailTo(mail));
+	}
+	public String getMailAsStringOrNull() {
+		EMail email = this.getMail();
+		return email != null ? email.asString() : null;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	PHONE
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String PHONE_FIELD = "phone";
@@ -153,24 +172,5 @@ public abstract class VaadinViewUser<U extends User>
 	public String getPhoneAsStringOrNull() {
 		Phone phone = this.getPhone();
 		return phone != null ? phone.asString() : null;
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	EMAIL
-/////////////////////////////////////////////////////////////////////////////////////////
-	public static final String MAIL_FIELD = "eMail";
-	public EMail getEMail() {
-		return _wrappedModelObject.getContactInfo() != null ? _wrappedModelObject.getContactInfo()
-																				 .getMailAddress()
-															: null;
-	}
-	public void setEMail(final EMail mail) {
-		if (_wrappedModelObject.getContactInfo() == null) _wrappedModelObject.setContactInfo(new ContactInfo());
-		_wrappedModelObject.getContactInfo()
-						   .addMailAddress(ContactMail.createToBeUsedFor(ContactInfoUsage.PERSONAL)
-								   					  .mailTo(mail));
-	}
-	public String getEMailAsStringOrNull() {
-		EMail email = this.getEMail();
-		return email != null ? email.asString() : null;
 	}
 }

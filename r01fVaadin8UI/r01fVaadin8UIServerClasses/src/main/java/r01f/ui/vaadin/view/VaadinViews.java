@@ -1,11 +1,13 @@
 package r01f.ui.vaadin.view;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Binder;
@@ -163,7 +165,19 @@ public abstract class VaadinViews {
 				String viewObjFieldName = viewFieldAnnotation.bindToViewObjectFieldNamed();
 
 				Class<?> viewObjFieldType = BeanUtil.getPropertyType(viewObjectType,		// BEWARE!! there MUST exist a GETTER for the [view obj] field
-																	  viewObjFieldName);
+																	 viewObjFieldName);
+				if (viewObjFieldType == null) {
+					log.error("Could NOT find type of bean property {}.{} > ensure there exists the getter & setter methods!",
+							  viewObjectType,viewObjFieldName);
+					log.error("{} properties:",
+							  viewObjectType);
+					List<PropertyDescriptor> propertyDescriptors = BeanUtil.getBeanPropertyDescriptors(viewObjectType);
+					for (PropertyDescriptor desc : propertyDescriptors) {
+						log.error("\t\t-{} ({})",
+								  desc.getName(),desc.getPropertyType());
+					}
+					throw new IllegalStateException("Could NOT find type of bean property" + viewObjectType + "." + viewObjFieldName + " > ensure there exists the getter & setter methods!");
+				}
 
 				if (!canBeBinded) log.warn("{} view's component field {} of type {} cannot be 'automatically' binded to {}'s {} property of type {} since the component does NOT implement {}: it should be binded MANUALLY",
 										   view.getClass(),viewCompField.getName(),viewCompField.getType(),
@@ -397,9 +411,27 @@ public abstract class VaadinViews {
 		 && viewFieldAnnot.useValidatorType() != VaadinVoidViewFieldValidator.class) {
 			Class<? extends Validator> validatorType = viewFieldAnnot.useValidatorType();
 			try {
+				// create a validator instance
 				Validator validator = ReflectionUtils.createInstanceOf(validatorType,
 																	   new Class<?>[] { UII18NService.class },new Object[] { i18n });
-				bindingBuilder.withValidator(validator);
+				// if the field values is NOT required, the validator should NOT be run
+				// ... but sometimes the validator checks that the field value is NOT null
+				//	   so wrap the validator and return valid=true if field value is null
+				if (viewFieldAnnot.required() == false) {
+					Validator wrappingValidator = new Validator() {
+														
+														private static final long serialVersionUID = 6507813177664382465L;
+
+														@Override
+														public ValidationResult apply(final Object value,final ValueContext context) {
+															if (value == null || Strings.isNullOrEmpty(value.toString())) return ValidationResult.ok();
+															return validator.apply(value,context);
+														}
+												 };
+					bindingBuilder.withValidator(wrappingValidator);
+				} else {
+					bindingBuilder.withValidator(validator);
+				}
 			} catch (Throwable th) {
 				log.error("Could NOT create a view field validator of type {}; do the validator type has a {}-based constructor?: {}",
 						  validatorType,

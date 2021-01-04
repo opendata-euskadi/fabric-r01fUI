@@ -45,6 +45,7 @@ public abstract class VaadinUserEditPresenterBase<U extends User,L extends UserP
 		try {
 			U user = _coreMediator.loadUser(userOid);	// throws an exception if the user does NOT exists
 			VU viewUser = _viewUserFactory.from(user);
+			
 			subscriber.onSuccess(viewUser);
 		} catch (Throwable th) {
 			subscriber.onError(th);

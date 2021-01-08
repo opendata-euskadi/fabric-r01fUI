@@ -223,7 +223,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 											   _getWebAppUrlPath());
 		_justiziaLoginBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY, 
 										"justizia-button");
-		_justiziaLoginBtn.setIcon( new ThemeResource("img/justizia-32x32.ico"));
+		_justiziaLoginBtn.setIcon( new ThemeResource("img/logo_justizia.png"));
 		_xlnetsLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(justiziaLoginUrl, "_blank"));
 		
 		// User & password

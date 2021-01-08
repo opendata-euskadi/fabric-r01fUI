@@ -431,17 +431,16 @@ public abstract class VaadinViews {
 			}
 		}
 	}
-	@SuppressWarnings({ "rawtypes","unchecked" })
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	private static class VaadinNotRequiredWrappingValidator
-	   	      implements Validator {
+	private static class VaadinNotRequiredWrappingValidator<T>
+	   	      implements Validator<T> {
 		
 		private static final long serialVersionUID = 6507813177664382465L;
 
-		private final Validator _wrappedValidator;
+		private final Validator<T> _wrappedValidator;
 		
 		@Override
-		public ValidationResult apply(final Object value,final ValueContext context) {
+		public ValidationResult apply(final T value,final ValueContext context) {
 			if (value == null || Strings.isNullOrEmpty(value.toString())) return ValidationResult.ok();
 			return _wrappedValidator.apply(value,context);
 		}

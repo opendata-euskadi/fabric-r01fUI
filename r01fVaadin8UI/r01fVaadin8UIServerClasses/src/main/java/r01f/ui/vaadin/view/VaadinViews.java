@@ -418,16 +418,7 @@ public abstract class VaadinViews {
 				// ... but sometimes the validator checks that the field value is NOT null
 				//	   so wrap the validator and return valid=true if field value is null
 				if (viewFieldAnnot.required() == false) {
-					Validator wrappingValidator = new Validator() {
-														
-														private static final long serialVersionUID = 6507813177664382465L;
-
-														@Override
-														public ValidationResult apply(final Object value,final ValueContext context) {
-															if (value == null || Strings.isNullOrEmpty(value.toString())) return ValidationResult.ok();
-															return validator.apply(value,context);
-														}
-												 };
+					Validator wrappingValidator = new VaadinNotRequiredWrappingValidator(validator);
 					bindingBuilder.withValidator(wrappingValidator);
 				} else {
 					bindingBuilder.withValidator(validator);
@@ -438,6 +429,21 @@ public abstract class VaadinViews {
 						  UII18NService.class,
 						  th.getMessage(),th);
 			}
+		}
+	}
+	@SuppressWarnings({ "rawtypes","unchecked" })
+	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+	private static class VaadinNotRequiredWrappingValidator
+	   	      implements Validator {
+		
+		private static final long serialVersionUID = 6507813177664382465L;
+
+		private final Validator _wrappedValidator;
+		
+		@Override
+		public ValidationResult apply(final Object value,final ValueContext context) {
+			if (value == null || Strings.isNullOrEmpty(value.toString())) return ValidationResult.ok();
+			return _wrappedValidator.apply(value,context);
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

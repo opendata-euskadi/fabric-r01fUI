@@ -4,7 +4,7 @@ VIEW STYLE
 View: VaadinLoginViewBase
 
 */
-div.v-app.r01uivaadinuiforstructureslogin, .login-title {
+div[class*="r01uivaadinui"][class$="login"], .login-title {
 		background-color: rgb(29, 123, 173);
 		.v-panel {
 			left: 25%;

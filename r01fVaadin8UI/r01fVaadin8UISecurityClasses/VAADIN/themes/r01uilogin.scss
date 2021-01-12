@@ -4,25 +4,28 @@ VIEW STYLE
 View: VaadinLoginViewBase
 
 */
-div[class*="r01uivaadinui"][class$="login"], .login-title {
+div[class*="r01uivaadinui"][class*="login"], .login-title {
 		background-color: rgb(29, 123, 173);
 		.v-panel {
 			left: 25%;
 			border: none;
 			background: rgb(29, 123, 173);
 		}
-}
+} 
 	
 .v-button-danger.google-button {
 	background: rgb(181, 52, 42) !important;
+	width: 93px;
 }
 
 .v-button-primary.xlnets-button {
 	background: rgb(24, 80, 120) !important;
+	width: 93px;
 }
 
 .v-button-primary.justizia-button {
-	background: rgb(142, 144, 212) !important; 
+	background: rgb(30, 34, 170) !important;
+	width: 93px; 
 }
 
 .login-lang-selector div .v-button-borderless, .v-label-login-title.v-label-h1 {

@@ -59,7 +59,7 @@ import r01f.util.types.Strings;
  * 			                                                        | [cancel]             [Create] |
  * 			                                                        +-------------------------------+
  */
-public abstract class VaadinoginFormForUserPasswordLBase<U extends User,L extends UserPasswordLogin,
+public abstract class VaadinLoginFormForUserPasswordBase<U extends User,L extends UserPasswordLogin,
 												  	     VU extends VaadinViewUser<U>,VL extends VaadinViewUserPasswordLogin<L>,
 												  	     P extends VaadinUserEditPresenterBase<U,L,?,?,
 													  										   VU,VL,?,?,
@@ -81,7 +81,7 @@ public abstract class VaadinoginFormForUserPasswordLBase<U extends User,L extend
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected VaadinoginFormForUserPasswordLBase(final UII18NService i18n,
+	protected VaadinLoginFormForUserPasswordBase(final UII18NService i18n,
 										 	  final P presenter) {
 		////////// services
 		super(i18n,
@@ -153,6 +153,7 @@ public abstract class VaadinoginFormForUserPasswordLBase<U extends User,L extend
 		////////// Constructor
 		private VaadinUserPasswordLoginDetailComponent(final UII18NService i18n) {
 			HorizontalLayout hlyLoginId = new HorizontalLayout(_txtLoginId,_btnChangeLoginId);
+			hlyLoginId.setComponentAlignment(_btnChangeLoginId, Alignment.BOTTOM_LEFT);
 			VerticalLayout vly = new VerticalLayout(hlyLoginId,
 													_btnChangePasswd);
 			this.setCompositionRoot(vly);

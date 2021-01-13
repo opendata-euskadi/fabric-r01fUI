@@ -1,11 +1,13 @@
 package r01f.ui.vaadin.security.user;
 
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Composite;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import r01f.model.security.login.google.GoogleLogin;
 import r01f.model.security.user.User;
@@ -68,8 +70,11 @@ public abstract class VaadinLoginFormForGoogleBase<U extends User,GL extends Goo
 		_frmLinked.setVisible(false);
 		
 		////////// Layout
-		CssLayout cssLayout = new CssLayout(_msgNotLinked);
-		this.setCompositionRoot(cssLayout);
+		VerticalLayout mainLayout = new VerticalLayout(_msgNotLinked, 
+													   _frmLinked);
+		
+		mainLayout.setMargin(true);
+		this.setCompositionRoot(mainLayout);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	PUBLIC INTERFACE
@@ -108,7 +113,9 @@ public abstract class VaadinLoginFormForGoogleBase<U extends User,GL extends Goo
 		private VaadinGoogleLoginNotLinkedComponent(final UII18NService i18n) {
 			// layout
 			HorizontalLayout hly = new HorizontalLayout(_lblNotLinked,_btnLink);
+			hly.setComponentAlignment(_lblNotLinked, Alignment.MIDDLE_LEFT);
 			this.setCompositionRoot(hly);
+			_lblNotLinked.setContentMode(ContentMode.HTML);
 			
 			// i18n
 			this.updateI18NMessages(_i18n);
@@ -119,7 +126,8 @@ public abstract class VaadinLoginFormForGoogleBase<U extends User,GL extends Goo
 		////////// i18n
 		@Override
 		public void updateI18NMessages(final UII18NService i18n) {
-			_lblNotLinked.setCaption(i18n.getMessage("security.login.providers.google.not-linked"));
+			String decoratedGoogleLabel = Strings.customized("<span class=\"v-label-bold\"><b>{}</b></span>", i18n.getMessage("security.login.method.google"));
+			_lblNotLinked.setValue(i18n.getMessage("security.login.providers.google.not-linked", decoratedGoogleLabel));
 			_btnLink.setCaption(i18n.getMessage("link"));
 		}
 	}
@@ -162,7 +170,7 @@ public abstract class VaadinLoginFormForGoogleBase<U extends User,GL extends Goo
 		////////// i18n
 		@Override
 		public void updateI18NMessages(final UII18NService i18n) {
-			_txtLoginId.setCaption(i18n.getMessage("user-login-id"));
+			_txtLoginId.setValue(i18n.getMessage("user-login-id"));
 			_btnUnLink.setCaption(i18n.getMessage("unlink"));
 		}
 	}

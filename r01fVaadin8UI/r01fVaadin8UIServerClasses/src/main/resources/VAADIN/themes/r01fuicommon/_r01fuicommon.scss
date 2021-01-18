@@ -1,0 +1,7 @@
+@import "../valo/valo";
+@import "r01fuilogin";
+
+@mixin r01fuicommon {
+	@include valo;
+	@include r01fuilogin; 
+}

@@ -200,7 +200,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 
 		VerticalLayout loginPanel = new VerticalLayout();
 		loginPanel.setHeightFull();
-		loginPanel.setWidth(60, Unit.PERCENTAGE);
+		loginPanel.setWidth(35, Unit.PERCENTAGE);
 		loginPanel.setMargin(false);
 		loginPanel.setSpacing(true);
 		Responsive.makeResponsive(loginPanel);
@@ -256,11 +256,6 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 									  "xlnets-button");
 		_xlnetsLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(xlnetsLoginUrl, "_blank"));
 		HorizontalLayout xlnetsLy = new HorizontalLayout(xlnetsIcon, _xlnetsLoginBtn);
-		xlnetsLy.setComponentAlignment(xlnetsIcon, Alignment.MIDDLE_RIGHT);
-		xlnetsLy.setComponentAlignment(_xlnetsLoginBtn, Alignment.MIDDLE_LEFT);
-		xlnetsLy.setExpandRatio(xlnetsIcon, 1);
-		xlnetsLy.setExpandRatio(_xlnetsLoginBtn, 3);
-		xlnetsLy.setWidthFull();
 		
 		// Google login
 		Image googleIcon = new Image();
@@ -273,11 +268,6 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 									"google-button");
 		_googleLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(gLoginUrl, "_blank"));
 		HorizontalLayout gLy = new HorizontalLayout(googleIcon, _googleLoginBtn);
-		gLy.setComponentAlignment(googleIcon, Alignment.MIDDLE_RIGHT);
-		gLy.setComponentAlignment(_googleLoginBtn, Alignment.MIDDLE_LEFT);
-		gLy.setExpandRatio(googleIcon, 1);
-		gLy.setExpandRatio(_googleLoginBtn, 3);
-		gLy.setWidthFull();
 		
 		// Justizia login
 		Image jzIcon = new Image();
@@ -290,11 +280,6 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 										"justizia-button");
 		_justiziaLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(justiziaLoginUrl, "_blank"));
 		HorizontalLayout jzLy = new HorizontalLayout(jzIcon, _justiziaLoginBtn);
-		jzLy.setComponentAlignment(jzIcon, Alignment.MIDDLE_RIGHT);
-		jzLy.setComponentAlignment(_justiziaLoginBtn, Alignment.MIDDLE_LEFT);
-		jzLy.setExpandRatio(jzIcon, 1);
-		jzLy.setExpandRatio(_justiziaLoginBtn, 3);
-		jzLy.setWidthFull();
 		jzLy.setVisible(false); //future implementation
 		
 		_buttonsLy.addComponents(xlnetsLy, 

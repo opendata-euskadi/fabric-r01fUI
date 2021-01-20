@@ -28,7 +28,7 @@ public abstract class VaadinUserRolesByAuthResourceCOREMediatorBase<U extends Us
 																	R extends AuthorizationTargetResourceBase<R>,RS extends SummarizedAuthorizationResourceBase<R>,
 																	O extends UserAuthorizationOnResource,
 																	S extends SecurityContext,
-																	A extends SecurityAPIBase<U,?,?,R,RS,O>>
+																	A extends SecurityAPIBase<U,?,?,?,?,R,RS,O>>
   		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS

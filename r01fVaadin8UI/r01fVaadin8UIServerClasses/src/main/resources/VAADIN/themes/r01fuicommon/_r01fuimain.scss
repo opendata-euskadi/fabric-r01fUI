@@ -1,0 +1,417 @@
+$v-selection-color:#007ca9;
+@mixin r01fuimain {
+	////////// Text-field: force uppercase
+	.v-textfield-upper-case {
+    	text-transform: uppercase;
+	}
+
+	////////// Edit
+	.r01ui-create-edit-detail-view .v-caption {
+		font-weight: bold;
+	}
+
+	.r01ui-create-edit-detail-view {
+		.v-spacing {
+			height: 30px;
+		}
+	}
+
+	////////// Paddings
+    .v-gridlayout-no-padding .v-gridlayout-slot, .v-gridlayout-no-padding .v-gridlayout-slot .v-caption {
+    	padding-left: 0 !important;
+    	padding-right: 0 !important;
+    }
+
+	.no-padding {
+		padding: 0!important;
+	}
+
+	.no-padding-top {
+		padding-top: 0px!important;
+	}
+
+	.no-padding-left {
+		padding-left: 0px!important;
+	}
+
+	.no-margin-top {
+		margin-top: 0px!important;
+	}
+
+	.no-margin-bottom {
+		margin-bottom: 0px!important;
+	}
+
+	.padding-top {
+		padding-top: 20px !important;
+	}
+	.padding-bottom{
+		padding-bottom: 20px !important;
+	}
+	.overflow-y-auto{
+		overflow-y: auto;
+	}
+
+	////////// Hide
+	.hide {
+		display: none;
+	}
+
+	////////// Sizings
+	.v-slot-combo-medium {
+		.v-captiontext {
+			font-weight: bold;
+		}
+		width: 220px;
+	}
+
+	.v-slot-combo-big {
+		.v-captiontext {
+			font-weight: bold;
+		}
+		width: 550px;
+	}
+
+	.v-slot-input-medium {
+		width: 220px;
+	}
+
+	.v-slot-input-big {
+		width: 550px!important;
+		.v-widget.v-has-caption.v-caption-on-top {
+			width:100%!important;
+		}
+		input {
+			width: 100%;
+		}
+	}
+
+	.v-slot-input-huge {
+		width: 650px!important;
+		.v-widget.v-has-caption.v-caption-on-top {
+			width:100%!important;
+		}
+		input {
+			width: 100%;
+		}
+
+	}
+
+	.v-slot-textarea-big {
+		width: 550px!important;
+		.v-widget.v-has-caption.v-caption-on-top {
+			width:100%!important;
+		}
+	}
+
+	.v-slot-datefield-medium {
+		width: 300px!important;
+		.v-widget.v-has-caption.v-caption-on-top {
+			width:100%!important;
+		}
+	}
+
+	.v-slot-grid-container-medium {
+		width: 100%!important;
+	}
+
+
+	////////// lbl-add-button
+	.v-slot-lbl-add-button {
+//		border-bottom: 2px solid #e0e0e0;
+	    padding-bottom: 10px;
+		.v-label {
+			font-size: 16px;
+			line-height: normal;
+			color: $app-color;
+			font-weight: bold;
+			display: block;
+			overflow: auto;
+			margin-top: 10px;
+			margin-right: 5px;
+			padding-left: 20px;
+		}
+	}
+
+	.v-slot-add-button {
+		vertical-align: bottom;
+	}
+
+	.lbl-add-button .add-button {
+		background: white;
+		border: 1px solid lightgray;
+		background: $app-color;
+		border: none;
+		box-shadow: none;
+		height: 24px;
+   		width: 30px;
+   		padding-left: 7px;
+    	padding-top: 0;
+		border-radius: 5px;
+	}
+
+	.lbl-add-button .add-button:hover:after {
+		color: $app-color;
+	}
+
+	.lbl-add-button .add-button .v-icon {
+		color: $app-color;
+		font-weight: bold;
+		font-size: 16px;
+	}
+
+	////////// Add button
+    .add-button {
+		background: white;
+		border: 1px solid lightgray;
+        border-radius: 8px;
+	}
+
+	.add-button .v-button-caption {
+        color: white;
+        font-size: 14px;
+    }
+
+    .add-button .v-icon {
+		color: $app-color;
+		font-weight: bold;
+        font-size: 11px;
+    }
+
+	////////// Primary & secondary button
+	.secondary-button {
+		.v-button-caption {
+			color: black;
+			font-size: 13px;
+			font-weight: bold;
+		}
+	}
+
+	.primary-button .v-icon {
+		color: white;
+	}
+
+	.v-button-primary {
+		background: $app-color;
+		box-shadow: none;
+	}
+
+	////////// labelwithicon
+	.v-label-label-with-icon {
+		color: $app-color;
+		font-weight: bold;
+		margin-top:0px!important;
+		span.v-icon {
+			color:$app-color;
+			font-size: 24px;
+		}
+	}
+
+	////////// Collection Manage Component
+	div.r01-collection-manage-summary {
+		background-color: beige;
+	}
+	div.r01-collection-manage-summary-selected {
+		background-color: burlywood !important;
+	}
+	div.r01-collection-manage-summary:hover {
+		background-color: burlywood !important;
+		cursor: pointer;
+	}
+
+	////////// Grid
+	.v-grid-stripes .v-grid-tablewrapper {
+		border: 0px;
+	}
+	.v-grid-stripes .v-grid-row > td {
+		background: #f8f9f9;
+		border: 0px;
+		border-bottom: 1px solid;
+		border-bottom-color: #eee;
+    	font-weight: bold;
+	}
+	.v-grid-stripes .v-grid-row-selected > .v-grid-cell {
+    	background: grey;
+    	color: black;
+    	font-weight: bold;
+	}
+	.v-grid-cell {
+		text-overflow: unset;
+	}
+	.v-grid-stripes .v-grid-header .v-grid-cell {
+		border: 0px;
+		background: white;
+		background-image: none;
+		border-bottom: 2px solid;
+		border-bottom-color: #eee;
+		color: grey;
+		font-weight: bold;
+	}
+	.v-grid-stripes .v-grid-row-selected > .v-grid-cell {
+		background: #eee;
+	}
+	.component-wrap {
+		.grid-dots-menu {
+			.v-menubar-menuitem {
+				color: $app-color;
+			}
+		}
+	}
+	.r01ui-grid-no-border .v-grid-tablewrapper {
+	      border: none;
+	}
+	.r01ui-grid-cell-no-border .v-grid {
+	        .v-grid-cell {
+	            border: none;
+	        }
+	    }
+	.r01ui-object-grid-component {
+		@extend .no-padding-left;
+		padding-top: 10px!important;
+		background: white;
+		border: 1px solid lightgrey;
+		padding-right: 0;
+		.v-menubar-menuitem {
+			color: $app-color;
+		}
+	}
+	.r01ui-white-bordered-layout{
+		background: white;
+		border: 1px solid lightgrey;
+	}
+	.popupContent {
+		.v-menubar-submenu-r01ui-menubar {
+			.v-menubar-menuitem {
+				background: white;
+				color: $app-color;
+			}
+			.v-menubar-menuitem-selected {
+				background:$app-color;
+				color: white;
+			}
+		}
+	}
+	.popupContent {
+		.grid-dots-menu {
+			margin-top: 0px;
+			.v-menubar-menuitem {
+				padding-left: 10px;
+	    		padding-right: 10px;
+				min-width: 120px;
+				.v-icon.Vaadin-Icons {
+					margin: 0px 10px 0px 0px;
+				}
+			}
+		}
+	}
+	.popupContent {
+		.grid-dots-menu {
+			.v-menubar-menuitem.v-menubar-menuitem-selected {
+				background-color: $v-selection-color;
+				font-weight: normal;
+				text-shadow: none;
+				color: white;
+			}
+			margin-top: 0px;
+			.v-menubar-menuitem {
+				background: white;
+				color: black;
+				padding-left: 10px;
+	    		padding-right: 10px;
+				min-width: 120px;
+				border-bottom: 1px solid lightgrey;
+				.v-icon.Vaadin-Icons {
+					margin: 0px 10px 0px 0px;
+				}
+			}
+			.v-menubar-menuitem:focus {
+				border: none;
+			}
+		}
+	}
+
+	////////// grid lbl no results
+	.grid-lbl-no-results {
+		padding-left: 54px;
+    	margin-top: 7px;
+    	margin-bottom: 7px;
+		color: $app-color;
+		font-weight: bold;
+		font-style: italic;
+	}
+
+
+	////////// edit-view
+	.v-splitpanel-first-container-edit-view {
+		width: 277px!important;
+	}
+	.r01ui-create-edit-detail-window {
+		padding-left: 10px;
+		padding-top: 0px;
+		padding-left: 0px;
+	}
+
+	////////// Option group
+	.v-select-optiongroup-option-group-inline {
+		.v-select-option {
+    		display: inline;
+		}
+	}
+
+	////////// Checkbox
+	.v-slot-checkbox-default .v-verticallayout {
+	    padding-top: 0px;
+	    padding-left: 0px;
+	}
+
+	.v-slot-checkbox-default label {
+			color: #474747;
+			font-size: 14px;
+			font-weight: 700;
+			min-width: 100px;
+		    margin-left: 20px;
+		    margin-top: 5px;
+			height: 25px;
+	}
+
+	.v-slot-checkbox-default .v-checkbox input[type="checkbox"]+label::before {
+		width: 30px;
+		height: 30px;
+		background: #E2E2E2;
+		border-radius: 8px;
+		border: unset;
+	}
+
+	.v-slot-checkbox-default .v-checkbox input[type="checkbox"]:checked+label::before, .common-checkbox input[type="checkbox"]:checked+label::after {
+		width: 30px;
+		height: 30px;
+		background: #2189C9;
+		border-radius: 8px;
+		color: white;
+		content: "\f00c";
+		font-family: ThemeIcons;
+		font-size: 25px;
+		padding-top: 5px;
+    }
+
+	.v-slot-checkbox-default .v-checkbox input[type="checkbox"] {
+		display:none;
+	}
+
+	.v-slot-checkbox-default .v-checkbox > input ~ label:after {
+		display:none;
+	}
+	
+	/// allow line break
+	.r01platea-url-builder{
+		.v-label-undef-w {
+			white-space:  normal;
+		}
+	}
+	span.highlight,
+	span.highlight::selection  {
+		color: white;
+		font-weight: bold;
+		background-color: $v-selection-color;
+	}
+}

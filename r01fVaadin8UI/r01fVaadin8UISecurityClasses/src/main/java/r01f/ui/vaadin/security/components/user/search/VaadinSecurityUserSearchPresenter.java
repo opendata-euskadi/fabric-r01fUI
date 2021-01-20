@@ -15,7 +15,7 @@ import r01f.util.types.collections.Lists;
 
 public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends VaadinViewUser<U>,
 														C extends VaadinSecurityUserSearchCOREMediator<U,
-																									   ? extends SecurityAPIBase<U,?,?,?,?,?>>>
+																									   ? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>
   		   implements UIPresenter {
 
 	private static final long serialVersionUID = -4624456885123354572L;

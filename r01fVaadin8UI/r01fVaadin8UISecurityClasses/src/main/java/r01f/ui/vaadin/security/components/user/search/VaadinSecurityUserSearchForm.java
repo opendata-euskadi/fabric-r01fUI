@@ -43,7 +43,7 @@ import r01f.util.types.collections.Lists;
 public abstract class VaadinSecurityUserSearchForm<U extends User,V extends VaadinViewUser<U>,
 										  		   P extends VaadinSecurityUserSearchPresenter<U,V,
 										  											  		   ? extends VaadinSecurityUserSearchCOREMediator<U,
-																									   								 		  ? extends SecurityAPIBase<U,?,?,?,?,?>>>>
+																									   								 		  ? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>>
 	 		  extends Composite
 	 	   implements VaadinViewI18NMessagesCanBeUpdated {
 
@@ -123,7 +123,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 															   .setResizable(false)
 															   .setSortable(false)
 															   .setId("phone");
-		Grid.Column<V,String> colEMail = _gridUsers.addColumn(V::getEMailAsStringOrNull)
+		Grid.Column<V,String> colEMail = _gridUsers.addColumn(V::getMailAsStringOrNull)
 															   .setResizable(false)
 															   .setSortable(false)
 															   .setId("email");

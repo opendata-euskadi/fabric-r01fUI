@@ -10,6 +10,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -40,17 +41,13 @@ import r01f.util.types.locale.Languages;
  *    [user info    ]
  *    +-------------+ 
  *    | [component] | 
+ *    | last login  |
+ *    | [User edit] |
  *    |             | 
  *    | [en] [es]   |
  *    |             | 
  *    | [sign out]  | 
  *    +-------------+ 
- * 
- * 
- * 
- * 
- * 
- * 
  * </pre>
  */
 @RequiredArgsConstructor
@@ -64,10 +61,13 @@ public class VaadinUserMenu
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Button _btnUser;
 	private final Component _component;
+	private final Label _lblLastConnection;
+	private final Button _btnUserEdit;
+	private final Label  _lblLanguageChange;
 	private final VaadinLangButtons _langChangeButtons;
 	private final Button _btnSignOut; 
-	private final Label  _lblLanguageChange;
-	private final Label _lblLastConnection;
+	
+	private final PopupView _popup; 
 	
 	private R01UILanguageChangeEventListener _langEventListener;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -92,80 +92,88 @@ public class VaadinUserMenu
 			_component.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
 			ly.addComponent(_component);
 		}
-		// change language
-		Collection<R01UILangButton> langButtons = _createLanguageChangeButtons(supportedLangs);
-		_langChangeButtons = new VaadinLangButtons(langButtons);
-		HorizontalLayout hlLangs = new HorizontalLayout();
+		
+		// last connection
 		_lblLastConnection = new Label();
 		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
-		
 		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
-								  					  securityContext != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
-								  							  					     .formatDateWithTimeToSeconds(securityContext.getCreateDate())  
-										  						   	    	  : "not known"));
+								  					   securityContext != null ? Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+								  							  					      .formatDateWithTimeToSeconds(securityContext.getCreateDate())  
+										  						   	    	   : "not known"));
 		ly.addComponent(_lblLastConnection);
+		
+		// user details
+		_btnUserEdit = new Button(i18n.getMessage("security.user.edit"),
+								  VaadinIcons.EDIT);
+		_btnUserEdit.addStyleNames(ValoTheme.BUTTON_LINK,
+								   ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
+		ly.addComponent(_btnUserEdit);
+		
+		// language change
 		_lblLanguageChange = new Label(i18n.getMessage("language.change"));
 		_lblLanguageChange.addStyleName(ValoTheme.LABEL_BOLD);
+		
+		HorizontalLayout hlLangs = new HorizontalLayout();
 		hlLangs.addComponent(_lblLanguageChange);
 		hlLangs.setExpandRatio(_lblLanguageChange,1);
+		
+		Collection<R01UILangButton> langButtons = _createLanguageChangeButtons(supportedLangs);
+		_langChangeButtons = new VaadinLangButtons(langButtons);
 		if (_langChangeButtons.hasData()) {
 			FluentIterable.from(_langChangeButtons)
 						  .forEach(btn -> hlLangs.addComponent(btn.getButton()));
 			_langChangeButtons.setCurrent(Languages.of(i18n.getCurrentLocale()));
 			ly.addComponent(hlLangs);
 		}
+		
 		// sign out
 		_btnSignOut = new Button(i18n.getMessage("session.close"),
-									   VaadinIcons.SIGN_OUT);
-		
+								 VaadinIcons.SIGN_OUT);
 		_btnSignOut.addStyleNames(ValoTheme.BUTTON_LINK,
-								 ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
+								  ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
 		_btnSignOut.addClickListener(event -> {
-												// the redir to the login page MUST done BEFORE closing the session, 
-												// as the UI or page are not available after that
-												// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
-												if (securityContext.getLoginUrl() != null) Page.getCurrent()
-																			  				   .setLocation(securityContext.getLoginUrl().asString());
-												// close the session & remove the security data
-												// BEWARE!! close & invalidate the session
-												UI.getCurrent()
-												  .getSession().close();
-												VaadinService.getCurrentRequest()
-															 .getWrappedSession()
-															 .invalidate();		
-												// remove the user context from the thread-local
-												SecurityContextStoreAtThreadLocalStorage.remove();
+										// the redir to the login page MUST done BEFORE closing the session, 
+										// as the UI or page are not available after that
+										// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
+										if (securityContext.getLoginUrl() != null) Page.getCurrent()
+																	  				   .setLocation(securityContext.getLoginUrl().asString());
+										// close the session & remove the security data
+										// BEWARE!! close & invalidate the session
+										UI.getCurrent()
+										  .getSession().close();
+										VaadinService.getCurrentRequest()
+													 .getWrappedSession()
+													 .invalidate();		
+										// remove the user context from the thread-local
+										SecurityContextStoreAtThreadLocalStorage.remove();
 									});
 		ly.addComponent(_btnSignOut);
 		
-		
 		////////// Popup
-		PopupView popup = new PopupView(null,
-        								ly);
-		popup.setStyleName("r01ui-userMenu");
-		popup.setHideOnMouseOut(false);
+		_popup = new PopupView(null,
+        					   ly);
+		_popup.setStyleName("r01ui-userMenu");
+		_popup.setHideOnMouseOut(false);
 		
 		this.getCompositionRoot()
-			.addComponent(popup);
+			.addComponent(_popup);
 		
 		////////// User
-		_btnUser = _createUserInfo(i18n,
-								   securityContext);
-		if (_btnUser != null) {			
-			_btnUser.addClickListener(click -> popup.setPopupVisible(true));
-			this.getCompositionRoot()
-				.addComponent(_btnUser);
-		}
+		_btnUser = _createUserInfoButton(i18n,
+								   		 securityContext);
+		_btnUser.addClickListener(click -> _popup.setPopupVisible(true));
+		this.getCompositionRoot()
+			.addComponent(_btnUser);
 	}
 	@Override
 	public HorizontalLayout getCompositionRoot() {
 		return (HorizontalLayout)super.getCompositionRoot();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	USER BUTTON                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static Button _createUserInfo(final UII18NService i18n,
-								   		  final SecurityContext securityContext) {
+	private static Button _createUserInfoButton(final UII18NService i18n,
+								   		  		final SecurityContext securityContext) {
 		String userName = securityContext != null ? securityContext.asForUser()
 																   .getDisplayName()
 												  : null;
@@ -177,40 +185,38 @@ public class VaadinUserMenu
 		btnUser.setCaption(userName);
 		return btnUser;
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	LANGUAGE BUTTONS
+/////////////////////////////////////////////////////////////////////////////////////////	
 	private Collection<R01UILangButton> _createLanguageChangeButtons(final Language... supportedLangs) {
 		if (CollectionUtils.isNullOrEmpty(supportedLangs)) return null;
 		
 		return FluentIterable.from(supportedLangs)
 					.transform(lang -> {
-										Button btnLang = new Button();
-										btnLang.setCaption(Languages.languageLowerCase(lang));
-										btnLang.addClickListener(e -> {	// fire a lang changed event
-																		if (_langEventListener != null) {
-																			// current locale (before change)
-																			Language currLang = Languages.of(UI.getCurrent().getLocale());
-																			
-																			// build the event
-																			R01UILanguageChangeEvent evt = new R01UILanguageChangeEvent(VaadinUserMenu.this,
-																																		currLang,lang);
-																			// change the ui locale
-																			UI.getCurrent().setLocale(Languages.getLocale(lang));
-																			
-																			// update the lang buttons
-																			_langChangeButtons.setCurrent(lang);
-																			
-																			// raise an event
-																			_langEventListener.languageChanged(evt);
-																			
-
-																		}
-																	  });
-										return new R01UILangButton(lang,btnLang);
-									   })
+									Button btnLang = new Button();
+									btnLang.setCaption(Languages.languageLowerCase(lang));
+									btnLang.addClickListener(clickEvent -> {	// fire a lang changed event
+																	if (_langEventListener != null) {
+																		// current locale (before change)
+																		Language currLang = Languages.of(UI.getCurrent().getLocale());
+																		
+																		// build the event
+																		R01UILanguageChangeEvent evt = new R01UILanguageChangeEvent(VaadinUserMenu.this,
+																																	currLang,lang);
+																		// change the ui locale
+																		UI.getCurrent().setLocale(Languages.getLocale(lang));
+																		
+																		// update the lang buttons
+																		_langChangeButtons.setCurrent(lang);
+																		
+																		// raise an event
+																		_langEventListener.languageChanged(evt);
+																	}
+															 });
+									return new R01UILangButton(lang,btnLang);
+							  })
 					.toList();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 	private class VaadinLangButtons
 	   implements Iterable<R01UILangButton>, 
@@ -261,34 +267,17 @@ public class VaadinUserMenu
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	LANGUAGE CHANGE EVENT LISTENER                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
-	public void addLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
+//	EVENTS                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void addEditUserButtonClickListener(final ClickListener clickListener) {
+		_btnUserEdit.addClickListener(clickEvent -> {
+											clickListener.buttonClick(clickEvent);
+											_popup.setPopupVisible(false);	
+									  });
+	}
+	public void setLanguageChangeEventListener(final R01UILanguageChangeEventListener langEventListener) {
 		_langEventListener = langEventListener;
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	I18N                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public void updateI18NMessages(final UII18NService i18n) {
-		// tell the menu to update the messages
-		if (_component != null
-		 && _component instanceof VaadinViewI18NMessagesCanBeUpdated) {
-			VaadinViewI18NMessagesCanBeUpdated i18nAwareComp = (VaadinViewI18NMessagesCanBeUpdated)_component;
-			i18nAwareComp.updateI18NMessages(i18n);
-		}
-		_btnSignOut.setCaption(i18n.getMessage("session.close"));
-		_lblLanguageChange.setValue(i18n.getMessage("language.change"));
-		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
-								  					  SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
-								  							  					     								 .formatDate(SecurityContextStoreAtThreadLocalStorage.get()
-								  							  					     										 											 .getCreateDate()
-								  							  					     										 	)  
-								  							  					     						 : "not known"));		
-	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//	EVENTS                                                                          
-/////////////////////////////////////////////////////////////////////////////////////////	
 	@Accessors(prefix="_")
 	public class R01UILanguageChangeEvent 
 	     extends Component.Event {
@@ -308,5 +297,26 @@ public class VaadinUserMenu
 	public interface R01UILanguageChangeEventListener 
 	         extends Serializable {
 		void languageChanged(R01UILanguageChangeEvent event);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	I18N                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void updateI18NMessages(final UII18NService i18n) {
+		// tell the menu to update the messages
+		if (_component != null
+		 && _component instanceof VaadinViewI18NMessagesCanBeUpdated) {
+			VaadinViewI18NMessagesCanBeUpdated i18nAwareComp = (VaadinViewI18NMessagesCanBeUpdated)_component;
+			i18nAwareComp.updateI18NMessages(i18n);
+		}
+		_btnUserEdit.setCaption(i18n.getMessage("security.user.edit"));
+		_lblLanguageChange.setValue(i18n.getMessage("language.change"));
+		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
+								  					  SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+								  							  					     								 .formatDate(SecurityContextStoreAtThreadLocalStorage.get()
+								  							  					     										 											 .getCreateDate()
+								  							  					     										 	)  
+								  							  					     						 : "not known"));
+		_btnSignOut.setCaption(i18n.getMessage("session.close"));
 	}
 }

@@ -97,6 +97,7 @@ public abstract class VaadinUserRolesInAuthResourceEditPopUpBase<U extends User,
 
 		// style
 		this.setModal(true);
+		this.center();
 		this.setWidth(80,Unit.PERCENTAGE);
 		this.setCaption(i18n.getMessage("select"));
 	}
@@ -148,7 +149,7 @@ public abstract class VaadinUserRolesInAuthResourceEditPopUpBase<U extends User,
 		// ... so that areas must be handed to the form's #enterCreate() method
 		Collection<T> existingObjs = _getExistingAuthResourceRelatedBusinessObjs();
 		_form.enterCreate(existingObjs);
-
+		
 		UI.getCurrent()
 		  .addWindow(this);
 	}

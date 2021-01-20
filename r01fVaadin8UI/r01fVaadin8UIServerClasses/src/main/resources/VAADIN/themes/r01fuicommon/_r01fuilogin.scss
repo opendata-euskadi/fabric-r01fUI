@@ -5,13 +5,8 @@
 	View: VaadinLoginViewBase
 	
 	*/
-	div[class*="r01uivaadinui"][class*="login"], .login-title {
-			background-color: rgb(29, 123, 173);
-			.v-panel {
-				left: 25%;
-				border: none;
-				background: rgb(29, 123, 173);
-			}
+	.r01uilogin, .login-title {
+		background-color: rgb(29, 123, 173);
 	} 
 		
 	.v-button-danger.google-button {
@@ -42,7 +37,7 @@
 		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 		overflow: visible !important;
 	}
-	div.fields .v-caption-inline-icon span.v-icon {
+	div.form-fields .v-caption-inline-icon span.v-icon {
 		left: auto;
 	}
 }

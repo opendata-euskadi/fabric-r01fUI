@@ -19,6 +19,38 @@ import lombok.experimental.Accessors;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.tinymceeditor.TinyMCETextField;
 
+/**
+ * Component to use TinyMCETextField and solve addon implementation problems
+ * 
+ * <pre>
+ * 
+ * 		COMPONENT
+ * 		+====================================================+ 
+ * 		| Caption							 	Edit button	 |
+ * 		| +------------------------------------------------+ |
+ * 		| |                                                | |
+ *      | | CSSLaout		                               | |
+ *      | |  											   | |
+ * 		| |                                                | |
+ *      | +------------------------------------------------+ |
+ *      +====================================================+ 
+ *      
+ *      MODAL WINDOW
+ *      +====================================================+
+ * 		| Caption (Same component caption)			 	 	 |
+ * 		| +------------------------------------------------+ |
+ * 		| |                                                | |
+ *      | | Tiny Editor		                               | |
+ *      | |  											   | |
+ * 		| |                                                | |
+ *      | +------------------------------------------------+ |
+ *      | Close                                       Accept |
+ *      +====================================================+
+ *      
+ *      
+ * </pre>
+ */
+
 @Accessors(prefix="_")
 public class TinyMCETextFieldComponent 
      extends CustomField<String> {
@@ -76,9 +108,11 @@ public class TinyMCETextFieldComponent
 
 	@Override
 	protected void doSetValue(String value) {
-		_hiddenField.setValue(value);
 		_html.removeAllComponents();
-		_html.addComponent(new Label(value, ContentMode.HTML));
+		if(value != null) {
+			_hiddenField.setValue(value);
+			_html.addComponent(new Label(value, ContentMode.HTML));
+		}
 		
 	}
 	@Override

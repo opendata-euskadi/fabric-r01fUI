@@ -1,6 +1,7 @@
 package r01f.ui.vaadin.tinymceeditor;
 
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.TextField;
 
 import r01f.ui.vaadin.tinymceeditor.shared.TinymceState;
@@ -26,7 +27,7 @@ public class TinyMCETextField
 	public TinyMCETextField() {
 		super();
 		this.setWidth("100%");
-		this.setHeight("280px");
+		this.setHeight(380,Unit.PIXELS);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

@@ -193,7 +193,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////	
-	private Component _buildLoginForm() {
+	protected Component _buildLoginForm() {
 		VerticalLayout root = new VerticalLayout();
 		root.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 		root.setSizeFull();
@@ -223,7 +223,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		return root;
 	}
 	
-	private Component _buildTitle() {
+	protected Component _buildTitle() {
 		_welcome.setSizeUndefined();
 		_welcome.addStyleNames(ValoTheme.LABEL_H1,
 		 					  ValoTheme.LABEL_BOLD,
@@ -232,7 +232,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		return _welcome;
 	}
 		
-	private Component _buildMainLayout() {
+	protected Component _buildMainLayout() {
 		VerticalLayout mainLy = new VerticalLayout();
 		mainLy.addStyleName(R01UISecurityTheme.LOGIN_PANEL);
 		mainLy.setSizeFull();
@@ -329,7 +329,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		return new Panel(mainLy);
 	}
 
-	private Component _buildLangSelector(final Language... lang) {
+	protected Component _buildLangSelector(final Language... lang) {
 
 		HorizontalLayout langSelector = new HorizontalLayout();
 		langSelector.setMargin(false);

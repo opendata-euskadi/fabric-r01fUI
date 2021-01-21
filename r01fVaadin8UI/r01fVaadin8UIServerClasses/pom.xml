@@ -49,6 +49,11 @@
 			<artifactId>r01fUIClasses</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>r01.r01f.ui.vaadin</groupId>
+			<artifactId>r01fVaadin8UITinyEditorAddOnClasses</artifactId>
+			<version>${revision}</version>
+		</dependency>
 
 		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin                                    -->

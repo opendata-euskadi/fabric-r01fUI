@@ -1,4 +1,4 @@
-package r01fui.base.components.tinymceeditor;
+package r01ui.base.components.tinyeditor;
 
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
@@ -18,6 +18,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.tinymceeditor.TinyMCETextField;
+import r01f.util.types.Strings;
 
 /**
  * Component to use TinyMCETextField and solve addon implementation problems
@@ -64,20 +65,28 @@ public class TinyMCETextFieldComponent
 	private CssLayout _html = new CssLayout();
 	private TextField _hiddenField = new TextField();
 ////////////////////////////////////////////////////////////////////////////////////////////
-//	METHODS
+//	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public TinyMCETextFieldComponent(){
 		super();
+		_html.setWidth(100,Unit.PERCENTAGE);
+		_html.setHeight(300, Unit.PIXELS);
 	}
 	public TinyMCETextFieldComponent(final UII18NService i18n){
-		_i18n = i18n;
+		this(i18n, null);
 	}
 	
 	public TinyMCETextFieldComponent(final UII18NService i18n, final String caption){
 		_i18n = i18n;
-		_caption.setValue(caption);
+		if(Strings.isNOTNullOrEmpty(caption)){
+			_caption.setValue(caption);
+		}
+		_html.setWidth(100,Unit.PERCENTAGE);
+		_html.setHeight(300, Unit.PIXELS);
 	}
-	
+////////////////////////////////////////////////////////////////////////////////////////////
+//	METHODS
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	protected Component initContent() {
 		VerticalLayout layout = new VerticalLayout();
@@ -94,8 +103,6 @@ public class TinyMCETextFieldComponent
 		hl.setComponentAlignment(btn, Alignment.BOTTOM_RIGHT);
 		hl.setComponentAlignment(_caption, Alignment.BOTTOM_LEFT);
 		layout.addComponent(hl);
-		_html.setWidth(100,Unit.PERCENTAGE);
-		_html.setHeight(300, Unit.PIXELS);
 		_html.addStyleName("r01ui-html-box");
 		layout.addComponent(_html);
 		
@@ -124,20 +131,28 @@ public class TinyMCETextFieldComponent
 	public Registration addValueChangeListener(ValueChangeListener<String> listener) {
 		return _hiddenField.addValueChangeListener(listener);
 	}
+	
+	@Override
+	public void setHeight(float height, Unit unit) {
+		super.setHeight(height, unit);
+		if(unit.equals(Unit.PIXELS)) {
+			_html.setHeight(height-80, Unit.PIXELS);
+		}
+			
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	private methods
 /////////////////////////////////////////////////////////////////////////////////////////
 	private void _openEditor() {
 		Window w = new Window(_caption.getValue());
+		w.setId("tinyEditor");
 		w.setCaptionAsHtml(true);
-		w.setModal(true);
 		_tinyEditor = new TinyMCETextField();
 		_tinyEditor.setValue(_hiddenField.getValue());
-		w.setModal(true);
-		w.setResizable(false);
+		w.setResizable(true);
 		w.center();
 		w.setWidth(800, Unit.PIXELS);
-		w.setHeight(500, Unit.PIXELS);
+		w.setHeight(600, Unit.PIXELS);
 		VerticalLayout vl = new VerticalLayout();
 		vl.setSizeFull();
 		w.setContent(vl);
@@ -155,8 +170,9 @@ public class TinyMCETextFieldComponent
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.addComponents(close, accept);
 		hl.setWidth(100, Unit.PERCENTAGE);
+		hl.setExpandRatio(close, 1);
 		hl.setComponentAlignment(accept, Alignment.BOTTOM_RIGHT);
-		hl.setComponentAlignment(close, Alignment.BOTTOM_LEFT);
+		hl.setComponentAlignment(close, Alignment.BOTTOM_RIGHT);
 		vl.addComponent(hl);
 		vl.setExpandRatio(_tinyEditor, 1);
 		getUI().addWindow(w);

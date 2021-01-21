@@ -249,15 +249,8 @@ public class VaadinHierarchicalDataTree<VO extends UIViewObjectInLanguage
 			super(i18n,
 		  		  I18NKey.forId("portal.manager.delete.confirm.required"),
 		  		  I18NKey.forId("portal.manager.operation.delete.captcha"),
-		  		  // what happens when the user solves the puzzle
-		  		  proceedGateOpenedListener,
-		  		  // ask the user to solve a puzzle BEFORE removing the item (or items)
-				  new R01UIProceedPuzzleCheck() {
-				 	@Override
-				 	public boolean check(final String text) {
-				  	   return text.equals(i18n.getMessage("remove"));
-				 	}
-		  		});
+		  		  proceedGateOpenedListener
+			);
 		}
 	}
 	private void _deleteTreeItem(final UII18NService i18n,

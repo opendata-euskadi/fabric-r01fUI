@@ -22,6 +22,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -199,8 +200,9 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		root.setMargin(false);
 
 		VerticalLayout loginPanel = new VerticalLayout();
-		loginPanel.setHeightFull();
-		loginPanel.setWidth(35, Unit.PERCENTAGE);
+		loginPanel.setMargin(false);
+		loginPanel.setWidthUndefined();
+		loginPanel.addStyleName(R01UISecurityTheme.LOGIN_LAYOUT);
 		loginPanel.setMargin(false);
 		loginPanel.setSpacing(true);
 		Responsive.makeResponsive(loginPanel);
@@ -232,10 +234,10 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		
 	private Component _buildMainLayout() {
 		VerticalLayout mainLy = new VerticalLayout();
-		mainLy.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 		mainLy.addStyleName(R01UISecurityTheme.LOGIN_PANEL);
 		mainLy.setSizeFull();
-		mainLy.setMargin(true);
+		mainLy.setMargin(false);
+		mainLy.setSpacing(false);
 		
 		_title.addStyleNames(ValoTheme.LABEL_H2,
 							 ValoTheme.LABEL_BOLD);
@@ -254,7 +256,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 											   _getWebAppUrlPath());
 		_xlnetsLoginBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY, 
 									  "xlnets-button");
-		_xlnetsLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(xlnetsLoginUrl, "_blank"));
+		_xlnetsLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(xlnetsLoginUrl, null));
 		HorizontalLayout xlnetsLy = new HorizontalLayout(xlnetsIcon, _xlnetsLoginBtn);
 		
 		// Google login
@@ -266,7 +268,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 											  _getWebAppUrlPath());		
 		_googleLoginBtn.addStyleNames(ValoTheme.BUTTON_DANGER,
 									"google-button");
-		_googleLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(gLoginUrl, "_blank"));
+		_googleLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(gLoginUrl, null));
 		HorizontalLayout gLy = new HorizontalLayout(googleIcon, _googleLoginBtn);
 		
 		// Justizia login
@@ -278,18 +280,20 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 											   _getWebAppUrlPath());
 		_justiziaLoginBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY, 
 										"justizia-button");
-		_justiziaLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(justiziaLoginUrl, "_blank"));
+		_justiziaLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(justiziaLoginUrl, null));
 		HorizontalLayout jzLy = new HorizontalLayout(jzIcon, _justiziaLoginBtn);
 		jzLy.setVisible(false); //future implementation
 		
+		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); //right & left margin
+		_buttonsLy.setSpacing(true);
+		_buttonsLy.setHeightFull();
 		_buttonsLy.addComponents(xlnetsLy, 
 							   	jzLy, 
 							    gLy);
-		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); //right & left margin
 		_buttonsLy.setComponentAlignment(xlnetsLy, Alignment.TOP_CENTER);
 		_buttonsLy.setComponentAlignment(jzLy, Alignment.MIDDLE_CENTER); 
 		_buttonsLy.setComponentAlignment(gLy, Alignment.BOTTOM_CENTER);
-		_buttonsLy.setSpacing(true);
+		
 		_usrPassForm = _buildUserPwdFields();
 		
 		// User & password
@@ -310,11 +314,19 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 							  _userPassLink);
 		mainLy.setExpandRatio(_title, 1);
 		mainLy.setExpandRatio(_instructions, 1);
-		mainLy.setExpandRatio(_buttonsLy, 5);
-		mainLy.setExpandRatio(_usrPassForm, 5);
+		mainLy.setExpandRatio(_buttonsLy, 10);
+		mainLy.setExpandRatio(_usrPassForm, 10);
 		mainLy.setExpandRatio(_userPassLink, 1);
+		
+		mainLy.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+		mainLy.setComponentAlignment(_title, Alignment.TOP_CENTER);
+		mainLy.setComponentAlignment(_instructions, Alignment.TOP_CENTER);
+		mainLy.setComponentAlignment(_buttonsLy, Alignment.MIDDLE_CENTER);
+		mainLy.setComponentAlignment(_usrPassForm, Alignment.MIDDLE_CENTER);
+		mainLy.setComponentAlignment(_userPassLink, Alignment.BOTTOM_CENTER);
+		
 
-		return mainLy;
+		return new Panel(mainLy);
 	}
 
 	private Component _buildLangSelector(final Language... lang) {

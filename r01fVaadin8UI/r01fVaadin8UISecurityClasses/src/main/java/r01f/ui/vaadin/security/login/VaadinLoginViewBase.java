@@ -284,6 +284,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		HorizontalLayout jzLy = new HorizontalLayout(jzIcon, _justiziaLoginBtn);
 		jzLy.setVisible(false); //future implementation
 		
+		_buttonsLy.addStyleName(R01UISecurityTheme.LOGIN_BUTTONS);
 		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); //right & left margin
 		_buttonsLy.setSpacing(true);
 		_buttonsLy.setHeightFull();

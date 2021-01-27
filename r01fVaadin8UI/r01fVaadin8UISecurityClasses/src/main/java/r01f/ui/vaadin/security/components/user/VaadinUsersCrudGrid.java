@@ -262,7 +262,9 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 //	EVENT RAISED WHEN THE GRID IS MODIFIED
 /////////////////////////////////////////////////////////////////////////////////////////
 	public void setGridModifiedListener(final VaadinUsersGridModifiedListener<U,V,SELF_TYPE> listener) {
-		_gridModifiedListener = listener;
+		if (_gridModifiedListener == null) {
+			_gridModifiedListener = listener;
+		}
 	}
 	public interface VaadinUsersGridModifiedListener<U extends User,V extends VaadinViewUser<U>,
 													 G extends VaadinUsersCrudGrid<U,V,?,?>> {

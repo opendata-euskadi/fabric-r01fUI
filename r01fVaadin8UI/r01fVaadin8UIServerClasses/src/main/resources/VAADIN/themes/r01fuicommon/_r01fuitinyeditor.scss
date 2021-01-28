@@ -1,5 +1,9 @@
 @mixin r01fuitinyeditor {
 	.r01ui-html-box{
+		.v-label{
+				white-space:  normal;
+			}
+			
 			background: white;
 			border: 1px solid lightgrey;
 			padding: 5px;

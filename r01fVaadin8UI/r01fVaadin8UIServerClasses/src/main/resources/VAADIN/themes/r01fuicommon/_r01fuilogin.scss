@@ -1,14 +1,25 @@
 @mixin r01fuilogin {
-	/*
+/*
 	
 	VIEW STYLE 
 	View: VaadinLoginViewBase
 	
-	*/
+*/
 	.r01uilogin, .login-title {
 		background-color: rgb(29, 123, 173);
-	} 
-		
+	}
+	
+	.v-verticallayout-login-layout {
+		width: 355px;
+	}
+	
+	.login-panel .v-slot-login-buttons {
+		height:245px;
+	}
+	.login-panel {
+		padding-bottom:20px;
+	}
+	 	
 	.v-button-danger.google-button {
 		background: rgb(181, 52, 42) !important;
 		width: 93px;
@@ -28,15 +39,6 @@
 		color:white !important;
 	}
 	
-	.login-panel {
-		background: white;
-		color: #474747;
-		border-radius: 4px;
-		border: 1px solid #d5d5d5;
-		-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-		overflow: visible !important;
-	}
 	div.form-fields .v-caption-inline-icon span.v-icon {
 		left: auto;
 	}

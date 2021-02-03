@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.VerticalLayout;
 
 import r01f.locale.Language;
@@ -20,6 +19,7 @@ import r01ui.base.components.contact.phone.VaadinContactPhoneManage;
 import r01ui.base.components.contact.socialnetwork.VaadinContactSocialNetworkManage;
 import r01ui.base.components.contact.website.VaadinContactWebSiteManage;
 import r01ui.base.components.form.VaadinFormEditsViewObject;
+import r01ui.base.components.tinyeditor.TinyMCETextFieldComponent;
 
 /**
  * A configurable [contact info] component like:
@@ -54,7 +54,7 @@ public class VaadinContactInfoManageComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Collection<ContactMeanType> _allowedMediumTypes;
 
-	private final RichTextArea _txtGeoPosition;
+	private final TinyMCETextFieldComponent _txtGeoPosition;
 	private final VaadinContactEMailManage _emailsComponent;
 	private final VaadinContactPhoneManage _phonesComponent;
 	private final VaadinContactSocialNetworkManage _socialNetworksComponent;
@@ -85,7 +85,7 @@ public class VaadinContactInfoManageComponent
 		_allowedMediumTypes = types;
 
 		// create the components
-		_txtGeoPosition = new RichTextArea(i18n.getMessage("geo.address"));
+		_txtGeoPosition = new TinyMCETextFieldComponent(i18n,i18n.getMessage("geo.address"));
 		_txtGeoPosition.setWidthFull();
 		
 		_emailsComponent = types.contains(ContactMeanType.EMAIL) ? new VaadinContactEMailManage(i18n) : null;

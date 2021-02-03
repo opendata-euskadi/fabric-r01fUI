@@ -16,6 +16,7 @@ import r01f.locale.I18NKey;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid;
+import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid.VaadinUsersGridAction;
 import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid.VaadinUsersGridModifiedListener;
 import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
@@ -59,7 +60,7 @@ public abstract class VaadinUserRolesFormBase<U extends User,V extends VaadinVie
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SERVICES
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final transient UII18NService _i18n;
+	protected final transient UII18NService _i18n;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
@@ -101,6 +102,9 @@ public abstract class VaadinUserRolesFormBase<U extends User,V extends VaadinVie
 	 */
 	public void setFormModifiedListener(final VaadinUserRolesFormModifiedListener formModifiedListener) {
 		_formModifiedListener = formModifiedListener;
+	}
+	protected void _rolesModified() {
+		if (_formModifiedListener != null) _formModifiedListener.onRolesModified();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CARD CREATE METHOD
@@ -222,41 +226,53 @@ public abstract class VaadinUserRolesFormBase<U extends User,V extends VaadinVie
 /////////////////////////////////////////////////////////////////////////////////////////
 	private VaadinUsersGridModifiedListener<U,V,G> _createUsersGridModifiedListener(final UII18NService i18n) {
 		return (selectedGrid,action,viewUser) -> {
-					switch (action) {
+				switch (action) {
 					case USER_ADDITION:
-						// find a grid containing the user (other than the selected grid)
-						G otherGrid = _findGridContainigUserOtherThan(selectedGrid,viewUser);
-
-						// if the user exists in another grid: show a proceed window
-						if (otherGrid != null) {
-							VaadinProceedGateDialogWindow window = new VaadinProceedGateDialogWindow(i18n,
-																									 I18NKey.named("confirm"),
-																							 		 I18NKey.named("security.role.change"),
-																							 		 () -> {
-																				   			  			 	selectedGrid.addItem(viewUser);
-																				   			  			 	otherGrid.removeItem(viewUser.getOid());
-																				   			  		 },
-																				   			  		 // cancel listener
-																				   			  		 null,
-																				   			  		 // puzzle
-																				   			  		 null);
-							UI.getCurrent().addWindow(window);
-						}
-						// if the user does NOT exists in another grid, just add
-						else {
-							selectedGrid.addItem(viewUser);
-						}
+						_addUser(selectedGrid,viewUser);
 						break;
 					case USER_REMOVAL:
-						selectedGrid.removeItem(viewUser.getOid());
+						_removeUser(selectedGrid,viewUser);
 						break;
 					default:
 						throw new IllegalArgumentException(action + " is NOT a supported [users grid] action!");
-					}
-					// in any case (user addition or deletion), tell the [form modified listener]
-					// that a modification has been taken place
-					if (_formModifiedListener != null) _formModifiedListener.onRolesModified();
-				};
+				}
+				// in any case (user addition or deletion), tell the [form modified listener]
+				// that a modification has been taken place
+				_modificationTakenBeenPlace();
+			};
+	}
+	protected void _addUser(final G selectedGrid,
+							final V viewUser) {
+		
+		// find a grid containing the user (other than the selected grid)
+		G otherGrid = _findGridContainigUserOtherThan(selectedGrid,viewUser);
+
+		// if the user exists in another grid: show a proceed window
+		if (otherGrid != null) {
+			VaadinProceedGateDialogWindow window = new VaadinProceedGateDialogWindow(_i18n,
+																					 I18NKey.named("confirm"),
+																			 		 I18NKey.named("security.role.change"),
+																			 		 () -> {
+																   			  			 	selectedGrid.addItem(viewUser);
+																   			  			 	otherGrid.removeItem(viewUser.getOid());
+																   			  		 },
+																   			  		 // cancel listener
+																   			  		 null,
+																   			  		 // puzzle
+																   			  		 null);
+			UI.getCurrent().addWindow(window);
+		}
+		// if the user does NOT exists in another grid, just add
+		else {
+			selectedGrid.addItem(viewUser);
+		}
+	}
+	protected void _removeUser(final G selectedGrid,
+							   final V viewUser) {
+		selectedGrid.removeItem(viewUser.getOid());
+	}
+	protected void _modificationTakenBeenPlace() {
+		if (_formModifiedListener != null) _formModifiedListener.onRolesModified();
 	}
 	/**
 	 * Finds a [grid] other than the given one that contains the given [user]

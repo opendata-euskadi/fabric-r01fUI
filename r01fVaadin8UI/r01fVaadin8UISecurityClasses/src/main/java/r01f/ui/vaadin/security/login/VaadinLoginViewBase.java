@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
+import r01f.model.security.login.userpassword.UserPasswordLogin;
 import r01f.model.security.user.User;
 import r01f.security.login.LoginSession;
 import r01f.security.login.LoginSessionStore;
@@ -80,12 +81,14 @@ import r01ui.ui.vaadin.security.theme.R01UISecurityTheme;
  *				@include r01uilogin;		
  *			} 
  */
-
 @Slf4j
 @Accessors(prefix = "_")
-public abstract class VaadinLoginViewBase<U extends User,S extends SecurityContext,
-										  P extends VaadinLoginPresenterBase<U,
-												  							 ? extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>>
+public abstract class VaadinLoginViewBase<U extends User,
+										  L extends UserPasswordLogin,
+										  S extends SecurityContext,
+										  P extends VaadinLoginPresenterBase<U,L,
+												  							 ? extends VaadinLoginCOREMediatorBase<U,L,
+												  									 							   ? extends SecurityAPIBase<U,L,?,?,?,?,?,?>>>>
      		  extends Composite
      	   implements View,
      	   			  VaadinViewI18NMessagesCanBeUpdated {
@@ -168,9 +171,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		_btnBack.setCaption(i18n.getMessage("security.login.button.back"));
 		_registerBtn.setCaption(i18n.getMessage("security.login.register"));
 		_remindBtn.setCaption(i18n.getMessage("security.login.remind"));
-		
 	}	
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -188,8 +189,6 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 			UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());
 		}
     }
-
-	
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////	

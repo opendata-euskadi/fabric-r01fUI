@@ -159,8 +159,8 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_welcome.setValue(i18n.getMessage("security.login.header").toUpperCase());
 		_title.setValue(i18n.getMessage(_getAppTitleI18NKey()).toUpperCase());
 		_instructions.setValue(Strings.customized("{} {}", 
-						      				  VaadinIcons.KEY_O.getHtml(),
-						      				  i18n.getMessage("security.login.title")));
+						      				  	  VaadinIcons.KEY_O.getHtml(),
+						      				  	  i18n.getMessage("security.login.title")));
 		_googleLoginBtn.setCaption(i18n.getMessage("security.login.method.google"));
 		_xlnetsLoginBtn.setCaption(i18n.getMessage("security.login.method.xlnets"));
 		_justiziaLoginBtn.setCaption(i18n.getMessage("security.login.method.justizia"));
@@ -264,7 +264,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		String gLoginUrl = Strings.customized("{}?to={}/{}/",		// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 											  _securityLoginConfig.getProvider(SecurityProviderID.forId("google")).getLoginUrl(),
 											  _securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase"),
-											  _getWebAppUrlPath());		
+											  _getWebAppUrlPath());	
 		_googleLoginBtn.addStyleNames(ValoTheme.BUTTON_DANGER,
 									"google-button");
 		_googleLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(gLoginUrl, null));
@@ -284,7 +284,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		jzLy.setVisible(false); //future implementation
 		
 		_buttonsLy.addStyleName(R01UISecurityTheme.LOGIN_BUTTONS);
-		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); //right & left margin
+		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_buttonsLy.setSpacing(true);
 		_buttonsLy.setHeightFull();
 		_buttonsLy.addComponents(xlnetsLy, 
@@ -371,10 +371,10 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnSignIn.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		_btnSignIn.setClickShortcut(KeyCode.ENTER);
 		_btnSignIn.addClickListener(clickEvent -> {
-													// Call the login
-													_userPasswordLogin(LoginID.forId(_txtUser.getValue()),
-																	   Password.forId(_txtPassword.getValue()));
-												 });
+										// Call the login
+										_userPasswordLogin(LoginID.forId(_txtUser.getValue()),
+														   Password.forId(_txtPassword.getValue()));
+									});
 		_btnBack = new Button();
 		_btnBack.addClickListener(clickEvent -> {
 													_buttonsLy.setVisible(true);

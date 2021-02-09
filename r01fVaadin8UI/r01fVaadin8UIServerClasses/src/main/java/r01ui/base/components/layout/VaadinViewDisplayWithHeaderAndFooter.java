@@ -52,15 +52,15 @@ public class VaadinViewDisplayWithHeaderAndFooter
 	/**
 	 * The header layout
 	 */
-	@Getter private final Component _header;
+	@Getter protected final Component _header;
 	/**
 	 * This is where the views are displayed
 	 */
-	@Getter private final Panel _viewDisplay;
+	@Getter protected final Panel _viewDisplay;
 	/**
 	 * The footer layout
 	 */
-	@Getter private final Component _footer;
+	@Getter protected final Component _footer;
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////    
@@ -161,7 +161,7 @@ public class VaadinViewDisplayWithHeaderAndFooter
 		return (C)_header;
 	}
 	@SuppressWarnings("unchecked")
-	public <C> C getContentAs(final Class<C> content) {
+	public <C> C getContentAs(final Class<C> contentType) {
 		return (C)_viewDisplay.getContent();
 	}
 	@SuppressWarnings("unchecked")

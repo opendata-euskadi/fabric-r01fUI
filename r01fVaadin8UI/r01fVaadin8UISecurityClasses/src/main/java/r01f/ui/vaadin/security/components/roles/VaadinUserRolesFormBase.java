@@ -16,7 +16,6 @@ import r01f.locale.I18NKey;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid;
-import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid.VaadinUsersGridAction;
 import r01f.ui.vaadin.security.components.user.VaadinUsersCrudGrid.VaadinUsersGridModifiedListener;
 import r01f.ui.vaadin.security.user.VaadinViewUser;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
@@ -126,8 +125,8 @@ public abstract class VaadinUserRolesFormBase<U extends User,V extends VaadinVie
 		// Label
 		Label lbl = new Label();
 		lbl.addStyleNames(ValoTheme.LABEL_H4,
-								 ValoTheme.LABEL_COLORED,
-								 ValoTheme.LABEL_NO_MARGIN);
+						  ValoTheme.LABEL_COLORED,
+						  ValoTheme.LABEL_NO_MARGIN);
 		// Ensure the grid has the [user added to grid] listener
 		usersGrid.setGridModifiedListener(_usersGridModifiedListener);
 

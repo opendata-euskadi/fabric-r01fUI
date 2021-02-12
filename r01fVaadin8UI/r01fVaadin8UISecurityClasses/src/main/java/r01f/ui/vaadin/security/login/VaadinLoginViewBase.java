@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.locale.I18NKey;
 import r01f.locale.Language;
+import r01f.model.security.login.userpassword.UserPasswordLogin;
 import r01f.model.security.user.User;
 import r01f.security.login.LoginSession;
 import r01f.security.login.LoginSessionStore;
@@ -80,12 +81,14 @@ import r01ui.ui.vaadin.security.theme.R01UISecurityTheme;
  *				@include r01uilogin;		
  *			} 
  */
-
 @Slf4j
 @Accessors(prefix = "_")
-public abstract class VaadinLoginViewBase<U extends User,S extends SecurityContext,
-										  P extends VaadinLoginPresenterBase<U,
-												  							 ? extends VaadinLoginCOREMediatorBase<U,? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>>
+public abstract class VaadinLoginViewBase<U extends User,
+										  L extends UserPasswordLogin,
+										  S extends SecurityContext,
+										  P extends VaadinLoginPresenterBase<U,L,
+												  							 ? extends VaadinLoginCOREMediatorBase<U,L,
+												  									 							   ? extends SecurityAPIBase<U,L,?,?,?,?,?,?>>>>
      		  extends Composite
      	   implements View,
      	   			  VaadinViewI18NMessagesCanBeUpdated {
@@ -156,8 +159,8 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		_welcome.setValue(i18n.getMessage("security.login.header").toUpperCase());
 		_title.setValue(i18n.getMessage(_getAppTitleI18NKey()).toUpperCase());
 		_instructions.setValue(Strings.customized("{} {}", 
-						      				  VaadinIcons.KEY_O.getHtml(),
-						      				  i18n.getMessage("security.login.title")));
+						      				  	  VaadinIcons.KEY_O.getHtml(),
+						      				  	  i18n.getMessage("security.login.title")));
 		_googleLoginBtn.setCaption(i18n.getMessage("security.login.method.google"));
 		_xlnetsLoginBtn.setCaption(i18n.getMessage("security.login.method.xlnets"));
 		_justiziaLoginBtn.setCaption(i18n.getMessage("security.login.method.justizia"));
@@ -168,9 +171,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		_btnBack.setCaption(i18n.getMessage("security.login.button.back"));
 		_registerBtn.setCaption(i18n.getMessage("security.login.register"));
 		_remindBtn.setCaption(i18n.getMessage("security.login.remind"));
-		
 	}	
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -188,8 +189,6 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 			UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());
 		}
     }
-
-	
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -265,7 +264,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		String gLoginUrl = Strings.customized("{}?to={}/{}/",		// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 											  _securityLoginConfig.getProvider(SecurityProviderID.forId("google")).getLoginUrl(),
 											  _securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase"),
-											  _getWebAppUrlPath());		
+											  _getWebAppUrlPath());	
 		_googleLoginBtn.addStyleNames(ValoTheme.BUTTON_DANGER,
 									"google-button");
 		_googleLoginBtn.addListener(clickEvent ->  Page.getCurrent().open(gLoginUrl, null));
@@ -285,7 +284,7 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		jzLy.setVisible(false); //future implementation
 		
 		_buttonsLy.addStyleName(R01UISecurityTheme.LOGIN_BUTTONS);
-		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); //right & left margin
+		_buttonsLy.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_buttonsLy.setSpacing(true);
 		_buttonsLy.setHeightFull();
 		_buttonsLy.addComponents(xlnetsLy, 
@@ -372,10 +371,10 @@ public abstract class VaadinLoginViewBase<U extends User,S extends SecurityConte
 		_btnSignIn.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		_btnSignIn.setClickShortcut(KeyCode.ENTER);
 		_btnSignIn.addClickListener(clickEvent -> {
-													// Call the login
-													_userPasswordLogin(LoginID.forId(_txtUser.getValue()),
-																	   Password.forId(_txtPassword.getValue()));
-												 });
+										// Call the login
+										_userPasswordLogin(LoginID.forId(_txtUser.getValue()),
+														   Password.forId(_txtPassword.getValue()));
+									});
 		_btnBack = new Button();
 		_btnBack.addClickListener(clickEvent -> {
 													_buttonsLy.setVisible(true);

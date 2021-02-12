@@ -20,7 +20,7 @@ import r01f.util.types.collections.CollectionUtils;
  * implement a receiveBroadcast(...) method
  *
  * The typical scenario is:
- * 		a) The CORE post a message at the guava {@link EventBus} signaling a server event (ie someone has pushed a panic button
+ * 	  a) The CORE post a message at the guava {@link EventBus} signaling a server event (ie someone has pushed a panic button
  *		 which has sent a message to a REST endpoint)
  *	  b) the CORE upon persisting the raised alarm posts a message to the {@link EventBus}
  *	  c) the UI is subscribed to that type of messages at the {@link EventBus}

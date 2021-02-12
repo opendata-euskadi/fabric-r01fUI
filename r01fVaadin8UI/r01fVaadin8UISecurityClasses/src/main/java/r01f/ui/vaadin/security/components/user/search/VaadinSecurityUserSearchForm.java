@@ -113,20 +113,23 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		Grid.Column<V,String> colName = _gridUsers.addColumn(V::getName)
 															  .setResizable(true)
 															  .setMinimumWidthFromContent(true)
-															  .setExpandRatio(1)
+															  .setExpandRatio(2)
 															  .setId("name");
 		Grid.Column<V,String> colSurname = _gridUsers.addColumn(V::getSurname)
 																 .setResizable(true)
-																 .setMinimumWidth(100)
+																 .setMinimumWidthFromContent(true)
+																 .setExpandRatio(2)
 																 .setId("surname");
 		Grid.Column<V,String> colPhone = _gridUsers.addColumn(V::getPhoneAsStringOrNull)
-															   .setResizable(false)
-															   .setSortable(false)
-															   .setId("phone");
+															  	.setMinimumWidthFromContent(true)
+															  	.setExpandRatio(1)
+															  	.setSortable(false)
+															  	.setId("phone");
 		Grid.Column<V,String> colEMail = _gridUsers.addColumn(V::getMailAsStringOrNull)
-															   .setResizable(false)
-															   .setSortable(false)
-															   .setId("email");
+															  	.setMinimumWidthFromContent(true)
+															  	.setExpandRatio(3)
+															  	.setSortable(false)
+															  	.setId("email");
 
 		// set selection mode
 		_gridUsers.setSelectionMode(SelectionMode.SINGLE);
@@ -220,8 +223,8 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	public void updateI18NMessages(final UII18NService i18n) {
 		// grid
 		_gridUsers.getColumn("name").setCaption(i18n.getMessage("name"));
-		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname"));
-		_gridUsers.getColumn("phone").setCaption(i18n.getMessage("phone"));
-		_gridUsers.getColumn("email").setCaption(i18n.getMessage("email"));
+		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname1"));
+		_gridUsers.getColumn("phone").setCaption(i18n.getMessage("contact.phone"));
+		_gridUsers.getColumn("email").setCaption(i18n.getMessage("contact.email"));
 	}
 }

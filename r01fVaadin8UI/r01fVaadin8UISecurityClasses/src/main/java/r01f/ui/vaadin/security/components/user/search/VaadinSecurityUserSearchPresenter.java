@@ -74,8 +74,8 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-	public V ensureThereExistsLocalUserForCorporateDirectoryUser(final V xlnetsPickedUser) {
-		U outUser = _coreMediator.ensureThereExistsLocalUserForCorporateUser(xlnetsPickedUser.getWrappedModelObject());
+	public V ensureThereExistsLocalUserForCorporateDirectoryUser(final V corporateUser) {
+		U outUser = _coreMediator.ensureThereExistsLocalUserForCorporateUser(corporateUser.getWrappedModelObject());
 		return outUser != null ? _viewUserFactory.from(outUser)
 							   : null;
 	}

@@ -193,8 +193,8 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 
 		V outViewUser = null;
 
-		// if it's an XLNets user, the [user oid] at the LOCAL DB is null (XLNets do know nothing about this local db)
-		// The user might or might NOT exist at the LOCAL db so the LOCAL db is queried using the XLNets [user code]
+		// if it's a [corporate] user, the [user oid] at the LOCAL DB is null (the [corporate directory] do know nothing about this local db)
+		// The user might or might NOT exist at the LOCAL db so the LOCAL db is queried using the [corporate] [user code]
 		//		- If the user already exists at the LOCAL db, it's returned
 		//		- If the user does NOT already exists at the LOCAL db, it's CREATED
 		if (selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import lombok.extern.slf4j.Slf4j;
 import r01f.client.api.security.SecurityAPIBase;
+import r01f.model.security.login.Login;
 import r01f.model.security.user.User;
 import r01f.patterns.FactoryFrom;
 import r01f.securitycontext.SecurityIDS.LoginID;
@@ -57,7 +58,7 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 		return outUsers;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	FIND LOCAL & XLNets
+//	FIND LOCAL & CORPORATE
 /////////////////////////////////////////////////////////////////////////////////////////
 	public Collection<U> findLocalUsersFilteringByText(final String text) {
 		if (Strings.isNullOrEmpty(text)) return null;
@@ -68,11 +69,18 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 		return users;
 	}
 	public abstract Collection<U> findCorporateUsersFilteringByText(final String text);
+	
+	/**
+	 * Tries to find a LOCAL user for a corporate user
+	 * @param corporateLoginId
+	 * @return
+	 */
+	public abstract U findLocalUserForCorporateLogin(final LoginID corporateLoginId);
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * When an XLNets user is picked using the [user picker], the LOCAL user oid is NOT know (XLNets DO NOT returns this oid; it's a LOCAL oid)
+	 * When a [corporate] user is picked using the [user picker], the LOCAL user oid is NOT know ([corporate directory] DO NOT returns this oid; it's a LOCAL oid)
 	 * ... so the user is tried to be found at the LOCAL db using the XLNets user code.
 	 * If the user DOES NOT exists at the LOCAL db (maybe the user has NEVER logged-in using XLNets), the user is CREATED
 	 * otherwise, the existing LOCAL user is returned
@@ -82,34 +90,46 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 	public U ensureThereExistsLocalUserForCorporateUser(final U corporatePickedUser) {
 		U outUser = null;
 
-		// get the [coporate loginId] from the [corporate-picked] user
+		// get the [corporate loginId] from the [corporate-picked] user
 		LoginID corporateLoginId = _loginIdFromCorporateUser.from(corporatePickedUser);
+		if (corporateLoginId == null) throw new IllegalStateException("Could NOT get the [corporate user]'s [loginId] from the UI-picked [user]; this is a DEVELOPER fault!");
 
 		// try to find the user locally
-		log.info("[roles by area core mediator] > ensure there exists a LOCAL user for XLNets user={}",corporateLoginId);
+		log.info("[roles by area core mediator] > ensure there exists a LOCAL user for [corporate] user id={}",corporateLoginId);
 		U existingLocalUser = this.findLocalUserForCorporateLogin(corporateLoginId);
 
 		// if the user exists locally, just do nothing
 		if (existingLocalUser != null) {
-			log.info("\t - there DOES exists a LOCAL user for XLNets user={}",corporateLoginId);
+			log.info("\t - there DOES exists a LOCAL user for [corporate] user id={}",corporateLoginId);
 			outUser = existingLocalUser;
 		}
-		// if the user DOES NOT exists locally, create it
+		// if the user DOES NOT exists locally, create it: create both the [user] and the [login]
 		else {
-			log.info("\t - there DOES NOT exists a LOCAL user for XLNets user={}: create it",corporateLoginId);
+			log.info("\t - there DOES NOT exists a LOCAL user for [corporate] user id={}: create it and it's associated login",corporateLoginId);
 			// create the user
-			corporatePickedUser.setOid(UserOID.supply());	// ensure the user has an oid
+			if (corporatePickedUser.getOid() == null) corporatePickedUser.setOid(UserOID.supply());		// ensure the user has an oid
 			U createdLocalUser = _securityApi.getUsersApi()
 											 .getForCrud()
 											 .create(corporatePickedUser);
 			outUser = createdLocalUser;
+			
+			log.info("\t\t... created a LOCAL user with oid={} for [corporate] user id={}",
+					 createdLocalUser.getOid(),corporateLoginId);
+			
+			// create the login
+			Login createdLogin = _createCorporateLoginFor(createdLocalUser);	// BEWARE! hand the created user
+			
+			log.info("\t\t... created a login with oid={} for [corporate] user id={}",
+					 createdLogin.getOid());
+			
 		}
 		return outUser;
 	}
 	/**
-	 * Tries to find a LOCAL user for a corporate user
-	 * @param corporateLoginId
+	 * Creates a LOGIN for a created [corporate] user
+	 * @param <L>
+	 * @param user
 	 * @return
 	 */
-	public abstract U findLocalUserForCorporateLogin(final LoginID corporateLoginId);
+	protected abstract <L extends Login> L _createCorporateLoginFor(final U user);
 }

@@ -7,6 +7,7 @@ import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
 import r01f.patterns.FactoryFrom;
 import r01f.securitycontext.SecurityIDS.LoginID;
+import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.ui.coremediator.UICOREMediator;
 import r01f.ui.vaadin.security.user.VaadinSecurityUserDirectory;
 import r01f.util.types.Strings;
@@ -97,10 +98,10 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 		else {
 			log.info("\t - there DOES NOT exists a LOCAL user for XLNets user={}: create it",corporateLoginId);
 			// create the user
+			corporatePickedUser.setOid(UserOID.supply());	// ensure the user has an oid
 			U createdLocalUser = _securityApi.getUsersApi()
 											 .getForCrud()
 											 .create(corporatePickedUser);
-
 			outUser = createdLocalUser;
 		}
 		return outUser;

@@ -45,15 +45,10 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 		VaadinSecurityUserDirectory theSearchDir = directory != null ?  directory
 																	: VaadinSecurityUserDirectory.LOCAL;
 		Collection<U> outUsers = null;
-		switch (theSearchDir) {
-		case LOCAL:
+		if (theSearchDir == VaadinSecurityUserDirectory.LOCAL) {
 			outUsers = this.findLocalUsersFilteringByText(text);
-			break;
-		case CORPORATE:
-			outUsers = this.findCorporateUsersFilteringByText(text);
-			break;
-		default:
-			throw new IllegalArgumentException(directory + " is NOT a supported directory!!");
+		} else {
+			outUsers = this.findCorporateUsersFilteringByText(directory,text);
 		}
 		return outUsers;
 	}
@@ -68,7 +63,7 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 										  .findByText(text);
 		return users;
 	}
-	public abstract Collection<U> findCorporateUsersFilteringByText(final String text);
+	public abstract Collection<U> findCorporateUsersFilteringByText(final VaadinSecurityUserDirectory directory,final String text);
 	
 	/**
 	 * Tries to find a LOCAL user for a corporate user

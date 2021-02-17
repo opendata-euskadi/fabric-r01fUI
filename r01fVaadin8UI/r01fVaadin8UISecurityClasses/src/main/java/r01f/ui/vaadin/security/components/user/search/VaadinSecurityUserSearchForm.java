@@ -1,5 +1,7 @@
 package r01f.ui.vaadin.security.components.user.search;
 
+import java.util.Collection;
+
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
@@ -73,6 +75,16 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 									    final P userSearchPresenter,
 									    final UISubscriber<V> onSelectSubscriber,
 									    final UISubscriber<V> onDoubleClickSubscriber) {
+		this(i18n,
+			 userSearchPresenter,
+			 onSelectSubscriber,onDoubleClickSubscriber,
+			 Lists.newArrayList(VaadinSecurityUserDirectory.LOCAL,VaadinSecurityUserDirectory.CORPORATE));
+	}
+	public VaadinSecurityUserSearchForm(final UII18NService i18n,
+									    final P userSearchPresenter,
+									    final UISubscriber<V> onSelectSubscriber,
+									    final UISubscriber<V> onDoubleClickSubscriber,
+									    final Collection<VaadinSecurityUserDirectory> directories) {
 		_userSearchPresenter = userSearchPresenter;
 
 		_onSelectSubscriber = onSelectSubscriber;
@@ -81,8 +93,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		////////// UI
 		// user search directory
 		_radioUserDirectory = new RadioButtonGroup<>(i18n.getMessage("security.directory"));
-		_radioUserDirectory.setItems(VaadinSecurityUserDirectory.LOCAL,
-									 VaadinSecurityUserDirectory.CORPORATE);
+		_radioUserDirectory.setItems(directories);
 		_radioUserDirectory.setValue(VaadinSecurityUserDirectory.LOCAL);		// local by default
 		_radioUserDirectory.setItemCaptionGenerator(dir -> dir.getNameUsing(i18n));
 		_radioUserDirectory.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
@@ -198,7 +209,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		//		- If the user already exists at the LOCAL db, it's returned
 		//		- If the user does NOT already exists at the LOCAL db, it's CREATED
 		if (selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {
-			outViewUser = _userSearchPresenter.ensureThereExistsLocalUserForCorporateDirectoryUser(selectedViewUser);
+			outViewUser = _userSearchPresenter.ensureThereExistsLocalUserForCorporateDirectoryUser(selectedViewUser.getSourceUserDirectory(),selectedViewUser);
 		} else {
 			outViewUser = selectedViewUser;
 		}

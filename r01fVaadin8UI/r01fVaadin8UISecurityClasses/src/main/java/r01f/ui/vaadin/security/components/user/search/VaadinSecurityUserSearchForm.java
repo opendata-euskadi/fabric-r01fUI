@@ -11,6 +11,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.Getter;
+import lombok.Setter;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
@@ -68,6 +70,13 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final UISubscriber<V> _onSelectSubscriber;
 	private final UISubscriber<V> _onDoubleClickSubscriber;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**
+	 * If the selected user does NOT exist at the LOCAL user repo, create it 
+	 */
+	@Getter @Setter private boolean _createUserAtLocalRepoEnabled = true;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +217,8 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		// The user might or might NOT exist at the LOCAL db so the LOCAL db is queried using the [corporate] [user code]
 		//		- If the user already exists at the LOCAL db, it's returned
 		//		- If the user does NOT already exists at the LOCAL db, it's CREATED
-		if (selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {
+		if (_createUserAtLocalRepoEnabled
+		 && selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {
 			outViewUser = _userSearchPresenter.ensureThereExistsLocalUserForCorporateDirectoryUser(selectedViewUser.getSourceUserDirectory(),selectedViewUser);
 		} else {
 			outViewUser = selectedViewUser;

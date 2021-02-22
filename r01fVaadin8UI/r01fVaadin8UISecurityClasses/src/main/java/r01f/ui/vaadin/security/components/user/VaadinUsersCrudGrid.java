@@ -347,7 +347,7 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 
 			// style
 			this.setModal(true);
-			this.setWidth(40, Unit.PERCENTAGE);
+			this.setWidth(70, Unit.PERCENTAGE);
 
 			// behavior
 			_setBehavior();

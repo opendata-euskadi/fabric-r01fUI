@@ -15,6 +15,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
@@ -46,6 +47,7 @@ import r01f.util.types.collections.Lists;
  * 		+----------------------------------------------+
  * </pre>
  */
+@Accessors(prefix="_")
 public abstract class VaadinSecurityUserSearchForm<U extends User,V extends VaadinViewUser<U>,
 										  		   P extends VaadinSecurityUserSearchPresenter<U,V,
 										  											  		   ? extends VaadinSecurityUserSearchCOREMediator<U,

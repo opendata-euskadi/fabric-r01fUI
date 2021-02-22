@@ -5,7 +5,7 @@ import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.login.Login;
-import r01f.model.security.user.User;
+import r01f.model.security.user.UserBase;
 import r01f.patterns.FactoryFrom;
 import r01f.securitycontext.SecurityIDS.LoginID;
 import r01f.securitycontext.SecurityOIDs.UserOID;
@@ -20,7 +20,7 @@ import r01f.util.types.Strings;
  * @param <A>
  */
 @Slf4j
-public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
+public abstract class VaadinSecurityUserSearchCOREMediator<U extends UserBase<U>,
 												 		   A extends SecurityAPIBase<U,?,?,?,?,?,?,?>>
   		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,9 @@ public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
 			
 			log.info("\t\t... created a LOCAL user with oid={} for [corporate] user id={}",
 					 createdLocalUser.getOid(),corporateLoginId);
+			
+			// ensure the user run-time data
+			createdLocalUser.copyRuntimeDataFrom(corporatePickedUser);
 			
 			// create the login
 			Login createdLogin = _createCorporateLoginFor(createdLocalUser);	// BEWARE! hand the created user

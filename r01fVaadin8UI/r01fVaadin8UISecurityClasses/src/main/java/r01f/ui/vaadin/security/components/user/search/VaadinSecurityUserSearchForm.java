@@ -3,6 +3,8 @@ package r01f.ui.vaadin.security.components.user.search;
 import java.util.Collection;
 
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
@@ -170,6 +172,15 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 //		_txtSearch.addValueChangeListener(valChangeEvent -> {
 //												_search(valChangeEvent.getValue());
 //										  });
+		
+		_txtSearch.addShortcutListener(new ShortcutListener("SearchClick", ShortcutAction.KeyCode.ENTER, null) {
+											private static final long serialVersionUID = -613589292101468294L;
+								
+											@Override
+											public void handleAction(final Object sender, final Object target) {
+												_btnSearch.click();
+											}
+										});
 		_btnSearch.addClickListener(clickEvent -> {
 											_search(_txtSearch.getValue());
 									});

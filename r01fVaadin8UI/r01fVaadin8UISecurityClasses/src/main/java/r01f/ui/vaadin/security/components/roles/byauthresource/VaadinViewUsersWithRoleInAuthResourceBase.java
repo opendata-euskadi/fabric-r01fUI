@@ -33,7 +33,7 @@ public abstract class VaadinViewUsersWithRoleInAuthResourceBase<U extends User,V
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 ////////////////////////////////////////////////////////////////////////////////////////
-	@Getter protected final String _authResourceName;
+	@Getter protected String _authResourceName;
 
 	@Getter protected final Collection<UserRole> _roles;
 
@@ -72,6 +72,10 @@ public abstract class VaadinViewUsersWithRoleInAuthResourceBase<U extends User,V
 	public void setAuthResourceOid(final AuthorizationTargetResourceOID resOid) {
 		_authResourceOid = resOid;
 	}
+	
+	public void setAuthResourceName(final String resName) {
+		_authResourceName = resName;
+	}	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	RESET
 /////////////////////////////////////////////////////////////////////////////////////////

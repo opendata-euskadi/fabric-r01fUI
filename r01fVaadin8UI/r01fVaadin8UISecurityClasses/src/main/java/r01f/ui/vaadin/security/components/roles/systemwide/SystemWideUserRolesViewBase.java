@@ -171,7 +171,7 @@ public abstract class SystemWideUserRolesViewBase<U extends User,V extends Vaadi
 		if (_form.hasViewDataChanged()) {
 			VaadinProceedGateDialogWindow window = new VaadinProceedGateDialogWindow(_i18n,
 																					 I18NKey.named("confirm"),
-																			 		 I18NKey.named("form.save-changes"),
+																			 		 I18NKey.named("form.undo-changes"),
 																			 		  // ok listener
 																   			  		  () -> event.navigate(),
 																   			  		  // cancel listener

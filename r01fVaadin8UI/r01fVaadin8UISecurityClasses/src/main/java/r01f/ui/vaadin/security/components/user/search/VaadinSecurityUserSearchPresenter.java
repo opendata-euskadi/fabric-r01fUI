@@ -58,10 +58,10 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 	 * @param textFilter
 	 * @param subscriber
 	 */
-	public void onSearchCorporateUserRequested(final String textFilter,
+	public void onSearchCorporateUserRequested(final String textFilter,final VaadinSecurityUserDirectory directory,
 									  		   final UIPresenterSubscriber<Collection<V>> subscriber) {
 		try {
-			Collection<U> users = _coreMediator.findCorporateUsersFilteringByText(textFilter);
+			Collection<U> users = _coreMediator.findCorporateUsersFilteringByText(directory,textFilter);
 			Collection<V> viewUsers = CollectionUtils.hasData(users) ? users.stream()
 																			 .map(user -> _viewUserFactory.from(user))
 																			 .collect(Collectors.toList())
@@ -74,8 +74,8 @@ public abstract class VaadinSecurityUserSearchPresenter<U extends User,V extends
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-	public V ensureThereExistsLocalUserForCorporateDirectoryUser(final V xlnetsPickedUser) {
-		U outUser = _coreMediator.ensureThereExistsLocalUserForCorporateUser(xlnetsPickedUser.getWrappedModelObject());
+	public V ensureThereExistsLocalUserForCorporateDirectoryUser(final VaadinSecurityUserDirectory directory,final V corporateUser) {
+		U outUser = _coreMediator.ensureThereExistsLocalUserForCorporateUser(corporateUser.getWrappedModelObject());
 		return outUser != null ? _viewUserFactory.from(outUser)
 							   : null;
 	}

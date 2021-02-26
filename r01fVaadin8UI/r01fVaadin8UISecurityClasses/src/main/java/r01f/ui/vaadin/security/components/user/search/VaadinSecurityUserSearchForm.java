@@ -1,14 +1,23 @@
 package r01f.ui.vaadin.security.components.user.search;
 
+import java.util.Collection;
+
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import r01f.client.api.security.SecurityAPIBase;
 import r01f.model.security.user.User;
 import r01f.ui.i18n.UII18NService;
@@ -40,6 +49,7 @@ import r01f.util.types.collections.Lists;
  * 		+----------------------------------------------+
  * </pre>
  */
+@Accessors(prefix="_")
 public abstract class VaadinSecurityUserSearchForm<U extends User,V extends VaadinViewUser<U>,
 										  		   P extends VaadinSecurityUserSearchPresenter<U,V,
 										  											  		   ? extends VaadinSecurityUserSearchCOREMediator<U,
@@ -59,6 +69,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	protected final RadioButtonGroup<VaadinSecurityUserDirectory> _radioUserDirectory;
 
 	protected final TextField _txtSearch = new TextField();
+	protected final Button _btnSearch = new Button();
 
 	protected final Grid<V> _gridUsers = new Grid<>();
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -67,12 +78,29 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	private final UISubscriber<V> _onSelectSubscriber;
 	private final UISubscriber<V> _onDoubleClickSubscriber;
 /////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**
+	 * If the selected user does NOT exist at the LOCAL user repo, create it 
+	 */
+	@Getter @Setter private boolean _createUserAtLocalRepoEnabled = true;
+/////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinSecurityUserSearchForm(final UII18NService i18n,
 									    final P userSearchPresenter,
 									    final UISubscriber<V> onSelectSubscriber,
 									    final UISubscriber<V> onDoubleClickSubscriber) {
+		this(i18n,
+			 userSearchPresenter,
+			 onSelectSubscriber,onDoubleClickSubscriber,
+			 Lists.newArrayList(VaadinSecurityUserDirectory.CORPORATE,VaadinSecurityUserDirectory.LOCAL));
+	}
+	public VaadinSecurityUserSearchForm(final UII18NService i18n,
+									    final P userSearchPresenter,
+									    final UISubscriber<V> onSelectSubscriber,
+									    final UISubscriber<V> onDoubleClickSubscriber,
+									    final Collection<VaadinSecurityUserDirectory> directories) {
 		_userSearchPresenter = userSearchPresenter;
 
 		_onSelectSubscriber = onSelectSubscriber;
@@ -81,9 +109,8 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		////////// UI
 		// user search directory
 		_radioUserDirectory = new RadioButtonGroup<>(i18n.getMessage("security.directory"));
-		_radioUserDirectory.setItems(VaadinSecurityUserDirectory.LOCAL,
-									 VaadinSecurityUserDirectory.CORPORATE);
-		_radioUserDirectory.setValue(VaadinSecurityUserDirectory.LOCAL);		// local by default
+		_radioUserDirectory.setItems(directories);
+		_radioUserDirectory.setValue(VaadinSecurityUserDirectory.CORPORATE);		// corporate by default
 		_radioUserDirectory.setItemCaptionGenerator(dir -> dir.getNameUsing(i18n));
 		_radioUserDirectory.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
 
@@ -93,10 +120,13 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		////////// Style
 		_txtSearch.setWidthFull();
 		//_gridUsers.setStyleName(R01UIServiceCatalogTheme.SERVICE_CATALOG_GRID);
+		HorizontalLayout txtSearchLayout = new HorizontalLayout(_txtSearch,_btnSearch);
+		txtSearchLayout.setExpandRatio(_txtSearch, 1);
+		txtSearchLayout.setSizeFull();
 
 		// Root layout
 		VerticalLayout vly = new VerticalLayout(_radioUserDirectory,
-												_txtSearch,
+												txtSearchLayout,
 											    _gridUsers);
 		vly.setMargin(false);
 		this.setCompositionRoot(vly);
@@ -139,9 +169,21 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	private void _setBehavior() {
 		// search text: disable search button if no text
 		// and refresh the list if at least 3 letters are entered
-		_txtSearch.addValueChangeListener(valChangeEvent -> {
-												_search(valChangeEvent.getValue());
-										  });
+//		_txtSearch.addValueChangeListener(valChangeEvent -> {
+//												_search(valChangeEvent.getValue());
+//										  });
+		
+		_txtSearch.addShortcutListener(new ShortcutListener("SearchClick", ShortcutAction.KeyCode.ENTER, null) {
+											private static final long serialVersionUID = -613589292101468294L;
+								
+											@Override
+											public void handleAction(final Object sender, final Object target) {
+												_btnSearch.click();
+											}
+										});
+		_btnSearch.addClickListener(clickEvent -> {
+											_search(_txtSearch.getValue());
+									});
 		// grid select: enable / disable [select] button depending on there's an item selected
 		_gridUsers.addSelectionListener(rowSelectedEvent -> {
 											VaadinSecurityUserDirectory userDirectory = _radioUserDirectory.getValue();
@@ -193,12 +235,13 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 
 		V outViewUser = null;
 
-		// if it's an XLNets user, the [user oid] at the LOCAL DB is null (XLNets do know nothing about this local db)
-		// The user might or might NOT exist at the LOCAL db so the LOCAL db is queried using the XLNets [user code]
+		// if it's a [corporate] user, the [user oid] at the LOCAL DB is null (the [corporate directory] do know nothing about this local db)
+		// The user might or might NOT exist at the LOCAL db so the LOCAL db is queried using the [corporate] [user code]
 		//		- If the user already exists at the LOCAL db, it's returned
 		//		- If the user does NOT already exists at the LOCAL db, it's CREATED
-		if (selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {
-			outViewUser = _userSearchPresenter.ensureThereExistsLocalUserForCorporateDirectoryUser(selectedViewUser);
+		if (_createUserAtLocalRepoEnabled
+		 && selectedViewUser.getSourceUserDirectory() == VaadinSecurityUserDirectory.CORPORATE) {
+			outViewUser = _userSearchPresenter.ensureThereExistsLocalUserForCorporateDirectoryUser(selectedViewUser.getSourceUserDirectory(),selectedViewUser);
 		} else {
 			outViewUser = selectedViewUser;
 		}
@@ -226,5 +269,9 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname1"));
 		_gridUsers.getColumn("phone").setCaption(i18n.getMessage("contact.phone"));
 		_gridUsers.getColumn("email").setCaption(i18n.getMessage("contact.email"));
+		
+		_radioUserDirectory.setItemCaptionGenerator(item -> item.getNameUsing(i18n));
+		_txtSearch.setPlaceholder(i18n.getMessage("security.directory.search.placeHolder"));
+		_btnSearch.setCaption(i18n.getMessage("search"));
 	}
 }

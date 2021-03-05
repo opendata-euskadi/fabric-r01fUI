@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import r01f.debug.Debuggable;
+import r01f.locale.LanguageTexts;
 import r01f.model.security.user.User;
 import r01f.securitycontext.SecurityIDS.UserRole;
 import r01f.securitycontext.SecurityOIDs.AuthorizationTargetResourceOID;
@@ -34,6 +35,7 @@ public abstract class VaadinViewUsersWithRoleInAuthResourceBase<U extends User,V
 //	FIELDS
 ////////////////////////////////////////////////////////////////////////////////////////
 	@Getter protected String _authResourceName;
+	@Getter protected LanguageTexts _authResourceDescription;
 
 	@Getter protected final Collection<UserRole> _roles;
 
@@ -75,6 +77,10 @@ public abstract class VaadinViewUsersWithRoleInAuthResourceBase<U extends User,V
 	
 	public void setAuthResourceName(final String resName) {
 		_authResourceName = resName;
+	}
+	
+	public void setAuthResourceDescription(final LanguageTexts resDescription) {
+		_authResourceDescription = resDescription;
 	}	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	RESET

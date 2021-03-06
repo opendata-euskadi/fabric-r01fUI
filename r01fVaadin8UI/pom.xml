@@ -29,5 +29,6 @@
 		<module>r01fVaadin8UITinyEditorAddOnClasses</module>
     <module>r01fVaadin8UISecurityClasses</module>
     <module>r01fVaadin8UICodeMirrorAddOnClasses</module>
+    <module>r01fVaadin8UIHistoryClasses</module>
   </modules>
 </project>

@@ -337,7 +337,7 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 			_btnPopUpOK.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
 			// layout
-			HorizontalLayout lyButtons = new HorizontalLayout(_btnPopUpOK,_btnPopUpCancel);
+			HorizontalLayout lyButtons = new HorizontalLayout(_btnPopUpCancel,_btnPopUpOK);
 
 			VerticalLayout ly = new VerticalLayout(_frmSearch,
 												   lyButtons);

@@ -2,14 +2,14 @@ package r01f.ui.vaadin.history;
 
 import java.time.LocalDateTime;
 import java.time.format.FormatStyle;
+import java.util.Collection;
 
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 
-import r01f.model.facets.HistoryTrackedObjectOID;
-import r01f.model.history.HistoryActionAboutObject;
-import r01f.model.history.HistoryEntry;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.VaadinDates;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
@@ -29,16 +29,20 @@ import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
  * 		|          |           |             |               |
  * 		+----------+-----------+-------------+---------------+
  * </pre>
+ * Usage:
+ * <pre class='brush:java'>
+ * 		VaadinHistoryGrid<MyHistoryEntry> grid = new VaadinHistoryGrid<>(i18n);
+ * 		historyPresenter.onUserHistoryEntriesLoadRequested(objOid,i18n.getCurrentLanguage(),
+ * 														   viewEntries -> grid.setHistoryItems(gridItems));
+ * </pre>
  * @param <A>
  * @param <O>
  * @param <H>
  * @param <V>
  */
-public abstract class VaadinHistoryGrid<A extends HistoryActionAboutObject,
-							  			O extends HistoryTrackedObjectOID,H extends HistoryEntry<A,O>,
-							  			V extends VaadinViewHistoryEntry<A,O,H>>
-			  extends Composite 
-		   implements VaadinViewI18NMessagesCanBeUpdated {
+public class VaadinHistoryGrid<V extends VaadinViewHistoryEntry<?,?,?>>
+     extends Composite 
+  implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = 2069334847582369557L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +100,13 @@ public abstract class VaadinHistoryGrid<A extends HistoryActionAboutObject,
 		_gridHistoryEntries.setSelectionMode(SelectionMode.SINGLE);
 		_gridHistoryEntries.setSizeFull();
 		_gridHistoryEntries.setHeightByRows(5);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SET ITEMS
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setHistoryEntries(final Collection<V> gridItems) {
+		ListDataProvider<V> listDataProvider = DataProvider.ofCollection(gridItems);
+		_gridHistoryEntries.setDataProvider(listDataProvider);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	I18N

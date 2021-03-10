@@ -269,7 +269,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname1"));
 		_gridUsers.getColumn("phone").setCaption(i18n.getMessage("contact.phone"));
 		_gridUsers.getColumn("email").setCaption(i18n.getMessage("contact.email"));
-		
+		_gridUsers.setDescriptionGenerator(item -> i18n.getMessage("users.grid.row.select"));
 		_radioUserDirectory.setItemCaptionGenerator(item -> item.getNameUsing(i18n));
 		_txtSearch.setPlaceholder(i18n.getMessage("security.directory.search.placeHolder"));
 		_btnSearch.setCaption(i18n.getMessage("search"));

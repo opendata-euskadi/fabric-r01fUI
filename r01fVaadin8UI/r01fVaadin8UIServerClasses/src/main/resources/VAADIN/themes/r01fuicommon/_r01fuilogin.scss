@@ -5,41 +5,35 @@
 	View: VaadinLoginViewBase
 	
 */
-	.r01uilogin, .login-title {
+	.r01-login {
 		background-color: rgb(29, 123, 173);
 	}
 	
-	.v-verticallayout-login-layout {
-		width: 355px;
+	.r01-login-panel {
+		width: 40% !important;
 	}
 	
-	.login-panel .v-slot-login-buttons {
-		height:245px;
-	}
-	.login-panel {
-		padding-bottom:20px;
-	}
-	 	
-	.v-button-danger.google-button {
+	.v-button-danger .google-button {
 		background: rgb(181, 52, 42) !important;
 		width: 93px;
 	}
 	
-	.v-button-primary.xlnets-button {
+	.v-button-primary .xlnets-button {
 		background: rgb(24, 80, 120) !important;
 		width: 93px;
 	}
 	
-	.v-button-primary.justizia-button {
+	.v-button-primary .justizia-button {
 		background: rgb(30, 34, 170) !important;
 		width: 93px; 
 	}
 	
-	.login-lang-selector div .v-button-borderless, .v-label-login-title.v-label-h1 {
+	.r01-login-lang-selector,  
+	.v-label-r01-login-title  {
 		color:white !important;
 	}
 	
-	div.form-fields .v-caption-inline-icon span.v-icon {
+	div.r01-login-form-fields .v-caption-inline-icon span.v-icon {
 		left: auto;
 	}
 }

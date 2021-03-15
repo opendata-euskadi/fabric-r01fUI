@@ -45,10 +45,10 @@ $v-selection-color:#007ca9;
 	.padding-top {
 		padding-top: 20px !important;
 	}
-	.padding-bottom{
+	.padding-bottom {
 		padding-bottom: 20px !important;
 	}
-	.overflow-y-auto{
+	.overflow-y-auto {
 		overflow-y: auto;
 	}
 
@@ -64,7 +64,6 @@ $v-selection-color:#007ca9;
 		}
 		width: 220px;
 	}
-
 	.v-slot-combo-big {
 		.v-captiontext {
 			font-weight: bold;
@@ -75,7 +74,6 @@ $v-selection-color:#007ca9;
 	.v-slot-input-medium {
 		width: 220px;
 	}
-
 	.v-slot-input-big {
 		width: 550px!important;
 		.v-widget.v-has-caption.v-caption-on-top {
@@ -85,7 +83,6 @@ $v-selection-color:#007ca9;
 			width: 100%;
 		}
 	}
-
 	.v-slot-input-huge {
 		width: 650px!important;
 		.v-widget.v-has-caption.v-caption-on-top {
@@ -96,21 +93,18 @@ $v-selection-color:#007ca9;
 		}
 
 	}
-
 	.v-slot-textarea-big {
 		width: 550px!important;
 		.v-widget.v-has-caption.v-caption-on-top {
 			width:100%!important;
 		}
 	}
-
 	.v-slot-datefield-medium {
 		width: 300px!important;
 		.v-widget.v-has-caption.v-caption-on-top {
 			width:100%!important;
 		}
 	}
-
 	.v-slot-grid-container-medium {
 		width: 100%!important;
 	}
@@ -136,7 +130,6 @@ $v-selection-color:#007ca9;
 	.v-slot-add-button {
 		vertical-align: bottom;
 	}
-
 	.lbl-add-button .add-button {
 		background: white;
 		border: 1px solid lightgray;
@@ -149,11 +142,9 @@ $v-selection-color:#007ca9;
     	padding-top: 0;
 		border-radius: 5px;
 	}
-
 	.lbl-add-button .add-button:hover:after {
 		color: $app-color;
 	}
-
 	.lbl-add-button .add-button .v-icon {
 		color: $app-color;
 		font-weight: bold;
@@ -166,12 +157,10 @@ $v-selection-color:#007ca9;
 		border: 1px solid lightgray;
         border-radius: 8px;
 	}
-
 	.add-button .v-button-caption {
         color: white;
         font-size: 14px;
     }
-
     .add-button .v-icon {
 		color: $app-color;
 		font-weight: bold;
@@ -186,21 +175,23 @@ $v-selection-color:#007ca9;
 			font-weight: bold;
 		}
 	}
-
 	.primary-button .v-icon {
 		color: white;
 	}
-
 	.v-button-primary {
 		background: $app-color;
 		box-shadow: none;
 	}
 
-	////////// labelwithicon
+	////////// label 
+	.v-label-r01-word-wrap {
+   		word-wrap: break-word; /* IE  */
+   		white-space: break-spaces; /* -moz-pre-wrap;  Firefox */
+	}
 	.v-label-label-with-icon {
 		color: $app-color;
 		font-weight: bold;
-		margin-top:0px!important;
+		margin-top:0px !important;
 		span.v-icon {
 			color:$app-color;
 			font-size: 24px;

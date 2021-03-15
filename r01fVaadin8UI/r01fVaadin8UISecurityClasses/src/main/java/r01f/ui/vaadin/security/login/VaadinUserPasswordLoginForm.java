@@ -69,7 +69,7 @@ public class VaadinUserPasswordLoginForm
 		_btnUsrPasswdSignIn.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		_btnUsrPasswdSignIn.setClickShortcut(KeyCode.ENTER);
 
-		_btnHideUsrPasswdForm = new Button();
+		_btnHideUsrPasswdForm = new Button(VaadinIcons.ARROW_BACKWARD);
 		_btnHideUsrPasswdForm.addStyleName(ValoTheme.BUTTON_LINK);
 
 		////////// layout

@@ -168,7 +168,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnGoogle = _buildGoogleButton();
 		_btnJustizia = _buildJustiziaButton(); 
 		_btnShowUsrPasswdForm = new Button();
-		_btnHideOtherLoginMethods = new Button();
+		_btnHideOtherLoginMethods = new Button(VaadinIcons.ARROW_BACKWARD);
 		
 		_btnShowUsrPasswdForm.addStyleName(ValoTheme.BUTTON_LINK);
 		_btnHideOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);

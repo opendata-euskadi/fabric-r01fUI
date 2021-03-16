@@ -45,7 +45,7 @@ public class VaadinLoginMethodButton
 		_btn = new Button();
 		_btn.addListener(clickEvent ->  Page.getCurrent()
 											.open(loginUrlStr,
-												  "login"));	// window name
+												  null));	// window name (null = same win)
 		// Layout
 		HorizontalLayout ly = new HorizontalLayout(_icon,_btn);
 		this.setCompositionRoot(ly);

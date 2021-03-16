@@ -39,6 +39,7 @@ public abstract class VaadinValoTheme
 	
 	public static final String LABEL_AND_ADD_BUTTON = "lbl-add-button";
 	public static final String LABEL_WITH_ICON = "label-with-icon";
+	public static final String LABEL_WORD_WRAP = "r01-word-wrap";
 	public static final String GRID_NO_CELL_HEADERS = "r01ui-grid-no-cell-headers";
 	public static final String GRID_COMPONENT = "r01ui-object-grid-component";
 	public static final String GRID_STRIPPED = "stripes";

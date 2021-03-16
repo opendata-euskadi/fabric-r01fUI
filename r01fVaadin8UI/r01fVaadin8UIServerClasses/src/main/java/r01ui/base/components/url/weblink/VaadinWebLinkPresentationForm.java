@@ -122,14 +122,14 @@ public class VaadinWebLinkPresentationForm<P extends IsUIViewWebLinkPresentation
 		return _txtLinkText.getValue();
 	}
 	public void setLinkText(final String text) {
-		_txtLinkText.setValue(text);
+		_txtLinkText.setValue(text != null ? text : "");
 	}
 	
 	public String getLinkDescription() {
 		return _txtLinkDescription.getValue();
 	}
 	public void setLinkDescription(final String desc) {
-		_txtLinkDescription.setValue(desc);
+		_txtLinkDescription.setValue(desc != null ? desc : "");
 	}
 	
 	public boolean isOpeningInNewWindow() {

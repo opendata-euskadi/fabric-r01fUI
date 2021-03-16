@@ -35,7 +35,9 @@ public abstract class VaadinUII18NManager
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public Locale getCurrentLocale() {
-		Locale outLoc = UI.getCurrent().getLocale();
+		Locale outLoc = null;
+		if (UI.getCurrent() != null) 
+			outLoc = UI.getCurrent().getLocale();
 		if (outLoc == null) log.warn("NO current locale!! detault to {}",Locale.getDefault());
 		return outLoc != null ? outLoc : Locale.getDefault();
 	}

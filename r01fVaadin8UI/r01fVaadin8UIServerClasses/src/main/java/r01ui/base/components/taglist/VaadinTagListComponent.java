@@ -172,13 +172,14 @@ public class VaadinTagListComponent<T>
 	@SuppressWarnings("unchecked")
 	public void setValues(final ItemCaptionGenerator<T> itemCaptionGenerator,
 						  final T... values) {
-		this.setValues(Lists.<T>newArrayList(values));
+		this.setValues(itemCaptionGenerator,
+					   Lists.<T>newArrayList(values));
 	}
 	public void setValues(final ItemCaptionGenerator<T> itemCaptionGenerator,
 						  final Collection<T> values) {
 		ItemCaptionGenerator<T> theItemCaptionGen = itemCaptionGenerator != null
-														? itemCaptionGenerator
-														: val -> val.toString();
+															? itemCaptionGenerator
+															: val -> val.toString();
 		_replaceValueButtons(values,
 							 theItemCaptionGen);
 	}
@@ -190,9 +191,11 @@ public class VaadinTagListComponent<T>
 		// [2] - Create buttons
 		values.stream()
 			  .forEach(val -> {
-							Button btnVal = new Button(val.toString());
+				  			String lbl = itemCaptionGen.apply(val);
+							Button btnVal = new Button(lbl);
+							btnVal.setDescription(itemCaptionGen.apply(val));							
 							btnVal.setData(val);	// BEWARE!! store the val as data
-							btnVal.addClickListener(// when clicking a [button] select the corresponding [combo item]
+							btnVal.addClickListener(// when clicking a [button] select the corresponding [item]
 													e -> {
 														// [1] - If there exists an already selected button, unselect it
 														Button btnPrev = _findSelectedValueButton();
@@ -203,7 +206,6 @@ public class VaadinTagListComponent<T>
 														if (btn == null) throw new IllegalStateException();
 														btn.addStyleName(BTN_SELECTED_STYLE);
 												    });
-							btnVal.setDescription(itemCaptionGen.apply(val));
 				  			_hlyTagsContainer.addComponent(btnVal);
 			  		   });
 	}
@@ -223,6 +225,7 @@ public class VaadinTagListComponent<T>
 									return outHasSelectedStyle;
 								});
 	}
+	@SuppressWarnings("null")
 	private Button _findValueButton(final Predicate<Button> pred) {
 		Button outButton = null;
 		Iterator<Button> btnIt = _buttonIterator();

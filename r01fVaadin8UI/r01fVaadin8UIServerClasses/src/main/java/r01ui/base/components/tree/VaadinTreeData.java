@@ -159,6 +159,29 @@ public class VaadinTreeData<T>
 		TreeData<T> subTree = this.getSubTreeOf(node);
 		return VaadinTreeData.allItemsOf(subTree);
 	}
+	/**
+	 * Returns all items matching the given predicate
+	 * @param match
+	 * @return
+	 */
+	public Collection<T> getAllItemsMatching(final Predicate<T> match) {
+		Collection<T> outItems = Lists.newArrayList();
+		_recurseFindItemsMatching(this.getRootItems(),
+								  match,
+								  outItems);
+		return outItems;
+	}
+	private void _recurseFindItemsMatching(final Collection<T> childItems,
+							   	  		   final Predicate<T> match,
+							   	  		   final Collection<T> itemsMatching) {
+		if (CollectionUtils.isNullOrEmpty(childItems)) return;
+		for (T childItem : childItems) {
+			if (match.test(childItem)) itemsMatching.add(childItem);
+			Collection<T> childsOfChild = this.getChildren(childItem);
+			_recurseFindItemsMatching(childsOfChild,match,
+							 		  itemsMatching);
+		}
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////	

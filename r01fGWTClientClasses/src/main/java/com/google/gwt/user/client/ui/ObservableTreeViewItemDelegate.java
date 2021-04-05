@@ -6,6 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import lombok.RequiredArgsConstructor;
+import r01f.model.facets.view.IsSelectable;
 import r01f.patterns.CommandOn;
 import r01f.patterns.reactive.ForUpdateObserver;
 import r01f.patterns.reactive.ObservableBase;
@@ -15,7 +16,6 @@ import r01f.util.types.collections.CollectionUtils;
 import r01f.view.CanBePainted;
 import r01f.view.LazyLoadedViewObserver;
 import r01f.view.ObservableLazyLoadedView;
-import r01f.view.SelectableViewComponent;
 
 @RequiredArgsConstructor
      class ObservableTreeViewItemDelegate<T extends CanBePainted>
@@ -50,7 +50,7 @@ implements ObservableLazyLoadedView,
 								  new CommandOn<Observer>() {
 											@Override @SuppressWarnings("unchecked")
 											public void executeOn(final Observer obs) {
-												ForUpdateObserver<SelectableViewComponent> viewObserver = (ForUpdateObserver<SelectableViewComponent>)obs;
+												ForUpdateObserver<IsSelectable> viewObserver = (ForUpdateObserver<IsSelectable>)obs;
 												viewObserver.onUpdate(_wrappedTreeViewItem);
 											}
 								  });

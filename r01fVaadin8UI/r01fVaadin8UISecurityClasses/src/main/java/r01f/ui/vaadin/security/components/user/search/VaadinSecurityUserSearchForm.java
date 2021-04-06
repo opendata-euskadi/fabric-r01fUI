@@ -2,6 +2,7 @@ package r01f.ui.vaadin.security.components.user.search;
 
 import java.util.Collection;
 
+import com.vaadin.data.provider.GridSortOrderBuilder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -140,16 +141,16 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	@SuppressWarnings("unused")
 	private void _configureGrid(final UII18NService i18n) {
 		// configure columns
-		Grid.Column<V,String> colName = _gridUsers.addColumn(V::getName)
-															  .setResizable(true)
-															  .setMinimumWidthFromContent(true)
-															  .setExpandRatio(2)
-															  .setId("name");
 		Grid.Column<V,String> colSurname = _gridUsers.addColumn(V::getSurname)
 																 .setResizable(true)
 																 .setMinimumWidthFromContent(true)
 																 .setExpandRatio(2)
 																 .setId("surname");
+		Grid.Column<V,String> colName = _gridUsers.addColumn(V::getName)
+															  .setResizable(true)
+															  .setMinimumWidthFromContent(true)
+															  .setExpandRatio(2)
+															  .setId("name");		
 		Grid.Column<V,String> colPhone = _gridUsers.addColumn(V::getPhoneAsStringOrNull)
 															  	.setMinimumWidthFromContent(true)
 															  	.setExpandRatio(1)
@@ -160,6 +161,9 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 															  	.setExpandRatio(3)
 															  	.setSortable(false)
 															  	.setId("email");
+		
+		// grid column sort by surname asc
+		_gridUsers.setSortOrder(new GridSortOrderBuilder<V>().thenAsc(_gridUsers.getColumn("surname")));
 
 		// set selection mode
 		_gridUsers.setSelectionMode(SelectionMode.SINGLE);
@@ -266,7 +270,7 @@ public abstract class VaadinSecurityUserSearchForm<U extends User,V extends Vaad
 	public void updateI18NMessages(final UII18NService i18n) {
 		// grid
 		_gridUsers.getColumn("name").setCaption(i18n.getMessage("name"));
-		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname1"));
+		_gridUsers.getColumn("surname").setCaption(i18n.getMessage("surname"));
 		_gridUsers.getColumn("phone").setCaption(i18n.getMessage("contact.phone"));
 		_gridUsers.getColumn("email").setCaption(i18n.getMessage("contact.email"));
 		_gridUsers.setDescriptionGenerator(item -> i18n.getMessage("users.grid.row.select"));

@@ -160,6 +160,20 @@ public class VaadinTreeData<T>
 		return VaadinTreeData.allItemsOf(subTree);
 	}
 	/**
+	 * Returns all nodes below the given node matching the given predicate
+	 * @param node
+	 * @param match
+	 * @return
+	 */
+	public Collection<T> getAllItemsBelowMatching(final T node,
+												  final Predicate<T> match) {
+		Collection<T> itemsBelow = this.getAllItemsBelow(node);
+		return CollectionUtils.hasData(itemsBelow) ? itemsBelow.stream()
+															   .filter(match)
+															   .collect(Collectors.toList())
+												   : Lists.newArrayList();
+	}
+	/**
 	 * Returns all items matching the given predicate
 	 * @param match
 	 * @return

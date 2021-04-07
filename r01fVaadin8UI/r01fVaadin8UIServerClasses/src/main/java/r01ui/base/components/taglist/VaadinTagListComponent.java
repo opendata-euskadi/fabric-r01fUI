@@ -11,14 +11,20 @@ import java.util.stream.StreamSupport;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Composite;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.experimental.Accessors;
+import r01f.patterns.reactive.ForDisposeObserver;
+import r01f.patterns.reactive.ForSelectObserver;
 import r01f.util.types.StringSplitter;
 import r01f.util.types.Strings;
 
@@ -130,11 +136,11 @@ public class VaadinTagListComponent<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 //	VALUE
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Override @SuppressWarnings("unchecked")
+	@Override
 	public Collection<T> getValue() {
-		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(_buttonIterator(),Spliterator.ORDERED),
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(_itemIterator(),Spliterator.ORDERED),
 																		false)	// not parallel
-							.map(btn -> (T)btn.getData())	// buttons have the data stored
+							.map(item -> item.getData())	// items have the data stored
 							.collect(Collectors.toSet());
 	}
 	@Override
@@ -151,12 +157,17 @@ public class VaadinTagListComponent<T>
 		Registration reg = super.addValueChangeListener(listener);
 		return reg;
 	}
+	public void setDisposeSubscriber(final ForDisposeObserver<T> subscriber) {
+		_itemIterator().forEachRemaining(item -> item.setDisposeSubcriber(subscriber));
+	}
+	public void setSelectSubscriber(final ForSelectObserver<T> subscriber) {
+		_itemIterator().forEachRemaining(item -> item.setSelectSubscriber(subscriber));
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CAPTIONS
 /////////////////////////////////////////////////////////////////////////////////////////
-	@SuppressWarnings("unchecked")
 	public void setItemCaptionGenerator(final ItemCaptionGenerator<T> itemCaptionGenerator) {
-		_buttonIterator().forEachRemaining(btn -> btn.setDescription(itemCaptionGenerator.apply((T)btn.getData())));	// remember that button vaadin's DATA object contains the VALUE
+		_itemIterator().forEachRemaining(item -> item.setDescription(itemCaptionGenerator.apply(item.getData())));	// remember that button vaadin's DATA object contains the VALUE
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -183,66 +194,142 @@ public class VaadinTagListComponent<T>
 		_replaceValueButtons(values,
 							 theItemCaptionGen);
 	}
+	@SuppressWarnings("unchecked")
 	private void _replaceValueButtons(final Collection<T> values,
 									  final ItemCaptionGenerator<T> itemCaptionGen) {
 		// [1] - Remove all components
 		_hlyTagsContainer.removeAllComponents();
 
-		// [2] - Create buttons
+		// [2] - Create items
 		values.stream()
 			  .forEach(val -> {
-				  			String lbl = itemCaptionGen.apply(val);
-							Button btnVal = new Button(lbl);
-							btnVal.setDescription(itemCaptionGen.apply(val));							
-							btnVal.setData(val);	// BEWARE!! store the val as data
-							btnVal.addClickListener(// when clicking a [button] select the corresponding [item]
-													e -> {
-														// [1] - If there exists an already selected button, unselect it
-														Button btnPrev = _findSelectedValueButton();
-														if (btnPrev != null) btnPrev.removeStyleName(BTN_SELECTED_STYLE);
-
-														// [2] - Select the button
-														Button btn = e.getButton();		// should be btnVal
-														if (btn == null) throw new IllegalStateException();
-														btn.addStyleName(BTN_SELECTED_STYLE);
-												    });
-				  			_hlyTagsContainer.addComponent(btnVal);
+				  			VaadinTagListItem item = new VaadinTagListItem(val,
+				  														   itemCaptionGen);
+				  			item.addItemButtonClickListener(// when clicking a [button] select the corresponding [item]
+															e -> {
+																// [1] - If there exists an already selected button, unselect it
+																VaadinTagListItem prevItem = _findSelectedItem();
+																if (prevItem != null) prevItem.setSelected(false);
+		
+																// [2] - Select the button
+																Button btn = e.getButton();		// should be btnVal
+																VaadinTagListItem selItem = (VaadinTagListItem)btn.getParent()
+																												  .getParent(); // _findItem(theItem -> theItem._btnItem == btn);	// the item that contains the button
+																selItem.setSelected(true);
+														    });
+				  			_hlyTagsContainer.addComponent(item);
 			  		   });
 	}
-	@SuppressWarnings("unused")
-	private Button _findValueButton(final T val) {
-		return _findValueButton(btn -> btn.getData().equals(val));
-	}
-	private Button _findSelectedValueButton() {
-		return _findValueButton(btn -> {
-									boolean outHasSelectedStyle = false;
-									String style = btn.getStyleName();
-									if (Strings.isNOTNullOrEmpty(style)) {
-										outHasSelectedStyle = StringSplitter.using(Splitter.on(" "))
-																		  	.at(style)
-																		  	.indexOf(BTN_SELECTED_STYLE) >= 0;
-									}
-									return outHasSelectedStyle;
-								});
+	private VaadinTagListItem _findSelectedItem() {
+		return _findItem(item -> item.isSelected());
 	}
 	@SuppressWarnings("null")
-	private Button _findValueButton(final Predicate<Button> pred) {
-		Button outButton = null;
-		Iterator<Button> btnIt = _buttonIterator();
+	private VaadinTagListItem _findItem(final Predicate<VaadinTagListItem> pred) {
+		VaadinTagListItem outItem = null;
+		Iterator<VaadinTagListItem> itemIt = _itemIterator();
 		do {
-			Button btn = btnIt.hasNext() ? btnIt.next() : null;
-			if (btn != null
-			 && pred.test(btn)) {
-				outButton = btn;
+			VaadinTagListItem item = itemIt.hasNext() ? itemIt.next() : null;
+			if (item != null
+			 && pred.test(item)) {
+				outItem = item;
 				break;
 			}
-		} while (btnIt.hasNext() 
-			  && outButton == null);
-		return outButton;
+		} while (itemIt.hasNext() 
+			  && outItem == null);
+		return outItem;
 	}
-	private Iterator<Button> _buttonIterator() {
-		Iterator<Component> btnIt = _hlyTagsContainer.iterator();
-		return Iterators.transform(btnIt,
-								   comp -> (Button)comp);
+	@SuppressWarnings("unchecked")
+	private Iterator<VaadinTagListItem> _itemIterator() {
+		Iterator<Component> itemIt = _hlyTagsContainer.iterator();
+		return Iterators.transform(itemIt,
+								   comp -> (VaadinTagListItem)comp);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * A component like:
+	 * <pre>
+	 * 		[x] [item]
+	 * </pre>
+	 */
+	private class VaadinTagListItem
+		  extends Composite {
+
+		private static final long serialVersionUID = -3528551824350605879L;
+		
+		private final Button _btnDispose;
+		private final Button _btnItem;
+		
+		private final T _data;
+		
+		private ForDisposeObserver<T> _disposeSubscriber;
+		private ForSelectObserver<T> _selectSubscriber;
+		
+		public VaadinTagListItem(final T val,
+								 final ItemCaptionGenerator<T> itemCaptionGen) {
+			_data = val;
+			
+			////////// UI
+			// dispose button
+			_btnDispose = new Button(VaadinIcons.TRASH);
+			_btnDispose.addStyleNames(ValoTheme.BUTTON_ICON_ONLY,
+									  ValoTheme.BUTTON_BORDERLESS);
+			
+			// item button
+  			String lbl = itemCaptionGen.apply(val);
+			_btnItem = new Button(lbl);
+			_btnItem.setDescription(itemCaptionGen.apply(val));							
+			
+			////////// Layout
+			CssLayout ly = new CssLayout(_btnDispose,_btnItem);
+			this.setCompositionRoot(ly);
+			
+			////////// Behavior
+			_setBehavior();
+		}
+		private void _setBehavior() {
+			// when the [dispose] button is clicked...
+			_btnDispose.addClickListener(clickEvent -> {
+											if (_disposeSubscriber != null) _disposeSubscriber.onDispose(_data);
+										 });
+			// when the [item] is selected
+			_btnItem.addClickListener(clickEvent -> {
+											if (_selectSubscriber != null) _selectSubscriber.onSelect(_data);
+									  });
+		}
+		@Override
+		public T getData() {
+			return _data;
+		}
+		public void setSelected(final boolean selected) {
+			if (!selected) {
+				_btnItem.removeStyleName(BTN_SELECTED_STYLE);
+			} else {
+				_btnItem.addStyleName(BTN_SELECTED_STYLE);
+			}
+		}
+		public boolean isSelected() {
+			boolean outHasSelectedStyle = false;
+			String style = _btnItem.getStyleName();
+			if (Strings.isNOTNullOrEmpty(style)) {
+				outHasSelectedStyle = StringSplitter.using(Splitter.on(" "))
+												  	.at(style)
+												  	.indexOf(BTN_SELECTED_STYLE) >= 0;
+			}
+			return outHasSelectedStyle;
+		}
+		public Registration addItemButtonClickListener(final Button.ClickListener clickListener) {
+			return _btnItem.addClickListener(clickListener);
+		}
+		public Registration addDisposeButtonClickListener(final Button.ClickListener clickListener) {
+			return _btnDispose.addClickListener(clickListener);
+		}
+		public void setDisposeSubcriber(final ForDisposeObserver<T> subscriber) {
+			_disposeSubscriber = subscriber;
+		}
+		public void setSelectSubscriber(final ForSelectObserver<T> subscriber) {
+			_selectSubscriber = subscriber;
+		}
 	}
 }

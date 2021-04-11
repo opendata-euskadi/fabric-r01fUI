@@ -3,6 +3,7 @@ package r01ui.base.components.tree;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.TreeData;
 
 import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
+import r01f.patterns.CommandOn;
 import r01f.ui.viewobject.UIViewObject;
 import r01f.util.types.collections.CollectionUtils;
 
@@ -69,7 +71,7 @@ public class VaadinTreeData<T>
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	                                                                          
+//	ADD                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Adds a root node AFTER another given root node
@@ -203,8 +205,27 @@ public class VaadinTreeData<T>
 	public Collection<T> getAllItems() {
 		return VaadinTreeData.allItemsOf(this);
 	}
+	public static <T> Collection<T> allItemsOf(final TreeData<T> tree) {
+		Collection<T> outNodes = Lists.newArrayList();
+		_recurseAddAllItemsBelow(tree,
+								 tree.getRootItems(),
+								 outNodes);
+		return outNodes;
+	}
+	public static <T> void _recurseAddAllItemsBelow(final TreeData<T> tree,
+													final Collection<T> nodes,
+										  			final Collection<T> outNodes) {
+		if (CollectionUtils.isNullOrEmpty(nodes)) return;
+		nodes.stream()
+			 .forEach(node -> {
+				 		outNodes.add(node);
+				 		_recurseAddAllItemsBelow(tree,
+				 								 tree.getChildren(node),
+				 								 outNodes);
+			 		  });
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	DEEPTH
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public int getItemDepth(final T item) {
 		return _recurseFindRoot(item,0);
@@ -354,26 +375,45 @@ public class VaadinTreeData<T>
 		this.removeItem(item);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	TRANSFORM
 /////////////////////////////////////////////////////////////////////////////////////////
-	public static <T> Collection<T> allItemsOf(final TreeData<T> tree) {
-		Collection<T> outNodes = Lists.newArrayList();
-		_recurseAddAllItemsBelow(tree,
-								 tree.getRootItems(),
-								 outNodes);
-		return outNodes;
+	/**
+	 * Creates a new VaadinTreeData in which nodes are transformed using the given function
+	 * @param <U>
+	 * @param func
+	 * @return
+	 */
+	public <U> VaadinTreeData<U> transform(final Function<T,U> func) {
+		VaadinTreeData<U> transformed = new VaadinTreeData<>();
+		
+		Collection<T> rootItems = this.getRootItems();
+		if (CollectionUtils.hasData(rootItems)) rootItems.forEach(rootItem -> _recurseTransform(transformed,
+																								null,rootItem,
+																								func));
+		return transformed;
 	}
-	public static <T> void _recurseAddAllItemsBelow(final TreeData<T> tree,
-													final Collection<T> nodes,
-										  			final Collection<T> outNodes) {
-		if (CollectionUtils.isNullOrEmpty(nodes)) return;
-		nodes.stream()
-			 .forEach(node -> {
-				 		outNodes.add(node);
-				 		_recurseAddAllItemsBelow(tree,
-				 								 tree.getChildren(node),
-				 								 outNodes);
-			 		  });
+	private <U> void _recurseTransform(final VaadinTreeData<U> transformedTreeData,
+									   final T parentItem,final T item,
+									   final Function<T,U> func) {
+		U transformedParentItem = parentItem != null ? func.apply(parentItem) : null;
+		U transformedItem = item != null ? func.apply(item) : null;
+		if (transformedItem != null) transformedTreeData.addItem(transformedParentItem,transformedItem);
+		
+		Collection<T> childItems = this.getChildren(item);
+		if (CollectionUtils.hasData(childItems)) childItems.forEach(childItem -> _recurseTransform(transformedTreeData,
+																								   item,childItem,
+																								   func));
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	COMPUTE
+/////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Executes the given command on all items
+	 * @param cmd
+	 */
+	public void executeOnAllItems(final CommandOn<T> cmd) {
+		Collection<T> allItems = this.getAllItems();
+		if (CollectionUtils.hasData(allItems)) allItems.forEach(item -> cmd.executeOn(item));
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	DEBUG

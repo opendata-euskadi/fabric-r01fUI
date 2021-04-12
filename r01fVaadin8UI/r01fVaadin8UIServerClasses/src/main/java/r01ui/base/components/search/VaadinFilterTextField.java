@@ -3,6 +3,7 @@ package r01ui.base.components.search;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
@@ -11,6 +12,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 
 import r01f.ui.i18n.UII18NService;
+import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.Strings;
 
 /**
@@ -20,7 +22,8 @@ import r01f.util.types.Strings;
  * </pre>
  */
 public class VaadinFilterTextField 
-     extends CustomField<String> {
+     extends CustomField<String> 
+  implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = 8276710095246102703L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -29,12 +32,15 @@ public class VaadinFilterTextField
 	private final TextField _txtLabelFilter;	// Filter text box
 	private final Button _btnFilter;			// Search button
 	private final Button _btnClearFilter;		// Clear filter button
+	
+	private boolean _autoMode;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinFilterTextField(final UII18NService i18n) {
 		////////// UI
 		_txtLabelFilter = new TextField();
+		_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
 		
 		_btnFilter = new Button(i18n.getMessage("filter"),VaadinIcons.FILTER);
 		_btnClearFilter = new Button(i18n.getMessage("clear"),VaadinIcons.ERASER);
@@ -50,6 +56,10 @@ public class VaadinFilterTextField
 	@Override
 	protected Component initContent() {
 		HorizontalLayout ly = new HorizontalLayout(_txtLabelFilter,_btnFilter,_btnClearFilter);
+		ly.setWidthFull();
+		ly.setExpandRatio(_txtLabelFilter,1);
+		ly.setExpandRatio(_btnFilter,0);		// exact fit
+		ly.setExpandRatio(_btnClearFilter,0);	// exact fit
 		return ly;
 	}
 	private void _setBehavior() {
@@ -62,7 +72,10 @@ public class VaadinFilterTextField
 													if (Strings.isNullOrEmpty(val)) _btnFilter.click();
 													
 													// disable the [filter] button if val is empty
-													_enableButtonsDependingOnValue(val);												
+													_enableButtonsDependingOnValue(val);
+
+													// if auto mode simulate the search event
+													if (_autoMode) _btnFilter.click();	// the button MUST be ENABLED in order for this to work
 											   });
 		
 		// when clicking the [clear] button 
@@ -101,8 +114,27 @@ public class VaadinFilterTextField
 		return _txtLabelFilter.addValueChangeListener(listener);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
+//	MODE
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setAutoMode() {
+		_autoMode = true;
+		
+		_btnFilter.setVisible(false);
+		_txtLabelFilter.setValueChangeMode(ValueChangeMode.TIMEOUT);
+		_txtLabelFilter.setValueChangeTimeout(1000);	// 1 sg
+	}
+	public void resetAutoMode() {
+		_autoMode = false;
+		
+		_btnFilter.setVisible(true);
+		_txtLabelFilter.setValueChangeMode(ValueChangeMode.EAGER);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////
+	public void setFilterTextBoxPlaceHolder(final String text) {
+		_txtLabelFilter.setPlaceholder(text);
+	}
 	public void setFilterButtonCaption(final String text) {
 		_btnFilter.setCaption(text);
 	}
@@ -140,5 +172,14 @@ public class VaadinFilterTextField
 	}
 	public void addClearFilterButtonStyleNames(final String...styles) {
 		_btnClearFilter.addStyleNames(styles);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	I18N
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void updateI18NMessages(final UII18NService i18n) {
+		_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
+		_btnFilter.setCaption(i18n.getMessage("filter"));
+		_btnClearFilter.setCaption(i18n.getMessage("clear"));
 	}
 }

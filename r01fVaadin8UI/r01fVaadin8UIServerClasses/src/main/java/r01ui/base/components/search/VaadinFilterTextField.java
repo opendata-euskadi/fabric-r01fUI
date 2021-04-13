@@ -42,8 +42,11 @@ public class VaadinFilterTextField
 		_txtLabelFilter = new TextField();
 		_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
 		
-		_btnFilter = new Button(i18n.getMessage("filter"),VaadinIcons.FILTER);
-		_btnClearFilter = new Button(i18n.getMessage("clear"),VaadinIcons.ERASER);
+		_btnFilter = new Button(VaadinIcons.FILTER);
+		_btnFilter.setDescription(i18n.getMessage("filter"));
+		
+		_btnClearFilter = new Button(VaadinIcons.ERASER);
+		_btnClearFilter.setDescription(i18n.getMessage("clear"));
 		
 		// style
 		this.setDefaultStyling();
@@ -162,10 +165,10 @@ public class VaadinFilterTextField
 		// buttons
 		_btnFilter.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED,
 								 ValoTheme.BUTTON_ICON_ONLY,
-								 ValoTheme.BUTTON_TINY);
+								 ValoTheme.BUTTON_SMALL);
 		_btnClearFilter.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED,
 								 	  ValoTheme.BUTTON_ICON_ONLY,
-								 	  ValoTheme.BUTTON_TINY);
+								 	  ValoTheme.BUTTON_SMALL);
 	}
 	public void addFilterTextFieldStyleNames(final String... styles) {
 		_txtLabelFilter.addStyleNames(styles);

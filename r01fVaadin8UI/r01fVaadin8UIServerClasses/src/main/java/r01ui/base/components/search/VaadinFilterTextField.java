@@ -135,6 +135,9 @@ public class VaadinFilterTextField
 	public void setFilterTextBoxPlaceHolder(final String text) {
 		_txtLabelFilter.setPlaceholder(text);
 	}
+	public void addFilterTextBoxStyleNames(final String... styles) {
+		_txtLabelFilter.addStyleNames(styles);
+	}
 	public void setFilterButtonCaption(final String text) {
 		_btnFilter.setCaption(text);
 	}

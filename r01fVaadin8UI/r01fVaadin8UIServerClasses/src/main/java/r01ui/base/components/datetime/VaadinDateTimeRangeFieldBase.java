@@ -111,7 +111,7 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 		T up = _dateUperBound.getValue();
 		return low == null && up == null ? null
 										 : ((low != null && up != null) && _isNotValidRange(low, up)) ? null							//if values are not valid, do not create the Range
-												 											   		: Ranges.guavaRangeFrom(low,up);
+												 											   		  : Ranges.guavaRangeFrom(low,up);
 	}
 	@Override
 	protected void doSetValue(final Range<T> value) {
@@ -133,7 +133,6 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 			_dateUperBound.setValue(null);
 		}
 	}
-
 	@Override
 	public void clear() {
 		_dateLowerBound.setValue(null);
@@ -157,8 +156,8 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 														return;
 													}
 													T currLow = _isDateTimeRangeComponent() 
-																	&& valChangeEvent.getValue() == null ? null 							// if DateTimeField and value is null, just set the new value to low
-																										 : valChangeEvent.getOldValue();	// old value
+															 && valChangeEvent.getValue() == null ? null 							// if DateTimeField and value is null, just set the new value to low
+																								  : valChangeEvent.getOldValue();	// old value
 													T currUp = _dateUperBound.getValue();
 													if (currUp != null && currLow != null
 													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range

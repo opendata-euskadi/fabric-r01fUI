@@ -80,7 +80,7 @@ public class VaadinFilterTextField
 		
 		// when clicking the [clear] button 
 		_btnClearFilter.addClickListener(clickEvent -> {
-												_txtLabelFilter.setValue("");
+											_txtLabelFilter.setValue("");
 										 });
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

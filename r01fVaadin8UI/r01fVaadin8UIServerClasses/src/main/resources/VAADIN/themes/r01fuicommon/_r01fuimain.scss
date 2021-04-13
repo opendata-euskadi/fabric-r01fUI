@@ -405,4 +405,16 @@ $v-selection-color:#007ca9;
 		font-weight: bold;
 		background-color: $v-selection-color;
 	}
+	
+	/// label picker
+	.v-button.label-item {
+		background-color: #8cc4d9;
+    	color: white;
+    	border-radius: 25px;
+	}
+	.v-button-selected.label-item {
+		background-color:$v-selection-color;
+    	color: white;
+    	border-radius: 25px;
+	}
 }

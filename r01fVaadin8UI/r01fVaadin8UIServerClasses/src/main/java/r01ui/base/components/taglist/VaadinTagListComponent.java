@@ -6,6 +6,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.google.common.base.Splitter;
@@ -13,13 +14,15 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Composite;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
 import lombok.experimental.Accessors;
@@ -58,11 +61,13 @@ public class VaadinTagListComponent<T>
 		_itemCaptionGenerator = null;
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
+		_hlyTagsContainer.setSpacing(false);
 	}
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator) {
 		_itemCaptionGenerator = itemCaptionGenerator;
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
+		_hlyTagsContainer.setSpacing(false);
 	}
 	public VaadinTagListComponent(final String caption) {
 		this();
@@ -201,24 +206,44 @@ public class VaadinTagListComponent<T>
 		_hlyTagsContainer.removeAllComponents();
 
 		// [2] - Create items
-		values.stream()
-			  .forEach(val -> {
-				  			VaadinTagListItem item = new VaadinTagListItem(val,
-				  														   itemCaptionGen);
-				  			item.addItemButtonClickListener(// when clicking a [button] select the corresponding [item]
-															e -> {
-																// [1] - If there exists an already selected button, unselect it
-																VaadinTagListItem prevItem = _findSelectedItem();
-																if (prevItem != null) prevItem.setSelected(false);
-		
-																// [2] - Select the button
-																Button btn = e.getButton();		// should be btnVal
-																VaadinTagListItem selItem = (VaadinTagListItem)btn.getParent()
-																												  .getParent(); // _findItem(theItem -> theItem._btnItem == btn);	// the item that contains the button
-																selItem.setSelected(true);
-														    });
-				  			_hlyTagsContainer.addComponent(item);
-			  		   });
+		Iterator<T> it = values.iterator();
+		if (it.hasNext()) {
+			T val = it.next();
+			// item
+			_addTagListItemToContainer(val, itemCaptionGen);
+		}
+		it.forEachRemaining(val -> {
+									// separator
+									Label separator = new Label();
+									separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
+									separator.setContentMode(ContentMode.HTML);
+									separator.addStyleName(ValoTheme.LABEL_LIGHT);
+									separator.setSizeFull();
+									_hlyTagsContainer.addComponent(separator);
+									_hlyTagsContainer.setComponentAlignment(separator, Alignment.BOTTOM_CENTER);
+									
+									// item
+									_addTagListItemToContainer(val, itemCaptionGen);
+							});
+	
+	}
+
+	private void _addTagListItemToContainer(final T val, final ItemCaptionGenerator<T> itemCaptionGen) {
+		VaadinTagListItem item = new VaadinTagListItem(val,
+				  									   itemCaptionGen);
+		item.addItemButtonClickListener(// when clicking a [button] select the corresponding [item]
+											e -> {
+												// [1] - If there exists an already selected button, unselect it
+												VaadinTagListItem prevItem = _findSelectedItem();
+												if (prevItem != null) prevItem.setSelected(false);
+
+												// [2] - Select the button
+												Button btn = e.getButton();		// should be btnVal
+												VaadinTagListItem selItem = (VaadinTagListItem)btn.getParent()
+																								  .getParent(); // _findItem(theItem -> theItem._btnItem == btn);	// the item that contains the button
+												selItem.setSelected(true);
+										    });
+		_hlyTagsContainer.addComponent(item);
 	}
 	private VaadinTagListItem _findSelectedItem() {
 		return _findItem(item -> item.isSelected());
@@ -240,7 +265,12 @@ public class VaadinTagListComponent<T>
 	}
 	@SuppressWarnings("unchecked")
 	private Iterator<VaadinTagListItem> _itemIterator() {
-		Iterator<Component> itemIt = _hlyTagsContainer.iterator();
+		Stream<Component> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+										                        _hlyTagsContainer.iterator(),
+										                        Spliterator.ORDERED),
+										                false);
+		Iterator<Component> itemIt = stream.filter(c -> c instanceof VaadinTagListComponent.VaadinTagListItem)
+										   .iterator();
 		return Iterators.transform(itemIt,
 								   comp -> (VaadinTagListItem)comp);
 	}
@@ -272,9 +302,10 @@ public class VaadinTagListComponent<T>
 			
 			////////// UI
 			// dispose button
-			_btnDispose = new Button(VaadinIcons.TRASH);
+			_btnDispose = new Button(VaadinIcons.CLOSE_BIG);
 			_btnDispose.addStyleNames(ValoTheme.BUTTON_ICON_ONLY,
-									  ValoTheme.BUTTON_BORDERLESS);
+									  ValoTheme.BUTTON_BORDERLESS,
+									  ValoTheme.BUTTON_SMALL);
 			
 			// item button
   			String lbl = itemCaptionGen.apply(val);
@@ -284,7 +315,12 @@ public class VaadinTagListComponent<T>
 			_btnItem.setDescription(itemCaptionGen.apply(val));							
 			
 			////////// Layout
-			CssLayout ly = new CssLayout(_btnDispose,_btnItem);
+			HorizontalLayout ly = new HorizontalLayout(_btnDispose,_btnItem);
+			ly.setSpacing(false);
+			ly.setSizeFull();
+			ly.setExpandRatio(_btnDispose, 1);
+			ly.setExpandRatio(_btnItem, 3);
+			ly.setComponentAlignment(_btnDispose, Alignment.MIDDLE_RIGHT);
 			this.setCompositionRoot(ly);
 			
 			////////// Behavior

@@ -220,7 +220,7 @@ public class VaadinTagListComponent<T>
 									separator.addStyleName(ValoTheme.LABEL_LIGHT);
 									separator.setSizeFull();
 									_hlyTagsContainer.addComponent(separator);
-									_hlyTagsContainer.setComponentAlignment(separator, Alignment.BOTTOM_CENTER);
+									_hlyTagsContainer.setComponentAlignment(separator, Alignment.MIDDLE_CENTER);
 									
 									// item
 									_addTagListItemToContainer(val, itemCaptionGen);

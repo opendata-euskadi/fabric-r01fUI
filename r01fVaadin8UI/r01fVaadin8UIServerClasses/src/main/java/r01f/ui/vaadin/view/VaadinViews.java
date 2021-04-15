@@ -374,7 +374,10 @@ public abstract class VaadinViews {
 															  });
 			} else {
 				bindingBuilder.asRequired((value,context) -> {
-																	if (value != null) return ValidationResult.ok();
+																	if (value != null && !(value instanceof Collection)) return ValidationResult.ok();
+																	if (value != null && value instanceof Collection && CollectionUtils.hasData((Collection<?>)value)) { 
+																		return ValidationResult.ok();
+																	}
 																	return ValidationResult.error(i18n.getMessage(viewFieldAnnot.i18nKeyForRequiredMessage()));
 															  });
 			}

@@ -25,6 +25,7 @@ import r01f.facets.Facetable;
 import r01f.guids.OID;
 import r01f.model.facets.view.IsDisableCapable;
 import r01f.model.facets.view.IsFiltrable;
+import r01f.model.facets.view.IsPrimaryAndSecondarySelectable;
 import r01f.model.facets.view.IsSelectable;
 import r01f.patterns.reactive.ForLazyLoadedObserver;
 import r01f.patterns.reactive.ForUpdateObserver;
@@ -42,7 +43,6 @@ import r01f.view.CanPaint;
 import r01f.view.IsCollapsible;
 import r01f.view.LazyLoadedViewObserver;
 import r01f.view.ObservableLazyLoadedView;
-import r01f.view.SelectableViewComponent;
 import r01f.view.ViewComponent;
 import r01f.view.ViewObject;
 
@@ -93,7 +93,7 @@ import r01f.view.ViewObject;
 @Accessors(prefix="_")
 public class TreeViewItem<T extends CanBePainted>
 	 extends UIObject
-  implements IsCollapsible,							// ...that can be collapsed / expanded
+  implements CanPaint<T>, 							// Can paint a view object
   			 HasTreeViewItems<TreeViewItem<T>,T>,	// ...that has other tree view items as child items
   			 IsHierarchical<TreeViewItem<T>>,
   			 TreeViewItemsContainCapable<T>,		// ...so can contain child tree view items
@@ -104,8 +104,8 @@ public class TreeViewItem<T extends CanBePainted>
   			 ObservableForUpdate,					// Can be observed by view objects for changes
   			 ForUpdateObserver<ViewObject>, 		// Observes view object's changes
   			 ForLazyLoadedObserver<T>,				// Observes view object's lazy load events
-  			 CanPaint<T>,							// Can paint a view object
-  			 SelectableViewComponent {				// ... because it's a view
+  			 IsCollapsible,							// can be collapsed / expanded
+  			 IsSelectable {							// Can be selected
 /////////////////////////////////////////////////////////////////////////////////////////
 //  ELEMENT TEMPLATES
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -471,9 +471,9 @@ public class TreeViewItem<T extends CanBePainted>
 											   	   					    final T paintable) {
 		// If the view object is facetable and has the IsSelectable facet... check if it's selected
 		if (paintable instanceof Facetable) {
-			Facetable facetablePaintable = (Facetable) paintable;
-			if (facetablePaintable.hasFacet(IsSelectable.class)) {
-				IsSelectable selectable = facetablePaintable.asFacet(IsSelectable.class);
+			Facetable facetablePaintable = (Facetable)paintable;
+			if (facetablePaintable.hasFacet(IsPrimaryAndSecondarySelectable.class)) {
+				IsPrimaryAndSecondarySelectable selectable = facetablePaintable.asFacet(IsPrimaryAndSecondarySelectable.class);
 				if (selectable.isPrimarySelected()) {
 					item.setSelected();
 				} if (selectable.isSecondarySelected()) {
@@ -594,6 +594,14 @@ public class TreeViewItem<T extends CanBePainted>
 		return this.getValue();
 	}
 	@Override
+	public void setSelectionTo(final boolean sel) {
+		if (sel) {
+			this.setSelected();
+		} else {
+			this.setDeSelected();
+		}
+	}
+	@Override
 	public void setSelected() {
 		this.setValue(true);
 	}
@@ -613,7 +621,8 @@ public class TreeViewItem<T extends CanBePainted>
 	 * @return <code>true</code> if this item is selected because another selection (is secondary selected)
 	 */
 	public boolean isSecondarySelected() {
-		return _checkINPUTElement().isDisabled() && this.isSelected();
+		return _checkINPUTElement().isDisabled() 
+			&& this.isSelected();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  IsCollapsible Collapse / expand
@@ -770,7 +779,7 @@ public class TreeViewItem<T extends CanBePainted>
 			}
 			// [1] - Selectable
 			// Convert the view object to selectable
-			IsSelectable selectable = facetableModelObj.asFacet(IsSelectable.class);
+			IsPrimaryAndSecondarySelectable selectable = facetableModelObj.asFacet(IsPrimaryAndSecondarySelectable.class);
 			if (selectable != null) {
 				// If this item was selected because of a secondary selection and the update states that the
 				// item should be de-selected, the checkInputElement should be enabled again

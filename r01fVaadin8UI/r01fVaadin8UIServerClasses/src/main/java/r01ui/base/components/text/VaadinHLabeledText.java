@@ -32,6 +32,16 @@ public class VaadinHLabeledText
 						   new Label(text));
 		
 	}
+	public VaadinHLabeledText(final String label,final String text,
+							  final ContentMode contentMode) {
+		_delegated = new VaadinLabeledTextDelegate(this);
+		this.setSpacing(true);
+		this.addComponents(// the label
+						   new Label(VaadinLabeledTextDelegate.createLabelValue(label), 
+						  			 ContentMode.HTML),
+						   // the text
+						   new Label(text,contentMode));
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	METHODS                                                                        
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -50,5 +60,16 @@ public class VaadinHLabeledText
 	@Override
 	public void setText(final String text) {
 		_delegated.setText(text);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	STYLE
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void addTextStyleName(final String style) {
+		Label lblText = this.getText();
+		lblText.addStyleName(style);
+	}
+	public void addLabelStyleName(final String style) {
+		Label lbl = this.getLabel();
+		lbl.addStyleName(style);
 	}
 }

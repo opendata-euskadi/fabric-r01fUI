@@ -228,7 +228,9 @@ public abstract class VaadinTree<T>
 //	DEBUG
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected abstract String _itemCaption(final T item);
-	protected abstract StringBuilder _treeDebugInfo(final TreeData<T> treeData);
+	protected StringBuilder _treeDebugInfo(final TreeData<T> treeData) {
+		return new StringBuilder("");
+	}
 	protected boolean _customIsValid(final T dropTargetItem,final T draggedItem) {
 		return true;
 	}

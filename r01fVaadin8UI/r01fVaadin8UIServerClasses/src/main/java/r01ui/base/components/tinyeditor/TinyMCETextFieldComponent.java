@@ -18,6 +18,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.tinymceeditor.TinyMCETextField;
+import r01f.util.types.StringEscapeUtils;
 import r01f.util.types.Strings;
 
 /**
@@ -110,7 +111,7 @@ public class TinyMCETextFieldComponent
 	}
 	@Override
 	public String getValue() {
-		return _hiddenField.getValue();
+		return StringEscapeUtils.unescapeHTML(_hiddenField.getValue()).toString();
 	}
 
 	@Override

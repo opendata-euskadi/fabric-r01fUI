@@ -576,7 +576,6 @@ public class TreeView<T extends CanBePainted>
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	@SuppressWarnings("fallthrough")
 	public void onBrowserEvent(final Event event) {
 		super.onBrowserEvent(event);
 

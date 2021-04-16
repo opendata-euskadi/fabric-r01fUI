@@ -26,6 +26,15 @@ public class VaadinDateRangeField
 	}
 	public VaadinDateRangeField(final String dateFormat) {
 		super(DateField::new,
-			  dateFormat);
+			  dateFormat);		
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	Placeholder	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setDateLowerBoundPlaceholder(final String placeholder) {
+		_dateLowerBound.setPlaceholder(placeholder);
+	}
+	public void setDateUperBoundPlaceholder(final String placeholder) {
+		_dateUperBound.setPlaceholder(placeholder);		
 	}
 }

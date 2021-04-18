@@ -199,7 +199,6 @@ public class VaadinTagListComponent<T>
 		_replaceValueButtons(values,
 							 theItemCaptionGen);
 	}
-	@SuppressWarnings("unchecked")
 	private void _replaceValueButtons(final Collection<T> values,
 									  final ItemCaptionGenerator<T> itemCaptionGen) {
 		// [1] - Remove all components
@@ -210,24 +209,23 @@ public class VaadinTagListComponent<T>
 		if (it.hasNext()) {
 			T val = it.next();
 			// item
-			_addTagListItemToContainer(val, itemCaptionGen);
+			_addTagListItemToContainer(val,itemCaptionGen);
 		}
 		it.forEachRemaining(val -> {
-									// separator
-									Label separator = new Label();
-									separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
-									separator.setContentMode(ContentMode.HTML);
-									separator.addStyleName(ValoTheme.LABEL_LIGHT);
-									separator.setSizeFull();
-									_hlyTagsContainer.addComponent(separator);
-									_hlyTagsContainer.setComponentAlignment(separator, Alignment.MIDDLE_CENTER);
-									
-									// item
-									_addTagListItemToContainer(val, itemCaptionGen);
+								// separator
+								Label separator = new Label();
+								separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
+								separator.setContentMode(ContentMode.HTML);
+								separator.addStyleName(ValoTheme.LABEL_LIGHT);
+								separator.setSizeFull();
+								_hlyTagsContainer.addComponent(separator);
+								_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
+								
+								// item
+								_addTagListItemToContainer(val,itemCaptionGen);
 							});
-	
 	}
-
+	@SuppressWarnings("unchecked")
 	private void _addTagListItemToContainer(final T val, final ItemCaptionGenerator<T> itemCaptionGen) {
 		VaadinTagListItem item = new VaadinTagListItem(val,
 				  									   itemCaptionGen);
@@ -248,6 +246,9 @@ public class VaadinTagListComponent<T>
 	private VaadinTagListItem _findSelectedItem() {
 		return _findItem(item -> item.isSelected());
 	}
+	private VaadinTagListItem _findItemFor(final T item) {
+		return _findItem(tagListIem -> tagListIem.getData().equals(item));
+	}
 	@SuppressWarnings("null")
 	private VaadinTagListItem _findItem(final Predicate<VaadinTagListItem> pred) {
 		VaadinTagListItem outItem = null;
@@ -265,14 +266,35 @@ public class VaadinTagListComponent<T>
 	}
 	@SuppressWarnings("unchecked")
 	private Iterator<VaadinTagListItem> _itemIterator() {
-		Stream<Component> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-										                        _hlyTagsContainer.iterator(),
-										                        Spliterator.ORDERED),
+		// create an stream of components
+		Stream<Component> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(_hlyTagsContainer.iterator(),
+										                        							Spliterator.ORDERED),
 										                false);
+		// filter the VaadinTagListItem ones
 		Iterator<Component> itemIt = stream.filter(c -> c instanceof VaadinTagListComponent.VaadinTagListItem)
 										   .iterator();
+		// return an iterator
 		return Iterators.transform(itemIt,
 								   comp -> (VaadinTagListItem)comp);
+	}
+	@SuppressWarnings("unused")
+	private Iterable<VaadinTagListItem> _itemIterable() {
+		return new Iterable<VaadinTagListItem>() {
+						@Override
+						public Iterator<VaadinTagListComponent<T>.VaadinTagListItem> iterator() {
+							return _itemIterator();
+						}
+			   };
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public boolean removeTagFor(final T item) {
+		VaadinTagListItem tagListItem = _findItemFor(item);
+		if (tagListItem == null) return false;
+		
+		_hlyTagsContainer.removeComponent(tagListItem);
+		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

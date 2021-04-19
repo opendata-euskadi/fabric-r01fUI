@@ -210,24 +210,23 @@ public class VaadinTagListComponent<T>
 		if (it.hasNext()) {
 			T val = it.next();
 			// item
-			_addTagListItemToContainer(val, itemCaptionGen);
+			_addTagListItemToContainer(val,itemCaptionGen);
 		}
 		it.forEachRemaining(val -> {
-									// separator
-									Label separator = new Label();
-									separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
-									separator.setContentMode(ContentMode.HTML);
-									separator.addStyleName(ValoTheme.LABEL_LIGHT);
-									separator.setSizeFull();
-									_hlyTagsContainer.addComponent(separator);
-									_hlyTagsContainer.setComponentAlignment(separator, Alignment.MIDDLE_CENTER);
-									
-									// item
-									_addTagListItemToContainer(val, itemCaptionGen);
-							});
-	
-	}
+								// separator
+								Label separator = new Label();
+								separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
+								separator.setContentMode(ContentMode.HTML);
+								separator.addStyleName(ValoTheme.LABEL_LIGHT);
+								separator.setSizeFull();
+								_hlyTagsContainer.addComponent(separator);
+								_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
 
+								// item
+								_addTagListItemToContainer(val,itemCaptionGen);
+							});
+	}
+	@SuppressWarnings("unchecked")
 	private void _addTagListItemToContainer(final T val, final ItemCaptionGenerator<T> itemCaptionGen) {
 		VaadinTagListItem item = new VaadinTagListItem(val,
 				  									   itemCaptionGen);
@@ -248,6 +247,9 @@ public class VaadinTagListComponent<T>
 	private VaadinTagListItem _findSelectedItem() {
 		return _findItem(item -> item.isSelected());
 	}
+	private VaadinTagListItem _findItemFor(final T item) {
+		return _findItem(tagListIem -> tagListIem.getData().equals(item));
+	}
 	@SuppressWarnings("null")
 	private VaadinTagListItem _findItem(final Predicate<VaadinTagListItem> pred) {
 		VaadinTagListItem outItem = null;
@@ -259,23 +261,44 @@ public class VaadinTagListComponent<T>
 				outItem = item;
 				break;
 			}
-		} while (itemIt.hasNext() 
+		} while (itemIt.hasNext()
 			  && outItem == null);
 		return outItem;
 	}
 	@SuppressWarnings("unchecked")
 	private Iterator<VaadinTagListItem> _itemIterator() {
-		Stream<Component> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-										                        _hlyTagsContainer.iterator(),
-										                        Spliterator.ORDERED),
+		// create an stream of components
+		Stream<Component> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(_hlyTagsContainer.iterator(),
+										                        							Spliterator.ORDERED),
 										                false);
+		// filter the VaadinTagListItem ones
 		Iterator<Component> itemIt = stream.filter(c -> c instanceof VaadinTagListComponent.VaadinTagListItem)
 										   .iterator();
+		// return an iterator
 		return Iterators.transform(itemIt,
 								   comp -> (VaadinTagListItem)comp);
 	}
+	@SuppressWarnings("unused")
+	private Iterable<VaadinTagListItem> _itemIterable() {
+		return new Iterable<VaadinTagListItem>() {
+						@Override
+						public Iterator<VaadinTagListComponent<T>.VaadinTagListItem> iterator() {
+							return _itemIterator();
+						}
+			   };
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+	public boolean removeTagFor(final T item) {
+		VaadinTagListItem tagListItem = _findItemFor(item);
+		if (tagListItem == null) return false;
+
+		_hlyTagsContainer.removeComponent(tagListItem);
+		return true;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * A component like:
@@ -287,33 +310,33 @@ public class VaadinTagListComponent<T>
 		  extends Composite {
 
 		private static final long serialVersionUID = -3528551824350605879L;
-		
+
 		private final Button _btnDispose;
 		private final Button _btnItem;
-		
+
 		private final T _data;
-		
+
 		private ForDisposeObserver<T> _disposeSubscriber;
 		private ForSelectObserver<T> _selectSubscriber;
-		
+
 		public VaadinTagListItem(final T val,
 								 final ItemCaptionGenerator<T> itemCaptionGen) {
 			_data = val;
-			
+
 			////////// UI
 			// dispose button
 			_btnDispose = new Button(VaadinIcons.CLOSE_BIG);
 			_btnDispose.addStyleNames(ValoTheme.BUTTON_ICON_ONLY,
 									  ValoTheme.BUTTON_BORDERLESS,
 									  ValoTheme.BUTTON_SMALL);
-			
+
 			// item button
   			String lbl = itemCaptionGen.apply(val);
 			_btnItem = new Button(lbl);
 			_btnItem.addStyleNames(ValoTheme.BUTTON_BORDERLESS,
 								  "label-item");
-			_btnItem.setDescription(itemCaptionGen.apply(val));							
-			
+			_btnItem.setDescription(itemCaptionGen.apply(val));
+
 			////////// Layout
 			HorizontalLayout ly = new HorizontalLayout(_btnDispose,_btnItem);
 			ly.setSpacing(false);
@@ -322,7 +345,7 @@ public class VaadinTagListComponent<T>
 			ly.setExpandRatio(_btnItem, 3);
 			ly.setComponentAlignment(_btnDispose, Alignment.MIDDLE_RIGHT);
 			this.setCompositionRoot(ly);
-			
+
 			////////// Behavior
 			_setBehavior();
 		}

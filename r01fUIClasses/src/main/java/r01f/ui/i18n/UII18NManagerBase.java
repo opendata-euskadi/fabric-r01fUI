@@ -36,31 +36,35 @@ public abstract class UII18NManagerBase
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Getter List<String> _i18nBundleNames = new LinkedList<String>();
+	@Getter final List<String> _i18nBundleNames;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTORS
 /////////////////////////////////////////////////////////////////////////////////////////
+	public UII18NManagerBase(final List<String> i18nBundleNames) {
+		_i18nBundleNames = i18nBundleNames;
+	}
 	public UII18NManagerBase(final Collection<JavaPackage> pckgNames) {
 		this(Thread.currentThread().getContextClassLoader(),
 			 pckgNames);
 	}
 	public UII18NManagerBase(final ClassLoader classLoader,
 							 final Collection<JavaPackage> pckgNames) {
+		_i18nBundleNames = new LinkedList<String>();
 		try {
 			// find all types annotated with R01UIMessageBundle at package r01ui
-			final Set<Class<?>> annotatedTypes = AnnotatedWithScanner.findTypesAnnotatedWitAt(UIMessageBundle.class,
-																							  pckgNames,
-																							  classLoader);
+			Set<Class<?>> annotatedTypes = AnnotatedWithScanner.findTypesAnnotatedWitAt(UIMessageBundle.class,
+																					    pckgNames,
+																						classLoader);
 			// create a list of all bundles like:
 			//		@R01UIMessageBundle( {"mybundle1","mybundle2"} )
 			// ... creates a i18n bulde list like
 			//			{mybundle1.i18n.messages,mybundle2.i18n.messages}
 			for (final Class<?> annotatedType : annotatedTypes) {
-				final String[] bundleId = _findMessageBundleAnnotation(annotatedType)
-														.basename();
+				String[] bundleId = _findMessageBundleAnnotation(annotatedType)
+												.basename();
 				for (int i = 0; i < bundleId.length; i++) {
-					final String i18nBundleName = Strings.customized("{}" + I18N_MESSAGES,
-																	 bundleId[i]);
+					String i18nBundleName = Strings.customized("{}" + I18N_MESSAGES,
+															   bundleId[i]);
 					if ( !_i18nBundleNames.contains(i18nBundleName) ) _i18nBundleNames.add(i18nBundleName);
 				}
 			}
@@ -80,7 +84,7 @@ public abstract class UII18NManagerBase
 	 */
 	private final UIMessageBundle _findMessageBundleAnnotation(final Class<?> type) {
 		if ( type == Object.class ) throw new IllegalArgumentException( "Could NOT find @" + UIMessageBundle.class.getSimpleName() + " annotation" );
-		final UIMessageBundle mBundle = type.getAnnotation( UIMessageBundle.class );
+		UIMessageBundle mBundle = type.getAnnotation( UIMessageBundle.class );
 		if ( mBundle != null ) return mBundle;
 
 		return _findMessageBundleAnnotation( type.getSuperclass() );	// RECURSE!
@@ -274,7 +278,7 @@ public abstract class UII18NManagerBase
 		}
 		return outMessages;
 	}
-	private Language _getLanguageOf(final Locale loc) {
+	private static Language _getLanguageOf(final Locale loc) {
 		if (loc == null) log.warn("NO current locale!!! default to {}",Language.DEFAULT);
 		return loc != null ? Languages.of(loc)
 						   : Language.DEFAULT;
@@ -310,11 +314,11 @@ public abstract class UII18NManagerBase
 	 * @param args the arguments used to format the message
 	 * @return
 	 */
-	private String _retrieveMessage(final Locale locale,
-									final String i18nBundleName,
-									final String key,final Object... args) {
-		final ResourceBundle bundle = _retrieveBundle(i18nBundleName,
-													  locale);
+	private static String _retrieveMessage(final Locale locale,
+										   final String i18nBundleName,
+										   final String key,final Object... args) {
+		ResourceBundle bundle = _retrieveBundle(i18nBundleName,
+												locale);
 		String outMessage = bundle.getString(key);
 		if (Strings.isNOTNullOrEmpty(outMessage)
 		 && CollectionUtils.hasData(args)) {
@@ -323,10 +327,10 @@ public abstract class UII18NManagerBase
 		}
 		return outMessage;
 	}
-	private ResourceBundle _retrieveBundle(final String i18nBundleName,
-										   final Locale locale) {
-		final ResourceBundle bundle = ResourceBundle.getBundle(i18nBundleName,
-															   locale);
+	private static ResourceBundle _retrieveBundle(final String i18nBundleName,
+										   	      final Locale locale) {
+		ResourceBundle bundle = ResourceBundle.getBundle(i18nBundleName,
+													     locale);
 		return bundle;
 	}
 }

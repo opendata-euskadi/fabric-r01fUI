@@ -199,6 +199,7 @@ public class VaadinTagListComponent<T>
 		_replaceValueButtons(values,
 							 theItemCaptionGen);
 	}
+	@SuppressWarnings("unchecked")
 	private void _replaceValueButtons(final Collection<T> values,
 									  final ItemCaptionGenerator<T> itemCaptionGen) {
 		// [1] - Remove all components
@@ -220,7 +221,7 @@ public class VaadinTagListComponent<T>
 								separator.setSizeFull();
 								_hlyTagsContainer.addComponent(separator);
 								_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
-								
+
 								// item
 								_addTagListItemToContainer(val,itemCaptionGen);
 							});
@@ -260,7 +261,7 @@ public class VaadinTagListComponent<T>
 				outItem = item;
 				break;
 			}
-		} while (itemIt.hasNext() 
+		} while (itemIt.hasNext()
 			  && outItem == null);
 		return outItem;
 	}
@@ -287,17 +288,17 @@ public class VaadinTagListComponent<T>
 			   };
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	public boolean removeTagFor(final T item) {
 		VaadinTagListItem tagListItem = _findItemFor(item);
 		if (tagListItem == null) return false;
-		
+
 		_hlyTagsContainer.removeComponent(tagListItem);
 		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * A component like:
@@ -309,33 +310,33 @@ public class VaadinTagListComponent<T>
 		  extends Composite {
 
 		private static final long serialVersionUID = -3528551824350605879L;
-		
+
 		private final Button _btnDispose;
 		private final Button _btnItem;
-		
+
 		private final T _data;
-		
+
 		private ForDisposeObserver<T> _disposeSubscriber;
 		private ForSelectObserver<T> _selectSubscriber;
-		
+
 		public VaadinTagListItem(final T val,
 								 final ItemCaptionGenerator<T> itemCaptionGen) {
 			_data = val;
-			
+
 			////////// UI
 			// dispose button
 			_btnDispose = new Button(VaadinIcons.CLOSE_BIG);
 			_btnDispose.addStyleNames(ValoTheme.BUTTON_ICON_ONLY,
 									  ValoTheme.BUTTON_BORDERLESS,
 									  ValoTheme.BUTTON_SMALL);
-			
+
 			// item button
   			String lbl = itemCaptionGen.apply(val);
 			_btnItem = new Button(lbl);
 			_btnItem.addStyleNames(ValoTheme.BUTTON_BORDERLESS,
 								  "label-item");
-			_btnItem.setDescription(itemCaptionGen.apply(val));							
-			
+			_btnItem.setDescription(itemCaptionGen.apply(val));
+
 			////////// Layout
 			HorizontalLayout ly = new HorizontalLayout(_btnDispose,_btnItem);
 			ly.setSpacing(false);
@@ -344,7 +345,7 @@ public class VaadinTagListComponent<T>
 			ly.setExpandRatio(_btnItem, 3);
 			ly.setComponentAlignment(_btnDispose, Alignment.MIDDLE_RIGHT);
 			this.setCompositionRoot(ly);
-			
+
 			////////// Behavior
 			_setBehavior();
 		}

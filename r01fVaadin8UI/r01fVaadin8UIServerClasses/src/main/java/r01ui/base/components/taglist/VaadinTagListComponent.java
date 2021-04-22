@@ -66,6 +66,7 @@ public class VaadinTagListComponent<T>
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
+		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 	}
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator) {
 		_itemCaptionGenerator = itemCaptionGenerator;
@@ -73,6 +74,7 @@ public class VaadinTagListComponent<T>
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
+		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 	}
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
 								  final DescriptionGenerator<T> itemDescriptionGenerator) {
@@ -81,6 +83,7 @@ public class VaadinTagListComponent<T>
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
+		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 	}
 	public VaadinTagListComponent(final String caption) {
 		this();

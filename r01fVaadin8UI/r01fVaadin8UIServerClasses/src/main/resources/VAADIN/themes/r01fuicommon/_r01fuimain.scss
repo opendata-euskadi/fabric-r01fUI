@@ -407,23 +407,33 @@ $v-selection-color:#007ca9;
 	}
 	
 	////////// label picker
-	.v-tree8-row.r01-label-picker-selected-primary > .v-tree8-cell span.v-captiontext{
-			color: $v-focus-color; //label colored
+	.v-tree8-row.r01-label-picker-selected-primary > .v-tree8-cell span.v-captiontext { 
+		color: $v-focus-color; //label colored
 	}
-	.v-tree8-row.r01-label-picker-selected-secondary > .v-tree8-cell span.v-captiontext{
-			font-weight: bold;	//label bold
+	.v-tree8-row.r01-label-picker-selected-secondary > .v-tree8-cell span.v-captiontext {
+		font-weight: bold;	//label bold
 	}
-	.v-tree8-row.r01-label-picker-hidden-selected-label-below > .v-tree8-cell span.v-captiontext{
-			font-style: italic;
+	.v-tree8-row.r01-label-picker-hidden-selected-label-below > .v-tree8-cell span.v-captiontext {
+		font-style: italic;
 	}
-	.v-button.label-item {
-		background-color: #8cc4d9;
-    	color: white;
-    	border-radius: 25px;
-	}
-	.v-button-selected.label-item {
-		background-color:$v-selection-color;
-    	color: white;
-    	border-radius: 25px;
+	
+	.r01-labelpicker-item {
+		.v-button, .v-button-selected {
+			background-color:$v-selection-color;
+    		color: white;	
+		}
+		.v-button-icon-only.v-button-borderless.v-button-r01-labelpicker-item-delete {
+    		border-top-left-radius: 25px;
+			border-bottom-left-radius: 25px;
+			border-top-right-radius:0;
+			border-bottom-right-radius:0;
+		}
+		.v-button-borderless.v-button-r01-labelpicker-item-value {
+			padding-left:0;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			border-top-right-radius: 25px;
+			border-bottom-right-radius: 25px;
+		}
 	}
 }

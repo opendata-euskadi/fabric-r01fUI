@@ -18,13 +18,14 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class VaadinGridButton 
 	 extends Button {	
+	
 	private static final long serialVersionUID = 2871532213852151898L;		
 /////////////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public VaadinGridButton(final String description, 
 							final Resource icon,
-							final  ClickListener listener) {
+							final ClickListener listener) {
 		super(icon, 
 			  listener);
 		this.setDescription(description);

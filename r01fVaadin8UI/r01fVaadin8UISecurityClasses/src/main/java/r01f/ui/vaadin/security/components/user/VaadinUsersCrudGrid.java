@@ -162,8 +162,8 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 																					 if (_gridModifiedListener != null) {
 																						// tell the listener that a user is to be added
 																						// ... the listener is in charge of removing (or not) the user to the grid
-																						 _gridModifiedListener.onGridModified((SELF_TYPE)this,
-																								  							  VaadinUsersGridAction.USER_REMOVAL,viewObj);
+																						_gridModifiedListener.onGridModified((SELF_TYPE)this,
+																								  							 VaadinUsersGridAction.USER_REMOVAL,viewObj);
 																					 } else {
 																						 this.removeItem(viewObj.getOid());
 																					 }

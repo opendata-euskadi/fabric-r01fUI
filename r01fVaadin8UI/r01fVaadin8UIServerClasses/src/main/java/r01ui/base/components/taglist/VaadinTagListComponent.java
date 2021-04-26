@@ -55,6 +55,7 @@ public class VaadinTagListComponent<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final ItemCaptionGenerator<T> _itemCaptionGenerator;
 	private final DescriptionGenerator<T> _itemDescriptionGenerator;
+	private final String _deleteButtonDescription;
 
 	private final HorizontalLayout _hlyTagsContainer;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +64,7 @@ public class VaadinTagListComponent<T>
 	public VaadinTagListComponent() {
 		_itemCaptionGenerator = null;
 		_itemDescriptionGenerator = null;
+		_deleteButtonDescription = null;
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
@@ -71,6 +73,8 @@ public class VaadinTagListComponent<T>
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator) {
 		_itemCaptionGenerator = itemCaptionGenerator;
 		_itemDescriptionGenerator = null;
+		_deleteButtonDescription = null;
+		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
@@ -80,6 +84,21 @@ public class VaadinTagListComponent<T>
 								  final DescriptionGenerator<T> itemDescriptionGenerator) {
 		_itemCaptionGenerator = itemCaptionGenerator;
 		_itemDescriptionGenerator = itemDescriptionGenerator;
+		_deleteButtonDescription = null;
+		
+		////////// create components
+		_hlyTagsContainer = new HorizontalLayout();
+		_hlyTagsContainer.setSpacing(false);
+		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+	}
+	
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription) {
+		_itemCaptionGenerator = itemCaptionGenerator;
+		_itemDescriptionGenerator = itemDescriptionGenerator;
+		_deleteButtonDescription = deleteButtonDescription;
+		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
@@ -87,6 +106,16 @@ public class VaadinTagListComponent<T>
 	}
 	public VaadinTagListComponent(final String caption) {
 		this();
+		this.setCaption(caption);
+	}
+	public VaadinTagListComponent(final String caption,
+								  final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription) {
+		this(itemCaptionGenerator, 
+			 itemDescriptionGenerator,
+			 deleteButtonDescription);
+		
 		this.setCaption(caption);
 	}
 	public VaadinTagListComponent(final String caption,
@@ -157,6 +186,7 @@ public class VaadinTagListComponent<T>
 					   itemDescriptionGenerator,
 					   values);
 	}
+	
 	@SuppressWarnings("unchecked")
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
 								  final DescriptionGenerator<T> itemDescriptionGenerator,
@@ -165,6 +195,31 @@ public class VaadinTagListComponent<T>
 			 itemDescriptionGenerator);
 		this.setValues(itemCaptionGenerator,
 					   itemDescriptionGenerator,
+					   values);
+	}
+	@SuppressWarnings("unchecked")
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final T... values) {
+		this(itemCaptionGenerator,
+			 itemDescriptionGenerator,
+			 deleteButtonDescription);
+		this.setValues(itemCaptionGenerator,
+					   itemDescriptionGenerator,
+					   deleteButtonDescription,
+					   values);
+	}
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final Collection<T> values) {
+		this(itemCaptionGenerator, 
+			itemDescriptionGenerator,
+			deleteButtonDescription);
+		this.setValues(itemCaptionGenerator,
+					   itemDescriptionGenerator,
+					   deleteButtonDescription,
 					   values);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -238,6 +293,7 @@ public class VaadinTagListComponent<T>
 															: val -> val.toString();
 		_replaceValueButtons(values,
 							 theItemCaptionGen,
+							 null,
 							 null);
 	}
 	@SuppressWarnings("unchecked")
@@ -256,13 +312,39 @@ public class VaadinTagListComponent<T>
 															: val -> val.toString();
 		_replaceValueButtons(values, 
 							 theItemCaptionGen, 
-							 itemDescriptionGenerator);
+							 itemDescriptionGenerator,
+							 null);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setValues(final ItemCaptionGenerator<T> itemCaptionGenerator,
+						  final DescriptionGenerator<T> itemDescriptionGenerator,
+						  final String deleteButtonDescription,
+						  final T... values) {
+		this.setValues(itemCaptionGenerator,
+					  itemDescriptionGenerator,
+					  deleteButtonDescription,
+					   Lists.<T>newArrayList(values));
+	}
+	public void setValues(final ItemCaptionGenerator<T> itemCaptionGenerator,
+						  final DescriptionGenerator<T> itemDescriptionGenerator,
+						  final String deleteButtonDescription,
+						  final Collection<T> values) {
+		ItemCaptionGenerator<T> theItemCaptionGen = itemCaptionGenerator != null
+															? itemCaptionGenerator
+															: val -> val.toString();
+		_replaceValueButtons(values, 
+							 theItemCaptionGen, 
+							 itemDescriptionGenerator,
+							 deleteButtonDescription);
 		
 	}
 	
 	private void _replaceValueButtons(final Collection<T> values,
 									  final ItemCaptionGenerator<T> itemCaptionGen,
-									  final DescriptionGenerator<T> descriptionGen) {
+									  final DescriptionGenerator<T> descriptionGen,
+									  final String deleteButtonDescription) {
 		// [1] - Remove all components
 		_hlyTagsContainer.removeAllComponents();
 
@@ -272,10 +354,10 @@ public class VaadinTagListComponent<T>
 			T val = it.next();
 			// item
 			if (descriptionGen != null) {
-				_addTagListItemToContainer(val,itemCaptionGen, descriptionGen);
+				_addTagListItemToContainer(val,itemCaptionGen, descriptionGen, deleteButtonDescription);
 			}
 			else {
-				_addTagListItemToContainer(val, itemCaptionGen);
+				_addTagListItemToContainer(val, itemCaptionGen, deleteButtonDescription);
 			}
 		}
 		it.forEachRemaining(val -> {
@@ -290,17 +372,19 @@ public class VaadinTagListComponent<T>
 								
 								// item
 								if (descriptionGen != null) {
-									_addTagListItemToContainer(val,itemCaptionGen, descriptionGen);
+									_addTagListItemToContainer(val,itemCaptionGen, descriptionGen, deleteButtonDescription);
 								}
 								else {
-									_addTagListItemToContainer(val, itemCaptionGen);
+									_addTagListItemToContainer(val, itemCaptionGen, deleteButtonDescription);
 								}
 							});
 	}
 	private void _addTagListItemToContainer(final T val, 
-											final ItemCaptionGenerator<T> itemCaptionGen) {
+											final ItemCaptionGenerator<T> itemCaptionGen,
+											final String deleteButtonDescription) {
 		VaadinTagListItem item = new VaadinTagListItem(val,
-				  									   itemCaptionGen);
+				  									   itemCaptionGen,
+				  									   deleteButtonDescription);
 		item.addItemButtonClickListener(// when clicking a [button] select the corresponding [item]
 											e -> itemClick(e));
 		_hlyTagsContainer.addComponent(item);
@@ -309,10 +393,12 @@ public class VaadinTagListComponent<T>
 
 	private void _addTagListItemToContainer(final T val, 
 											final ItemCaptionGenerator<T> itemCaptionGen,
-											final DescriptionGenerator<T> itemDescriptionGen) {
+											final DescriptionGenerator<T> itemDescriptionGen,
+											final String deleteButtonDescription) {
 		VaadinTagListItem item = new VaadinTagListItem(val,
 				  									   itemCaptionGen,
-				  									   itemDescriptionGen);
+				  									   itemDescriptionGen,
+				  									   deleteButtonDescription);
 		item.addItemButtonClickListener(// when clicking a [button] select the corresponding [item]
 											e -> itemClick(e));
 		_hlyTagsContainer.addComponent(item);
@@ -412,14 +498,17 @@ public class VaadinTagListComponent<T>
 			////////// UI
 			// dispose button
 			_btnDispose = new Button(VaadinIcons.CLOSE_CIRCLE);
-			_btnDispose.addStyleNames(ValoTheme.BUTTON_ICON_ONLY,
+			_btnDispose.addStyleNames(ValoTheme.BUTTON_TINY,
+									  ValoTheme.BUTTON_ICON_ONLY,
 									  ValoTheme.BUTTON_BORDERLESS,
 									  "r01-labelpicker-item-delete");
+			_btnDispose.setDescription(_deleteButtonDescription);
 			
 			// item button
 			_btnItem = new Button();
 			_btnItem.addStyleNames(ValoTheme.BUTTON_BORDERLESS,
-											 "r01-labelpicker-item-value");					
+								   ValoTheme.BUTTON_TINY,
+									"r01-labelpicker-item-value");					
 			
 			////////// Layout
 			HorizontalLayout ly = new HorizontalLayout(_btnDispose,_btnItem);
@@ -451,6 +540,29 @@ public class VaadinTagListComponent<T>
 			
 			_btnItem.setCaption(itemCaptionGen.apply(val));
 			_btnItem.setDescription(itemCaptionGen.apply(val));							
+			
+		}
+		
+		public VaadinTagListItem(final T val,
+								 final ItemCaptionGenerator<T> itemCaptionGen,
+								 final DescriptionGenerator<T> itemDescriptionGen,
+								 final String deleteButtonDescription) {
+			this(val);
+			
+			_btnItem.setCaption(itemCaptionGen.apply(val));
+			_btnItem.setDescription(itemDescriptionGen.apply(val));
+			_btnDispose.setDescription(deleteButtonDescription);
+			
+		}
+		
+		public VaadinTagListItem(final T val,
+								 final ItemCaptionGenerator<T> itemCaptionGen,
+								 final String deleteButtonDescription) {
+			this(val);
+			
+			_btnItem.setCaption(itemCaptionGen.apply(val));
+			_btnItem.setDescription(itemCaptionGen.apply(val));
+			_btnDispose.setDescription(deleteButtonDescription);
 			
 		}
 		private void _setBehavior() {

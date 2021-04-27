@@ -435,5 +435,12 @@ $v-selection-color:#007ca9;
 			border-top-right-radius: 25px;
 			border-bottom-right-radius: 25px;
 		}
+		.v-button:focus:after {
+			-webkit-box-shadow: none;
+			box-shadow: none;
+		}
+	}
+	.v-button-r01-labelpicker.v-button-structure-filter.v-button-small{
+		font-size: $v-font-size;
 	}
 }

@@ -58,7 +58,7 @@ public class VaadinTagListComponent<T>
 	private final ItemCaptionGenerator<T> _itemCaptionGenerator;
 	private final DescriptionGenerator<T> _itemDescriptionGenerator;
 	@Getter @Setter private String _deleteButtonDescription;
-	private final boolean _separateItems;
+	@Getter @Setter private boolean _separateItems;
 
 	private final HorizontalLayout _hlyTagsContainer;
 /////////////////////////////////////////////////////////////////////////////////////////

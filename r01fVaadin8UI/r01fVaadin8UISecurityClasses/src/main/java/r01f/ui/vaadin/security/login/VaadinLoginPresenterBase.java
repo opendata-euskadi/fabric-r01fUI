@@ -29,7 +29,7 @@ import r01f.util.types.locale.Languages;
 public abstract class VaadinLoginPresenterBase<U extends User,
 											   L extends UserPasswordLogin,
 											   C extends VaadinLoginCOREMediatorBase<U,L,
-											   										 ? extends SecurityAPIBase<U,L,?,?,?,?,?,?>>>
+											   										 ? extends SecurityAPIBase<U,?,?,?,?>>>
 		   implements UIPresenter {
 
 	private static final long serialVersionUID = -4290934932756711025L;

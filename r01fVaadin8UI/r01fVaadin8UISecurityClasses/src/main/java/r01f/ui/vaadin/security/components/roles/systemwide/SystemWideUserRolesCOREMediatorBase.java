@@ -19,7 +19,7 @@ import r01f.util.types.collections.Lists;
 
 @Slf4j
 public abstract class SystemWideUserRolesCOREMediatorBase<U extends User,
-														  A extends SecurityAPIBase<U,?,?,?,?,?,?,?>>
+														  A extends SecurityAPIBase<U,?,?,?,?>>
 	 		  extends UICOREMediatorBase<A> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS

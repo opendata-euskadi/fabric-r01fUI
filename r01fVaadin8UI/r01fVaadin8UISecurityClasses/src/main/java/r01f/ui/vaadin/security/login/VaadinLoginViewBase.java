@@ -85,7 +85,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 										  S extends SecurityContext,
 										  P extends VaadinLoginPresenterBase<U,L,
 												  							 ? extends VaadinLoginCOREMediatorBase<U,L,
-												  									 							   ? extends SecurityAPIBase<U,L,?,?,?,?,?,?>>>>
+												  									 							   ? extends SecurityAPIBase<U,?,?,?,?>>>>
      		  extends Composite
      	   implements View,
      	   			  VaadinViewI18NMessagesCanBeUpdated {

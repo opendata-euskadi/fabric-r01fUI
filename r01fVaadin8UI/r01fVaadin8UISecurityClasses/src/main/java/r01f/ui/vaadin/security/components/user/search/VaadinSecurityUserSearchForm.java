@@ -54,7 +54,7 @@ import r01f.util.types.collections.Lists;
 public abstract class VaadinSecurityUserSearchForm<U extends User,V extends VaadinViewUser<U>,
 										  		   P extends VaadinSecurityUserSearchPresenter<U,V,
 										  											  		   ? extends VaadinSecurityUserSearchCOREMediator<U,
-																									   								 		  ? extends SecurityAPIBase<U,?,?,?,?,?,?,?>>>>
+																									   								 		  ? extends SecurityAPIBase<U,?,?,?,?>>>>
 	 		  extends Composite
 	 	   implements VaadinViewI18NMessagesCanBeUpdated {
 

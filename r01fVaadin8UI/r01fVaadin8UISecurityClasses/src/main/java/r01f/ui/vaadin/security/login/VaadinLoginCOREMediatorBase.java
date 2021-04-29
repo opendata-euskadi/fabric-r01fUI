@@ -27,7 +27,7 @@ import r01f.ui.coremediator.UICOREMediator;
 @Accessors(prefix="_")
 public abstract class VaadinLoginCOREMediatorBase<U extends User,
 												  L extends UserPasswordLogin,
-												  A extends SecurityAPIBase<U,L,?,?,?,?,?,?>>
+												  A extends SecurityAPIBase<U,?,?,?,?>>
 		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
@@ -69,7 +69,7 @@ public abstract class VaadinLoginCOREMediatorBase<U extends User,
 	public boolean checkUserHasPasswordLogin(final UserOID oid) {
 		L usrPwd = null;
 		try {
-			usrPwd = _api.getUserPasswordLoginApi()
+			usrPwd = _api.<L>getUserPasswordLoginApi()
 						 .getForCrud()
 						 .loadByOrNull(oid);
 			if (usrPwd != null) return true;
@@ -127,14 +127,14 @@ public abstract class VaadinLoginCOREMediatorBase<U extends User,
 		LoginOID outLoginOid = null;
 		
 		// [1] - Load the login by userOid
-		L usrPwdLogin = _api.getUserPasswordLoginApi()
+		L usrPwdLogin = _api.<L>getUserPasswordLoginApi()
 	   						.getForCrud()
 	   						.loadByOrNull(userOid);
 		// [2] - If the login exists update the password
 		if (usrPwdLogin != null) {
-			usrPwdLogin = _api.getUserPasswordLoginApi()
-						   		 .getForCrud()
-						   		 .updatePassword(loginId,password);
+			usrPwdLogin = _api.<L>getUserPasswordLoginApi()
+						   	  .getForCrud()
+						   	  .updatePassword(loginId,password);
 			outLoginOid = usrPwdLogin.getOid();
 		}
 		// [3] - If the login DOES NOT exist, create a new one (a confirmation email will be sent)
@@ -159,12 +159,12 @@ public abstract class VaadinLoginCOREMediatorBase<U extends User,
 		L outUsrPwd = null;
 		
 		// [1] - Load the login
-		L usrPwdLogin = _api.getUserPasswordLoginApi()
+		L usrPwdLogin = _api.<L>getUserPasswordLoginApi()
 	   						.getForCrud()
 	   						.loadByOrNull(userOid);
 		// [2] - If the login exists update the password
 		if (usrPwdLogin != null) {
-			outUsrPwd = _api.getUserPasswordLoginApi()
+			outUsrPwd = _api.<L>getUserPasswordLoginApi()
 						   	.getForCrud()
 						   	.updatePassword(usrPwdLogin.getLoginId(),password);
 		}
@@ -194,7 +194,7 @@ public abstract class VaadinLoginCOREMediatorBase<U extends User,
 	public L deleteAndCreateUserPasswordLogin(final UserOID userOid,
 											  final LoginID loginId,final Password password) {
 		// [0] - Load the [user login]
-		L usrPwdLogin = _api.getUserPasswordLoginApi()
+		L usrPwdLogin = _api.<L>getUserPasswordLoginApi()
 		     			    .getForCrud()
 		     				.loadByOrNull(userOid);
 		// [1] - It the login exists, remove it!! 
@@ -206,7 +206,7 @@ public abstract class VaadinLoginCOREMediatorBase<U extends User,
 		// [2] - Create a new login
 		usrPwdLogin = _createUserPasswordLogin(userOid,
 											   loginId,password);
-		usrPwdLogin = _api.getUserPasswordLoginApi()
+		usrPwdLogin = _api.<L>getUserPasswordLoginApi()
 						  .getForCrud()
 						  .create(usrPwdLogin);
 		return usrPwdLogin;

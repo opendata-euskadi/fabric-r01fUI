@@ -21,7 +21,7 @@ import r01f.util.types.Strings;
  */
 @Slf4j
 public abstract class VaadinSecurityUserSearchCOREMediator<U extends User,
-												 		   A extends SecurityAPIBase<U,?,?,?,?,?,?,?>>
+												 		   A extends SecurityAPIBase<U,?,?,?,?>>
   		   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS

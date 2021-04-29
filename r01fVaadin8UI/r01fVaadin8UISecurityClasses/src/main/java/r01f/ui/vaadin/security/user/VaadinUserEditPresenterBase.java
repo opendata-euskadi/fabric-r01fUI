@@ -17,10 +17,10 @@ import r01f.ui.presenter.UIPresenterSubscriber;
 public abstract class VaadinUserEditPresenterBase<U extends User,L extends UserPasswordLogin,GL extends GoogleLogin,XL extends XLNetsLogin,
 												  VU extends VaadinViewUser<U>,VL extends VaadinViewUserPasswordLogin<L>,VGL extends VaadinViewGoogleLogin<GL>,VXL extends VaadinViewXLNetsLogin<XL>,
 												  C extends VaadinUserEditCOREMediatorBase<U,L,GL,XL,
-												  										   ? extends SecurityAPIBase<U,L,GL,XL,
-												  												   					 ?,
-												  												   					 ?,?,
-												  												   					 ?>>> 
+												  										   ? extends SecurityAPIBase<U,
+												  												   					 ?,		// user login entry
+												  												   					 ?,?,	// auth target resource
+												  												   					 ?>>>	// user auth on resource
   		   implements UIPresenter {
 	private static final long serialVersionUID = 8650730712618077501L;
 /////////////////////////////////////////////////////////////////////////////////////////

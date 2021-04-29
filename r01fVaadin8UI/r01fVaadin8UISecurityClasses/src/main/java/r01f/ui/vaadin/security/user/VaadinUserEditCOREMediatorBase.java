@@ -11,7 +11,7 @@ import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.ui.coremediator.UICOREMediator;
 
 public abstract class VaadinUserEditCOREMediatorBase<U extends User,L extends UserPasswordLogin,GL extends GoogleLogin,XL extends XLNetsLogin,
-												     A extends SecurityAPIBase<U,L,GL,XL,
+												     A extends SecurityAPIBase<U,
 												   							   ?,	// user login entry
 												   							   ?,?,	// auth target resource
 												   							   ?>>	// user auth on resource
@@ -43,27 +43,27 @@ public abstract class VaadinUserEditCOREMediatorBase<U extends User,L extends Us
 //	USER PASSWORD LOGIN
 /////////////////////////////////////////////////////////////////////////////////////////
 	public L loadUserPasswordLogin(final UserOID userOid) {
-		return _securityApi.getUserPasswordLoginApi()
+		return _securityApi.<L>getUserPasswordLoginApi()
 						   .getForCrud()
 						   .loadByOrNull(userOid);	// throws an exception if the user does NOT have a user-password login
 	}
 	public boolean userPasswordLoginExists(final LoginID loginId) {
-		return _securityApi.getUserPasswordLoginApi()
+		return _securityApi.<L>getUserPasswordLoginApi()
 						   .getForCrud()
 						   .loadByOrNull(loginId) != null;
 	}
 	public L createUserPasswordLogin(final L userPasswordLogin) {
-		return _securityApi.getUserPasswordLoginApi()
+		return _securityApi.<L>getUserPasswordLoginApi()
 						   .getForCrud()
 						   .create(userPasswordLogin);
 	}
 	public L changeUserPasswordLoginId(final UserOID userOid,final LoginID newLoginId) {
-		return _securityApi.getUserPasswordLoginApi()
+		return _securityApi.<L>getUserPasswordLoginApi()
 						   .getForCrud()
 						   .changeLoginId(userOid,newLoginId);
 	}
 	public L changeUserPasswordLoginPassword(final LoginID loginId,final Password oldPwd,final Password newPwd) {
-		return _securityApi.getUserPasswordLoginApi()
+		return _securityApi.<L>getUserPasswordLoginApi()
 						   .getForCrud()
 						   .updatePassword(loginId,oldPwd,newPwd);
 	}
@@ -71,7 +71,7 @@ public abstract class VaadinUserEditCOREMediatorBase<U extends User,L extends Us
 //	GOOGLE LOGIN
 /////////////////////////////////////////////////////////////////////////////////////////
 	public GL loadGoogleLogin(final UserOID userOid) {
-		return _securityApi.getGoogleLoginApi()
+		return _securityApi.<GL>getGoogleLoginApi()
 						   .getForCrud()
 						   .loadByOrNull(userOid);	// throws an exception if the user does NOT have a user-password login
 	}

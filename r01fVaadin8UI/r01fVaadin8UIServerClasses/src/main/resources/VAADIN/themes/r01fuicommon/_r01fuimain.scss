@@ -417,23 +417,13 @@ $v-selection-color:#007ca9;
 		font-style: italic;
 	}
 	
-	.r01-labelpicker-item {
-		.v-button, .v-button-selected {
+	div.r01-labelpicker-item {
 			background-color:$v-selection-color;
     		color: white;	
-		}
-		.v-button-icon-only.v-button-borderless.v-button-r01-labelpicker-item-delete {
-    		border-top-left-radius: 25px;
-			border-bottom-left-radius: 25px;
-			border-top-right-radius:0;
-			border-bottom-right-radius:0;
-		}
+			border-radius: 25px;
+		
 		.v-button-borderless.v-button-r01-labelpicker-item-value {
 			padding-left:0;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border-top-right-radius: 25px;
-			border-bottom-right-radius: 25px;
 		}
 		.v-button:focus:after {
 			-webkit-box-shadow: none;

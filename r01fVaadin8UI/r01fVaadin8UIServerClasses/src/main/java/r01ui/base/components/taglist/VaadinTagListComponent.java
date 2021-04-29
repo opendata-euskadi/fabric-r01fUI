@@ -27,6 +27,8 @@ import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import r01f.patterns.reactive.ForDisposeObserver;
 import r01f.patterns.reactive.ForSelectObserver;
@@ -55,7 +57,8 @@ public class VaadinTagListComponent<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final ItemCaptionGenerator<T> _itemCaptionGenerator;
 	private final DescriptionGenerator<T> _itemDescriptionGenerator;
-	private final String _deleteButtonDescription;
+	@Getter @Setter private String _deleteButtonDescription;
+	private final boolean _separateItems;
 
 	private final HorizontalLayout _hlyTagsContainer;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +68,8 @@ public class VaadinTagListComponent<T>
 		_itemCaptionGenerator = null;
 		_itemDescriptionGenerator = null;
 		_deleteButtonDescription = null;
+		_separateItems = false;
+		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
 		_hlyTagsContainer.setSpacing(false);
@@ -74,6 +79,7 @@ public class VaadinTagListComponent<T>
 		_itemCaptionGenerator = itemCaptionGenerator;
 		_itemDescriptionGenerator = null;
 		_deleteButtonDescription = null;
+		_separateItems = false;
 		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
@@ -82,9 +88,15 @@ public class VaadinTagListComponent<T>
 	}
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
 								  final DescriptionGenerator<T> itemDescriptionGenerator) {
+		this (itemCaptionGenerator, itemDescriptionGenerator, false);
+	}
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final boolean separateItems) {
 		_itemCaptionGenerator = itemCaptionGenerator;
 		_itemDescriptionGenerator = itemDescriptionGenerator;
 		_deleteButtonDescription = null;
+		_separateItems = separateItems;
 		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
@@ -95,14 +107,15 @@ public class VaadinTagListComponent<T>
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
 								  final DescriptionGenerator<T> itemDescriptionGenerator,
 								  final String deleteButtonDescription) {
-		_itemCaptionGenerator = itemCaptionGenerator;
-		_itemDescriptionGenerator = itemDescriptionGenerator;
+		this (itemCaptionGenerator, itemDescriptionGenerator);
 		_deleteButtonDescription = deleteButtonDescription;
-		
-		////////// create components
-		_hlyTagsContainer = new HorizontalLayout();
-		_hlyTagsContainer.setSpacing(false);
-		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+	}
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final boolean withSeparator) {
+		this (itemCaptionGenerator, itemDescriptionGenerator, withSeparator);
+		_deleteButtonDescription = deleteButtonDescription;
 	}
 	public VaadinTagListComponent(final String caption) {
 		this();
@@ -113,9 +126,19 @@ public class VaadinTagListComponent<T>
 								  final DescriptionGenerator<T> itemDescriptionGenerator,
 								  final String deleteButtonDescription) {
 		this(itemCaptionGenerator, 
+			 itemDescriptionGenerator);
+		_deleteButtonDescription = deleteButtonDescription;
+		this.setCaption(caption);
+	}
+	public VaadinTagListComponent(final String caption,
+								  final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final boolean separateItems) {
+		this(itemCaptionGenerator, 
 			 itemDescriptionGenerator,
-			 deleteButtonDescription);
-		
+			 separateItems);
+		_deleteButtonDescription = deleteButtonDescription;
 		this.setCaption(caption);
 	}
 	public VaadinTagListComponent(final String caption,
@@ -210,6 +233,21 @@ public class VaadinTagListComponent<T>
 					   deleteButtonDescription,
 					   values);
 	}
+	@SuppressWarnings("unchecked")
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final boolean separateItems,
+								  final T... values) {
+		this(itemCaptionGenerator,
+			 itemDescriptionGenerator,
+			 deleteButtonDescription,
+			 separateItems);
+		this.setValues(itemCaptionGenerator,
+					   itemDescriptionGenerator,
+					   deleteButtonDescription,
+					   values);
+	}
 	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
 								  final DescriptionGenerator<T> itemDescriptionGenerator,
 								  final String deleteButtonDescription,
@@ -217,6 +255,20 @@ public class VaadinTagListComponent<T>
 		this(itemCaptionGenerator, 
 			itemDescriptionGenerator,
 			deleteButtonDescription);
+		this.setValues(itemCaptionGenerator,
+					   itemDescriptionGenerator,
+					   deleteButtonDescription,
+					   values);
+	}
+	public VaadinTagListComponent(final ItemCaptionGenerator<T> itemCaptionGenerator,
+								  final DescriptionGenerator<T> itemDescriptionGenerator,
+								  final String deleteButtonDescription,
+								  final boolean separateItems,
+								  final Collection<T> values) {
+		this(itemCaptionGenerator, 
+			itemDescriptionGenerator,
+			deleteButtonDescription,
+			separateItems);
 		this.setValues(itemCaptionGenerator,
 					   itemDescriptionGenerator,
 					   deleteButtonDescription,
@@ -362,14 +414,15 @@ public class VaadinTagListComponent<T>
 		}
 		it.forEachRemaining(val -> {
 								// separator
-								Label separator = new Label();
-								separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
-								separator.setContentMode(ContentMode.HTML);
-								separator.addStyleName(ValoTheme.LABEL_LIGHT);
-								separator.setSizeFull();
-								_hlyTagsContainer.addComponent(separator);
-								_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
-								
+								if (_separateItems) {
+									Label separator = new Label();
+									separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
+									separator.setContentMode(ContentMode.HTML);
+									separator.addStyleName(ValoTheme.LABEL_LIGHT);
+									separator.setSizeFull();
+									_hlyTagsContainer.addComponent(separator);
+									_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
+								}
 								// item
 								if (descriptionGen != null) {
 									_addTagListItemToContainer(val,itemCaptionGen, descriptionGen, deleteButtonDescription);

@@ -425,6 +425,9 @@ $v-selection-color:#007ca9;
 		.v-button-borderless.v-button-r01-labelpicker-item-value {
 			padding-left:0;
 		}
+		.v-button-borderless.v-button-r01-labelpicker-item-value:hover {
+			text-decoration: underline;
+		}
 		.v-button:focus:after {
 			-webkit-box-shadow: none;
 			box-shadow: none;

@@ -12,6 +12,8 @@ import com.vaadin.ui.Image;
 import r01f.types.Path;
 import r01f.types.url.Url;
 import r01f.types.url.UrlPath;
+import r01f.types.url.UrlQueryString;
+import r01f.types.url.UrlQueryStringParam;
 import r01f.util.types.Strings;
 
 /**
@@ -40,11 +42,10 @@ public class VaadinLoginMethodButton
 		_icon.setIcon(new ThemeResource(imgPath.asRelativeString()));
 		
 		Url toUrl = frontEndUrlBase.joinWith(appUrlPath);
-		String loginUrlStr = Strings.customized("{}?to={}",		// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
-											    loginUrl,toUrl);	
+		Url theLoginUrl = loginUrl.joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("to",toUrl)));	// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 		_btn = new Button();
 		_btn.addListener(clickEvent ->  Page.getCurrent()
-											.open(loginUrlStr,
+											.open(theLoginUrl.asString(),
 												  null));	// window name (null = same win)
 		// Layout
 		HorizontalLayout ly = new HorizontalLayout(_icon,_btn);

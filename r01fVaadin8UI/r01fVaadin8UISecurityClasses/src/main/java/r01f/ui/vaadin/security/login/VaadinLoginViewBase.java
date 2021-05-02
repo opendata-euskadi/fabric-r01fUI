@@ -1,5 +1,7 @@
 package r01f.ui.vaadin.security.login;
 
+import java.util.Collection;
+
 import javax.inject.Provider;
 
 import com.google.common.collect.FluentIterable;
@@ -34,6 +36,7 @@ import r01f.model.security.user.User;
 import r01f.security.login.LoginSession;
 import r01f.security.login.LoginSessionStore;
 import r01f.security.login.filter.SecurityLoginFilterConfig;
+import r01f.security.provider.SecurityProvider;
 import r01f.securitycontext.SecurityContext;
 import r01f.securitycontext.SecurityContextStoreAtThreadLocalStorage;
 import r01f.securitycontext.SecurityIDS.LoginID;
@@ -42,6 +45,8 @@ import r01f.securitycontext.SecurityIDS.SecurityProviderID;
 import r01f.types.Path;
 import r01f.types.url.Url;
 import r01f.types.url.UrlPath;
+import r01f.types.url.UrlQueryString;
+import r01f.types.url.UrlQueryStringParam;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
@@ -110,13 +115,13 @@ public abstract class VaadinLoginViewBase<U extends User,
 	private final Label _lblCorporateLoginsTip;
 	private final VerticalLayout _lyMainLoginMethods;
 	private final VaadinLoginMethodButton _btnXLNets;
+	private final VaadinLoginMethodButton _btnElkarlan;
 	private final Button _btnShowOtherLoginMethods;
 	
 	// Other login methods
 	private final Label _lblOtherLoginsTip;
 	private final VerticalLayout _lyOtherLoginMethods;
 	private final VaadinLoginMethodButton _btnGoogle;
-	private final VaadinLoginMethodButton _btnJustizia;
 	private final VaadinUserPasswordLoginForm _frmUsrPasswd;
 	private final Button _btnShowUsrPasswdForm;
 	private final Button _btnHideOtherLoginMethods;
@@ -128,6 +133,17 @@ public abstract class VaadinLoginViewBase<U extends User,
 							   final UII18NService i18n,
 							   final P presenter,
 							   final SecurityLoginFilterConfig securityLoginConfig) {
+		this(securityContextProvider,
+			 i18n,
+			 presenter,
+			 securityLoginConfig,
+			 null);		// all security providers
+	}
+	public VaadinLoginViewBase(final Provider<SecurityContext> securityContextProvider,
+							   final UII18NService i18n,
+							   final P presenter,
+							   final SecurityLoginFilterConfig securityLoginConfig,
+							   final Collection<SecurityProvider> securityProviders) {
 		////////// services
 		_i18n = i18n;
 
@@ -140,22 +156,28 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_lblTitle.addStyleNames(ValoTheme.LABEL_H2,
 							 	ValoTheme.LABEL_BOLD);
 		// Login methods
-		// A) XLNets login
+		// A) Corporate login means
 		_lblCorporateLoginsTip = new Label();
 		_lblCorporateLoginsTip.setContentMode(ContentMode.HTML);
 		_lblCorporateLoginsTip.addStyleNames(ValoTheme.LABEL_H3,
 											 ValoTheme.LABEL_LIGHT,
 											 VaadinValoTheme.LABEL_WORD_WRAP);
 		_btnXLNets = _buildXLNetsButton();
+		_btnElkarlan = _buildElkarlanButton();
 		_btnShowOtherLoginMethods = new Button();
 		_btnShowOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
 		
-		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip,
-												 _btnXLNets,
-												 _btnShowOtherLoginMethods);
+		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.addComponent(_btnElkarlan);
+		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE) 
+									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.addComponent(_btnShowOtherLoginMethods);
+		
 		_lyMainLoginMethods.setComponentAlignment(_lblCorporateLoginsTip,Alignment.MIDDLE_CENTER);
-		_lyMainLoginMethods.setComponentAlignment(_btnXLNets,Alignment.MIDDLE_CENTER);
-		_lyMainLoginMethods.setComponentAlignment(_btnShowOtherLoginMethods,Alignment.MIDDLE_CENTER);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.setComponentAlignment(_btnXLNets,Alignment.MIDDLE_CENTER);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.setComponentAlignment(_btnElkarlan,Alignment.MIDDLE_CENTER);
+		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE) 
+									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.setComponentAlignment(_btnShowOtherLoginMethods,Alignment.MIDDLE_CENTER);
 		_lyMainLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyMainLoginMethods.setSpacing(true);
 		
@@ -166,25 +188,22 @@ public abstract class VaadinLoginViewBase<U extends User,
 										 ValoTheme.LABEL_LIGHT,
 										 VaadinValoTheme.LABEL_WORD_WRAP);
 		_btnGoogle = _buildGoogleButton();
-		_btnJustizia = _buildJustiziaButton(); 
 		_btnShowUsrPasswdForm = new Button();
 		_btnHideOtherLoginMethods = new Button(VaadinIcons.ARROW_BACKWARD);
 		
 		_btnShowUsrPasswdForm.addStyleName(ValoTheme.BUTTON_LINK);
 		_btnHideOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
 		
-		_lyOtherLoginMethods = new VerticalLayout(_lblOtherLoginsTip,
-												  _btnGoogle,
-												  _btnJustizia,
-												  _btnShowUsrPasswdForm,
-												  _btnHideOtherLoginMethods);
+		_lyOtherLoginMethods = new VerticalLayout(_lblOtherLoginsTip);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.addComponent(_btnGoogle);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.addComponent(_btnShowUsrPasswdForm);
+		_lyOtherLoginMethods.addComponent(_btnHideOtherLoginMethods);
 		
 		_lyOtherLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyOtherLoginMethods.setSpacing(true);
 		_lyOtherLoginMethods.setComponentAlignment(_lblOtherLoginsTip,Alignment.TOP_CENTER);
-		_lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER); 
-		_lyOtherLoginMethods.setComponentAlignment(_btnJustizia,Alignment.TOP_CENTER);
-		_lyOtherLoginMethods.setComponentAlignment(_btnShowUsrPasswdForm,Alignment.TOP_CENTER);
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER); 
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.setComponentAlignment(_btnShowUsrPasswdForm,Alignment.TOP_CENTER);
 		_lyOtherLoginMethods.setComponentAlignment(_btnHideOtherLoginMethods,Alignment.TOP_CENTER);
 		
 		// C) user / password login
@@ -340,27 +359,27 @@ public abstract class VaadinLoginViewBase<U extends User,
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private VaadinLoginMethodButton _buildXLNetsButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/xlnets-32x32.png"),
-										   							 _securityLoginConfig.getProvider(SecurityProviderID.forId("xlnets")).getLoginUrl(),
+										   							 _securityLoginConfig.getProvider(SecurityProviderID.XLNETS).getLoginUrl(),
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"xlnets-button");
 		return outBtn;
 	}
+	private VaadinLoginMethodButton _buildElkarlanButton() {
+		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/logo_justizia.png"),
+										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
+										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl","http://www.okta.com/exko3dmn57vmo67or5d6"))),	// the SAML issuerId for the SAML IdP
+										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
+										   							 _getWebAppUrlPath());
+		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"elkarlan-button");
+		return outBtn;
+	}
 	private VaadinLoginMethodButton _buildGoogleButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/google-32x32.svg"),
-										   							 _securityLoginConfig.getProvider(SecurityProviderID.forId("google")).getLoginUrl(),
+										   							 _securityLoginConfig.getProvider(SecurityProviderID.GOOGLE).getLoginUrl(),
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_DANGER,"google-button");
-		return outBtn;
-	}
-	private VaadinLoginMethodButton _buildJustiziaButton() {
-		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/logo_justizia.png"),
-										   							 Url.from("http://justizia-login-url"),
-										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
-										   							 _getWebAppUrlPath());
-		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"justizia-button");
-		outBtn.setVisible(false);
 		return outBtn;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -390,7 +409,6 @@ public abstract class VaadinLoginViewBase<U extends User,
 						      				  	  		  VaadinIcons.WARNING.getHtml(),
 						      				  	  		  i18n.getMessage("security.login.other.tip")));
 		_btnGoogle.setCaption(i18n.getMessage("security.login.method.google"));
-		_btnJustizia.setCaption(i18n.getMessage("security.login.method.justizia"));
 		_btnHideOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.hide"));
 		
 		// user password

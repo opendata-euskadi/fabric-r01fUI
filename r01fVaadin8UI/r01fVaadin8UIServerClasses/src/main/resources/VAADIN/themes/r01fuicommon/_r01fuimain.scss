@@ -417,8 +417,8 @@ $v-selection-color:#007ca9;
 		.v-tree8-row.r01-label-picker-hidden-selected-label-below > .v-tree8-cell span.v-captiontext {
 			font-style: italic;
 		}
-		
-		div.r01-labelpicker-item {
+	}
+	div.r01-labelpicker-item {
 				background-color:$v-selection-color;
 	    		color: white;	
 				border-radius: 25px;
@@ -434,12 +434,12 @@ $v-selection-color:#007ca9;
 				box-shadow: none;
 			}
 		}
-		.v-button-r01-labelpicker.v-button-structure-filter.v-button-small{
+		.v-button-r01-labelpicker.v-button-structure-filter.v-button-small {
 			font-size: $v-font-size;
 		}	
-	}
+		
 	.v-caption-r01uicatalogable span.v-required-field-indicator {
-	display:none;
+		display:none;
 	}
 	
 }

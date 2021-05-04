@@ -65,6 +65,7 @@ public class TinyMCETextFieldComponent
 	private TinyMCETextField _tinyEditor = new TinyMCETextField();
 	private CssLayout _html = new CssLayout();
 	private TextField _hiddenField = new TextField();
+	
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -178,5 +179,7 @@ public class TinyMCETextFieldComponent
 		vl.setExpandRatio(_tinyEditor, 1);
 		getUI().addWindow(w);
 	}
+	
+	
 
 }

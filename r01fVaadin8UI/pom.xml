@@ -27,8 +27,8 @@
 		<module>r01fVaadin8UIServerClasses</module>
 		<module>r01fVaadin8UIClientClasses</module>
 		<module>r01fVaadin8UITinyEditorAddOnClasses</module>
-    <module>r01fVaadin8UISecurityClasses</module>
-    <module>r01fVaadin8UICodeMirrorAddOnClasses</module>
-    <module>r01fVaadin8UIHistoryClasses</module>
+    	<module>r01fVaadin8UISecurityClasses</module>
+    	<module>r01fVaadin8UICodeMirrorAddOnClasses</module>
+    	<module>r01fVaadin8UIHistoryClasses</module>
   </modules>
 </project>

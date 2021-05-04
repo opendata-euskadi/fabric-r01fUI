@@ -407,33 +407,39 @@ $v-selection-color:#007ca9;
 	}
 	
 	////////// label picker
-	.v-tree8-row.r01-label-picker-selected-primary > .v-tree8-cell span.v-captiontext { 
+	.r01-uicatalogable {
+		.v-tree8-row.r01-label-picker-selected-primary > .v-tree8-cell span.v-captiontext { 
 		color: $v-focus-color; //label colored
+		}
+		.v-tree8-row.r01-label-picker-selected-secondary > .v-tree8-cell span.v-captiontext {
+			font-weight: bold;	//label bold
+		}
+		.v-tree8-row.r01-label-picker-hidden-selected-label-below > .v-tree8-cell span.v-captiontext {
+			font-style: italic;
+		}
+		
+		div.r01-labelpicker-item {
+				background-color:$v-selection-color;
+	    		color: white;	
+				border-radius: 25px;
+			
+			.v-button-borderless.v-button-r01-labelpicker-item-value {
+				padding-left:0;
+			}
+			.v-button-borderless.v-button-r01-labelpicker-item-value:hover {
+				text-decoration: underline;
+			}
+			.v-button:focus:after {
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+		}
+		.v-button-r01-labelpicker.v-button-structure-filter.v-button-small{
+			font-size: $v-font-size;
+		}	
 	}
-	.v-tree8-row.r01-label-picker-selected-secondary > .v-tree8-cell span.v-captiontext {
-		font-weight: bold;	//label bold
-	}
-	.v-tree8-row.r01-label-picker-hidden-selected-label-below > .v-tree8-cell span.v-captiontext {
-		font-style: italic;
+	.v-caption-r01uicatalogable span.v-required-field-indicator {
+	display:none;
 	}
 	
-	div.r01-labelpicker-item {
-			background-color:$v-selection-color;
-    		color: white;	
-			border-radius: 25px;
-		
-		.v-button-borderless.v-button-r01-labelpicker-item-value {
-			padding-left:0;
-		}
-		.v-button-borderless.v-button-r01-labelpicker-item-value:hover {
-			text-decoration: underline;
-		}
-		.v-button:focus:after {
-			-webkit-box-shadow: none;
-			box-shadow: none;
-		}
-	}
-	.v-button-r01-labelpicker.v-button-structure-filter.v-button-small{
-		font-size: $v-font-size;
-	}
 }

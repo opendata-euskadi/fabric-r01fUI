@@ -77,29 +77,37 @@ public class VaadinHistoryGrid<V extends VaadinViewHistoryEntry<?,?,?>>
 													 	 		  .setMinimumWidthFromContent(true)
 													 	 		  .setExpandRatio(1)
 													 	 		  .setResizable(false)
+													 	 		  .setCaption(i18n.getMessage("history.grid.date"))
+													 	 		  .setSortable(true)
 													 	 		  .setId("when");
 		Grid.Column<V,String> colWhat = _gridHistoryEntries.addColumn(entry -> i18n.getMessage(entry.getWhat().getI18nKey()))
 												  .setDescriptionGenerator(entry -> entry.getWhat().name())
 												  .setResizable(false)
 												  .setMinimumWidthFromContent(true)
 												  .setExpandRatio(1)
+												  .setCaption(i18n.getMessage("history.grid.action"))
+												  .setSortable(true)
 												  .setId("what");
 		Grid.Column<V,String> colAbout = _gridHistoryEntries.addColumn(entry -> entry.getAboutDetails())
 												   .setDescriptionGenerator(entry -> entry.getAbout().asString())
 												   .setResizable(true)
 												   .setMinimumWidthFromContent(true)
 												   .setExpandRatio(2)
+												   .setCaption(i18n.getMessage("history.grid.user"))
+												   .setSortable(true)
 												   .setId("about");
 		Grid.Column<V,String> colWho = _gridHistoryEntries.addColumn(entry -> entry.getWhoDetails())
 												 .setDescriptionGenerator(entry -> entry.getWho().asString())
 												 .setMinimumWidthFromContent(true)
 												 .setExpandRatio(2)
+												 .setCaption(i18n.getMessage("history.grid.item"))
+												 .setSortable(true)
 												 .setId("who");
 
 		// set selection mode
 		_gridHistoryEntries.setSelectionMode(SelectionMode.SINGLE);
 		_gridHistoryEntries.setSizeFull();
-		_gridHistoryEntries.setHeightByRows(5);
+		_gridHistoryEntries.setHeightByRows(9);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SET ITEMS

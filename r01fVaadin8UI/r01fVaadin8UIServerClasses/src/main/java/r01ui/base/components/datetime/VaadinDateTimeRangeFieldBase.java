@@ -138,6 +138,12 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 		_dateLowerBound.setValue(null);
 		_dateUperBound.setValue(null);
 	}
+	public T getLowerBound() {
+		return _dateLowerBound.getValue();
+	}
+	public T getUpperBound() {
+		return _dateUperBound.getValue();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BEWARE! if an event is NOT raised when the value changes, the vaadin binder
 //			does NOT works
@@ -181,8 +187,8 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 													}
 													T currLow = _dateLowerBound.getValue();
 													T currUp = _isDateTimeRangeComponent() 
-																	&& valChangeEvent.getValue()==null ? null							// if DateTimeField and value is null, just set the new value to up
-																									   : valChangeEvent.getOldValue();	// old value
+																	&& valChangeEvent.getValue() == null ? null							// if DateTimeField and value is null, just set the new value to up
+																									     : valChangeEvent.getOldValue();// old value
 													if (currUp != null && currLow != null
 													 && _isNotValidRange(currLow,currUp)) {		// is not a valid range
 														currUp = null;
@@ -232,9 +238,8 @@ abstract class VaadinDateTimeRangeFieldBase<T extends Temporal & TemporalAdjuste
 								  final T currUp) {
 		if (_isDateTimeRangeComponent()) {
 			return currLow.get(ChronoField.HOUR_OF_DAY) > (currUp.get(ChronoField.HOUR_OF_DAY));
-		} else {
-			return currLow.compareTo(currUp) > 0;
-		}
+		} 
+		return currLow.compareTo(currUp) > 0;
 	}
 	private boolean _isDateTimeRangeComponent() {
 		return _dateUperBound instanceof DateTimeField &&

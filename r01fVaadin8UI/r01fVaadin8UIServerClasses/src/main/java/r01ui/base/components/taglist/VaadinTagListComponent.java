@@ -349,6 +349,7 @@ public class VaadinTagListComponent<T>
 							 null);
 	}
 	@SuppressWarnings("unchecked")
+<<<<<<< HEAD
 	public void setValues(final ItemCaptionGenerator<T> itemCaptionGenerator,
 						  final DescriptionGenerator<T> itemDescriptionGenerator,
 						  final T... values) {
@@ -393,6 +394,8 @@ public class VaadinTagListComponent<T>
 		
 	}
 	
+=======
+>>>>>>> branch 'master' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 	private void _replaceValueButtons(final Collection<T> values,
 									  final ItemCaptionGenerator<T> itemCaptionGen,
 									  final DescriptionGenerator<T> descriptionGen,
@@ -414,6 +417,7 @@ public class VaadinTagListComponent<T>
 		}
 		it.forEachRemaining(val -> {
 								// separator
+<<<<<<< HEAD
 								if (_separateItems) {
 									Label separator = new Label();
 									separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
@@ -423,6 +427,16 @@ public class VaadinTagListComponent<T>
 									_hlyTagsContainer.addComponent(separator);
 									_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
 								}
+=======
+								Label separator = new Label();
+								separator.setValue(VaadinIcons.CHEVRON_RIGHT.getHtml());
+								separator.setContentMode(ContentMode.HTML);
+								separator.addStyleName(ValoTheme.LABEL_LIGHT);
+								separator.setSizeFull();
+								_hlyTagsContainer.addComponent(separator);
+								_hlyTagsContainer.setComponentAlignment(separator,Alignment.MIDDLE_CENTER);
+
+>>>>>>> branch 'master' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 								// item
 								if (descriptionGen != null) {
 									_addTagListItemToContainer(val,itemCaptionGen, descriptionGen, deleteButtonDescription);
@@ -487,7 +501,7 @@ public class VaadinTagListComponent<T>
 				outItem = item;
 				break;
 			}
-		} while (itemIt.hasNext() 
+		} while (itemIt.hasNext()
 			  && outItem == null);
 		return outItem;
 	}
@@ -514,17 +528,17 @@ public class VaadinTagListComponent<T>
 			   };
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	public boolean removeTagFor(final T item) {
 		VaadinTagListItem tagListItem = _findItemFor(item);
 		if (tagListItem == null) return false;
-		
+
 		_hlyTagsContainer.removeComponent(tagListItem);
 		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * A component like:
@@ -536,33 +550,50 @@ public class VaadinTagListComponent<T>
 		  extends Composite {
 
 		private static final long serialVersionUID = -3528551824350605879L;
-		
+
 		private final Button _btnDispose;
 		private final Button _btnItem;
-		
+
 		private final T _data;
-		
+
 		private ForDisposeObserver<T> _disposeSubscriber;
 		private ForSelectObserver<T> _selectSubscriber;
+<<<<<<< HEAD
 		
 		public VaadinTagListItem(final T val) {
+=======
+
+		public VaadinTagListItem(final T val,
+								 final ItemCaptionGenerator<T> itemCaptionGen) {
+>>>>>>> branch 'master' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 			_data = val;
-			
+
 			////////// UI
 			// dispose button
 			_btnDispose = new Button(VaadinIcons.CLOSE_CIRCLE);
 			_btnDispose.addStyleNames(ValoTheme.BUTTON_TINY,
 									  ValoTheme.BUTTON_ICON_ONLY,
 									  ValoTheme.BUTTON_BORDERLESS,
+<<<<<<< HEAD
 									  "r01-labelpicker-item-delete");
 			_btnDispose.setDescription(_deleteButtonDescription);
 			
+=======
+									  ValoTheme.BUTTON_SMALL);
+
+>>>>>>> branch 'master' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 			// item button
 			_btnItem = new Button();
 			_btnItem.addStyleNames(ValoTheme.BUTTON_BORDERLESS,
+<<<<<<< HEAD
 								   ValoTheme.BUTTON_TINY,
 									"r01-labelpicker-item-value");					
 			
+=======
+								  "label-item");
+			_btnItem.setDescription(itemCaptionGen.apply(val));
+
+>>>>>>> branch 'master' of https://src1.alm02.itbatera.euskadi.eus/fabric/r01fui.git
 			////////// Layout
 			HorizontalLayout ly = new HorizontalLayout(_btnDispose,_btnItem);
 			ly.addStyleName("r01-labelpicker-item");
@@ -572,7 +603,7 @@ public class VaadinTagListComponent<T>
 			ly.setExpandRatio(_btnItem, 3);
 			ly.setComponentAlignment(_btnDispose, Alignment.MIDDLE_RIGHT);
 			this.setCompositionRoot(ly);
-			
+
 			////////// Behavior
 			_setBehavior();
 		}

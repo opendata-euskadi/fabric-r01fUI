@@ -107,7 +107,6 @@ public class TinyMCETextFieldComponent
 		layout.addComponent(hl);
 		_html.addStyleName("r01ui-html-box");
 		layout.addComponent(_html);
-		
 		return layout;
 	}
 	@Override
@@ -164,7 +163,9 @@ public class TinyMCETextFieldComponent
 		Button accept = new Button(_i18n.getMessage("accept"));
 		accept.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		accept.addClickListener(evt -> {
+										String oldValue = _hiddenField.getValue();
 										_hiddenField.setValue(_tinyEditor.getValue());
+										this.fireEvent(new ValueChangeEvent(this, oldValue, !oldValue.equals(_hiddenField.getValue())));
 										_html.removeAllComponents();
 										_html.addComponent(new Label(_tinyEditor.getValue(), ContentMode.HTML));
 										w.close();

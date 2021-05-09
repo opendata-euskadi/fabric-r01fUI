@@ -276,7 +276,7 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	protected final VaadinViewFactoryFrom<Language,F> _formByLangFormFactory;
+	protected final VaadinViewFactoryFrom<Language,F> _inLangFormFactory;
 	protected final FormIterable _langForms;
 
 	protected VBL _viewObject;
@@ -286,9 +286,9 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 //	CONSTRUCTOR / BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUILangTabbedViewBase(final UII18NService i18n,
-						       	  	  final VaadinViewFactoryFrom<Language,F> formByLangFormFactory) {
+						       	  	  final VaadinViewFactoryFrom<Language,F> inLangFormFactory) {
 		_i18n = i18n;
-		_formByLangFormFactory = formByLangFormFactory;
+		_inLangFormFactory = inLangFormFactory;
 		_langForms = new FormIterable(Lists.newArrayList());
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -333,8 +333,8 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		Collection<VaadinTabbedLangForm> tabs = langs.stream()
 													 .map(lang -> {
 																// create the tab
-																F langForm = _formByLangFormFactory.from(_i18n,
-																									 	 lang);
+																F langForm = _inLangFormFactory.from(_i18n,
+																									 lang);
 																// set the tab caption
 																if (Strings.isNullOrEmpty(langForm.getCaption())) {
 																	String captionKey = Strings.customized("tab.caption.{}",

@@ -34,7 +34,7 @@ import r01ui.base.components.tree.VaadinTreeData;
  * @param <VBL>
  * @param <IL>
  * @param <VIL>
- * @param <WIL>
+ * @param <FIL>
  */
 @Accessors(prefix="_")
 public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view object & in-lang view object shown in the [detail] view 
@@ -45,7 +45,7 @@ public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view 
 														   		VO extends UIViewObjectInLanguage
 														   				 & VaadinHierarchicalDataViewObj<VO>,	
 														   		// the component used to edit [tree] + [detail] (form)
-														   		WIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>>	
+														   		FIL extends VaadinHierarchicalDataInLangComponentBase<VO,? extends VaadinHierarchicalDataInLangForm<VO>>>	
 	 		  extends CustomComponent 
 	 	   implements VaadinView,
   			 		  VaadinViewI18NMessagesCanBeUpdated,
@@ -55,22 +55,23 @@ public abstract class VaadinHierarchicalDataByLangComponentBase<// by lang view 
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FILEDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Getter private final VaadinHierarchicalDataByLangTabbedView<VO,WIL,
+	@Getter private final VaadinHierarchicalDataByLangTabbedView<VO,FIL,
 														 		 VBL,VIL> _langTabbedView;
-	private final VaadinViewFactoryFrom<Language,WIL> _inLangViewFactory;			// the view inside each tab
+	private final VaadinViewFactoryFrom<Language,FIL> _inLangViewFactory;			// the view inside each tab
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHierarchicalDataByLangComponentBase(final UII18NService i18n, 
-												final Collection<Language> portalAvailableLangs,
-												final VaadinViewFactoryFrom<Language,WIL> inLangDetailViewFactory,
-												// transform from [view object] to [vaadin tree data]
-												final Function<VIL,VaadinTreeData<VO>> viewObjInLangToVaadinTreeData,
-												// transform from [vaadin tree data] to [view object]
-												final Transfer<VaadinTreeData<VO>,VIL> vaadinTreeDataToViewObjInLang) {
-		_inLangViewFactory = inLangDetailViewFactory;
-		_langTabbedView = new VaadinHierarchicalDataByLangTabbedView<VO,WIL,
+													 final Collection<Language> portalAvailableLangs,
+													 // form factory
+													 final VaadinViewFactoryFrom<Language,FIL> inLangFormFactory,
+													 // transform from [view object] to [vaadin tree data]
+													 final Function<VIL,VaadinTreeData<VO>> viewObjInLangToVaadinTreeData,
+													 // transform from [vaadin tree data] to [view object]
+													 final Transfer<VaadinTreeData<VO>,VIL> vaadinTreeDataToViewObjInLang) {
+		_inLangViewFactory = inLangFormFactory;
+		_langTabbedView = new VaadinHierarchicalDataByLangTabbedView<VO,FIL,
 														 			 VBL,VIL>(i18n, 
 														 					  portalAvailableLangs,
 														 					  _inLangViewFactory) {

@@ -55,17 +55,17 @@ public class VaadinUILangHTabbedView<// the data being binded at the view; usual
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinUILangHTabbedView(final UII18NService i18n,
-								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> inLangFormFactory) {
 		super(i18n,
-			  viewByLangFactory);
+			  inLangFormFactory);
 		_tabs.setResponsive(true);
 		super.setCompositionRoot(_tabs);	
 	}
 	public VaadinUILangHTabbedView(final UII18NService i18n,
 								   final Collection<Language> langs,
-								   final VaadinViewFactoryFrom<Language,F> viewByLangFactory) {
+								   final VaadinViewFactoryFrom<Language,F> inLangFormFactory) {
 		this(i18n,
-			 viewByLangFactory);
+			 inLangFormFactory);
 		this.addTabsFor(langs);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

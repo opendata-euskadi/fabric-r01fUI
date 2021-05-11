@@ -1,6 +1,5 @@
 package r01ui.base.components.tinyeditor;
 
-import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -61,10 +60,10 @@ public class TinyMCETextFieldComponent
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Setter private UII18NService _i18n;
-	private Label _caption = new Label();
+	private final Label _caption = new Label();
 	private TinyMCETextField _tinyEditor = new TinyMCETextField();
-	private CssLayout _html = new CssLayout();
-	private TextField _hiddenField = new TextField();
+	private final CssLayout _html = new CssLayout();
+	private final TextField _hiddenField = new TextField();
 	
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
@@ -115,7 +114,7 @@ public class TinyMCETextFieldComponent
 	}
 
 	@Override
-	protected void doSetValue(String value) {
+	protected void doSetValue(final String value) {
 		_html.removeAllComponents();
 		if(value != null) {
 			_hiddenField.setValue(value);
@@ -124,17 +123,12 @@ public class TinyMCETextFieldComponent
 		
 	}
 	@Override
-	public void setCaption(String caption) {
+	public void setCaption(final String caption) {
 		_caption.addStyleName("v-caption");
 		_caption.setValue("<strong>"+ caption+"</strong>");
-	}
+	}	
 	@Override
-	public Registration addValueChangeListener(ValueChangeListener<String> listener) {
-		return _hiddenField.addValueChangeListener(listener);
-	}
-	
-	@Override
-	public void setHeight(float height, Unit unit) {
+	public void setHeight(final float height, final Unit unit) {
 		super.setHeight(height, unit);
 		if(unit.equals(Unit.PIXELS)) {
 			_html.setHeight(height-80, Unit.PIXELS);
@@ -165,7 +159,11 @@ public class TinyMCETextFieldComponent
 		accept.addClickListener(evt -> {
 										String oldValue = _hiddenField.getValue();
 										_hiddenField.setValue(_tinyEditor.getValue());
-										this.fireEvent(new ValueChangeEvent(this, oldValue, !oldValue.equals(_hiddenField.getValue())));
+										if (!oldValue.equals(_hiddenField.getValue())) {
+											this.fireEvent(new ValueChangeEvent<String>(this,
+																				    	oldValue,
+																				    	true));
+										}
 										_html.removeAllComponents();
 										_html.addComponent(new Label(_tinyEditor.getValue(), ContentMode.HTML));
 										w.close();

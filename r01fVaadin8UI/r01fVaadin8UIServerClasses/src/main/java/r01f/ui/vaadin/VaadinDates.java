@@ -52,7 +52,7 @@ public abstract class VaadinDates {
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static LocalDateTimeRenderer createLocalDateTimeRenderer(final Locale locale,
 																	final FormatStyle style) {
-		return new LocalDateTimeRenderer(() -> DateTimeFormatter.ofLocalizedDate(style)
+		return new LocalDateTimeRenderer(() -> DateTimeFormatter.ofLocalizedDateTime(style)
 		        												.withLocale(locale));
 	}
 	public static LocalDateRenderer createLocalDateRenderer(final Locale locale,

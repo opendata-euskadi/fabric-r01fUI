@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component.Listener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -54,8 +53,7 @@ public abstract class VaadinUserRolesInAuthResourceEditPopUpBase<U extends User,
 																 F extends VaadinUserRolesInAuthResourceForm<U,V,
 																 											 T,I>>
 		 	  extends Window
-	       implements VaadinViewI18NMessagesCanBeUpdated,
-	       			  Listener {
+	       implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -5423050396649827819L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +72,11 @@ public abstract class VaadinUserRolesInAuthResourceEditPopUpBase<U extends User,
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected VaadinUserRolesInAuthResourceEditPopUpBase(final UII18NService i18n,
-											  			 final F form) {
+											  			final F form) {
 		_i18n = i18n;
 
 		////////// Form
 		_form = form;
-		_form.addListener(this); // listen for component events to recenter the window
 
 		////////// Style
 		_btnPopUpSave.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -182,15 +179,4 @@ public abstract class VaadinUserRolesInAuthResourceEditPopUpBase<U extends User,
 		_btnPopUpSave.setCaption(i18n.getMessage("save"));
 		_btnPopUpCancel.setCaption(i18n.getMessage("cancel"));
 	}
-	
-/////////////////////////////////////////////////////////////////////////////////////////
-//	I18N
-/////////////////////////////////////////////////////////////////////////////////////////
-    @Override
-	public void componentEvent(Event event) {
-         // _form can fire a component event when a resource is selected
-         if (event.getSource() == _form) {
-        	 this.center();
-         }
-     }
 }

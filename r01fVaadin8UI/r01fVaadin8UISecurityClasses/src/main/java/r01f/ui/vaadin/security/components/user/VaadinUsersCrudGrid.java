@@ -179,6 +179,7 @@ public abstract class VaadinUsersCrudGrid<U extends User,V extends VaadinViewUse
 		_gridUsers.setSizeFull();
 		_gridUsers.setResponsive(true);
 		_gridUsers.setHeaderVisible(false);
+		_gridUsers.recalculateColumnWidths(); // 8.12.4 has doesn't adjust width correctly if header is not visible
 		_gridUsers.setHeight(200, Unit.PIXELS);
 	}
 	private void _setBehavior() {

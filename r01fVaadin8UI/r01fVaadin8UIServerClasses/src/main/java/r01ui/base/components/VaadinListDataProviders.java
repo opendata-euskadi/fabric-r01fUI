@@ -3,6 +3,7 @@ package r01ui.base.components;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.vaadin.data.HasDataProvider;
 import com.vaadin.data.HasFilterableDataProvider;
@@ -124,6 +125,7 @@ public abstract class VaadinListDataProviders {
 		public List<T> getUnderlyingItemsCollectionAsList();
 		public int getUnderlyingItemsCollectionSize();
 		public <O extends OID> T getItemWithOid(final O oid);
+		public Collection<T> getItemsMatching(final Predicate<T> pred);
 		public SELF_TYPE refreshItem(final T item);
 		public <O extends OID> SELF_TYPE refreshItemWithOid(final O oid);
 		public SELF_TYPE refreshAll();
@@ -167,15 +169,21 @@ public abstract class VaadinListDataProviders {
 		@Override @SuppressWarnings("unchecked")
 		public <O extends OID> T getItemWithOid(final O oid) {
 			// find the item with the given oid
-			Collection<T> col = this.getUnderlyingItemsCollection();
-			T item = col.stream()
-						.filter(colItem -> {
-									if (!(colItem instanceof HasOID)) throw new IllegalStateException("Cannot find by oid if the underlying collection items DO NOT implement " + HasOID.class);
-									HasOID<O> hasOid = (HasOID<O>)colItem;
-									return hasOid.getOid().is(oid);
-								})
-						.findFirst().orElse(null);
-			return item;
+			Collection<T> itemsWithOid = this.getItemsMatching(colItem -> {
+																	if (!(colItem instanceof HasOID)) throw new IllegalStateException("Cannot find by oid if the underlying collection items DO NOT implement " + HasOID.class);
+																	HasOID<O> hasOid = (HasOID<O>)colItem;
+																	return hasOid.getOid().is(oid);
+																});
+			if (CollectionUtils.hasData(itemsWithOid) && itemsWithOid.size() > 1) throw new IllegalStateException("There exists more than a single item with oid=" + oid + " at the collection!");
+			return CollectionUtils.hasData(itemsWithOid) ? CollectionUtils.pickOneAndOnlyElement(itemsWithOid)
+														 : null;
+		}
+		@Override
+		public Collection<T> getItemsMatching(final Predicate<T> pred) {
+			return this.getUnderlyingItemsCollection()
+					   .stream()
+					   .filter(pred)
+					   .collect(Collectors.toList());
 		}
 		@Override @SuppressWarnings("unchecked")
 		public SELF_TYPE refreshItem(final T item) {

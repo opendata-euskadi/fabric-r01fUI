@@ -26,6 +26,12 @@ public class VaadinFilterTextField
   implements VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = 8276710095246102703L;
+	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SERVICES
+/////////////////////////////////////////////////////////////////////////////////////////	
+	private final UII18NService _i18n;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -38,15 +44,18 @@ public class VaadinFilterTextField
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinFilterTextField(final UII18NService i18n) {
+		_i18n = i18n;
+		
 		////////// UI
 		_txtLabelFilter = new TextField();
-		_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
+		_txtLabelFilter.setPlaceholder(_i18n.getMessage("search.fulltext.input-text-hint"));
 		
-		_btnFilter = new Button(VaadinIcons.FILTER);
-		_btnFilter.setDescription(i18n.getMessage("filter"));
 		
-		_btnClearFilter = new Button(VaadinIcons.ERASER);
-		_btnClearFilter.setDescription(i18n.getMessage("clear"));
+		_btnFilter = new Button(VaadinIcons.SEARCH);
+		_btnFilter.setDescription(_i18n.getMessage("search"));
+		
+		_btnClearFilter = new Button(VaadinIcons.CLOSE);
+		_btnClearFilter.setDescription(_i18n.getMessage("clear"));
 		
 		// style
 		this.setDefaultStyling();
@@ -58,7 +67,10 @@ public class VaadinFilterTextField
 	}
 	@Override
 	protected Component initContent() {
-		HorizontalLayout ly = new HorizontalLayout(_txtLabelFilter,_btnFilter,_btnClearFilter);
+		HorizontalLayout ly = new HorizontalLayout(_txtLabelFilter,
+												   _btnFilter,
+												   _btnClearFilter);
+		ly.setSpacing(false);
 		ly.setWidthFull();
 		ly.setExpandRatio(_txtLabelFilter,1);
 		ly.setExpandRatio(_btnFilter,0);		// exact fit
@@ -101,7 +113,8 @@ public class VaadinFilterTextField
 	private void _enableButtonsDependingOnValue(final String value) {
 		// enable / disable depending on the value
 		_btnFilter.setEnabled(Strings.isNOTNullOrEmpty(value));
-		_btnClearFilter.setEnabled(Strings.isNOTNullOrEmpty(value));		
+		_btnClearFilter.setEnabled(Strings.isNOTNullOrEmpty(value));
+		_btnClearFilter.setVisible(Strings.isNOTNullOrEmpty(value));
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	EVENTS
@@ -122,6 +135,8 @@ public class VaadinFilterTextField
 	public void setAutoMode() {
 		_autoMode = true;
 		
+		_txtLabelFilter.setPlaceholder(_i18n.getMessage("search.fulltext.inmediate.input-text-hint"));
+		_txtLabelFilter.setIcon(VaadinIcons.FILTER);
 		_btnFilter.setVisible(false);
 		_txtLabelFilter.setValueChangeMode(ValueChangeMode.TIMEOUT);
 		_txtLabelFilter.setValueChangeTimeout(1000);	// 1 sg
@@ -129,12 +144,14 @@ public class VaadinFilterTextField
 	public void resetAutoMode() {
 		_autoMode = false;
 		
+		_txtLabelFilter.setPlaceholder(_i18n.getMessage("search.fulltext.input-text-hint"));
+		_txtLabelFilter.setIcon(VaadinIcons.SEARCH);
 		_btnFilter.setVisible(true);
 		_txtLabelFilter.setValueChangeMode(ValueChangeMode.EAGER);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
-/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////	
 	public void setFilterTextBoxPlaceHolder(final String text) {
 		_txtLabelFilter.setPlaceholder(text);
 	}
@@ -163,12 +180,8 @@ public class VaadinFilterTextField
 		_txtLabelFilter.setWidthFull();
 		
 		// buttons
-		_btnFilter.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED,
-								 ValoTheme.BUTTON_ICON_ONLY,
-								 ValoTheme.BUTTON_SMALL);
-		_btnClearFilter.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED,
-								 	  ValoTheme.BUTTON_ICON_ONLY,
-								 	  ValoTheme.BUTTON_SMALL);
+		_btnFilter.addStyleNames(ValoTheme.BUTTON_ICON_ONLY);
+		_btnClearFilter.addStyleNames(ValoTheme.BUTTON_ICON_ONLY);
 	}
 	public void addFilterTextFieldStyleNames(final String... styles) {
 		_txtLabelFilter.addStyleNames(styles);
@@ -184,7 +197,12 @@ public class VaadinFilterTextField
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
-		_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
+		if (_autoMode) {
+			_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.inmediate.input-text-hint"));
+		}
+		else {
+			_txtLabelFilter.setPlaceholder(i18n.getMessage("search.fulltext.input-text-hint"));
+		}
 		_btnFilter.setCaption(i18n.getMessage("filter"));
 		_btnClearFilter.setCaption(i18n.getMessage("clear"));
 	}

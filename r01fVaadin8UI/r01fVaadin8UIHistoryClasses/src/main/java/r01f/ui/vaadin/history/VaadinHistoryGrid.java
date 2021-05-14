@@ -13,6 +13,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.VaadinDates;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
+import r01f.util.types.Dates;
 
 
 /**
@@ -72,14 +73,14 @@ public class VaadinHistoryGrid<V extends VaadinViewHistoryEntry<?,?,?>>
 	@SuppressWarnings("unused")
 	private void _configureGrid(final UII18NService i18n) {
 		// configure columns
-		Grid.Column<V,LocalDateTime> colWhen = _gridHistoryEntries.addColumn(entry -> entry.getWhen())
-													 	 		  .setRenderer(VaadinDates.createLocalDateTimeRenderer(i18n.getCurrentLanguage(),FormatStyle.FULL))
-													 	 		  .setMinimumWidthFromContent(true)
-													 	 		  .setExpandRatio(1)
-													 	 		  .setResizable(false)
-													 	 		  .setCaption(i18n.getMessage("history.grid.date"))
-													 	 		  .setSortable(true)
-													 	 		  .setId("when");
+		//Theres a bug formating LocalDateTime see https://bugs.openjdk.java.net/browse/JDK-8085887
+		Grid.Column<V,String> colWhen = _gridHistoryEntries.addColumn(entry ->  Dates.format(VaadinDates.dateFrom(entry.getWhen()), Dates.DATE_HOURS_FORMATS_BY_LANG.get((i18n.getCurrentLanguage()))))
+											 	 		   .setMinimumWidthFromContent(true)
+											 	 		   .setExpandRatio(1)
+											 	 		   .setResizable(false)
+											 	 		   .setCaption(i18n.getMessage("history.grid.date"))
+											 	 		   .setSortable(true)
+											 	 		   .setId("when");
 		Grid.Column<V,String> colWhat = _gridHistoryEntries.addColumn(entry -> i18n.getMessage(entry.getWhat().getI18nKey()))
 												  .setDescriptionGenerator(entry -> entry.getWhat().name())
 												  .setResizable(false)

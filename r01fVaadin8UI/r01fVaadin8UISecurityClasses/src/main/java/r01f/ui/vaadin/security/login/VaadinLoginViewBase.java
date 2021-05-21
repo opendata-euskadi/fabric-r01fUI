@@ -2,6 +2,9 @@ package r01f.ui.vaadin.security.login;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Provider;
 
@@ -11,6 +14,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.ContentMode;
@@ -50,9 +54,12 @@ import r01f.types.url.UrlQueryString;
 import r01f.types.url.UrlQueryStringParam;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
+import r01f.ui.vaadin.view.VaadinNavigator;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViewID;
+import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
+import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
 import r01ui.ui.vaadin.security.theme.VaadinSecurityTheme;
 
@@ -60,7 +67,7 @@ import r01ui.ui.vaadin.security.theme.VaadinSecurityTheme;
  * Ensure to include the [r01uilogin.scss] styles file:
  * [1] - Go to the UI type and check the @Theme annotation
  * 		 It should be something like:
- *		        @Theme("myAppStyles")	
+ *		        @Theme("myAppStyles")
  *		        public class MyAppVaadinUI
  *		        	 extends UI {
  *		        	...
@@ -76,13 +83,13 @@ import r01ui.ui.vaadin.security.theme.VaadinSecurityTheme;
  * [3] - The [styles.scss] file must contain:
  *			@import "addons.scss";
  *			@import "myAppStyles.scss";
- *			@import "r01uilogin.scss";	
+ *			@import "r01uilogin.scss";
  *
  *			.myAppStyles {
  *				@include addons;
  *				@include myAppStyles;	<-- the @Theme annotation value
- *				@include r01uilogin;		
- *			} 
+ *				@include r01uilogin;
+ *			}
  */
 @Slf4j
 @Accessors(prefix = "_")
@@ -90,11 +97,11 @@ public abstract class VaadinLoginViewBase<U extends User,
 										  L extends UserPasswordLogin,
 										  S extends SecurityContext,
 										  P extends VaadinLoginPresenterBase<U,L,
-												  							 ? extends VaadinLoginCOREMediatorBase<U,L,
-												  									 							   ? extends SecurityAPIBase<U,?,?,?,?>>>>
-     		  extends Composite
-     	   implements View,
-     	   			  VaadinViewI18NMessagesCanBeUpdated {
+																			   ? extends VaadinLoginCOREMediatorBase<U,L,
+																													  ? extends SecurityAPIBase<U,?,?,?,?>>>>
+			   extends Composite
+			implements View,
+						  VaadinViewI18NMessagesCanBeUpdated {
 
 	private static final long serialVersionUID = -3842197138419966575L;
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +111,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 	protected final transient P _presenter;
 
 	protected final transient SecurityLoginFilterConfig _securityLoginConfig;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	 UI
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +125,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 	private final VaadinLoginMethodButton _btnXLNets;
 	private final VaadinLoginMethodButton _btnElkarlan;
 	private final Button _btnShowOtherLoginMethods;
-	
+
 	// Other login methods
 	private final Label _lblOtherLoginsTip;
 	private final VerticalLayout _lyOtherLoginMethods;
@@ -126,7 +133,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 	private final VaadinUserPasswordLoginForm _frmUsrPasswd;
 	private final Button _btnShowUsrPasswdForm;
 	private final Button _btnHideOtherLoginMethods;
-		
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // 	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -150,12 +157,12 @@ public abstract class VaadinLoginViewBase<U extends User,
 
 		_presenter = presenter;
 		_securityLoginConfig = securityLoginConfig;
-		
+
 		////////// UI
 		// title
 		_lblTitle = new Label();
 		_lblTitle.addStyleNames(ValoTheme.LABEL_H2,
-							 	ValoTheme.LABEL_BOLD);
+								 ValoTheme.LABEL_BOLD);
 		// Login methods
 		// A) Corporate login means
 		_lblCorporateLoginsTip = new Label();
@@ -167,23 +174,23 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnElkarlan = _buildElkarlanButton();
 		_btnShowOtherLoginMethods = new Button();
 		_btnShowOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
-		
+
 		_btnElkarlan.setVisible(false);
-		
+
 		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.addComponent(_btnElkarlan);
-		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE) 
+		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE)
 									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.addComponent(_btnShowOtherLoginMethods);
-		
+
 		_lyMainLoginMethods.setComponentAlignment(_lblCorporateLoginsTip,Alignment.MIDDLE_CENTER);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.setComponentAlignment(_btnXLNets,Alignment.MIDDLE_CENTER);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.setComponentAlignment(_btnElkarlan,Alignment.MIDDLE_CENTER);
-		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE) 
+		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE)
 									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.setComponentAlignment(_btnShowOtherLoginMethods,Alignment.MIDDLE_CENTER);
 		_lyMainLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyMainLoginMethods.setSpacing(true);
-		
+
 		// B) Other login methods
 		_lblOtherLoginsTip = new Label();
 		_lblOtherLoginsTip.setContentMode(ContentMode.HTML);
@@ -193,32 +200,32 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnGoogle = _buildGoogleButton();
 		_btnShowUsrPasswdForm = new Button();
 		_btnHideOtherLoginMethods = new Button(VaadinIcons.ARROW_BACKWARD);
-		
+
 		_btnShowUsrPasswdForm.addStyleName(ValoTheme.BUTTON_LINK);
 		_btnHideOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
-		
+
 		_lyOtherLoginMethods = new VerticalLayout(_lblOtherLoginsTip);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.addComponent(_btnGoogle);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.addComponent(_btnShowUsrPasswdForm);
 		_lyOtherLoginMethods.addComponent(_btnHideOtherLoginMethods);
-		
+
 		_lyOtherLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyOtherLoginMethods.setSpacing(true);
 		_lyOtherLoginMethods.setComponentAlignment(_lblOtherLoginsTip,Alignment.TOP_CENTER);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER); 
+		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.setComponentAlignment(_btnShowUsrPasswdForm,Alignment.TOP_CENTER);
 		_lyOtherLoginMethods.setComponentAlignment(_btnHideOtherLoginMethods,Alignment.TOP_CENTER);
-		
+
 		// C) user / password login
 		_frmUsrPasswd = new VaadinUserPasswordLoginForm(i18n);
-		
+
 		////////// Layout
 		// a layout that contains the layers that are being shown / hidden
 		VerticalLayout ly = new VerticalLayout(_lblTitle,
-						 					   // login method layers
-						 					   _lyMainLoginMethods,
-						 					   _lyOtherLoginMethods,
-						 					   _frmUsrPasswd);
+												// login method layers
+												_lyMainLoginMethods,
+												_lyOtherLoginMethods,
+												_frmUsrPasswd);
 		ly.setMargin(false);
 		ly.setSpacing(true);
 		Responsive.makeResponsive(ly);
@@ -228,7 +235,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		ly.setComponentAlignment(_lyOtherLoginMethods,Alignment.TOP_CENTER);
 		ly.setComponentAlignment(_frmUsrPasswd,Alignment.TOP_CENTER);
 
-		
+
 		Panel panel = new Panel();
 		panel.addStyleName(VaadinSecurityTheme.LOGIN_PANEL);
 		panel.setContent(ly);
@@ -293,7 +300,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 													_lyMainLoginMethods.setVisible(false);
 													_lyOtherLoginMethods.setVisible(true);
 													_frmUsrPasswd.setVisible(false);
-											     });
+												 });
 		// user password login
 		_frmUsrPasswd.setSignInButtonListener(loginAndPassword -> {
 													_userPasswordLogin(loginAndPassword.getLoginId(),
@@ -321,9 +328,38 @@ public abstract class VaadinLoginViewBase<U extends User,
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
-	@Override @SuppressWarnings("unchecked")
+	@Override
 	public void enter(final ViewChangeEvent viewChangeEvent) {
-		System.out.println("..............");
+		// does NOT get called since usually vaadin ui does NOT use a navigator
+		_doEnter(viewChangeEvent.getParameterMap());
+	}
+	public void enter(final VaadinRequest request) {
+		// vaadin's navigator params:
+		//		http://site/{webApp}/#!{view}/param1=param1Val&param2=param2Val...
+		Map<String,String> vaadinParamMap = VaadinNavigator.getVaadinViewParamsFrom(request);
+		// query string receiveed params:
+		//		http://site/{webApp}/#!{view}?param1=param1Val&param2=param2Val...		
+		Map<String,String> queryStringParamMap = request.getParameterMap()
+													 .entrySet()
+													 .stream()
+													 .collect(Collectors.toMap(me -> me.getKey(),
+															 				   me -> me.getValue() != null ? me.getValue()[0] : null));	// if multi-val param, get just the first param
+		// merge both maps
+		Map<String,String> paramMap = null;
+		if (CollectionUtils.hasData(vaadinParamMap) && CollectionUtils.hasData(queryStringParamMap)) {
+			paramMap = Stream.concat(vaadinParamMap.entrySet().stream(),
+									 queryStringParamMap.entrySet().stream())
+							 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else if (CollectionUtils.hasData(vaadinParamMap)) {
+			paramMap = vaadinParamMap;
+		} else if (CollectionUtils.hasData(queryStringParamMap)) {
+			paramMap = queryStringParamMap;
+		}
+		// do enter
+		_doEnter(paramMap);
+	}
+	@SuppressWarnings("unchecked")
+	protected void _doEnter(final Map<String,String> parameterMap) {
 		S securityContext = SecurityContextStoreAtThreadLocalStorage.get();
 
 		if (securityContext == null) {
@@ -331,24 +367,32 @@ public abstract class VaadinLoginViewBase<U extends User,
 	  				 							 	 .getWrappedSession();
 			securityContext = (S)webSession.getAttribute(LoginSessionStore.LOGIN_CTX_SESSIONATTR);
 		}
-		if (securityContext != null)  {
+		if (securityContext != null && securityContext.isValid())  {
 			log.warn("[login] > there already exist an user session (loginId = {})",securityContext.getLoginId());
-			UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());
+			
+			if (UI.getCurrent().getNavigator() != null) {
+				// ... not the usal case
+				UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());				
+			} else {
+				// usually NO navigator is used at login ui
+				UrlPath mainViewUrl = _getWebAppUrlPath().joinedWith("#!").joinedWith(_getMainViewId());
+				UI.getCurrent().getPage().setLocation(mainViewUrl.asAbsoluteString());
+			}
 		}
 		
-//		// ---- test adfs login button
-//		Map<String,String> parameterMap = viewChangeEvent.getParameterMap();
-//		if (parameterMap.containsKey("testADFS")) {
-//			String testADFS = parameterMap.get("testADFS");
-//			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";
-//			_btnElkarlan.setLoginUrl(_securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
-//										   				 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",testADFS))));	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
-//			_btnElkarlan.setVisible(true);
-//		} else {
-//			_btnElkarlan.setVisible(false);
-//		}
-//		// ---- end test
-    }
+		// TODO remove
+		// ---- test adfs login button
+		if (parameterMap.containsKey("testADFS")) {
+			String testADFS = parameterMap.get("testADFS");
+			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";
+			_btnElkarlan.setLoginUrl(_securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
+										   				 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",testADFS))));	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
+			_btnElkarlan.setVisible(true);
+		} else {
+			_btnElkarlan.setVisible(false);
+		}
+		// ---- end test
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LANG SELECTOR
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -409,7 +453,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 	protected abstract UrlPath _getWebAppUrlPath();
 	
 /////////////////////////////////////////////////////////////////////////////////////////
-//	I18N                                                                          
+//	I18N																		  
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
@@ -418,15 +462,15 @@ public abstract class VaadinLoginViewBase<U extends User,
 		
 		// corporate
 		_lblCorporateLoginsTip.setValue(Strings.customized("{} {}", 
-						      				  	  	   	   VaadinIcons.KEY_O.getHtml(),
-						      				  	  	   	   i18n.getMessage("security.login.corporate.tip")));
+							  				  	  	   	   VaadinIcons.KEY_O.getHtml(),
+							  				  	  	   	   i18n.getMessage("security.login.corporate.tip")));
 		_btnXLNets.setCaption(i18n.getMessage("security.login.method.xlnets"));
 		_btnShowOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.show"));
 		
 		// other
 		_lblOtherLoginsTip.setValue(Strings.customized("{} {}", 
-						      				  	  		  VaadinIcons.WARNING.getHtml(),
-						      				  	  		  i18n.getMessage("security.login.other.tip")));
+							  				  	  		  VaadinIcons.WARNING.getHtml(),
+							  				  	  		  i18n.getMessage("security.login.other.tip")));
 		_btnGoogle.setCaption(i18n.getMessage("security.login.method.google"));
 		_btnHideOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.hide"));
 		

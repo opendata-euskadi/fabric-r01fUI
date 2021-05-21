@@ -132,11 +132,6 @@ public class VaadinUserMenu
 		_btnSignOut.addStyleNames(ValoTheme.BUTTON_LINK,
 								  ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
 		_btnSignOut.addClickListener(event -> {
-										// the redir to the login page MUST done BEFORE closing the session, 
-										// as the UI or page are not available after that
-										// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
-										if (securityContext.getLoginUrl() != null) Page.getCurrent()
-																	  				   .setLocation(securityContext.getLoginUrl().asString());
 										// close the session & remove the security data
 										// BEWARE!! close & invalidate the session
 										UI.getCurrent()
@@ -146,6 +141,15 @@ public class VaadinUserMenu
 													 .invalidate();		
 										// remove the user context from the thread-local
 										SecurityContextStoreAtThreadLocalStorage.remove();
+										
+										// set the security context as not valid
+										securityContext.invalidate();
+										
+										// the redir to the login page MUST done BEFORE closing the session, 
+										// as the UI or page are not available after that
+										// see https://vaadin.com/docs/v8/framework/application/application-lifecycle.html#application.lifecycle.session-closing
+										if (securityContext.getLoginUrl() != null) Page.getCurrent()
+																	  				   .setLocation(securityContext.getLoginUrl().asString());
 									});
 		ly.addComponent(_btnSignOut);
 		

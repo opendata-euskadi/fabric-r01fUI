@@ -31,6 +31,8 @@ public class VaadinLoginMethodButton
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Image _icon;
 	private final Button _btn;
+	
+	private final Url _toUrl;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -40,13 +42,11 @@ public class VaadinLoginMethodButton
 		// UI
 		_icon = new Image();
 		_icon.setIcon(new ThemeResource(imgPath.asRelativeString()));
+		_toUrl = frontEndUrlBase.joinWith(appUrlPath);
 		
-		Url toUrl = frontEndUrlBase.joinWith(appUrlPath);
-		Url theLoginUrl = loginUrl.joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("to",toUrl)));	// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
 		_btn = new Button();
-		_btn.addListener(clickEvent ->  Page.getCurrent()
-											.open(theLoginUrl.asString(),
-												  null));	// window name (null = same win)
+		this.setLoginUrl(loginUrl);
+		
 		// Layout
 		HorizontalLayout ly = new HorizontalLayout(_icon,_btn);
 		this.setCompositionRoot(ly);
@@ -64,5 +64,13 @@ public class VaadinLoginMethodButton
 	@Override
 	public void setCaption(final String caption) {
 		_btn.setCaption(caption);
+	}
+	public void setLoginUrl(final Url loginUrl) {
+		if (loginUrl == null) return;
+		
+		Url theLoginUrl = loginUrl.joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("to",_toUrl)));	// http://site/app/google/users/login?to=http://localhost:8080/r01PLATEAWebServiceCatalogUIWar/
+		_btn.addListener(clickEvent ->  Page.getCurrent()
+											.open(theLoginUrl.asString(),
+												  null));	// window name (null = same win)
 	}
 }

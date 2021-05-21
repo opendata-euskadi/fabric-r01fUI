@@ -1,6 +1,7 @@
 package r01f.ui.vaadin.security.login;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Provider;
 
@@ -316,10 +317,11 @@ public abstract class VaadinLoginViewBase<U extends User,
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-// ENTRY POINT
+// 	ENTRY POINT
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override @SuppressWarnings("unchecked")
 	public void enter(final ViewChangeEvent viewChangeEvent) {
+		System.out.println("..............");
 		S securityContext = SecurityContextStoreAtThreadLocalStorage.get();
 
 		if (securityContext == null) {
@@ -331,6 +333,19 @@ public abstract class VaadinLoginViewBase<U extends User,
 			log.warn("[login] > there already exist an user session (loginId = {})",securityContext.getLoginId());
 			UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());
 		}
+		
+//		// ---- test adfs login button
+//		Map<String,String> parameterMap = viewChangeEvent.getParameterMap();
+//		if (parameterMap.containsKey("testADFS")) {
+//			String testADFS = parameterMap.get("testADFS");
+//			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";
+//			_btnElkarlan.setLoginUrl(_securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
+//										   				 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",testADFS))));	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
+//			_btnElkarlan.setVisible(true);
+//		} else {
+//			_btnElkarlan.setVisible(false);
+//		}
+//		// ---- end test
     }
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LANG SELECTOR
@@ -367,8 +382,10 @@ public abstract class VaadinLoginViewBase<U extends User,
 	}
 	private VaadinLoginMethodButton _buildElkarlanButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/logo_justizia.png"),
+																	 // login url (adfs idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
-										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl","http://www.okta.com/exko3dmn57vmo67or5d6"))),	// the SAML issuerId for the SAML IdP
+										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl","http://www.okta.com/exko3dmn57vmo67or5d6"))),	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
+										   							 // to url 
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"elkarlan-button");

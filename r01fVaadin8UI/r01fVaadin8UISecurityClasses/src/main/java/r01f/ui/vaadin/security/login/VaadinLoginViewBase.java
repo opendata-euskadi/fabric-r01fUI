@@ -168,6 +168,8 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnShowOtherLoginMethods = new Button();
 		_btnShowOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
 		
+		_btnElkarlan.setVisible(false);
+		
 		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
 		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.addComponent(_btnElkarlan);

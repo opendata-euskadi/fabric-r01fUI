@@ -2,7 +2,6 @@ package r01f.ui.vaadin.security.login;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,7 +56,6 @@ import r01f.ui.vaadin.styles.VaadinValoTheme;
 import r01f.ui.vaadin.view.VaadinNavigator;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViewID;
-import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
@@ -384,7 +382,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		// ---- test adfs login button
 		if (parameterMap.containsKey("testADFS")) {
 			String testADFS = parameterMap.get("testADFS");
-			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";
+			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";		// OKTA IssuerID
 			_btnElkarlan.setLoginUrl(_securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
 										   				 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",testADFS))));	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
 			_btnElkarlan.setVisible(true);

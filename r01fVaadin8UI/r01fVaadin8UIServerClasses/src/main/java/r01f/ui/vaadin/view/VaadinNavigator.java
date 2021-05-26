@@ -4,10 +4,16 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Maps;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.VaadinRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import r01f.types.url.UrlPath;
+import r01f.util.types.StringSplitter;
+import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
@@ -31,12 +37,50 @@ public abstract class VaadinNavigator {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Creates a Vaadin {@link Navigator} url params from the view id and params
-	 *
 	 * Starting from Vaadin 8.1 multiple [parameters] can be used separated by & after the [view name]
-	 * 		navigateTo(DashBoard.NAME + "/mail=" + email.getValue()+ "&param2=xyz")
-	 * [parameters] can be get through ParametersViewChangeEvent.getParameterMap.
- 	 * A different separator than & can be used and then call ViewChangeEvent.getParameterMap(separator)
+	 * 		navigateTo(viewName + "/param1=param1Val&param2=param2Val")
+	 * This creates an url like:
+	 * 		http://site/{war}/param1=param1Val&param2=param2Val#!{viewName}
+	 * 
+	 * This method gets the params from the url
+	 * @param viewId
+	 * @param navParams
+	 * @return
+	 */
+	public static Map<String,String> getVaadinViewParamsFrom(final VaadinRequest request) {
+		String pathInfo = request.getPathInfo();
+		UrlPath urlPath = UrlPath.from(pathInfo);
+		// params are the LAST element of the path
+		String paramsStr = urlPath.getLastPathElement();
+		String[] params = Strings.isNOTNullOrEmpty(paramsStr)
+									? StringSplitter.using(Splitter.on('&'))
+													.at(paramsStr)
+													.toArray()
+									: null;
+		Map<String,String> outParams = null;
+		if (CollectionUtils.hasData(params)) {
+			outParams = Maps.newHashMapWithExpectedSize(params.length);
+			for (String paramAndVal : params) {
+				if (!paramAndVal.contains("=")) continue;
+				String[] paramAndValSplit = StringSplitter.using(Splitter.on('='))
+													.at(paramAndVal)
+													.toArray();
+				outParams.put(paramAndValSplit[0],paramAndValSplit[1]);
+			}
+		}
+		return outParams;
+	}
+	/**
+	 * Starting from Vaadin 8.1 multiple [parameters] can be used separated by & after the [view name]
+	 * 		navigateTo(viewName + "/param1=param1Val&param2=param2Val")
+	 * This creates an url like:
+	 * 		http://site/{war}/param1=param1Val&param2=param2Val#!{viewName}
+	 * 
+	 * This method creates a Vaadin {@link Navigator} url params from the view id and params
+	 * 
+	 * Note that 
+	 * 		- [parameters] can be get through ParametersViewChangeEvent.getParameterMap.
+ 	 * 		- A different separator than & can be used and then call ViewChangeEvent.getParameterMap(separator)
 	 * @param viewId
 	 * @param navParams
 	 * @return

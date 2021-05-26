@@ -80,6 +80,7 @@ public class VaadinHistoryPopUp<V extends VaadinViewHistoryEntry<?,?,?>>
 		this.setContent(vly);
 		this.setWidth(80,Unit.PERCENTAGE);
 		this.setHeight(60,Unit.PERCENTAGE);
+		this.setResizable(false);
 		
 		////////// I18n
 		this.updateI18NMessages(i18n);

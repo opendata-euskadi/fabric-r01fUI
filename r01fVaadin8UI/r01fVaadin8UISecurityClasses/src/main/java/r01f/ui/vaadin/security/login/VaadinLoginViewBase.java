@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import javax.inject.Provider;
 
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -143,19 +144,24 @@ public abstract class VaadinLoginViewBase<U extends User,
 			 i18n,
 			 presenter,
 			 securityLoginConfig,
-			 null);		// all security providers
+			 securityLoginConfig.getEnabledProvidersIds());		// all enabled security providers
 	}
 	public VaadinLoginViewBase(final Provider<SecurityContext> securityContextProvider,
 							   final UII18NService i18n,
 							   final P presenter,
 							   final SecurityLoginFilterConfig securityLoginConfig,
-							   final Collection<SecurityProvider> securityProviders) {
+							   final Collection<SecurityProvider> enabledSecurityProviders) {
 		////////// services
 		_i18n = i18n;
 
 		_presenter = presenter;
 		_securityLoginConfig = securityLoginConfig;
-
+		
+		////////// Enabled security providers
+		Collection<SecurityProvider> securityProviders = CollectionUtils.hasData(enabledSecurityProviders) ? enabledSecurityProviders
+																										   : securityLoginConfig.getEnabledProvidersIds();
+		if (securityProviders == null) securityProviders = Lists.newArrayList();
+		
 		////////// UI
 		// title
 		_lblTitle = new Label();
@@ -169,23 +175,27 @@ public abstract class VaadinLoginViewBase<U extends User,
 											 ValoTheme.LABEL_LIGHT,
 											 VaadinValoTheme.LABEL_WORD_WRAP);
 		_btnXLNets = _buildXLNetsButton();
-		_btnElkarlan = _buildElkarlanButton();
+		
+		String samlIssuerId = securityLoginConfig.getProvider(SecurityProvider.SAML)
+												 .getProperty("issuerId")	
+												 .asString("http://adfs.elkarlan.euskadi.eus/adfs/services/trust");	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
+		_btnElkarlan = _buildElkarlanButton(samlIssuerId);		
+		
 		_btnShowOtherLoginMethods = new Button();
 		_btnShowOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
-
-		_btnElkarlan.setVisible(false);
+		
 
 		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.addComponent(_btnElkarlan);
-		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE)
-									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.addComponent(_btnShowOtherLoginMethods);
+		if (securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
+		if (securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.addComponent(_btnElkarlan);
+		if (securityProviders.contains(SecurityProvider.GOOGLE)
+		 || securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyMainLoginMethods.addComponent(_btnShowOtherLoginMethods);
 
 		_lyMainLoginMethods.setComponentAlignment(_lblCorporateLoginsTip,Alignment.MIDDLE_CENTER);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.setComponentAlignment(_btnXLNets,Alignment.MIDDLE_CENTER);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.setComponentAlignment(_btnElkarlan,Alignment.MIDDLE_CENTER);
-		if (securityProviders != null && (securityProviders.contains(SecurityProvider.GOOGLE)
-									   || securityProviders.contains(SecurityProvider.USER_PASSWORD))) _lyMainLoginMethods.setComponentAlignment(_btnShowOtherLoginMethods,Alignment.MIDDLE_CENTER);
+		if (securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.setComponentAlignment(_btnXLNets,Alignment.MIDDLE_CENTER);
+		if (securityProviders.contains(SecurityProvider.SAML)) _lyMainLoginMethods.setComponentAlignment(_btnElkarlan,Alignment.MIDDLE_CENTER);
+		if (securityProviders.contains(SecurityProvider.GOOGLE)
+		 || securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyMainLoginMethods.setComponentAlignment(_btnShowOtherLoginMethods,Alignment.MIDDLE_CENTER);
 		_lyMainLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyMainLoginMethods.setSpacing(true);
 
@@ -203,15 +213,15 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnHideOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
 
 		_lyOtherLoginMethods = new VerticalLayout(_lblOtherLoginsTip);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.addComponent(_btnGoogle);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.addComponent(_btnShowUsrPasswdForm);
+		if (securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.addComponent(_btnGoogle);
+		if (securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.addComponent(_btnShowUsrPasswdForm);
 		_lyOtherLoginMethods.addComponent(_btnHideOtherLoginMethods);
 
 		_lyOtherLoginMethods.setMargin(new MarginInfo(false,true,false,true)); // right & left margin
 		_lyOtherLoginMethods.setSpacing(true);
 		_lyOtherLoginMethods.setComponentAlignment(_lblOtherLoginsTip,Alignment.TOP_CENTER);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER);
-		if (securityProviders != null && securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.setComponentAlignment(_btnShowUsrPasswdForm,Alignment.TOP_CENTER);
+		if (securityProviders.contains(SecurityProvider.GOOGLE)) _lyOtherLoginMethods.setComponentAlignment(_btnGoogle,Alignment.TOP_CENTER);
+		if (securityProviders.contains(SecurityProvider.USER_PASSWORD)) _lyOtherLoginMethods.setComponentAlignment(_btnShowUsrPasswdForm,Alignment.TOP_CENTER);
 		_lyOtherLoginMethods.setComponentAlignment(_btnHideOtherLoginMethods,Alignment.TOP_CENTER);
 
 		// C) user / password login
@@ -377,19 +387,6 @@ public abstract class VaadinLoginViewBase<U extends User,
 				UI.getCurrent().getPage().setLocation(mainViewUrl.asAbsoluteString());
 			}
 		}
-		
-		// TODO remove
-		// ---- test adfs login button
-		if (parameterMap.containsKey("testADFS")) {
-			String testADFS = parameterMap.get("testADFS");
-			if (Strings.isNullOrEmpty(testADFS)) testADFS = "http://www.okta.com/exko3dmn57vmo67or5d6";		// OKTA IssuerID
-			_btnElkarlan.setLoginUrl(_securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
-										   				 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",testADFS))));	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
-			_btnElkarlan.setVisible(true);
-		} else {
-			_btnElkarlan.setVisible(false);
-		}
-		// ---- end test
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LANG SELECTOR
@@ -424,11 +421,11 @@ public abstract class VaadinLoginViewBase<U extends User,
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"xlnets-button");
 		return outBtn;
 	}
-	private VaadinLoginMethodButton _buildElkarlanButton() {
-		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/logo_justizia.png"),
-																	 // login url (adfs idp login url page)
+	private VaadinLoginMethodButton _buildElkarlanButton(final String samlIssuerId) {
+		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/ejgv-32x32.png"),
+																	 // login url (saml idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
-										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl","http://www.okta.com/exko3dmn57vmo67or5d6"))),	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
+										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",samlIssuerId))),	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
 										   							 // to url 
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());

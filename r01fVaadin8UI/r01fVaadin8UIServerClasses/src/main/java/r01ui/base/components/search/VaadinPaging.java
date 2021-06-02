@@ -157,6 +157,9 @@ public class VaadinPaging
 							 1); 		// start with the first page
 		_paging.goToPageWitItem(startPosition + 1); // ... but go to the page with the given number
 		
+		// Set page size to combo
+		_cmbShowItemNum.setValue(pageSize);
+		
 		// Set the number of items / page
 		_lblFrom.setValue(Integer.toString(_paging.getCurrentPage()));
 		_lblTo.setValue(Integer.toString(_paging.getPageCount()));		

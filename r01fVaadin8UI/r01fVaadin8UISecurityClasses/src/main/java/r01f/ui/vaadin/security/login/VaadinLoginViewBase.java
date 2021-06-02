@@ -424,8 +424,6 @@ public abstract class VaadinLoginViewBase<U extends User,
 		return outBtn;
 	}
 	private VaadinLoginMethodButton _buildElkarlanButton(final String samlIssuerId) {
-		System.out.println("=========>" + _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
-										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",samlIssuerId))));
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/ejgv-32x32.png"),
 																	 // login url (saml idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()

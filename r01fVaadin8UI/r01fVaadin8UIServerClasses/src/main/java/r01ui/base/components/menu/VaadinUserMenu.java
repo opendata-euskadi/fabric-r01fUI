@@ -30,7 +30,6 @@ import r01f.securitycontext.SecurityContextStoreAtThreadLocalStorage;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.Dates;
-import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.util.types.locale.Languages;
 
@@ -96,10 +95,10 @@ public class VaadinUserMenu
 		// last connection
 		_lblLastConnection = new Label();
 		_lblLastConnection.addStyleName(ValoTheme.LABEL_SMALL);			
-		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
-								  					   securityContext != null ? Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+		_lblLastConnection.setValue(i18n.getMessage("security.user.connexion.last",
+								  					 securityContext != null ? Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
 								  							  					      .formatDateWithTimeToSeconds(securityContext.getCreateDate())  
-										  						   	    	   : "not known"));
+										  						   	    	 : "not known"));
 		ly.addComponent(_lblLastConnection);
 		
 		// user details
@@ -107,6 +106,7 @@ public class VaadinUserMenu
 								  VaadinIcons.EDIT);
 		_btnUserEdit.addStyleNames(ValoTheme.BUTTON_LINK,
 								   ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
+		_btnUserEdit.setVisible(false); // TODO NOT visible because is NOT implemented
 		ly.addComponent(_btnUserEdit);
 		
 		// language change
@@ -315,8 +315,8 @@ public class VaadinUserMenu
 		}
 		_btnUserEdit.setCaption(i18n.getMessage("security.user.edit"));
 		_lblLanguageChange.setValue(i18n.getMessage("language.change"));
-		_lblLastConnection.setValue(Strings.customized(i18n.getMessage("security.user.connexion.last"),
-								  					  SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
+		_lblLastConnection.setValue(i18n.getMessage("security.user.connexion.last",
+								  					 SecurityContextStoreAtThreadLocalStorage.get() != null ?	Dates.formatterFor(Languages.of(i18n.getCurrentLocale()))
 								  							  					     								 .formatDate(SecurityContextStoreAtThreadLocalStorage.get()
 								  							  					     										 											 .getCreateDate()
 								  							  					     										 	)  

@@ -97,7 +97,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 										  S extends SecurityContext,
 										  P extends VaadinLoginPresenterBase<U,L,
 																			   ? extends VaadinLoginCOREMediatorBase<U,L,
-																													  ? extends SecurityAPIBase<U,?,?,?,?>>>>
+																													 ? extends SecurityAPIBase<U,?,?,?,?>>>>
 			   extends Composite
 			implements View,
 						  VaadinViewI18NMessagesCanBeUpdated {
@@ -415,13 +415,17 @@ public abstract class VaadinLoginViewBase<U extends User,
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private VaadinLoginMethodButton _buildXLNetsButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/xlnets-32x32.png"),
+																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.XLNETS).getLoginUrl(),
+										   							 // to url
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"xlnets-button");
 		return outBtn;
 	}
 	private VaadinLoginMethodButton _buildElkarlanButton(final String samlIssuerId) {
+		System.out.println("=========>" + _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
+										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",samlIssuerId))));
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/ejgv-32x32.png"),
 																	 // login url (saml idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
@@ -434,7 +438,9 @@ public abstract class VaadinLoginViewBase<U extends User,
 	}
 	private VaadinLoginMethodButton _buildGoogleButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/google-32x32.svg"),
+																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.GOOGLE).getLoginUrl(),
+										   							 // to url
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_DANGER,"google-button");

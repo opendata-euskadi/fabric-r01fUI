@@ -1,11 +1,10 @@
 package r01f.ui.vaadin.history;
 
-import java.time.LocalDateTime;
-import java.time.format.FormatStyle;
 import java.util.Collection;
 
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -109,6 +108,7 @@ public class VaadinHistoryGrid<V extends VaadinViewHistoryEntry<?,?,?>>
 		_gridHistoryEntries.setSelectionMode(SelectionMode.SINGLE);
 		_gridHistoryEntries.setSizeFull();
 		_gridHistoryEntries.setHeightByRows(9);
+		_gridHistoryEntries.sort(colWhen, SortDirection.DESCENDING);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SET ITEMS

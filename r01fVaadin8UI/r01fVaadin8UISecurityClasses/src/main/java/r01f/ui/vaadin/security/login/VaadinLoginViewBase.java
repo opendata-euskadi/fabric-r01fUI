@@ -466,6 +466,8 @@ public abstract class VaadinLoginViewBase<U extends User,
 		_btnXLNets.setCaption(i18n.getMessage("security.login.method.xlnets"));
 		_btnShowOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.show"));
 		
+		_btnElkarlan.setCaption(i18n.getMessage("security.login.method.windows"));
+		
 		// other
 		_lblOtherLoginsTip.setValue(Strings.customized("{} {}", 
 							  				  	  		  VaadinIcons.WARNING.getHtml(),

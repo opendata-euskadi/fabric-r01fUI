@@ -110,7 +110,7 @@ public class TinyMCETextFieldComponent
 	}
 	@Override
 	public String getValue() {
-		return StringEscapeUtils.unescapeHTML(_hiddenField.getValue()).toString();
+		return _hiddenField.getValue();
 	}
 
 	@Override

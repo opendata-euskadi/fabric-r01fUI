@@ -488,7 +488,7 @@ public class VaadinTagListComponent<T>
 				outItem = item;
 				break;
 			}
-		} while (itemIt.hasNext() 
+		} while (itemIt.hasNext()
 			  && outItem == null);
 		return outItem;
 	}
@@ -515,17 +515,17 @@ public class VaadinTagListComponent<T>
 			   };
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	public boolean removeTagFor(final T item) {
 		VaadinTagListItem tagListItem = _findItemFor(item);
 		if (tagListItem == null) return false;
-		
+
 		_hlyTagsContainer.removeComponent(tagListItem);
 		return true;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * A component like:
@@ -537,18 +537,18 @@ public class VaadinTagListComponent<T>
 		  extends Composite {
 
 		private static final long serialVersionUID = -3528551824350605879L;
-		
+
 		private final Button _btnDispose;
 		private final Button _btnItem;
-		
+
 		private final T _data;
-		
+
 		private ForDisposeObserver<T> _disposeSubscriber;
 		private ForSelectObserver<T> _selectSubscriber;
 		
 		public VaadinTagListItem(final T val) {
 			_data = val;
-			
+
 			////////// UI
 			// dispose button
 			_btnDispose = new Button(VaadinIcons.CLOSE_CIRCLE);
@@ -573,7 +573,7 @@ public class VaadinTagListComponent<T>
 			ly.setExpandRatio(_btnItem, 3);
 			ly.setComponentAlignment(_btnDispose, Alignment.MIDDLE_RIGHT);
 			this.setCompositionRoot(ly);
-			
+
 			////////// Behavior
 			_setBehavior();
 		}

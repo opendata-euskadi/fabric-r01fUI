@@ -101,6 +101,7 @@ public class VaadinTagListComponent<T>
 		
 		////////// create components
 		_hlyTagsContainer = new HorizontalLayout();
+		_hlyTagsContainer.setHeightFull();
 		_hlyTagsContainer.setSpacing(false);
 		_hlyTagsContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 	}

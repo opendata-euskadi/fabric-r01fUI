@@ -413,7 +413,8 @@ public abstract class VaadinLoginViewBase<U extends User,
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BUTTONS
 /////////////////////////////////////////////////////////////////////////////////////////	
-	private VaadinLoginMethodButton _buildXLNetsButton() {
+	protected VaadinLoginMethodButton _buildXLNetsButton() {
+		System.out.println(">>>>>>>>>>>>>>>>>>" + _securityLoginConfig.getUrlVars().get("CMSfrontEndUrlBase"));
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/xlnets-32x32.png"),
 																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.XLNETS).getLoginUrl(),
@@ -423,7 +424,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"xlnets-button");
 		return outBtn;
 	}
-	private VaadinLoginMethodButton _buildElkarlanButton(final String samlIssuerId) {
+	protected VaadinLoginMethodButton _buildElkarlanButton(final String samlIssuerId) {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/ejgv-32x32.png"),
 																	 // login url (saml idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
@@ -434,7 +435,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"elkarlan-button");
 		return outBtn;
 	}
-	private VaadinLoginMethodButton _buildGoogleButton() {
+	protected VaadinLoginMethodButton _buildGoogleButton() {
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/google-32x32.svg"),
 																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.GOOGLE).getLoginUrl(),

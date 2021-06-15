@@ -414,7 +414,6 @@ public abstract class VaadinLoginViewBase<U extends User,
 //	BUTTONS
 /////////////////////////////////////////////////////////////////////////////////////////	
 	protected VaadinLoginMethodButton _buildXLNetsButton() {
-		System.out.println(">>>>>>>>>>>>>>>>>>" + _securityLoginConfig.getUrlVars().get("CMSfrontEndUrlBase"));
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/xlnets-32x32.png"),
 																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.XLNETS).getLoginUrl(),

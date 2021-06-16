@@ -56,7 +56,9 @@ $v-selection-color:#007ca9;
 	.hide {
 		display: none;
 	}
-
+	.combobox-suggestion .v-filterselect-button{
+		display:none
+	}
 	////////// Sizings
 	.v-slot-combo-medium {
 		.v-captiontext {

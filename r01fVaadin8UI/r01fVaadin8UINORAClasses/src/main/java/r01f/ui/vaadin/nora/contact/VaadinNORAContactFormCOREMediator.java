@@ -9,14 +9,21 @@ import r01f.ejie.nora.NORAService;
 import r01f.ejie.nora.NORAServiceConfig;
 import r01f.types.geo.GeoCountry;
 import r01f.types.geo.GeoCounty;
+import r01f.types.geo.GeoLocality;
 import r01f.types.geo.GeoMunicipality;
 import r01f.types.geo.GeoOIDs.GeoCountryID;
 import r01f.types.geo.GeoOIDs.GeoCountyID;
+import r01f.types.geo.GeoOIDs.GeoIDBase;
+import r01f.types.geo.GeoOIDs.GeoLocalityID;
 import r01f.types.geo.GeoOIDs.GeoMunicipalityID;
+import r01f.types.geo.GeoOIDs.GeoPortalID;
 import r01f.types.geo.GeoOIDs.GeoRegionID;
 import r01f.types.geo.GeoOIDs.GeoStateID;
 import r01f.types.geo.GeoOIDs.GeoStreetID;
+import r01f.types.geo.GeoOIDs.GeoZipCode;
 import r01f.types.geo.GeoPortal;
+import r01f.types.geo.GeoPosition;
+import r01f.types.geo.GeoPosition2D;
 import r01f.types.geo.GeoRegion;
 import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
@@ -29,7 +36,7 @@ public class VaadinNORAContactFormCOREMediator
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS"));
+	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejiedes.net/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
 	private final NORAService _nora;
 	
 	@Inject
@@ -66,28 +73,72 @@ public class VaadinNORAContactFormCOREMediator
 		return region;
 	} 
 	
-	public Collection<GeoMunicipality> loadMunicipalities(final GeoStateID stateId, final GeoCountyID countyId, final GeoRegionID regionId) {
+	public Collection<GeoMunicipality> loadMunicipalities(final GeoStateID stateId, final GeoCountyID countyId) {
 		Collection<GeoMunicipality> muns = _nora.getServicesForMunicipalities()
-										  		.getMunicipalitiesOf(stateId, countyId, regionId);
+										  		.getMunicipalitiesOf(stateId, countyId);
 		return muns;
 	}
-	
-	public Collection<GeoStreet> loadStreets(final GeoStateID stateId, final GeoCountyID countyId, final GeoRegionID regionId, final GeoMunicipalityID municipalityId){
+	public Collection<GeoLocality> loadLocalities(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId) {
+		Collection<GeoLocality> loc = _nora.getServicesForLocalities()
+										  		.getLocalitiesOf(stateId, countyId, municipalityId);
+		return loc;
+	}
+	public Collection<GeoStreet> loadStreets(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId, final GeoLocalityID localityId){
 		Collection<GeoStreet> streets = _nora.getServicesForStreets()
-											 .getStreetsOf(stateId, countyId, regionId, municipalityId);
+											 .getStreetsOf(stateId, countyId, municipalityId,localityId);
 		return streets;
 	}
-	public Collection<GeoStreet> loadStreets(final GeoStateID stateId, final GeoCountyID countyId, final GeoRegionID regionId, final GeoMunicipalityID municipalityId, String text){
+	public Collection<GeoStreet> loadStreets(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId, final GeoLocalityID localityId, String text){
 		Collection<GeoStreet> streets = _nora.getServicesForStreets()
-											 .findStreetsWithTextOf(stateId, countyId, regionId, municipalityId, text);
+											 .findStreetsWithTextOf(stateId, countyId, municipalityId, localityId, text);
 		return streets;
 	}
 	
-	public Collection<GeoPortal> loadPortals(final GeoStateID stateId, final GeoCountyID countyId, final GeoRegionID regionId, final GeoMunicipalityID municipalityId, final GeoStreetID streetId){
+	public Collection<GeoPortal> loadPortals(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId, final GeoLocalityID localityId,  
+											 final GeoStreetID streetId){
 		Collection<GeoPortal> portals = _nora.getServicesForPortal()
-											 .getPortalsOf(stateId, countyId, regionId, municipalityId,streetId);
+											 .getPortalsOf(stateId, countyId, municipalityId,localityId,streetId);
 		return portals;
 	}
+	
+	public GeoPosition searchByZipCode(final String zipCode) {
+		GeoPosition geo = new GeoPosition();
+		GeoLocality loc = _nora.getServicesForLocalities().getLocalitybyZipCode(GeoZipCode.forId(zipCode)).iterator().next();
+		geo.setLocality(loc);
+		GeoCountry country = _nora.getServicesForCountries().getCountry(loc.getCountryId());
+		geo.setCountry(country);
+		GeoState state = _nora.getServicesForStates().getState(loc.getStateId());
+		geo.setState(state);
+		GeoCounty county = _nora.getServicesForCounties().getCounty(loc.getStateId(), loc.getCountyId());
+		geo.setCounty(county);
+//		GeoRegion region = _nora.getServicesForRegions().getRegion(loc.getCountyId(), loc.getRegionId());
+//		geo.setRegion(region);
+		GeoMunicipality mun = _nora.getServicesForMunicipalities().getMunicipality(loc.getStateId(), loc.getCountyId(), loc.getMunicipalityId());
+		geo.setMunicipality(mun);
+		return geo;
+	}
+	
+	public <OID extends GeoIDBase>GeoPosition2D searchGeoPosition2D(final OID oid, final GeoCountyID countyId) {
+		GeoPosition2D geoPosition2D = new GeoPosition2D();
+		if(oid instanceof GeoCountryID) {
+			geoPosition2D = _nora.getServicesForCountries().getCountry((GeoCountryID)oid).getPosition2D();
+		} else if(oid instanceof GeoStateID) {
+			geoPosition2D = _nora.getServicesForStates().getState((GeoStateID)oid).getPosition2D();
+		} else if(oid instanceof GeoCountyID) {
+			geoPosition2D =  _nora.getServicesForCounties().getCounty(null, (GeoCountyID)oid).getPosition2D();
+		} else if(oid instanceof GeoMunicipalityID) {
+			geoPosition2D =  _nora.getServicesForMunicipalities().getMunicipality(null, countyId, (GeoMunicipalityID)oid).getPosition2D();
+		} else if(oid instanceof GeoLocalityID) {
+			geoPosition2D =  _nora.getServicesForLocalities().getLocality(null, null, null, (GeoLocalityID)oid).getPosition2D();
+		} else if(oid instanceof GeoStreetID) {
+			geoPosition2D =  _nora.getServicesForStreets().getStreet(null, null, null, (GeoStreetID)oid).getPosition2D();
+		} else if(oid instanceof GeoPortalID) {
+			geoPosition2D =  _nora.getServicesForPortal().getPortal(null, null, null, null, null, (GeoPortalID)oid).getPosition2D();
+		}
+		return geoPosition2D;
+		
+	}
+	
 //	public Collection<GeoDistrict> loadDistricts(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId){
 //		Collection<GeoDistrict> districts = _nora.getServicesForDistricts()
 //											     .getDistrictsOf(stateId, countyId, municipalityId);

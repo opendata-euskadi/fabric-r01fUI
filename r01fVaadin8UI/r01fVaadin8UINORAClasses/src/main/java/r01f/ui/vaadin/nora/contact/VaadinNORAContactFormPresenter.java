@@ -15,12 +15,11 @@ import r01f.types.geo.GeoOIDs.GeoCountyID;
 import r01f.types.geo.GeoOIDs.GeoIDBase;
 import r01f.types.geo.GeoOIDs.GeoLocalityID;
 import r01f.types.geo.GeoOIDs.GeoMunicipalityID;
-import r01f.types.geo.GeoOIDs.GeoRegionID;
 import r01f.types.geo.GeoOIDs.GeoStateID;
 import r01f.types.geo.GeoOIDs.GeoStreetID;
 import r01f.types.geo.GeoPortal;
 import r01f.types.geo.GeoPosition2D;
-import r01f.types.geo.GeoRegion;
+import r01f.types.geo.GeoPosition2DByStandard;
 import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
 import r01f.ui.presenter.UIPresenter;
@@ -96,17 +95,7 @@ public class VaadinNORAContactFormPresenter
 		}
 	}
 	
-//	public void onDistrictsLoadRequested(final GeoStateID stateId,
-//									     final GeoCountyID countyId,
-//									     final GeoMunicipalityID municipalityId,
-//									     final UIPresenterSubscriber<Collection<GeoDistrict>> subscriber) {
-//		try{
-//			Collection<GeoDistrict> districts = _mediator.loadDistricts(stateId, countyId, municipalityId);
-//			subscriber.onSuccess(districts);
-//		}catch (Throwable th) {
-//			subscriber.onError(th);
-//		}
-//	}
+
 	public void onStreetLoadRequested(final GeoStateID stateId,
 									  final GeoCountyID countyId,
 									  final GeoMunicipalityID municipalityId,
@@ -141,11 +130,22 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SEARCH
+/////////////////////////////////////////////////////////////////////////////////////////	
 	public void onSearchByZipRequested(final String zipCode, final Language lang, final UIPresenterSubscriber<VaadinNORAContactViewObject> subscriber) {
 		
 		try{
 			VaadinNORAContactViewObject noraContactViewObject = new VaadinNORAContactViewObject(_mediator.searchByZipCode(zipCode), lang);
+			subscriber.onSuccess(noraContactViewObject);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+	
+	public void onSearchByGeoPosition2D(final GeoPosition2D geoPosition2D, final Language lang, final UIPresenterSubscriber<VaadinNORAContactViewObject> subscriber ) {
+		try{
+			VaadinNORAContactViewObject noraContactViewObject = new VaadinNORAContactViewObject(_mediator.searchByGeoPosition2D(geoPosition2D), lang);
 			subscriber.onSuccess(noraContactViewObject);
 		}catch (Throwable th) {
 			subscriber.onError(th);
@@ -157,6 +157,54 @@ public class VaadinNORAContactFormPresenter
 		try{
 			GeoPosition2D geoPosition2D = _mediator.searchGeoPosition2D(oid, countyId);
 			subscriber.onSuccess(geoPosition2D);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	GeoPosition2D Transform
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public void onTransformGeoPositionFromETRS89toED50(final GeoPosition2D geoPosition2D,
+													   final UIPresenterSubscriber<GeoPosition2D> subscriber) {
+		try{
+			GeoPosition2D outGeoPosition2D = _mediator.getGeoPositionFromETRS89toED50(geoPosition2D);
+			subscriber.onSuccess(outGeoPosition2D);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+	public void onTransformGeoPositionFromED50toETRS89(final GeoPosition2D geoPosition2D,
+													   final UIPresenterSubscriber<GeoPosition2D> subscriber) {
+		try{
+			GeoPosition2D outGeoPosition2D = _mediator.getGeoPositionFromED50toETRS89(geoPosition2D);
+			subscriber.onSuccess(outGeoPosition2D);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+	public void onTransformGeoPositionFromED50toWGS84(final GeoPosition2D geoPosition2D,
+													  final UIPresenterSubscriber<GeoPosition2D> subscriber) {
+		try{
+			GeoPosition2D outGeoPosition2D = _mediator.getGeoPositionFromED50toWGS84(geoPosition2D);
+			subscriber.onSuccess(outGeoPosition2D);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+	public void onTransformGeoPositionFromWGS84toED50(final GeoPosition2D geoPosition2D,
+													  final UIPresenterSubscriber<GeoPosition2D> subscriber) {
+		try{
+			GeoPosition2D outGeoPosition2D = _mediator.getGeoPositionFromWGS84toED50(geoPosition2D);
+			subscriber.onSuccess(outGeoPosition2D);
+		}catch (Throwable th) {
+			subscriber.onError(th);
+		}
+	}
+	public void onTransformGeoPositionByStatandard(final GeoPosition2D geoPosition2D,
+												   final UIPresenterSubscriber<GeoPosition2DByStandard> subscriber) {
+		try{
+			GeoPosition2DByStandard outGeoPosition2DByStandard = _mediator.getGeoPosition2DByStandard(geoPosition2D);
+			subscriber.onSuccess(outGeoPosition2DByStandard);
 		}catch (Throwable th) {
 			subscriber.onError(th);
 		}

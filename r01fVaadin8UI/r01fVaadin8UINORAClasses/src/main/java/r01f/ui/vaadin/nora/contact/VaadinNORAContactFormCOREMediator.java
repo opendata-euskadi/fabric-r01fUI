@@ -24,6 +24,8 @@ import r01f.types.geo.GeoOIDs.GeoZipCode;
 import r01f.types.geo.GeoPortal;
 import r01f.types.geo.GeoPosition;
 import r01f.types.geo.GeoPosition2D;
+import r01f.types.geo.GeoPosition2D.GeoPositionStandard;
+import r01f.types.geo.GeoPosition2DByStandard;
 import r01f.types.geo.GeoRegion;
 import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
@@ -47,6 +49,9 @@ public class VaadinNORAContactFormCOREMediator
 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //	METHODS
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+//	LOAD
 /////////////////////////////////////////////////////////////////////////////////////////
 	public Collection<GeoCountry> loadCountries() {
 		Collection<GeoCountry> countries = _nora.getServicesForCountries()
@@ -100,10 +105,22 @@ public class VaadinNORAContactFormCOREMediator
 											 .getPortalsOf(stateId, countyId, municipalityId,localityId,streetId);
 		return portals;
 	}
-	
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//	SEARCH
+/////////////////////////////////////////////////////////////////////////////////////////
 	public GeoPosition searchByZipCode(final String zipCode) {
-		GeoPosition geo = new GeoPosition();
 		GeoLocality loc = _nora.getServicesForLocalities().getLocalitybyZipCode(GeoZipCode.forId(zipCode)).iterator().next();
+		return _loadFromLocality(loc);
+	}
+	
+	public GeoPosition searchByGeoPosition2D(GeoPosition2D geoPosition2D) {
+		GeoLocality loc = _nora.getServicesForLocalities().getLocalitybyGeoPosition2D(geoPosition2D);
+		return _loadFromLocality(loc);
+	}
+	
+	private GeoPosition _loadFromLocality(final GeoLocality loc) {
+		GeoPosition geo = new GeoPosition();
 		geo.setLocality(loc);
 		GeoCountry country = _nora.getServicesForCountries().getCountry(loc.getCountryId());
 		geo.setCountry(country);
@@ -111,8 +128,6 @@ public class VaadinNORAContactFormCOREMediator
 		geo.setState(state);
 		GeoCounty county = _nora.getServicesForCounties().getCounty(loc.getStateId(), loc.getCountyId());
 		geo.setCounty(county);
-//		GeoRegion region = _nora.getServicesForRegions().getRegion(loc.getCountyId(), loc.getRegionId());
-//		geo.setRegion(region);
 		GeoMunicipality mun = _nora.getServicesForMunicipalities().getMunicipality(loc.getStateId(), loc.getCountyId(), loc.getMunicipalityId());
 		geo.setMunicipality(mun);
 		return geo;
@@ -138,12 +153,44 @@ public class VaadinNORAContactFormCOREMediator
 		return geoPosition2D;
 		
 	}
-	
-//	public Collection<GeoDistrict> loadDistricts(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId){
-//		Collection<GeoDistrict> districts = _nora.getServicesForDistricts()
-//											     .getDistrictsOf(stateId, countyId, municipalityId);
-//		return districts;
-//	}
-	
-
+/////////////////////////////////////////////////////////////////////////////////////////
+//	GeoPosition2D Transform
+/////////////////////////////////////////////////////////////////////////////////////////	
+	public GeoPosition2D getGeoPositionFromETRS89toED50(final GeoPosition2D geoPosition2D) {
+		GeoPosition2D outGeoPosition2D = _nora.getServicesForGeoPosition2D().getGeoPositionFromETRS89toED50(geoPosition2D);
+		return outGeoPosition2D;
+	}
+	public GeoPosition2D getGeoPositionFromED50toETRS89(final GeoPosition2D geoPosition2D) {
+		GeoPosition2D outGeoPosition2D = _nora.getServicesForGeoPosition2D().getGeoPositionFromED50toETRS89(geoPosition2D);
+		return outGeoPosition2D;
+	}
+	public GeoPosition2D getGeoPositionFromED50toWGS84(final GeoPosition2D geoPosition2D) {
+		GeoPosition2D outGeoPosition2D = _nora.getServicesForGeoPosition2D().getGeoPositionFromED50toWGS84(geoPosition2D);
+		return outGeoPosition2D;
+	}
+	public GeoPosition2D getGeoPositionFromWGS84toED50(final GeoPosition2D geoPosition2D) {
+		GeoPosition2D outGeoPosition2D = _nora.getServicesForGeoPosition2D().getGeoPositionFromWGS84toED50(geoPosition2D);
+		return outGeoPosition2D;
+	}
+	public GeoPosition2DByStandard getGeoPosition2DByStandard(final GeoPosition2D geoPosition2D) {
+		GeoPosition2DByStandard geoPosition2DByStandard = new GeoPosition2DByStandard();
+		geoPosition2DByStandard.add(geoPosition2D);
+		if(geoPosition2D.getStandard().equals(GeoPositionStandard.ETRS89)) {
+			GeoPosition2D geoPosition2DED50 = getGeoPositionFromETRS89toED50(geoPosition2D);
+			geoPosition2DByStandard.add(geoPosition2DED50);
+			GeoPosition2D geoPosition2DWGS84 = getGeoPositionFromED50toWGS84(geoPosition2DED50);
+			geoPosition2DByStandard.add(geoPosition2DWGS84);
+		} else if(geoPosition2D.getStandard().equals(GeoPositionStandard.ED50)) {
+			GeoPosition2D geoPosition2DWGS84 = getGeoPositionFromED50toWGS84(geoPosition2D);
+			geoPosition2DByStandard.add(geoPosition2DWGS84);
+			GeoPosition2D geoPosition2DETRS89 = getGeoPositionFromED50toETRS89(geoPosition2D);
+			geoPosition2DByStandard.add(geoPosition2DETRS89);
+		} else if(geoPosition2D.getStandard().equals(GeoPositionStandard.GOOGLE)) {
+			GeoPosition2D geoPosition2DED50 = getGeoPositionFromWGS84toED50(geoPosition2D);
+			geoPosition2DByStandard.add(geoPosition2DED50);
+			GeoPosition2D geoPosition2DETRS89 = getGeoPositionFromED50toETRS89(geoPosition2DED50);
+			geoPosition2DByStandard.add(geoPosition2DETRS89);
+		}
+		return geoPosition2DByStandard;
+	}
 }

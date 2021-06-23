@@ -1,11 +1,11 @@
 package r01f.ui.vaadin.nora.contact;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.vaadin.data.Binder;
-import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.CallbackDataProvider;
-import com.vaadin.shared.Registration;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -18,22 +18,22 @@ import com.vaadin.ui.TextField;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import r01f.ejie.nora.NORAGeoIDs;
 import r01f.facets.HasLanguage;
 import r01f.locale.Language;
 import r01f.types.geo.GeoCountry;
 import r01f.types.geo.GeoCounty;
 import r01f.types.geo.GeoLocality;
 import r01f.types.geo.GeoMunicipality;
-import r01f.types.geo.GeoPortal;
-import r01f.types.geo.GeoPosition2D;
-import r01f.types.geo.GeoRegion;
-import r01f.types.geo.GeoState;
-import r01f.types.geo.GeoStreet;
 import r01f.types.geo.GeoOIDs.GeoCountyID;
 import r01f.types.geo.GeoOIDs.GeoIDBase;
-import r01f.types.geo.GeoOIDs.GeoLocalityID;
 import r01f.types.geo.GeoOIDs.GeoMunicipalityID;
 import r01f.types.geo.GeoOIDs.GeoRegionID;
+import r01f.types.geo.GeoPortal;
+import r01f.types.geo.GeoPosition2D;
+import r01f.types.geo.GeoPosition2D.GeoPositionStandard;
+import r01f.types.geo.GeoState;
+import r01f.types.geo.GeoStreet;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.presenter.UIPresenterSubscriber;
 import r01f.ui.vaadin.annotations.LangIndependentVaadinViewField;
@@ -77,21 +77,21 @@ public class VaadinNORAContactForm
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.COUNTRY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Pais",
+	@VaadinViewComponentLabels(captionI18NKey="geo.country",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoCountry> _countryCmb = new ComboBox<>();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.STATE_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Comunidad",
+	@VaadinViewComponentLabels(captionI18NKey="geo.state",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoState> _stateCmb = new ComboBox<>();
 		
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.COUNTY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Provincia",
+	@VaadinViewComponentLabels(captionI18NKey="geo.county",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoCounty> _countyCmb = new ComboBox<>();
 
@@ -99,45 +99,49 @@ public class VaadinNORAContactForm
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.MUNICIPALITY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Municipio",
+	@VaadinViewComponentLabels(captionI18NKey="geo.municipality",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoMunicipality> _municipalityCmb = new ComboBox<>();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.LOCALITY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Localidad",
+	@VaadinViewComponentLabels(captionI18NKey="geo.locality",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoLocality> _localityCmb = new ComboBox<>();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.STREET_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Calle",
+	@VaadinViewComponentLabels(captionI18NKey="geo.street",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoStreet> _streetCmb = new ComboBox<>();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.PORTAL_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
-	@VaadinViewComponentLabels(captionI18NKey="Portal",
+	@VaadinViewComponentLabels(captionI18NKey="geo.portal",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoPortal> _portalCmb = new ComboBox<GeoPortal>();
 	
-	@VaadinViewComponentLabels(captionI18NKey="Código Postal",
+	@VaadinViewComponentLabels(captionI18NKey="geo.zip",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private TextField _zipCodeTf = new TextField();
 	
-	@VaadinViewComponentLabels(captionI18NKey="Coordenadas",
+	@VaadinViewComponentLabels(captionI18NKey="geo.coords",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private TextField _coords2D = new TextField();
 	
-	private final Button _searchByZipCodeBtn = new Button("Buscar");
+	private final Button _searchByZipCodeBtn = new Button();
+	private final Button _searchByGeoPosition2DBtn = new Button();
+	
 	
 	private final Button _save = new Button("Guardar");
 	// Binder
 	@Getter private final Binder<VaadinNORAContactViewObject> _vaadinUIBinder = new Binder<>(VaadinNORAContactViewObject.class);
 	private VaadinNORAContactViewObject _viewObject;
+	
+	private int _zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM; 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
@@ -149,10 +153,13 @@ public class VaadinNORAContactForm
 		_i18n = i18n;
 		_language = lang;
 		_presenter = presenter;
+		_searchByZipCodeBtn.setCaption(_i18n.getMessage("geo.search"));
+		_searchByGeoPosition2DBtn.setCaption(_i18n.getMessage("geo.search"));
+		_save.setCaption(_i18n.getMessage("geo.save"));
 		
 		////////// Layout & style
 		this.setColumns(2);
-		this.setRows(6);
+		this.setRows(7);
 		//this.setColumnExpandRatio(1, 1);
 		this.setSizeFull();
 		this.setSpacing(true);
@@ -164,15 +171,14 @@ public class VaadinNORAContactForm
 		_localityCmb.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.addStyleName(VaadinValoTheme.COMBO_SUGGESTION);
-	//	_portalCmb.setWidth(100, Unit.PERCENTAGE);
 		_coords2D.setWidth(100, Unit.PERCENTAGE);
 		_searchByZipCodeBtn.setWidth(90, Unit.PIXELS);
+		_searchByGeoPosition2DBtn.setWidth(90, Unit.PIXELS);
 		
 		HorizontalLayout hl = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
 		hl.setSpacing(false);
 		hl.setWidthFull();
 		hl.setComponentAlignment(_searchByZipCodeBtn, Alignment.BOTTOM_LEFT);
-	//	hl.setExpandRatio(_zipCodeTf, 1);
 		this.addComponent(hl, 0, 0, 1, 0);
 		
 		this.addComponent(_countryCmb, 0, 1);
@@ -182,8 +188,12 @@ public class VaadinNORAContactForm
 		this.addComponent(_localityCmb, 0, 3);
 		this.addComponent(_streetCmb, 1, 3);
 		this.addComponent(_portalCmb, 0, 4);
-		this.addComponent(_coords2D, 1, 4);
-		this.addComponent(_save, 0, 5, 1, 5);
+		HorizontalLayout hlCoords = new HorizontalLayout(_coords2D,_searchByGeoPosition2DBtn);
+		hlCoords.setSpacing(false);
+		hlCoords.setWidthFull();
+		hlCoords.setComponentAlignment(_searchByGeoPosition2DBtn, Alignment.BOTTOM_LEFT);
+		this.addComponent(hlCoords, 0, 5, 1, 5);
+		this.addComponent(_save, 0, 6, 1, 6);
 		this.setComponentAlignment(_save, Alignment.BOTTOM_RIGHT);
 		
 		
@@ -230,7 +240,71 @@ public class VaadinNORAContactForm
 					.toViewObjectOfType(VaadinNORAContactViewObject.class);
 		_setBehavior();
 	}
-
+////////////////////////////////////////////////////////////////////////////////////////////
+//	FORM
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void editViewObject(VaadinNORAContactViewObject viewObj) {
+		_viewObject = viewObj;
+		_vaadinUIBinder.readBean(viewObj);
+		_loadDefaultCountryAndState();
+	}
+	private void _loadDefaultCountryAndState() {
+		if(_countryCmb.getValue() == null) {
+			ListDataProvider<GeoCountry> listDataProvider = (ListDataProvider<GeoCountry>)_countryCmb.getDataProvider();
+			Collection<GeoCountry> countries = listDataProvider.getItems();
+			GeoCountry spain = countries.stream()
+					 				    .filter(country -> country.getId().equals(NORAGeoIDs.SPAIN))
+					 				    .findFirst()
+					 				    .orElse(null);
+			if(spain != null) {
+				_countryCmb.setValue(spain);
+				_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM;
+				_coords2D.setValue(VaadinNORAContactConstants.SPAIN_COORDS.getX() +" , " + VaadinNORAContactConstants.SPAIN_COORDS.getY());
+				
+			}
+		}
+		if(_stateCmb.getValue() == null) {
+			ListDataProvider<GeoState> listDataProvider = (ListDataProvider<GeoState>)_stateCmb.getDataProvider();
+			Collection<GeoState> states = listDataProvider.getItems();
+			GeoState euskadi = states.stream()
+					 		 	     .filter(country -> country.getId().equals(NORAGeoIDs.EUSKADI))
+					 				 .findFirst()
+					 				 .orElse(null);
+			if(euskadi != null ) {
+				_stateCmb.setValue(euskadi);
+				_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
+				_coords2D.setValue(VaadinNORAContactConstants.BASQUE_COUNTRY_COORDS.getX() +" , " + VaadinNORAContactConstants.BASQUE_COUNTRY_COORDS.getY());
+			}
+		}
+	}
+	
+	@Override
+	public void writeAsDraftEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
+		_vaadinUIBinder.writeBeanAsDraft(viewObj);
+		
+	}
+	@Override
+	public boolean writeIfValidEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
+		return false;
+	}
+	
+	public int getZoom_level() {
+		if(_countryCmb.getValue() != null) {
+			_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM;
+		}
+		if(_stateCmb.getValue() != null) {
+			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
+		}
+		if(_municipalityCmb.getValue() != null) {
+			_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
+		}
+		if(_portalCmb.getValue() != null) {
+			_zoom_level = VaadinNORAContactConstants.PORTAL_ZOOM;
+		}
+		
+		return _zoom_level;
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	BEHAVIOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -243,34 +317,79 @@ public class VaadinNORAContactForm
 		_streetCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
 		_portalCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
 		
-		_loadCountryCmb();
 		_countryCmb.addValueChangeListener(event -> _loadStateCmb());
 		_stateCmb.addValueChangeListener(event -> _loadCountyCmb());
 		_countyCmb.addValueChangeListener(event -> _loadMunicipalityCmb());
 		_municipalityCmb.addValueChangeListener(event -> _loadLocalityCmb());
 		_localityCmb.addValueChangeListener(event -> _loadStreetCmb());
 		_streetCmb.addValueChangeListener(event -> _loadPortalCmb());
-		_portalCmb.addValueChangeListener(event -> _loadCoords2D(_portalCmb.getValue() != null ? _portalCmb.getValue().getId() : null));
+		_portalCmb.addValueChangeListener(event -> {
+														_loadCoords2D(_portalCmb.getValue() != null ? _portalCmb.getValue().getId() : null);
+														_zoom_level = VaadinNORAContactConstants.PORTAL_ZOOM;
+													});
 		
 		_searchByZipCodeBtn.addClickListener(event -> {
 														_presenter.onSearchByZipRequested(_zipCodeTf.getValue(), 
 																						  _language, 
 																						  UIPresenterSubscriber.from(
-																								//onsuccess
-																								noraContactViewObject ->  {
-																									_countryCmb.setValue(noraContactViewObject.getCountry());
-																									_stateCmb.setValue(noraContactViewObject.getState());
-																									_countyCmb.setValue(noraContactViewObject.getCounty());
-																									_municipalityCmb.setValue(noraContactViewObject.getMunicipality());
-																									_localityCmb.setValue(noraContactViewObject.getLocality());
-																								},
-																								// on error
-																			  					th -> {
-																			  						Notification.show(th.getMessage(),
-																			  								 		   Type.ERROR_MESSAGE);
-																			  					}));
+																														//onsuccess
+																														noraContactViewObject ->  {
+																																					_countryCmb.setValue(noraContactViewObject.getCountry());
+																																					_stateCmb.setValue(noraContactViewObject.getState());
+																																					_countyCmb.setValue(noraContactViewObject.getCounty());
+																																					_municipalityCmb.setValue(noraContactViewObject.getMunicipality());
+																																					_localityCmb.setValue(noraContactViewObject.getLocality());
+																														},
+																														// on error
+																									  					th -> {
+																									  						Notification.show(th.getMessage(),
+																									  								 		   Type.ERROR_MESSAGE);
+																						}));
 											});
+		_searchByGeoPosition2DBtn.addClickListener(event -> {
+																String valueStr = _coords2D.getValue();
+																if(Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
+																	String[] value = valueStr.split(",");
+																	GeoPosition2D geoPosition2D = new GeoPosition2D(GeoPositionStandard.ETRS89, Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
+																	_presenter.onSearchByGeoPosition2D(geoPosition2D, 
+																									   _language,
+																									   UIPresenterSubscriber.from(
+																																	//onsuccess
+																																	noraContactViewObject ->  {
+																																								_countryCmb.setValue(noraContactViewObject.getCountry());
+																																								_stateCmb.setValue(noraContactViewObject.getState());
+																																								_countyCmb.setValue(noraContactViewObject.getCounty());
+																																								_municipalityCmb.setValue(noraContactViewObject.getMunicipality());
+																																								_localityCmb.setValue(noraContactViewObject.getLocality());
+																																	},
+																																	// on error
+																												  					th -> {
+																												  						Notification.show(th.getMessage(),
+																												  								 		   Type.ERROR_MESSAGE);
+																					  					}));
+																}
+											});
+		_loadCountryCmb();
 		_save.addClickListener(event -> writeAsDraftEditedViewObjectTo(_viewObject));
+		_coords2D.addValueChangeListener(event -> {
+													String valueStr = event.getValue();
+													if(Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
+														String[] value = valueStr.split(",");
+														GeoPosition2D geoPosition2D = new GeoPosition2D(GeoPositionStandard.ETRS89, Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
+														_presenter.onTransformGeoPositionFromETRS89toED50(geoPosition2D,
+																										 UIPresenterSubscriber.from(
+																										 //onsuccess
+																										 outGeoPosition2D ->  {
+																											//TODO
+																											 System.out.println(outGeoPosition2D.getStandard());
+																										 },
+																										 // on error
+																					  					 th -> {
+																					  						 Notification.show(th.getMessage(),
+																					  								 		   Type.ERROR_MESSAGE);
+																					  					 }));
+													}
+										});
 	}
 	
 	private void _loadCountryCmb() {
@@ -294,6 +413,7 @@ public class VaadinNORAContactForm
 	private void _loadStateCmb() {
 		if (_countryCmb.getValue() ==  null) {
 			_clear(_stateCmb);
+			_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM; 
 			return;
 		}
 		_loadCoords2D(_countryCmb.getValue().getId());
@@ -344,6 +464,7 @@ public class VaadinNORAContactForm
 	private void _loadMunicipalityCmb() {
 		if (_countyCmb.getValue() ==  null) {
 			_clear(_municipalityCmb);
+			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
 		_loadCoords2D(_countyCmb.getValue().getId());
@@ -369,8 +490,10 @@ public class VaadinNORAContactForm
 	private void _loadLocalityCmb() {
 		if (_municipalityCmb.getValue() ==  null) {
 			_clear(_localityCmb);
+			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
+		_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 		_loadCoords2D(_municipalityCmb.getValue().getId());
 		_presenter.onLocalitiesLoadRequested(_stateCmb.getValue().getId(),
 									         _countyCmb.getValue().getId(),
@@ -395,16 +518,20 @@ public class VaadinNORAContactForm
 	private void _loadStreetCmb() {
 		if (_localityCmb.getValue() ==  null) {
 			_clear(_streetCmb);
+			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
+		_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 		_loadCoords2D(_localityCmb.getValue().getId());
 		_clear(_portalCmb);
 	}
 	private void _loadPortalCmb() {
 		if (_streetCmb.getValue() ==  null) {
+			_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 			_clear(_portalCmb);
 			return;
 		}
+		_zoom_level = VaadinNORAContactConstants.PORTAL_ZOOM;
 		_loadCoords2D(_streetCmb.getValue().getId());
 		_presenter.onPortalLoadRequested(_stateCmb.getValue().getId(),
 									     _countyCmb.getValue().getId(),
@@ -453,24 +580,5 @@ public class VaadinNORAContactForm
 	private static void _clear(final ComboBox<?> cmb) {
 		cmb.clear();
 		cmb.setEnabled(false);
-	}
-	
-////////////////////////////////////////////////////////////////////////////////////////////
-//	FORM
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public void editViewObject(VaadinNORAContactViewObject viewObj) {
-		_viewObject = viewObj;
-		_vaadinUIBinder.readBean(viewObj);
-		
-	}
-	@Override
-	public void writeAsDraftEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
-		_vaadinUIBinder.writeBeanAsDraft(viewObj);
-		
-	}
-	@Override
-	public boolean writeIfValidEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
-		return false;
 	}
 }

@@ -32,14 +32,14 @@ public class VaadinNORAContactComponent
 		_contactForm = new VaadinNORAContactForm(i18n, 
 												 Language.SPANISH, 
 												 presenter);
-		_map = new BrowserFrame("Mapa", new ThemeResource("components/geocoder/previewMap.html?x=526776.60765916&y=4743864.59894248"));
+		_map = new BrowserFrame("Mapa");
 		_map.setWidth("600px");
 		_map.setHeight("400px");
 		_contactForm.getCoords2D().addValueChangeListener(event -> {
 																		String valueStr = event.getValue();
 																		if(Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
 																			String[] value = valueStr.split(",");
-																			_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+value[0].trim()+"&y="+value[1].trim()));
+																			_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+value[0].trim()+"&y="+value[1].trim()+"&zoom="+_contactForm.getZoom_level()));
 																		}
 																		
 		});

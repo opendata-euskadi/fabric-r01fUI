@@ -156,12 +156,12 @@ public abstract class VaadinLoginViewBase<U extends User,
 
 		_presenter = presenter;
 		_securityLoginConfig = securityLoginConfig;
-		
+
 		////////// Enabled security providers
 		Collection<SecurityProvider> securityProviders = CollectionUtils.hasData(enabledSecurityProviders) ? enabledSecurityProviders
 																										   : securityLoginConfig.getEnabledProvidersIds();
 		if (securityProviders == null) securityProviders = Lists.newArrayList();
-		
+
 		////////// UI
 		// title
 		_lblTitle = new Label();
@@ -175,15 +175,15 @@ public abstract class VaadinLoginViewBase<U extends User,
 											 ValoTheme.LABEL_LIGHT,
 											 VaadinValoTheme.LABEL_WORD_WRAP);
 		_btnXLNets = _buildXLNetsButton();
-		
+
 		String samlIssuerId = securityLoginConfig.getProvider(SecurityProvider.SAML)
-												 .getProperty("issuerId")	
+												 .getProperty("issuerId")
 												 .asString("http://adfs.elkarlan.euskadi.eus/adfs/services/trust");	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
-		_btnElkarlan = _buildElkarlanButton(samlIssuerId);		
-		
+		_btnElkarlan = _buildElkarlanButton(samlIssuerId);
+
 		_btnShowOtherLoginMethods = new Button();
 		_btnShowOtherLoginMethods.addStyleName(ValoTheme.BUTTON_LINK);
-		
+
 
 		_lyMainLoginMethods = new VerticalLayout(_lblCorporateLoginsTip);
 		if (securityProviders.contains(SecurityProvider.XLNETS)) _lyMainLoginMethods.addComponent(_btnXLNets);
@@ -247,7 +247,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		Panel panel = new Panel();
 		panel.addStyleName(VaadinSecurityTheme.LOGIN_PANEL);
 		panel.setContent(ly);
-		
+
 		// a blue background that contains the pannel and the lang selector
 		Component langSel = _buildLangSelector(Language.SPANISH,
 											   Language.BASQUE);
@@ -257,7 +257,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		 					   	  ValoTheme.LABEL_BOLD,
 		 					   	  ValoTheme.LABEL_NO_MARGIN,
 		 					   	  VaadinSecurityTheme.LOGIN_TITLE);
-		VerticalLayout lyRoot = new VerticalLayout(_lblWelcome, 
+		VerticalLayout lyRoot = new VerticalLayout(_lblWelcome,
 						 				 		   panel,
 						 				 		   langSel);
 		lyRoot.addStyleName(VaadinSecurityTheme.LOGIN_ROOT);
@@ -270,15 +270,15 @@ public abstract class VaadinLoginViewBase<U extends User,
 		lyRoot.setExpandRatio(_lblWelcome,1);
 		lyRoot.setExpandRatio(panel,5);
 		lyRoot.setExpandRatio(langSel,1);
-		
+
 		this.setCompositionRoot(lyRoot);
-		
+
 		////////// I18N
 		this.updateI18NMessages(_i18n);
-		
+
 		////////// Behavior
 		_setBehavior();
-		
+
 		////////// Initial disposition
 		_lyMainLoginMethods.setVisible(true);
 		_lyOtherLoginMethods.setVisible(false);
@@ -346,7 +346,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 		//		http://site/{webApp}/#!{view}/param1=param1Val&param2=param2Val...
 		Map<String,String> vaadinParamMap = VaadinNavigator.getVaadinViewParamsFrom(request);
 		// query string receiveed params:
-		//		http://site/{webApp}/#!{view}?param1=param1Val&param2=param2Val...		
+		//		http://site/{webApp}/#!{view}?param1=param1Val&param2=param2Val...
 		Map<String,String> queryStringParamMap = request.getParameterMap()
 													 .entrySet()
 													 .stream()
@@ -377,10 +377,10 @@ public abstract class VaadinLoginViewBase<U extends User,
 		}
 		if (securityContext != null && securityContext.isValid())  {
 			log.warn("[login] > there already exist an user session (loginId = {})",securityContext.getLoginId());
-			
+
 			if (UI.getCurrent().getNavigator() != null) {
 				// ... not the usal case
-				UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());				
+				UI.getCurrent().getNavigator().navigateTo(_getMainViewId().asString());
 			} else {
 				// usually NO navigator is used at login ui
 				UrlPath mainViewUrl = _getWebAppUrlPath().joinedWith("#!").joinedWith(_getMainViewId());
@@ -390,7 +390,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LANG SELECTOR
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	protected Component _buildLangSelector(final Language... lang) {
 		HorizontalLayout langSelector = new HorizontalLayout();
 		langSelector.setMargin(false);
@@ -412,9 +412,8 @@ public abstract class VaadinLoginViewBase<U extends User,
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	BUTTONS
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	protected VaadinLoginMethodButton _buildXLNetsButton() {
-		System.out.println(">>>>>>>>>>>>>>>>>>" + _securityLoginConfig.getUrlVars().get("CMSfrontEndUrlBase"));
 		VaadinLoginMethodButton outBtn = new VaadinLoginMethodButton(Path.from("img/xlnets-32x32.png"),
 																	 // login url
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.XLNETS).getLoginUrl(),
@@ -429,7 +428,7 @@ public abstract class VaadinLoginViewBase<U extends User,
 																	 // login url (saml idp login url page)
 										   							 _securityLoginConfig.getProvider(SecurityProviderID.SAML).getLoginUrl()
 										   							 					 .joinWith(UrlQueryString.fromParams(UrlQueryStringParam.of("impl",samlIssuerId))),	// see SAMLEuskadiConstants > the SAML issuerId for the SAML IdP (see [how to configure saml] at the okta admin page]
-										   							 // to url 
+										   							 // to url
 										   							 Url.from(_securityLoginConfig.getUrlVars().getProperty("frontEndUrlBase")),
 										   							 _getWebAppUrlPath());
 		outBtn.addStyleNames(ValoTheme.BUTTON_PRIMARY,"elkarlan-button");
@@ -451,31 +450,31 @@ public abstract class VaadinLoginViewBase<U extends User,
 	protected abstract I18NKey _getAppTitleI18NKey();
 	protected abstract VaadinViewID _getMainViewId();
 	protected abstract UrlPath _getWebAppUrlPath();
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
-//	I18N																		  
+//	I18N
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
 		_lblWelcome.setValue(i18n.getMessage("security.login.header").toUpperCase());
 		_lblTitle.setValue(i18n.getMessage(_getAppTitleI18NKey()).toUpperCase());
-		
+
 		// corporate
-		_lblCorporateLoginsTip.setValue(Strings.customized("{} {}", 
+		_lblCorporateLoginsTip.setValue(Strings.customized("{} {}",
 							  				  	  	   	   VaadinIcons.KEY_O.getHtml(),
 							  				  	  	   	   i18n.getMessage("security.login.corporate.tip")));
 		_btnXLNets.setCaption(i18n.getMessage("security.login.method.xlnets"));
 		_btnShowOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.show"));
-		
+
 		_btnElkarlan.setCaption(i18n.getMessage("security.login.method.windows"));
-		
+
 		// other
-		_lblOtherLoginsTip.setValue(Strings.customized("{} {}", 
+		_lblOtherLoginsTip.setValue(Strings.customized("{} {}",
 							  				  	  		  VaadinIcons.WARNING.getHtml(),
 							  				  	  		  i18n.getMessage("security.login.other.tip")));
 		_btnGoogle.setCaption(i18n.getMessage("security.login.method.google"));
 		_btnHideOtherLoginMethods.setCaption(i18n.getMessage("security.login.method.other.hide"));
-		
+
 		// user password
 		_btnShowUsrPasswdForm.setCaption(i18n.getMessage("security.login.method.user-password.show"));
 		_frmUsrPasswd.updateI18NMessages(i18n);

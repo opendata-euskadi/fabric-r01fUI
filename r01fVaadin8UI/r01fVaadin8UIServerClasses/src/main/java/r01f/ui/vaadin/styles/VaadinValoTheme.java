@@ -26,6 +26,7 @@ public abstract class VaadinValoTheme
 	public static final String COMBO_SMALL_SIZE = "combo-small";
 	public static final String COMBO_MEDIUM_SIZE = "combo-medium";
 	public static final String COMBO_BIG_SIZE = "combo-big";
+	public static final String COMBO_SUGGESTION = "combobox-suggestion";
 	public static final String INPUT_SMALL_SIZE = "input-small";
 	public static final String INPUT_MEDIUM_SIZE = "input-medium";
 	public static final String INPUT_BIG_SIZE = "input-big";

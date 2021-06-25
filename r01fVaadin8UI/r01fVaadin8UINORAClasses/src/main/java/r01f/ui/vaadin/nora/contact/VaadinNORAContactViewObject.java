@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import r01f.locale.Language;
 import r01f.types.geo.GeoCountry;
 import r01f.types.geo.GeoCounty;
+import r01f.types.geo.GeoLocality;
 import r01f.types.geo.GeoMunicipality;
 import r01f.types.geo.GeoPortal;
 import r01f.types.geo.GeoPosition;
@@ -15,19 +16,19 @@ import r01f.ui.viewobject.UIViewObjectInLanguage;
 import r01f.ui.viewobject.UIViewObjectWrappedBase;
 
 @Accessors(prefix="_")
-public class VaadinNORAContactViewObject 
+public class VaadinNORAContactViewObject
      extends UIViewObjectWrappedBase<GeoPosition>
   implements UIViewObjectInLanguage {
 
 	private static final long serialVersionUID = 3737245877819480835L;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter protected final Language _lang;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTORS
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinNORAContactViewObject(final GeoPosition wrappedModelObject,
 									   final Language lang) {
 		super(wrappedModelObject);
@@ -69,17 +70,7 @@ public class VaadinNORAContactViewObject
 	public void setCounty(final GeoCounty county) {
 		_wrappedModelObject.setCounty(county);
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
-//  REGION
-/////////////////////////////////////////////////////////////////////////////////////////
-	public static final String REGION_FIELD = "region";
 
-	public GeoRegion getRegion() {
-		return _wrappedModelObject.getRegion();
-	}
-	public void setRegion(final GeoRegion region) {
-		_wrappedModelObject.setRegion(region);
-	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  MUNICIPALITY
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +81,17 @@ public class VaadinNORAContactViewObject
 	}
 	public void setMunicipality(final GeoMunicipality municipality) {
 		_wrappedModelObject.setMunicipality(municipality);
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//  LOCALITY
+/////////////////////////////////////////////////////////////////////////////////////////
+	public static final String LOCALITY_FIELD = "locality";
+
+	public GeoLocality getLocality() {
+		return _wrappedModelObject.getLocality();
+	}
+	public void setLocality(final GeoLocality locality) {
+		_wrappedModelObject.setLocality(locality);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  STREET

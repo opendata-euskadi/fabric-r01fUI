@@ -8,8 +8,10 @@ import com.vaadin.ui.UI;
 
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import r01f.locale.Language;
 import r01f.types.JavaPackage;
 import r01f.ui.i18n.UII18NManagerBase;
+import r01f.util.types.locale.Languages;
 
 
 @Slf4j
@@ -41,7 +43,7 @@ public abstract class VaadinUII18NManager
 		Locale outLoc = null;
 		if (UI.getCurrent() != null) 
 			outLoc = UI.getCurrent().getLocale();
-		if (outLoc == null) log.warn("NO current locale!! detault to {}",Locale.getDefault());
-		return outLoc != null ? outLoc : Locale.getDefault();
+		if (outLoc == null) log.warn("NO current locale!! detault to {}", Languages.getLocale(Language.DEFAULT).toString());
+		return outLoc != null ? outLoc : Languages.getLocale(Language.DEFAULT);
 	}
 }

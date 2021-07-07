@@ -15,7 +15,9 @@ $v-selection-color:#007ca9;
 			height: 30px;
 		}
 	}
-
+	.v-filterselect-combobox-suggestion.v-filterselect-inline-icon input.v-filterselect-input {
+		padding-left: 37px;
+	}
 	////////// Paddings
     .v-gridlayout-no-padding .v-gridlayout-slot, .v-gridlayout-no-padding .v-gridlayout-slot .v-caption {
     	padding-left: 0 !important;

@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.nora.contact;
+package r01ui.base.components.contact.nora;
 
 import r01f.types.geo.GeoPosition2D;
 import r01f.types.geo.GeoPosition2D.GeoPositionStandard;
@@ -10,8 +10,8 @@ public class VaadinNORAContactConstants {
 
 	public final static int COUNTRY_ZOOM = -5;
 	public final static int STATE_ZOOM = 0;
-	public final static int MUNICIPALITY_ZOOM = 2;
-	public final static int PORTAL_ZOOM = 10;
+	public final static int MUNICIPALITY_ZOOM = 1;
+	public final static int PORTAL_ZOOM = 7;
 	
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	DEFAULT COORDS

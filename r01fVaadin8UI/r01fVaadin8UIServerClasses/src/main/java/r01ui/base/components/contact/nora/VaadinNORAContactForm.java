@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.nora.contact;
+package r01ui.base.components.contact.nora;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,14 +6,17 @@ import java.util.Collection;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,12 +48,13 @@ import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
 import r01ui.base.components.form.VaadinFormEditsViewObject;
+import r01ui.base.components.geo.VaadinViewGeoPosition;
 
 @Accessors(prefix="_")
 public class VaadinNORAContactForm 
-     extends GridLayout
+     extends VerticalLayout
   implements VaadinView,
-  			 VaadinFormEditsViewObject<VaadinNORAContactViewObject>,
+  			 VaadinFormEditsViewObject<VaadinViewGeoPosition>,
   			 VaadinViewI18NMessagesCanBeUpdated,
   			 HasLanguage {
 
@@ -74,21 +78,21 @@ public class VaadinNORAContactForm
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	UI
 /////////////////////////////////////////////////////////////////////////////////////////
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.COUNTRY_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.COUNTRY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.country",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoCountry> _countryCmb = new ComboBox<>();
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.STATE_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.STATE_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.state",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoState> _stateCmb = new ComboBox<>();
 		
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.COUNTY_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.COUNTY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.county",
@@ -96,50 +100,52 @@ public class VaadinNORAContactForm
 	@Getter @Setter private ComboBox<GeoCounty> _countyCmb = new ComboBox<>();
 
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.MUNICIPALITY_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.MUNICIPALITY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.municipality",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoMunicipality> _municipalityCmb = new ComboBox<>();
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.LOCALITY_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.LOCALITY_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.locality",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoLocality> _localityCmb = new ComboBox<>();
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.STREET_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.STREET_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.street",
-							   useCaptionI18NKeyAsPlaceHolderKey=true)
+							   useCaptionI18NKeyAsPlaceHolderKey=false)
 	@Getter @Setter private ComboBox<GeoStreet> _streetCmb = new ComboBox<>();
 	
-	@VaadinViewField(bindToViewObjectFieldNamed=VaadinNORAContactViewObject.PORTAL_FIELD,
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.PORTAL_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.portal",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoPortal> _portalCmb = new ComboBox<GeoPortal>();
 	
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.ZIP_CODE_FIELD,
+					 bindStringConverter=false,required=false)
+	@LangIndependentVaadinViewField
 	@VaadinViewComponentLabels(captionI18NKey="geo.zip",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private TextField _zipCodeTf = new TextField();
 	
-	@VaadinViewComponentLabels(captionI18NKey="geo.coords",
-							   useCaptionI18NKeyAsPlaceHolderKey=true)
-	@Getter @Setter private TextField _coords2D = new TextField();
+	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.POSITION_FIELD,
+					 bindStringConverter=false,required=false)
+	@LangIndependentVaadinViewField
+	@Getter private VaadinNORAContactGeoPostion2DComponent _coords;
 	
 	private final Button _searchByZipCodeBtn = new Button();
-	private final Button _searchByGeoPosition2DBtn = new Button();
 	
 	
-	private final Button _save = new Button("Guardar");
 	// Binder
-	@Getter private final Binder<VaadinNORAContactViewObject> _vaadinUIBinder = new Binder<>(VaadinNORAContactViewObject.class);
-	private VaadinNORAContactViewObject _viewObject;
+	@Getter private final Binder<VaadinViewGeoPosition> _vaadinUIBinder = new Binder<>(VaadinViewGeoPosition.class);
+	private VaadinViewGeoPosition _viewObject;
 	
 	private int _zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM; 
 
@@ -153,17 +159,16 @@ public class VaadinNORAContactForm
 		_i18n = i18n;
 		_language = lang;
 		_presenter = presenter;
-		_searchByZipCodeBtn.setCaption(_i18n.getMessage("geo.search"));
-		_searchByGeoPosition2DBtn.setCaption(_i18n.getMessage("geo.search"));
-		_save.setCaption(_i18n.getMessage("geo.save"));
+		_searchByZipCodeBtn.setIcon(VaadinIcons.SEARCH);
+		_searchByZipCodeBtn.setWidth(50,Unit.PIXELS);
+		_coords = new VaadinNORAContactGeoPostion2DComponent(_i18n,
+															   presenter);
 		
 		////////// Layout & style
-		this.setColumns(2);
-		this.setRows(7);
-		//this.setColumnExpandRatio(1, 1);
 		this.setSizeFull();
 		this.setSpacing(true);
 		this.setMargin(false);
+		
 		_countryCmb.setWidth(100, Unit.PERCENTAGE);
 		_stateCmb.setWidth(100, Unit.PERCENTAGE);
 		_countyCmb.setWidth(100, Unit.PERCENTAGE);
@@ -171,37 +176,26 @@ public class VaadinNORAContactForm
 		_localityCmb.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.addStyleName(VaadinValoTheme.COMBO_SUGGESTION);
-		_coords2D.setWidth(100, Unit.PERCENTAGE);
-		_searchByZipCodeBtn.setWidth(90, Unit.PIXELS);
-		_searchByGeoPosition2DBtn.setWidth(90, Unit.PIXELS);
+		_streetCmb.setIcon(VaadinIcons.FILTER);
+		_streetCmb.addStyleName("inline-icon");
+		_streetCmb.setPlaceholder("Filtrar por texto");
 		
-		HorizontalLayout hl = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
-		hl.setSpacing(false);
-		hl.setWidthFull();
-		hl.setComponentAlignment(_searchByZipCodeBtn, Alignment.BOTTOM_LEFT);
-		this.addComponent(hl, 0, 0, 1, 0);
-		
-		this.addComponent(_countryCmb, 0, 1);
-		this.addComponent(_stateCmb, 1, 1);
-		this.addComponent(_countyCmb, 0, 2);
-		this.addComponent(_municipalityCmb, 1, 2);
-		this.addComponent(_localityCmb, 0, 3);
-		this.addComponent(_streetCmb, 1, 3);
-		this.addComponent(_portalCmb, 0, 4);
-		HorizontalLayout hlCoords = new HorizontalLayout(_coords2D,_searchByGeoPosition2DBtn);
-		hlCoords.setSpacing(false);
-		hlCoords.setWidthFull();
-		hlCoords.setComponentAlignment(_searchByGeoPosition2DBtn, Alignment.BOTTOM_LEFT);
-		this.addComponent(hlCoords, 0, 5, 1, 5);
-		this.addComponent(_save, 0, 6, 1, 6);
-		this.setComponentAlignment(_save, Alignment.BOTTOM_RIGHT);
+		HorizontalLayout hlZip = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
+		hlZip.setSpacing(false);
+		hlZip.setComponentAlignment(_searchByZipCodeBtn, Alignment.BOTTOM_LEFT);
+		this.addComponent(hlZip);
+		this.addComponent(_getHl(_countryCmb, _stateCmb));
+		this.addComponent(_getHl(_countyCmb, _municipalityCmb));
+		this.addComponent(_getHl(_localityCmb, _streetCmb));
+		this.addComponent(_getHl(_portalCmb, new Label()));
+		this.addComponent(_coords);
 		
 		
 		CallbackDataProvider<GeoStreet,String> dataProvider = null;
 		dataProvider = new CallbackDataProvider<>(// query
 									query -> {
 												String text = query.getFilter().orElse(null);
-												if(_stateCmb.getValue() != null && _countyCmb.getValue() != null &&  _municipalityCmb.getValue() != null && _localityCmb.getValue() != null 
+												if (_stateCmb.getValue() != null && _countyCmb.getValue() != null &&  _municipalityCmb.getValue() != null && _localityCmb.getValue() != null 
 														&& Strings.isNOTNullOrEmpty(text) && text.length()>2) {
 													return _presenter.findStreets(_stateCmb.getValue() != null ? _stateCmb.getValue().getId() : null,
 																				  _countyCmb.getValue() != null ? _countyCmb.getValue().getId() : null,
@@ -216,7 +210,7 @@ public class VaadinNORAContactForm
 									// count
 									query -> {
 												String text = query.getFilter().orElse(null);
-												if(_stateCmb.getValue() != null && _countyCmb.getValue() != null &&  _municipalityCmb.getValue() != null && _localityCmb.getValue() != null 
+												if (_stateCmb.getValue() != null && _countyCmb.getValue() != null &&  _municipalityCmb.getValue() != null && _localityCmb.getValue() != null 
 														&& Strings.isNOTNullOrEmpty(text) && text.length()>2) {
 													int value =  (int)_presenter.findStreets(_stateCmb.getValue() != null ? _stateCmb.getValue().getId() : null,
 																				  _countyCmb.getValue() != null ? _countyCmb.getValue().getId() : null,
@@ -233,73 +227,85 @@ public class VaadinNORAContactForm
 		// set ui labels
 		VaadinViews.using(_i18n)
 				   .setI18NLabelsOf(this);
-		_viewObject = new VaadinNORAContactViewObject(_language);
+		_viewObject = new VaadinViewGeoPosition();
 		////////// Bind: automatic binding using using @VaadinViewField annotation of view fields
 		VaadinViews.using(_vaadinUIBinder,_i18n)
 					.bindComponentsOf(this)
-					.toViewObjectOfType(VaadinNORAContactViewObject.class);
+					.toViewObjectOfType(VaadinViewGeoPosition.class);
 		_setBehavior();
+		_loadDefaultCountryAndState();
 	}
+	
+	private static HorizontalLayout _getHl(Component c1, Component c2) {
+		HorizontalLayout hl = new HorizontalLayout(c1, c2);
+		hl.setWidth(100, Unit.PERCENTAGE);
+		hl.setExpandRatio(c1, 2);
+		hl.setExpandRatio(c2, 3);
+		return hl;
+	} 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	FORM
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public void editViewObject(VaadinNORAContactViewObject viewObj) {
+	public void editViewObject(VaadinViewGeoPosition viewObj) {
 		_viewObject = viewObj;
 		_vaadinUIBinder.readBean(viewObj);
-		_loadDefaultCountryAndState();
+		
 	}
 	private void _loadDefaultCountryAndState() {
-		if(_countryCmb.getValue() == null) {
-			ListDataProvider<GeoCountry> listDataProvider = (ListDataProvider<GeoCountry>)_countryCmb.getDataProvider();
-			Collection<GeoCountry> countries = listDataProvider.getItems();
-			GeoCountry spain = countries.stream()
-					 				    .filter(country -> country.getId().equals(NORAGeoIDs.SPAIN))
-					 				    .findFirst()
-					 				    .orElse(null);
-			if(spain != null) {
+		ListDataProvider<GeoCountry> listDataProviderCountry = (ListDataProvider<GeoCountry>)_countryCmb.getDataProvider();
+		Collection<GeoCountry> countries = listDataProviderCountry.getItems();
+		GeoCountry spain = countries.stream()
+				 				    .filter(country -> country.getId().equals(NORAGeoIDs.SPAIN))
+				 				    .findFirst()
+				 				    .orElse(null);
+		if (spain != null) {
+			if (_countryCmb.getValue() == null) {
 				_countryCmb.setValue(spain);
+			}
+			if (_countryCmb.getValue().getId().equals(spain.getId())) {
 				_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM;
-				_coords2D.setValue(VaadinNORAContactConstants.SPAIN_COORDS.getX() +" , " + VaadinNORAContactConstants.SPAIN_COORDS.getY());
-				
+				_coords.setValue(VaadinNORAContactConstants.SPAIN_COORDS);
 			}
 		}
-		if(_stateCmb.getValue() == null) {
-			ListDataProvider<GeoState> listDataProvider = (ListDataProvider<GeoState>)_stateCmb.getDataProvider();
-			Collection<GeoState> states = listDataProvider.getItems();
-			GeoState euskadi = states.stream()
-					 		 	     .filter(country -> country.getId().equals(NORAGeoIDs.EUSKADI))
-					 				 .findFirst()
-					 				 .orElse(null);
-			if(euskadi != null ) {
+		ListDataProvider<GeoState> listDataProvider = (ListDataProvider<GeoState>)_stateCmb.getDataProvider();
+		Collection<GeoState> states = listDataProvider.getItems();
+		GeoState euskadi = states.stream()
+				 		 	     .filter(state -> state.getId().equals(NORAGeoIDs.EUSKADI))
+				 				 .findFirst()
+				 				 .orElse(null);
+		if (euskadi != null) {
+			if (_stateCmb.getValue() == null) {
 				_stateCmb.setValue(euskadi);
+			}
+			if (_stateCmb.getValue().getId().equals(euskadi.getId())) {
 				_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
-				_coords2D.setValue(VaadinNORAContactConstants.BASQUE_COUNTRY_COORDS.getX() +" , " + VaadinNORAContactConstants.BASQUE_COUNTRY_COORDS.getY());
+				_coords.setValue(VaadinNORAContactConstants.BASQUE_COUNTRY_COORDS);
 			}
 		}
 	}
 	
 	@Override
-	public void writeAsDraftEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
+	public void writeAsDraftEditedViewObjectTo(VaadinViewGeoPosition viewObj) {
 		_vaadinUIBinder.writeBeanAsDraft(viewObj);
 		
 	}
 	@Override
-	public boolean writeIfValidEditedViewObjectTo(VaadinNORAContactViewObject viewObj) {
-		return false;
+	public boolean writeIfValidEditedViewObjectTo(VaadinViewGeoPosition viewObj) {
+		return true;
 	}
 	
 	public int getZoom_level() {
-		if(_countryCmb.getValue() != null) {
+		if (_countryCmb.getValue() != null) {
 			_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM;
 		}
-		if(_stateCmb.getValue() != null) {
+		if (_stateCmb.getValue() != null) {
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 		}
-		if(_municipalityCmb.getValue() != null) {
+		if (_municipalityCmb.getValue() != null) {
 			_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 		}
-		if(_portalCmb.getValue() != null) {
+		if (_portalCmb.getValue() != null) {
 			_zoom_level = VaadinNORAContactConstants.PORTAL_ZOOM;
 		}
 		
@@ -309,13 +315,14 @@ public class VaadinNORAContactForm
 //	BEHAVIOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	private void _setBehavior() {
-		_countryCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_stateCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_countyCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_municipalityCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_localityCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_streetCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
-		_portalCmb.setItemCaptionGenerator(item -> item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_countryCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_stateCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_countyCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_municipalityCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_localityCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_streetCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		_portalCmb.setItemCaptionGenerator(item -> item.getNameByLanguage() != null && item.getNameIn(_language) != null ? item.getNameIn(_language) : item.getOfficialName());
+		
 		
 		_countryCmb.addValueChangeListener(event -> _loadStateCmb());
 		_stateCmb.addValueChangeListener(event -> _loadCountyCmb());
@@ -329,7 +336,14 @@ public class VaadinNORAContactForm
 													});
 		
 		_searchByZipCodeBtn.addClickListener(event -> {
-														_presenter.onSearchByZipRequested(_zipCodeTf.getValue(), 
+															_clear(_countryCmb);
+															_clear(_stateCmb);
+															_clear(_countyCmb);
+															_clear(_municipalityCmb);
+															_clear(_localityCmb);
+															_clear(_streetCmb);
+															_clear(_portalCmb);
+															_presenter.onSearchByZipRequested(_zipCodeTf.getValue(), 
 																						  _language, 
 																						  UIPresenterSubscriber.from(
 																														//onsuccess
@@ -342,64 +356,52 @@ public class VaadinNORAContactForm
 																														},
 																														// on error
 																									  					th -> {
-																									  						Notification.show(th.getMessage(),
+																									  						Notification.show("Error al buscar por codigo postal "+th.getMessage(),
 																									  								 		   Type.ERROR_MESSAGE);
 																						}));
 											});
-		_searchByGeoPosition2DBtn.addClickListener(event -> {
-																String valueStr = _coords2D.getValue();
-																if(Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
-																	String[] value = valueStr.split(",");
-																	GeoPosition2D geoPosition2D = new GeoPosition2D(GeoPositionStandard.ETRS89, Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
-																	_presenter.onSearchByGeoPosition2D(geoPosition2D, 
-																									   _language,
-																									   UIPresenterSubscriber.from(
-																																	//onsuccess
-																																	noraContactViewObject ->  {
-																																								_countryCmb.setValue(noraContactViewObject.getCountry());
-																																								_stateCmb.setValue(noraContactViewObject.getState());
-																																								_countyCmb.setValue(noraContactViewObject.getCounty());
-																																								_municipalityCmb.setValue(noraContactViewObject.getMunicipality());
-																																								_localityCmb.setValue(noraContactViewObject.getLocality());
-																																	},
-																																	// on error
-																												  					th -> {
-																												  						Notification.show(th.getMessage(),
-																												  								 		   Type.ERROR_MESSAGE);
-																					  					}));
-																}
-											});
+		_coords.getSearchByGeoPosition2DBtn().addClickListener(event -> {
+																			_clear(_countryCmb);
+																			_clear(_stateCmb);
+																			_clear(_countyCmb);
+																			_clear(_municipalityCmb);
+																			_clear(_localityCmb);
+																			_clear(_streetCmb);
+																			_clear(_portalCmb);
+																			GeoPosition2D geoPosition2D = _coords.getValue();
+																			if (geoPosition2D != null) {
+																				_presenter.onSearchByGeoPosition2D(geoPosition2D, 
+																												   _language,
+																												   UIPresenterSubscriber.from(
+																																				//onsuccess
+																																				noraContactViewObject ->  {
+																																											_countryCmb.setValue(noraContactViewObject.getCountry());
+																																											_stateCmb.setValue(noraContactViewObject.getState());
+																																											_countyCmb.setValue(noraContactViewObject.getCounty());
+																																											_municipalityCmb.setValue(noraContactViewObject.getMunicipality());
+																																											_localityCmb.setValue(noraContactViewObject.getLocality());
+																																				},
+																																				// on error
+																															  					th -> {
+																															  						Notification.show("Error al buscar por coordenadas "+th.getMessage(),
+																															  								 		   Type.ERROR_MESSAGE);
+																								  					}));
+																			}
+														});
 		_loadCountryCmb();
-		_save.addClickListener(event -> writeAsDraftEditedViewObjectTo(_viewObject));
-		_coords2D.addValueChangeListener(event -> {
-													String valueStr = event.getValue();
-													if(Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
-														String[] value = valueStr.split(",");
-														GeoPosition2D geoPosition2D = new GeoPosition2D(GeoPositionStandard.ETRS89, Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
-														_presenter.onTransformGeoPositionFromETRS89toED50(geoPosition2D,
-																										 UIPresenterSubscriber.from(
-																										 //onsuccess
-																										 outGeoPosition2D ->  {
-																											//TODO
-																											 System.out.println(outGeoPosition2D.getStandard());
-																										 },
-																										 // on error
-																					  					 th -> {
-																					  						 Notification.show(th.getMessage(),
-																					  								 		   Type.ERROR_MESSAGE);
-																					  					 }));
-													}
-										});
 	}
 	
 	private void _loadCountryCmb() {
 		_presenter.onCountriesLoadRequested(
 											UIPresenterSubscriber.from(
 													//onsuccess
-													countries ->  _countryCmb.setItems(countries),
+													countries -> {
+																	_countryCmb.clear();
+																	_countryCmb.setItems(countries);
+													},
 													// on error
 								  					th -> {
-								  						Notification.show(th.getMessage(),
+								  						Notification.show("Error al cargar paises "+th.getMessage(),
 								  								 		   Type.ERROR_MESSAGE);
 								  					})
 		);
@@ -421,12 +423,13 @@ public class VaadinNORAContactForm
 										 UIPresenterSubscriber.from(
 												 //onsuccess
 												 states ->  {
+													 			_stateCmb.clear();
 													 			_stateCmb.setItems(states);
 													 			_stateCmb.setEnabled(true);
 												 },
 												 // on error
 							  					 th -> {
-							  						 Notification.show(th.getMessage(),
+							  						 Notification.show("Error al cargar comunidades autonomas "+th.getMessage(),
 							  								 		   Type.ERROR_MESSAGE);
 							  					 })
 		);
@@ -446,12 +449,13 @@ public class VaadinNORAContactForm
 										   UIPresenterSubscriber.from(
 												 //onsuccess
 												 counties -> { 
+													 			_countyCmb.clear();
 													 			_countyCmb.setItems(counties);
 													 			_countyCmb.setEnabled(true);
 												 },
 												 // on error
 							  					 th -> {
-							  						 Notification.show(th.getMessage(),
+							  						 Notification.show("Error al cargar provincias "+th.getMessage(),
 							  								 		   Type.ERROR_MESSAGE);
 							  					 })
 		);
@@ -473,12 +477,13 @@ public class VaadinNORAContactForm
 									             UIPresenterSubscriber.from(
 									        		   //onsuccess
 									        		   muns ->  { 
+									        			   		_municipalityCmb.clear();
 													 			_municipalityCmb.setItems(muns);
 													 			_municipalityCmb.setEnabled(true);
 									        		   },
 									        		   // on error
 									        		   th -> {
-									        			   Notification.show(th.getMessage(),
+									        			   Notification.show("Error al cargar municipios "+th.getMessage(),
 							  								 		   	     Type.ERROR_MESSAGE);
 									        		   })
 		);
@@ -501,12 +506,13 @@ public class VaadinNORAContactForm
 								             UIPresenterSubscriber.from(
 								        		   //onsuccess
 								        		   locs ->  { 
-												 			_localityCmb.setItems(locs);
-												 			_localityCmb.setEnabled(true);
+								        			   			_localityCmb.clear();
+								        			   			_localityCmb.setItems(locs);
+								        			   			_localityCmb.setEnabled(true);
 								        		   },
 								        		   // on error
 								        		   th -> {
-								        			   Notification.show(th.getMessage(),
+								        			   Notification.show("Error al cargar localidades "+th.getMessage(),
 						  								 		   	     Type.ERROR_MESSAGE);
 								        		   })
 		);
@@ -541,12 +547,13 @@ public class VaadinNORAContactForm
 							             UIPresenterSubscriber.from(
 							        		   //onsuccess
 							        		   portals ->  { 
-											 			_portalCmb.setItems(portals);
-											 			_portalCmb.setEnabled(true);
+							        			   				_portalCmb.clear();
+											 					_portalCmb.setItems(portals);
+											 					_portalCmb.setEnabled(true);
 							        		   },
 							        		   // on error
 							        		   th -> {
-							        			   Notification.show(th.getMessage(),
+							        			   Notification.show("Error al cargar portales "+th.getMessage(),
 					  								 		   	     Type.ERROR_MESSAGE);
 							        		   })
 		);
@@ -554,7 +561,7 @@ public class VaadinNORAContactForm
 	
 	private <OID extends GeoIDBase>void _loadCoords2D(final OID oid) {
 		GeoCountyID countyId = null;
-		if(oid instanceof GeoRegionID || oid instanceof GeoMunicipalityID) {
+		if (oid instanceof GeoRegionID || oid instanceof GeoMunicipalityID) {
 			countyId = _countyCmb.getValue().getId();
 		}
 		_presenter.onSearchPosition2D(oid,
@@ -562,15 +569,15 @@ public class VaadinNORAContactForm
 									  UIPresenterSubscriber.from(
 							        		   //onsuccess
 							        		   geoPosition2D -> {
-							        			   					if(geoPosition2D != null) {
-							        			   						_coords2D.setValue(geoPosition2D.getX() +" , " + geoPosition2D.getY());
+							        			   					if (geoPosition2D != null) {
+							        			   						_coords.setValue(geoPosition2D);
 							        			   					}
 							        			   				
 							        		   }
 							        		   ,
 							        		   // on error
 							        		   th -> {
-							        			   Notification.show(th.getMessage(),
+							        			   Notification.show("Error al cargar coordenadas para el oid de tipo: "+ oid.getClass().getName()+ " "+ th.getMessage(),
 					  								 		   	     Type.ERROR_MESSAGE);
 							        		   })
 		);

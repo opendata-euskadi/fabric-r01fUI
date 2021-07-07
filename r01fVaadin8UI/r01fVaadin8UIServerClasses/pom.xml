@@ -54,6 +54,14 @@
 			<artifactId>r01fVaadin8UITinyEditorAddOnClasses</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01F: NORA Classes                        -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.r01f.ejie</groupId>
+			<artifactId>r01fNORAClasses</artifactId>
+			<version>${revision}</version>
+		</dependency>
 
 		<!-- ///////////////////////////////////////// -->
 		<!-- Vaadin                                    -->

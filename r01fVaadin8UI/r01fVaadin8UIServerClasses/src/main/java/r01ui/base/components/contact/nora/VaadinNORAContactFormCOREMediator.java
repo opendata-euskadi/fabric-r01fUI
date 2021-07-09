@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.nora.contact;
+package r01ui.base.components.contact.nora;
 
 import java.util.Collection;
 
@@ -17,7 +17,6 @@ import r01f.types.geo.GeoOIDs.GeoIDBase;
 import r01f.types.geo.GeoOIDs.GeoLocalityID;
 import r01f.types.geo.GeoOIDs.GeoMunicipalityID;
 import r01f.types.geo.GeoOIDs.GeoPortalID;
-import r01f.types.geo.GeoOIDs.GeoRegionID;
 import r01f.types.geo.GeoOIDs.GeoStateID;
 import r01f.types.geo.GeoOIDs.GeoStreetID;
 import r01f.types.geo.GeoOIDs.GeoZipCode;
@@ -38,7 +37,7 @@ public class VaadinNORAContactFormCOREMediator
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejiedes.net/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
+	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
 	private final NORAService _nora;
 
 	@Inject
@@ -135,19 +134,19 @@ public class VaadinNORAContactFormCOREMediator
 
 	public <OID extends GeoIDBase>GeoPosition2D searchGeoPosition2D(final OID oid, final GeoCountyID countyId) {
 		GeoPosition2D geoPosition2D = new GeoPosition2D();
-		if(oid instanceof GeoCountryID) {
+		if (oid instanceof GeoCountryID) {
 			geoPosition2D = _nora.getServicesForCountries().getCountry((GeoCountryID)oid).getPosition2D();
-		} else if(oid instanceof GeoStateID) {
+		} else if (oid instanceof GeoStateID) {
 			geoPosition2D = _nora.getServicesForStates().getState((GeoStateID)oid).getPosition2D();
-		} else if(oid instanceof GeoCountyID) {
+		} else if (oid instanceof GeoCountyID) {
 			geoPosition2D =  _nora.getServicesForCounties().getCounty(null, (GeoCountyID)oid).getPosition2D();
-		} else if(oid instanceof GeoMunicipalityID) {
+		} else if (oid instanceof GeoMunicipalityID) {
 			geoPosition2D =  _nora.getServicesForMunicipalities().getMunicipality(null, countyId, (GeoMunicipalityID)oid).getPosition2D();
-		} else if(oid instanceof GeoLocalityID) {
+		} else if (oid instanceof GeoLocalityID) {
 			geoPosition2D =  _nora.getServicesForLocalities().getLocality(null, null, null, (GeoLocalityID)oid).getPosition2D();
-		} else if(oid instanceof GeoStreetID) {
+		} else if (oid instanceof GeoStreetID) {
 			geoPosition2D =  _nora.getServicesForStreets().getStreet(null, null, null, (GeoStreetID)oid).getPosition2D();
-		} else if(oid instanceof GeoPortalID) {
+		} else if (oid instanceof GeoPortalID) {
 			geoPosition2D =  _nora.getServicesForPortal().getPortal(null, null, null, null, null, (GeoPortalID)oid).getPosition2D();
 		}
 		return geoPosition2D;
@@ -175,17 +174,17 @@ public class VaadinNORAContactFormCOREMediator
 	public GeoPosition2DByStandard getGeoPosition2DByStandard(final GeoPosition2D geoPosition2D) {
 		GeoPosition2DByStandard geoPosition2DByStandard = new GeoPosition2DByStandard();
 		geoPosition2DByStandard.add(geoPosition2D);
-		if(geoPosition2D.getStandard().equals(GeoPositionStandard.ETRS89)) {
+		if (geoPosition2D.getStandard().equals(GeoPositionStandard.ETRS89)) {
 			GeoPosition2D geoPosition2DED50 = getGeoPositionFromETRS89toED50(geoPosition2D);
 			geoPosition2DByStandard.add(geoPosition2DED50);
 			GeoPosition2D geoPosition2DWGS84 = getGeoPositionFromED50toWGS84(geoPosition2DED50);
 			geoPosition2DByStandard.add(geoPosition2DWGS84);
-		} else if(geoPosition2D.getStandard().equals(GeoPositionStandard.ED50)) {
+		} else if (geoPosition2D.getStandard().equals(GeoPositionStandard.ED50)) {
 			GeoPosition2D geoPosition2DWGS84 = getGeoPositionFromED50toWGS84(geoPosition2D);
 			geoPosition2DByStandard.add(geoPosition2DWGS84);
 			GeoPosition2D geoPosition2DETRS89 = getGeoPositionFromED50toETRS89(geoPosition2D);
 			geoPosition2DByStandard.add(geoPosition2DETRS89);
-		} else if(geoPosition2D.getStandard().equals(GeoPositionStandard.GOOGLE)) {
+		} else if (geoPosition2D.getStandard().equals(GeoPositionStandard.GOOGLE)) {
 			GeoPosition2D geoPosition2DED50 = getGeoPositionFromWGS84toED50(geoPosition2D);
 			geoPosition2DByStandard.add(geoPosition2DED50);
 			GeoPosition2D geoPosition2DETRS89 = getGeoPositionFromED50toETRS89(geoPosition2DED50);

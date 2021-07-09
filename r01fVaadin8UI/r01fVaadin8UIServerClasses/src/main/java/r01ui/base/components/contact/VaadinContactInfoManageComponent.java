@@ -15,6 +15,8 @@ import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.util.types.Strings;
 import r01f.util.types.locale.Languages;
 import r01ui.base.components.contact.email.VaadinContactEMailManage;
+import r01ui.base.components.contact.nora.VaadinNORAContactComponent;
+import r01ui.base.components.contact.nora.VaadinNORAContactFormPresenter;
 import r01ui.base.components.contact.phone.VaadinContactPhoneManage;
 import r01ui.base.components.contact.socialnetwork.VaadinContactSocialNetworkManage;
 import r01ui.base.components.contact.website.VaadinContactWebSiteManage;
@@ -53,12 +55,13 @@ public class VaadinContactInfoManageComponent
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Collection<ContactMeanType> _allowedMediumTypes;
-
+	private final VaadinNORAContactComponent _noraComponent;
 	private final TinyMCETextFieldComponent _txtGeoPosition;
 	private final VaadinContactEMailManage _emailsComponent;
 	private final VaadinContactPhoneManage _phonesComponent;
 	private final VaadinContactSocialNetworkManage _socialNetworksComponent;
 	private final VaadinContactWebSiteManage _webSitesComponent;
+	private final UII18NService _i18n;
 
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactInfo.PREFERED_LANGUAGE_CHANNELS_FIELD,
 					 bindStringConverter=false,
@@ -82,6 +85,12 @@ public class VaadinContactInfoManageComponent
 	}
 	public VaadinContactInfoManageComponent(final UII18NService i18n,
 										    final Collection<ContactMeanType> types) {
+		this(i18n, types, null);
+	}
+	public VaadinContactInfoManageComponent(final UII18NService i18n,
+										    final Collection<ContactMeanType> types,
+										    final VaadinNORAContactFormPresenter noraPresenter ) {
+		_i18n = i18n;
 		_allowedMediumTypes = types;
 
 		// create the components
@@ -105,6 +114,7 @@ public class VaadinContactInfoManageComponent
 
 		////////// Layout
 		// geo position
+		_noraComponent = new VaadinNORAContactComponent(i18n, noraPresenter);
 		
 		// contact
 		VerticalLayout vlContact = new VerticalLayout();
@@ -125,6 +135,9 @@ public class VaadinContactInfoManageComponent
 
 		// main layout
 		this.addComponent(_txtGeoPosition);
+		if(noraPresenter != null) {
+			this.addComponent(_noraComponent);
+		}
 		this.addComponent(vlContact);
 		this.addComponent(vlOthers);
 		this.addStyleName(VaadinValoTheme.NO_PADDING);
@@ -141,7 +154,7 @@ public class VaadinContactInfoManageComponent
 		// bind the individual components to the [view object] underlying collection
 		_txtGeoPosition.setValue(viewObj.getViewGeoPosition()
 										.getAddressText());
-		
+		_noraComponent.setValue(viewObj.getViewGeoPosition());
 		_emailsComponent.setItems(viewObj.getViewContactMails());
 		_phonesComponent.setItems(viewObj.getViewContactPhones());
 		_socialNetworksComponent.setItems(viewObj.getViewContactSocialNetworks());
@@ -156,6 +169,7 @@ public class VaadinContactInfoManageComponent
 		// ensure the binded [view object] is updated
 		String address = _txtGeoPosition.getValue()
 										.trim();
+		viewObj.setViewGeoPosition(_noraComponent.getValue());
 		viewObj.getViewGeoPosition()
 			   .setAddressText(Strings.isNOTNullOrEmpty(address) ? address : null);
 	

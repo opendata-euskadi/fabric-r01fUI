@@ -35,7 +35,7 @@
 									var options = {
 										icon : "../../img/r01Geoeuskadi_marker.png",
 										zoomToMarker:gup("zoom"),										
-										srs : "EPSG:25830"
+										srs : "\""+gup("crs")+"\""
 									};
 									COREProxy.api.interactions.addMarker([gup("x"),gup("y")], options);
 					}

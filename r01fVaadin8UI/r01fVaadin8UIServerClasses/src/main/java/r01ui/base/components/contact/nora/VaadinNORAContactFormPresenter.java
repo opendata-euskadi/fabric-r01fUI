@@ -1,4 +1,4 @@
-package r01f.ui.vaadin.nora.contact;
+package r01ui.base.components.contact.nora;
 
 import java.util.Collection;
 
@@ -24,6 +24,7 @@ import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
 import r01f.ui.presenter.UIPresenter;
 import r01f.ui.presenter.UIPresenterSubscriber;
+import r01ui.base.components.geo.VaadinViewGeoPosition;
 
 @Singleton
 public class VaadinNORAContactFormPresenter
@@ -133,19 +134,19 @@ public class VaadinNORAContactFormPresenter
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SEARCH
 /////////////////////////////////////////////////////////////////////////////////////////
-	public void onSearchByZipRequested(final String zipCode, final Language lang, final UIPresenterSubscriber<VaadinNORAContactViewObject> subscriber) {
+	public void onSearchByZipRequested(final String zipCode, final Language lang, final UIPresenterSubscriber<VaadinViewGeoPosition> subscriber) {
 
 		try{
-			VaadinNORAContactViewObject noraContactViewObject = new VaadinNORAContactViewObject(_mediator.searchByZipCode(zipCode), lang);
+			VaadinViewGeoPosition noraContactViewObject = new VaadinViewGeoPosition(_mediator.searchByZipCode(zipCode));
 			subscriber.onSuccess(noraContactViewObject);
 		}catch (Throwable th) {
 			subscriber.onError(th);
 		}
 	}
 
-	public void onSearchByGeoPosition2D(final GeoPosition2D geoPosition2D, final Language lang, final UIPresenterSubscriber<VaadinNORAContactViewObject> subscriber ) {
+	public void onSearchByGeoPosition2D(final GeoPosition2D geoPosition2D, final Language lang, final UIPresenterSubscriber<VaadinViewGeoPosition> subscriber ) {
 		try{
-			VaadinNORAContactViewObject noraContactViewObject = new VaadinNORAContactViewObject(_mediator.searchByGeoPosition2D(geoPosition2D), lang);
+			VaadinViewGeoPosition noraContactViewObject = new VaadinViewGeoPosition(_mediator.searchByGeoPosition2D(geoPosition2D));
 			subscriber.onSuccess(noraContactViewObject);
 		}catch (Throwable th) {
 			subscriber.onError(th);

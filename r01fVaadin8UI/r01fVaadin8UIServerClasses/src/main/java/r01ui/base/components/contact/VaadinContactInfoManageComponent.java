@@ -56,7 +56,7 @@ public class VaadinContactInfoManageComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final Collection<ContactMeanType> _allowedMediumTypes;
 	private final VaadinNORAContactComponent _noraComponent;
-	private final TinyMCETextFieldComponent _txtGeoPosition;
+	//private final TinyMCETextFieldComponent _txtGeoPosition;
 	private final VaadinContactEMailManage _emailsComponent;
 	private final VaadinContactPhoneManage _phonesComponent;
 	private final VaadinContactSocialNetworkManage _socialNetworksComponent;
@@ -93,9 +93,7 @@ public class VaadinContactInfoManageComponent
 		_i18n = i18n;
 		_allowedMediumTypes = types;
 
-		// create the components
-		_txtGeoPosition = new TinyMCETextFieldComponent(i18n,i18n.getMessage("geo.address"));
-		_txtGeoPosition.setWidthFull();
+		
 		
 		_emailsComponent = types.contains(ContactMeanType.EMAIL) ? new VaadinContactEMailManage(i18n) : null;
 		_phonesComponent = types.contains(ContactMeanType.PHONE) ? new VaadinContactPhoneManage(i18n) : null;
@@ -115,6 +113,7 @@ public class VaadinContactInfoManageComponent
 		////////// Layout
 		// geo position
 		_noraComponent = new VaadinNORAContactComponent(i18n, noraPresenter);
+		_noraComponent.setCaption(i18n.getMessage("geo.address"));
 		
 		// contact
 		VerticalLayout vlContact = new VerticalLayout();
@@ -134,7 +133,7 @@ public class VaadinContactInfoManageComponent
 		vlOthers.addStyleName(VaadinValoTheme.LAYOUT_WHITE_BORDERED);
 
 		// main layout
-		this.addComponent(_txtGeoPosition);
+		//this.addComponent(_txtGeoPosition);
 		if(noraPresenter != null) {
 			this.addComponent(_noraComponent);
 		}
@@ -152,8 +151,8 @@ public class VaadinContactInfoManageComponent
 		if (viewObj == null) throw new IllegalArgumentException("Cannot bind a null object!");
 
 		// bind the individual components to the [view object] underlying collection
-		_txtGeoPosition.setValue(viewObj.getViewGeoPosition()
-										.getAddressText());
+//		_txtGeoPosition.setValue(viewObj.getViewGeoPosition()
+//										.getAddressText());
 		_noraComponent.setValue(viewObj.getViewGeoPosition());
 		_emailsComponent.setItems(viewObj.getViewContactMails());
 		_phonesComponent.setItems(viewObj.getViewContactPhones());
@@ -167,11 +166,11 @@ public class VaadinContactInfoManageComponent
 	@Override
 	public void writeAsDraftEditedViewObjectTo(final VaadinViewContactInfo viewObj) {
 		// ensure the binded [view object] is updated
-		String address = _txtGeoPosition.getValue()
-										.trim();
+//		String address = _txtGeoPosition.getValue()
+//										.trim();
 		viewObj.setViewGeoPosition(_noraComponent.getValue());
-		viewObj.getViewGeoPosition()
-			   .setAddressText(Strings.isNOTNullOrEmpty(address) ? address : null);
+//		viewObj.getViewGeoPosition()
+//			   .setAddressText(Strings.isNOTNullOrEmpty(address) ? address : null);
 	
 		viewObj.setViewContactMails(_emailsComponent.getItems());
 		viewObj.setViewContactPhones(_phonesComponent.getItems());
@@ -189,7 +188,7 @@ public class VaadinContactInfoManageComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void updateI18NMessages(final UII18NService i18n) {
-		_txtGeoPosition.setCaption(i18n.getMessage("geo.address"));
+		_noraComponent.setCaption(i18n.getMessage("geo.address"));
 		if (_emailsComponent != null) _emailsComponent.updateI18NMessages(i18n);
 		if (_phonesComponent != null) _phonesComponent.updateI18NMessages(i18n);
 		if (_socialNetworksComponent != null) _socialNetworksComponent.updateI18NMessages(i18n);

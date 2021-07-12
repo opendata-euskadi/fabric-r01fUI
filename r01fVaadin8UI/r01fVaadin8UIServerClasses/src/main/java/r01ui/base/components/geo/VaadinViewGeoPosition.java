@@ -95,24 +95,26 @@ public class VaadinViewGeoPosition
 //  STREET
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String STREET_FIELD = "street";
-
+	
 	public GeoStreet getStreet() {
 		return _wrappedModelObject.getStreet();
 	}
 	public void setStreet(final GeoStreet street) {
 		_wrappedModelObject.setStreet(street);
 	}
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  PORTAL
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String PORTAL_FIELD = "portal";
-
+	
 	public GeoPortal getPortal() {
 		return _wrappedModelObject.getPortal();
 	}
 	public void setPortal(final GeoPortal portal) {
 		_wrappedModelObject.setPortal(portal);
 	}
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  GEOPOSITION 2D
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -129,11 +131,9 @@ public class VaadinViewGeoPosition
 /////////////////////////////////////////////////////////////////////////////////////////
 	public static final String ZIP_CODE_FIELD = "zipCode";
 	public String getZipCode() {
-		return _wrappedModelObject.getZipCode() != null && !Strings.isNOTNullOrEmpty(_wrappedModelObject.getZipCode().getId()) ? _wrappedModelObject.getZipCode().getId() : null;
+		return _wrappedModelObject.getZipCode() != null && Strings.isNOTNullOrEmpty(_wrappedModelObject.getZipCode().getId()) ? _wrappedModelObject.getZipCode().getId() : null;
 	}
 	public void setZipCode(final String zipCode) {
-		if(Strings.isNOTNullOrEmpty(zipCode)) {
-			_wrappedModelObject.setZipCode(GeoZipCode.forId(zipCode));
-		}
+		_wrappedModelObject.setZipCode(Strings.isNOTNullOrEmpty(zipCode) ? GeoZipCode.forId(zipCode) : null);
 	}
 }

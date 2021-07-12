@@ -10,9 +10,9 @@ import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 
 import r01f.locale.Language;
+import r01f.types.geo.GeoPosition2D;
 import r01f.ui.i18n.UII18NService;
 import r01f.ui.vaadin.styles.VaadinValoTheme;
-import r01f.util.types.Strings;
 import r01ui.base.components.geo.VaadinViewGeoPosition;
 
 public class VaadinNORAContactComponent 
@@ -36,13 +36,10 @@ public class VaadinNORAContactComponent
 		_map = new BrowserFrame("Mapa");
 		_map.setWidth("600px");
 		_map.setHeight("400px");
-		//TODO ajustar al tipo de coordenadas
 		_contactForm.getCoords().getCoords2D().addValueChangeListener(event -> {
-																		String valueStr = event.getValue();
-																		if (Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
-																			String[] value = valueStr.split(",");
-																			String crs = "";//_contactForm.getCoords().getCoordsStandard2D().getValue().getCrs();
-																			_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+value[0].trim()+"&y="+value[1].trim()+"&crs="+crs+"&zoom="+_contactForm.getZoom_level()));
+																		GeoPosition2D geo = _contactForm.getCoords().getGeoPositionForETRS89Standard();
+																		if (geo != null) {
+																			_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+geo.getX()+"&y="+geo.getY()+"&zoom="+_contactForm.getZoom_level()));
 																		}
 																		
 		});

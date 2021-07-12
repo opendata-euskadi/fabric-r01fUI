@@ -120,6 +120,9 @@ public class VaadinNORAContactForm
 	@VaadinViewComponentLabels(captionI18NKey="geo.street",
 							   useCaptionI18NKeyAsPlaceHolderKey=false)
 	@Getter @Setter private ComboBox<GeoStreet> _streetCmb = new ComboBox<>();
+	@VaadinViewComponentLabels(captionI18NKey="geo.street",
+							   useCaptionI18NKeyAsPlaceHolderKey=false)
+	@Getter @Setter private TextField _streetTf = new TextField();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.PORTAL_FIELD,
 					 bindStringConverter=false,required=false)
@@ -127,6 +130,9 @@ public class VaadinNORAContactForm
 	@VaadinViewComponentLabels(captionI18NKey="geo.portal",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private ComboBox<GeoPortal> _portalCmb = new ComboBox<GeoPortal>();
+	@VaadinViewComponentLabels(captionI18NKey="geo.portal",
+							   useCaptionI18NKeyAsPlaceHolderKey=true)
+	@Getter @Setter private TextField _portalTf = new TextField();
 	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.ZIP_CODE_FIELD,
 					 bindStringConverter=false,required=false)
@@ -175,10 +181,12 @@ public class VaadinNORAContactForm
 		_municipalityCmb.setWidth(100, Unit.PERCENTAGE);
 		_localityCmb.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.setWidth(100, Unit.PERCENTAGE);
+		_streetTf.setWidth(100, Unit.PERCENTAGE);
 		_streetCmb.addStyleName(VaadinValoTheme.COMBO_SUGGESTION);
 		_streetCmb.setIcon(VaadinIcons.FILTER);
 		_streetCmb.addStyleName("inline-icon");
 		_streetCmb.setPlaceholder("Filtrar por texto");
+		_portalTf.setWidth(100, Unit.PERCENTAGE);
 		
 		HorizontalLayout hlZip = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
 		hlZip.setSpacing(false);
@@ -234,6 +242,7 @@ public class VaadinNORAContactForm
 					.toViewObjectOfType(VaadinViewGeoPosition.class);
 		_setBehavior();
 		_loadDefaultCountryAndState();
+		
 	}
 	
 	private static HorizontalLayout _getHl(Component c1, Component c2) {
@@ -250,6 +259,20 @@ public class VaadinNORAContactForm
 	public void editViewObject(VaadinViewGeoPosition viewObj) {
 		_viewObject = viewObj;
 		_vaadinUIBinder.readBean(viewObj);
+		if (_streetTf.getParent() != null) {
+			if (viewObj.getStreet() != null) {
+				_streetTf.setValue(viewObj.getStreet().getNameByLanguage() != null && 
+								   viewObj.getStreet().getNameIn(_language) != null 
+																? viewObj.getStreet().getNameIn(_language) 
+																: viewObj.getStreet().getOfficialName());	
+			}
+			if (viewObj.getPortal() != null) {
+				_portalTf.setValue(viewObj.getPortal().getNameByLanguage() != null && 
+						           viewObj.getPortal().getNameIn(_language) != null 
+																? viewObj.getPortal().getNameIn(_language) 
+																: viewObj.getPortal().getOfficialName());
+			}
+		}
 		
 	}
 	private void _loadDefaultCountryAndState() {
@@ -288,6 +311,18 @@ public class VaadinNORAContactForm
 	@Override
 	public void writeAsDraftEditedViewObjectTo(VaadinViewGeoPosition viewObj) {
 		_vaadinUIBinder.writeBeanAsDraft(viewObj);
+		if (_streetTf.getParent() != null) {
+			GeoStreet street = Strings.isNOTNullOrEmpty(_streetTf.getValue()) 
+										? GeoStreet.create()
+												   .withNameForAll(_streetTf.getValue())
+										: null;
+			viewObj.setStreet(street);
+			GeoPortal portal = Strings.isNOTNullOrEmpty(_portalTf.getValue()) 
+										? GeoPortal.create()
+												   .withNameForAll(_portalTf.getValue())
+										: null;
+			viewObj.setPortal(portal);
+		}
 		
 	}
 	@Override
@@ -336,7 +371,6 @@ public class VaadinNORAContactForm
 													});
 		
 		_searchByZipCodeBtn.addClickListener(event -> {
-															_clear(_countryCmb);
 															_clear(_stateCmb);
 															_clear(_countyCmb);
 															_clear(_municipalityCmb);
@@ -361,7 +395,6 @@ public class VaadinNORAContactForm
 																						}));
 											});
 		_coords.getSearchByGeoPosition2DBtn().addClickListener(event -> {
-																			_clear(_countryCmb);
 																			_clear(_stateCmb);
 																			_clear(_countyCmb);
 																			_clear(_municipalityCmb);
@@ -438,6 +471,13 @@ public class VaadinNORAContactForm
 		_clear(_localityCmb);
 		_clear(_streetCmb);
 		_clear(_portalCmb);
+		if (_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN) && _streetTf.getParent() != null) {
+			((HorizontalLayout)_streetTf.getParent()).replaceComponent(_streetTf, _streetCmb);
+			((HorizontalLayout)_portalTf.getParent()).replaceComponent(_portalTf, _portalCmb);
+		} else if (!_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN) && _streetCmb.getParent() != null) {
+			((HorizontalLayout)_streetCmb.getParent()).replaceComponent(_streetCmb, _streetTf);
+			((HorizontalLayout)_portalCmb.getParent()).replaceComponent(_portalCmb, _portalTf);
+		}
 	}
 	private void _loadCountyCmb() {
 		if (_stateCmb.getValue() ==  null) {
@@ -463,6 +503,13 @@ public class VaadinNORAContactForm
 		_clear(_localityCmb);
 		_clear(_streetCmb);
 		_clear(_portalCmb);
+		if (_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI) && _streetTf.getParent() != null) {
+			((HorizontalLayout)_streetTf.getParent()).replaceComponent(_streetTf, _streetCmb);
+			((HorizontalLayout)_portalTf.getParent()).replaceComponent(_portalTf, _portalCmb);
+		} else if (!_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI) && _streetCmb.getParent() != null) {
+			((HorizontalLayout)_streetCmb.getParent()).replaceComponent(_streetCmb, _streetTf);
+			((HorizontalLayout)_portalCmb.getParent()).replaceComponent(_portalCmb, _portalTf);
+		}
 	}
 	
 	private void _loadMunicipalityCmb() {

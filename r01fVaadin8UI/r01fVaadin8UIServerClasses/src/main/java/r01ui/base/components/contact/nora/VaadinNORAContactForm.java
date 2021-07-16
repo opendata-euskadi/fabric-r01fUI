@@ -123,11 +123,7 @@ public class VaadinNORAContactForm
 	@VaadinViewComponentLabels(captionI18NKey="geo.street",
 							   useCaptionI18NKeyAsPlaceHolderKey=false)
 	@Getter @Setter private TextField _streetTf = new TextField();
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> refs/heads/release/1.0.6-20210716-01
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.PORTAL_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
@@ -137,11 +133,7 @@ public class VaadinNORAContactForm
 	@VaadinViewComponentLabels(captionI18NKey="geo.portal",
 							   useCaptionI18NKeyAsPlaceHolderKey=true)
 	@Getter @Setter private TextField _portalTf = new TextField();
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> refs/heads/release/1.0.6-20210716-01
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.ZIP_CODE_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
@@ -195,11 +187,7 @@ public class VaadinNORAContactForm
 		_streetCmb.addStyleName("inline-icon");
 		_streetCmb.setPlaceholder("Filtrar por texto");
 		_portalTf.setWidth(100, Unit.PERCENTAGE);
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> refs/heads/release/1.0.6-20210716-01
 		HorizontalLayout hlZip = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
 		hlZip.setSpacing(false);
 		hlZip.setComponentAlignment(_searchByZipCodeBtn, Alignment.BOTTOM_LEFT);
@@ -254,11 +242,7 @@ public class VaadinNORAContactForm
 					.toViewObjectOfType(VaadinViewGeoPosition.class);
 		_setBehavior();
 		_loadDefaultCountryAndState();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> refs/heads/release/1.0.6-20210716-01
 	}
 
 	private static HorizontalLayout _getHl(Component c1, Component c2) {
@@ -277,7 +261,6 @@ public class VaadinNORAContactForm
 		_vaadinUIBinder.readBean(viewObj);
 		if (_streetTf.getParent() != null) {
 			if (viewObj.getStreet() != null) {
-<<<<<<< HEAD
 				_streetTf.setValue(viewObj.getStreet().getNameByLanguage() != null &&
 								   viewObj.getStreet().getNameIn(_language) != null
 																? viewObj.getStreet().getNameIn(_language)
@@ -291,21 +274,6 @@ public class VaadinNORAContactForm
 			}
 		}
 
-=======
-				_streetTf.setValue(viewObj.getStreet().getNameByLanguage() != null && 
-								   viewObj.getStreet().getNameIn(_language) != null 
-																? viewObj.getStreet().getNameIn(_language) 
-																: viewObj.getStreet().getOfficialName());	
-			}
-			if (viewObj.getPortal() != null) {
-				_portalTf.setValue(viewObj.getPortal().getNameByLanguage() != null && 
-						           viewObj.getPortal().getNameIn(_language) != null 
-																? viewObj.getPortal().getNameIn(_language) 
-																: viewObj.getPortal().getOfficialName());
-			}
-		}
-		
->>>>>>> refs/heads/release/1.0.6-20210716-01
 	}
 	private void _loadDefaultCountryAndState() {
 		ListDataProvider<GeoCountry> listDataProviderCountry = (ListDataProvider<GeoCountry>)_countryCmb.getDataProvider();
@@ -344,7 +312,6 @@ public class VaadinNORAContactForm
 	public void writeAsDraftEditedViewObjectTo(VaadinViewGeoPosition viewObj) {
 		_vaadinUIBinder.writeBeanAsDraft(viewObj);
 		if (_streetTf.getParent() != null) {
-<<<<<<< HEAD
 			GeoStreet street = Strings.isNOTNullOrEmpty(_streetTf.getValue())
 										? GeoStreet.create()
 												   .withNameForAll(_streetTf.getValue())
@@ -357,20 +324,6 @@ public class VaadinNORAContactForm
 			viewObj.setPortal(portal);
 		}
 
-=======
-			GeoStreet street = Strings.isNOTNullOrEmpty(_streetTf.getValue()) 
-										? GeoStreet.create()
-												   .withNameForAll(_streetTf.getValue())
-										: null;
-			viewObj.setStreet(street);
-			GeoPortal portal = Strings.isNOTNullOrEmpty(_portalTf.getValue()) 
-										? GeoPortal.create()
-												   .withNameForAll(_portalTf.getValue())
-										: null;
-			viewObj.setPortal(portal);
-		}
-		
->>>>>>> refs/heads/release/1.0.6-20210716-01
 	}
 	@Override
 	public boolean writeIfValidEditedViewObjectTo(VaadinViewGeoPosition viewObj) {

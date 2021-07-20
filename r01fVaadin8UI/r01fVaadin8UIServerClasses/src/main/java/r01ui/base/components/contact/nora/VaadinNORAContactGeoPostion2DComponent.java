@@ -124,6 +124,8 @@ public class VaadinNORAContactGeoPostion2DComponent
 			if (value.getX() != 0 && value.getY() != 0) {
 				_coords2D.setValue(value.getX() +", "+value.getY());
 				_showInfo(value);
+			}else {
+				_coords2D.setValue("");
 			}
 		}
 		

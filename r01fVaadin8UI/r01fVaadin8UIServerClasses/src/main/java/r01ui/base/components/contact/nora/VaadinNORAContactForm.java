@@ -34,7 +34,6 @@ import r01f.types.geo.GeoOIDs.GeoMunicipalityID;
 import r01f.types.geo.GeoOIDs.GeoRegionID;
 import r01f.types.geo.GeoPortal;
 import r01f.types.geo.GeoPosition2D;
-import r01f.types.geo.GeoPosition2D.GeoPositionStandard;
 import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
 import r01f.ui.i18n.UII18NService;
@@ -314,12 +313,12 @@ public class VaadinNORAContactForm
 		if (_streetTf.getParent() != null) {
 			GeoStreet street = Strings.isNOTNullOrEmpty(_streetTf.getValue()) 
 										? GeoStreet.create()
-												   .withNameForAll(_streetTf.getValue())
+												   .withNameForDefault(_streetTf.getValue())
 										: null;
 			viewObj.setStreet(street);
 			GeoPortal portal = Strings.isNOTNullOrEmpty(_portalTf.getValue()) 
 										? GeoPortal.create()
-												   .withNameForAll(_portalTf.getValue())
+												   .withNameForDefault(_portalTf.getValue())
 										: null;
 			viewObj.setPortal(portal);
 		}

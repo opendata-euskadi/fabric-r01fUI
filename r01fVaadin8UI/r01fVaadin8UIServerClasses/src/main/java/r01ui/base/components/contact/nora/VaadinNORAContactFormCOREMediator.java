@@ -37,7 +37,7 @@ public class VaadinNORAContactFormCOREMediator
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
+	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejiedes.net/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
 	private final NORAService _nora;
 	
 	@Inject

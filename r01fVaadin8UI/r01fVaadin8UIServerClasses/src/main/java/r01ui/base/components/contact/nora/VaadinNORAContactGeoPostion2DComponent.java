@@ -94,7 +94,7 @@ public class VaadinNORAContactGeoPostion2DComponent
 													}
 										});
 		_coordsStandard2D.addValueChangeListener(event -> {
-																if (_geoPosition2DByStandard.contains(_coordsStandard2D.getValue())) {
+																if (_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(_coordsStandard2D.getValue())) {
 																	GeoPosition2D geoPosition2D = _geoPosition2DByStandard.get(_coordsStandard2D.getValue());
 																	_coords2DListener = false;
 																	_coords2D.setValue(geoPosition2D.getX() +", "+ geoPosition2D.getY());

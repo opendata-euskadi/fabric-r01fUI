@@ -6,7 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import r01f.ejie.nora.NORAService;
-import r01f.ejie.nora.NORAServiceConfig;
+import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.AppComponent;
 import r01f.types.geo.GeoCountry;
 import r01f.types.geo.GeoCounty;
 import r01f.types.geo.GeoLocality;
@@ -28,8 +29,10 @@ import r01f.types.geo.GeoPosition2DByStandard;
 import r01f.types.geo.GeoRegion;
 import r01f.types.geo.GeoState;
 import r01f.types.geo.GeoStreet;
-import r01f.types.url.Url;
 import r01f.ui.coremediator.UICOREMediator;
+import r01f.xmlproperties.XMLProperties;
+import r01f.xmlproperties.XMLPropertiesBuilder;
+import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 @Singleton
 public class VaadinNORAContactFormCOREMediator 
@@ -37,13 +40,16 @@ public class VaadinNORAContactFormCOREMediator
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static final NORAServiceConfig cfg = new NORAServiceConfig(Url.from("http://svc.inter.integracion.jakina.ejiedes.net/ctxapp/t17iApiWS")); //http://svc.inter.integracion.jakina.ejgvdns/ctxapp/t17iApiWS
 	private final NORAService _nora;
 	
 	@Inject
 	public VaadinNORAContactFormCOREMediator() {
 		super();
-		_nora = new NORAService(cfg);
+		// [1] - load the properties
+		XMLProperties xmlProps = XMLPropertiesBuilder.create()
+													 .notUsingCache();
+		XMLPropertiesForAppComponent props = xmlProps.forAppComponent(AppCode.forId("r01t"), AppComponent.forId("ejie.nora"));
+		_nora = new NORAService(props);
 	}
 	
 /////////////////////////////////////////////////////////////////////////////////////////

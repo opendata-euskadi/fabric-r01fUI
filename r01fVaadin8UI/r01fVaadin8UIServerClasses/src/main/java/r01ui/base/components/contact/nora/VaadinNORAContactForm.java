@@ -312,7 +312,7 @@ public class VaadinNORAContactForm
 				 				    .findFirst()
 				 				    .orElse(null);
 		if (spain != null) {
-			if (_countryCmb.getValue() == null) {
+			if (_countryCmb.getValue() == null && _countryCmb.getValue().getId() != null) {
 				_countryCmb.setValue(spain);
 			}
 			if (_countryCmb.getValue().getId().equals(spain.getId())) {
@@ -502,7 +502,7 @@ public class VaadinNORAContactForm
 		_clear(_portalCmb, _portalTf);
 	}
 	private void _loadStateCmb() {
-		if (_countryCmb.getValue() ==  null) {
+		if (_countryCmb.getValue() ==  null && _countryCmb.getValue().getId() != null) {
 			_clear(_stateCmb, _stateTf);
 			_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM; 
 			return;
@@ -548,7 +548,7 @@ public class VaadinNORAContactForm
 		
 	}
 	private void _loadCountyCmb() {
-		if (_stateCmb.getValue() ==  null) {
+		if (_stateCmb.getValue() ==  null && _stateCmb.getValue().getId() != null) {
 			_clear(_countyCmb, _countyTf);
 			return;
 		}
@@ -577,7 +577,7 @@ public class VaadinNORAContactForm
 	}
 	
 	private void _loadMunicipalityCmb() {
-		if (_countyCmb.getValue() ==  null) {
+		if (_countyCmb.getValue() ==  null && _countyCmb.getValue().getId() != null) {
 			_clear(_municipalityCmb, _municipalityTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
@@ -604,7 +604,7 @@ public class VaadinNORAContactForm
 	}
 	
 	private void _loadLocalityCmb() {
-		if (_municipalityCmb.getValue() ==  null) {
+		if (_municipalityCmb.getValue() ==  null && _municipalityCmb.getValue().getId() != null) {
 			_clear(_localityCmb, _localityTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
@@ -633,7 +633,7 @@ public class VaadinNORAContactForm
 	}
 	
 	private void _loadStreetCmb() {
-		if (_localityCmb.getValue() ==  null) {
+		if (_localityCmb.getValue() ==  null && _localityCmb.getValue().getId() != null) {
 			_clear(_streetCmb, _streetTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
@@ -643,7 +643,7 @@ public class VaadinNORAContactForm
 		_clear(_portalCmb, _streetTf);
 	}
 	private void _loadPortalCmb() {
-		if (_streetCmb.getValue() ==  null) {
+		if (_streetCmb.getValue() ==  null && _streetCmb.getValue().getId() != null) {
 			_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 			_clear(_portalCmb, _streetTf);
 			return;

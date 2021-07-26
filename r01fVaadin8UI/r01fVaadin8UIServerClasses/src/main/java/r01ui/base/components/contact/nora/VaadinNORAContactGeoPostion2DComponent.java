@@ -85,13 +85,8 @@ public class VaadinNORAContactGeoPostion2DComponent
 		hl.setExpandRatio(hlStandard, 2);
 		hl.setExpandRatio(hl2D, 3);
 		_coords2D.addValueChangeListener(event -> {
-													String valueStr = event.getValue();
-													if (Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
-														String[] value = valueStr.split(",");
-														GeoPosition2D geoPosition2D = new GeoPosition2D(_coordsStandard2D.getValue(), Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
-														if (_coords2DListener)
-															_showInfo(geoPosition2D);
-													}
+													if (_coords2DListener)
+															_showInfo();
 										});
 		_coordsStandard2D.addValueChangeListener(event -> {
 																if (_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(_coordsStandard2D.getValue())) {
@@ -123,7 +118,7 @@ public class VaadinNORAContactGeoPostion2DComponent
 			_coordsStandard2D.setValue(value.getStandard() != null ? value.getStandard() : GeoPositionStandard.ETRS89 );
 			if (value.getX() != 0 && value.getY() != 0) {
 				_coords2D.setValue(value.getX() +", "+value.getY());
-				_showInfo(value);
+				_showInfo();
 			}else {
 				_coords2D.setValue("");
 			}
@@ -135,44 +130,62 @@ public class VaadinNORAContactGeoPostion2DComponent
 		GeoPosition2D geoPosition = null;
 		if (_coordsStandard2D.getValue().equals(GeoPositionStandard.ETRS89)) {
 			geoPosition = getValue();
-		} else if(_geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
+		} else if (_geoPosition2DByStandard == null) {
+			loadGeoPosition2DByStandard();
+			if ( _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
+				geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.ETRS89);
+			}
+		} else if(_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
 			geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.ETRS89);
 		}
 		return geoPosition;
 	}
 	
-	private void _showInfo(final GeoPosition2D geoPosition2D) {
-		_info.setDescription("", ContentMode.HTML);
-		if (geoPosition2D != null && geoPosition2D.getStandard() != null && geoPosition2D.getX() != 0 && geoPosition2D.getY() != 0) {
-			_presenter.onTransformGeoPositionByStatandard(geoPosition2D,
-														  UIPresenterSubscriber.from(
-														  //onsuccess
-														  outGeoPosition2DByStandard ->  {
-															  								_geoPosition2DByStandard = outGeoPosition2DByStandard;
-															  								if (outGeoPosition2DByStandard != null) {
-															  									_info.setDescription("<ul>", ContentMode.HTML);
-															  									outGeoPosition2DByStandard.forEach(
-																  																	(outGeoPosition2DStandard,
-																  																	 outGeoPosition2D) -> {
-																  																		 	String html = _info.getValue();
-																  																			html = "<li>";
-																  																		 	html += outGeoPosition2DStandard.name();
-																  																		 	html += " x: ";
-																  																		 	html += outGeoPosition2D.getX();
-																  																		 	html += " y: ";
-																  																		 	html += outGeoPosition2D.getY();
-																  																		 	html += "</li>";
-																  																		 	_info.setDescription(_info.getDescription()+ html, ContentMode.HTML);
-																  																	 });
-															  									_info.setDescription(_info.getDescription()+ "</ul>", ContentMode.HTML);
-															  								}
-														  },
-														  // on error
-										  				  th -> {
-										  					  		Notification.show(th.getMessage(),
-										  								 		      Type.ERROR_MESSAGE);
-										  				  }));
+	public void loadGeoPosition2DByStandard() {
+		String valueStr = _coords2D.getValue();
+		if (Strings.isNOTNullOrEmpty(valueStr) && valueStr.indexOf(",") != -1) {
+			String[] value = valueStr.split(",");
+			GeoPosition2D geoPosition2D = new GeoPosition2D(_coordsStandard2D.getValue(), Double.parseDouble(value[0].trim()), Double.parseDouble(value[1].trim()));
+			if (geoPosition2D.getStandard() != null && geoPosition2D.getX() != 0 && geoPosition2D.getY() != 0) {
+				_presenter.onTransformGeoPositionByStatandard(geoPosition2D,
+															  UIPresenterSubscriber.from(
+															  //onsuccess
+															  outGeoPosition2DByStandard ->_geoPosition2DByStandard = outGeoPosition2DByStandard
+															  ,
+															  // on error
+											  				  th -> {
+											  					  		Notification.show(th.getMessage(),
+											  								 		      Type.ERROR_MESSAGE);
+											  				  }));
+			}
 		}
+		
+	}
+	
+	private void _printInfo() {
+		_info.setDescription("", ContentMode.HTML);
+		if (_geoPosition2DByStandard != null) {
+			_info.setDescription("<ul>", ContentMode.HTML);
+			_geoPosition2DByStandard.forEach(
+											(outGeoPosition2DStandard,
+											 outGeoPosition2D) -> {
+												 	String html = _info.getValue();
+													html = "<li>";
+												 	html += outGeoPosition2DStandard.name();
+												 	html += " x: ";
+												 	html += outGeoPosition2D.getX();
+												 	html += " y: ";
+												 	html += outGeoPosition2D.getY();
+												 	html += "</li>";
+												 	_info.setDescription(_info.getDescription()+ html, ContentMode.HTML);
+											 });
+			_info.setDescription(_info.getDescription()+ "</ul>", ContentMode.HTML);
+		}
+	}
+	
+	private void _showInfo() {
+		loadGeoPosition2DByStandard();
+		_printInfo();
 	} 
 
 }

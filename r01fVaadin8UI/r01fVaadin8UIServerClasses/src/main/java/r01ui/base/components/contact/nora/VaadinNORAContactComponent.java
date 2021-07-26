@@ -40,9 +40,8 @@ public class VaadinNORAContactComponent
 																		GeoPosition2D geo = _contactForm.getCoords().getGeoPositionForETRS89Standard();
 																		if (geo != null) {
 																			if (geo.getX() == 0 || geo.getY() == 0) {
-																				_map.setVisible(false);
+																				_map.setSource(null);
 																			} else {
-																				_map.setVisible(true);
 																				_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+geo.getX()+"&y="+geo.getY()+"&zoom="+_contactForm.getZoom_level()));
 																			}
 																		}

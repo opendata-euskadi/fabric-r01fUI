@@ -28,8 +28,8 @@ public class VaadinToggleButton
 /////////////////////////////////////////////////////////////////////////////////////////
 //	UI FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////	
-	private final ThemeResource _toggleOn = new ThemeResource("images/toggle-on.png");
-	private final ThemeResource _toggleOff = new ThemeResource("images/toggle-off.png");
+	private final ThemeResource _toggleOn = new ThemeResource("img/toggle-on.png");
+	private final ThemeResource _toggleOff = new ThemeResource("img/toggle-off.png");
 	private final Label _lblCaption = new Label();
 	private final Button _btnToggle = new Button();
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -43,10 +43,10 @@ public class VaadinToggleButton
 		_lblCaption.addStyleName("v-caption");
 		_btnToggle.addStyleName(VaadinValoTheme.BUTTON_ICON_ONLY);
 		_btnToggle.addStyleName(VaadinValoTheme.BUTTON_BORDERLESS);
+		_btnToggle.setIcon(_toggleOff);	
 	}
 	@Override
 	protected Component initContent() {
-		_btnToggle.setIcon(_toggleOff);		
 		HorizontalLayout hly = new HorizontalLayout(_lblCaption,_btnToggle);
 		hly.setComponentAlignment(_lblCaption,Alignment.BOTTOM_LEFT);
 		hly.setMargin(false);

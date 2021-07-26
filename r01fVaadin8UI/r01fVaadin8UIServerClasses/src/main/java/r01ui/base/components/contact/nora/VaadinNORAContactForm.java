@@ -7,6 +7,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -47,6 +48,7 @@ import r01f.ui.vaadin.view.VaadinView;
 import r01f.ui.vaadin.view.VaadinViewI18NMessagesCanBeUpdated;
 import r01f.ui.vaadin.view.VaadinViews;
 import r01f.util.types.Strings;
+import r01ui.base.components.button.VaadinToggleButton;
 import r01ui.base.components.form.VaadinFormEditsViewObject;
 import r01ui.base.components.geo.VaadinViewGeoPosition;
 
@@ -137,6 +139,8 @@ public class VaadinNORAContactForm
 							   useCaptionI18NKeyAsPlaceHolderKey=false)
 	@Getter @Setter private TextField _streetTf = new TextField();
 	
+	private final VaadinToggleButton _toggleStreetBtn = new VaadinToggleButton();
+	
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewGeoPosition.PORTAL_FIELD,
 					 bindStringConverter=false,required=false)
 	@LangIndependentVaadinViewField
@@ -180,6 +184,7 @@ public class VaadinNORAContactForm
 		_presenter = presenter;
 		_searchByZipCodeBtn.setIcon(VaadinIcons.SEARCH);
 		_searchByZipCodeBtn.setWidth(50,Unit.PIXELS);
+		_toggleStreetBtn.setWidth(50,Unit.PIXELS);
 		_coords = new VaadinNORAContactGeoPostion2DComponent(_i18n,
 															   presenter);
 		
@@ -204,6 +209,12 @@ public class VaadinNORAContactForm
 		_streetCmb.addStyleName("inline-icon");
 		_streetCmb.setPlaceholder("Filtrar por texto");
 		_portalTf.setWidth(100, Unit.PERCENTAGE);
+		HorizontalLayout streetHl = new HorizontalLayout(_streetCmb, _toggleStreetBtn);
+		streetHl.setSpacing(false);
+		streetHl.setWidth(100, Unit.PERCENTAGE);
+		streetHl.setExpandRatio(_streetCmb, 3);
+		streetHl.setExpandRatio(_toggleStreetBtn, 1);
+		streetHl.setComponentAlignment(_toggleStreetBtn, Alignment.BOTTOM_LEFT);
 		
 		HorizontalLayout hlZip = new HorizontalLayout(_zipCodeTf,_searchByZipCodeBtn);
 		hlZip.setSpacing(false);
@@ -211,7 +222,7 @@ public class VaadinNORAContactForm
 		this.addComponent(hlZip);
 		this.addComponent(_getHl(_countryCmb, _stateCmb));
 		this.addComponent(_getHl(_countyCmb, _municipalityCmb));
-		this.addComponent(_getHl(_localityCmb, _streetCmb));
+		this.addComponent(_getHl(_localityCmb, streetHl));
 		this.addComponent(_getHl(_portalCmb, new Label()));
 		this.addComponent(_coords);
 		
@@ -281,6 +292,7 @@ public class VaadinNORAContactForm
 		_setValuetoTextField(_municipalityTf, viewObj.getMunicipality());
 		_setValuetoTextField(_localityTf, viewObj.getLocality());
 		_setValuetoTextField(_streetTf, viewObj.getStreet());
+		_toggleStreetBtn.setValue(viewObj.getStreet() != null &&  viewObj.getStreet().getId() == null);
 		_setValuetoTextField(_portalTf, viewObj.getPortal());
 	}
 	
@@ -410,12 +422,12 @@ public class VaadinNORAContactForm
 													});
 		
 		_searchByZipCodeBtn.addClickListener(event -> {
-															_clear(_stateCmb);
-															_clear(_countyCmb);
-															_clear(_municipalityCmb);
-															_clear(_localityCmb);
-															_clear(_streetCmb);
-															_clear(_portalCmb);
+															_clear(_stateCmb, null);
+															_clear(_countyCmb, _countyTf);
+															_clear(_municipalityCmb, _municipalityTf);
+															_clear(_localityCmb, _localityTf);
+															_clear(_streetCmb, _streetTf);
+															_clear(_portalCmb, _portalTf);
 															_presenter.onSearchByZipRequested(_zipCodeTf.getValue(), 
 																						  _language, 
 																						  UIPresenterSubscriber.from(
@@ -434,12 +446,12 @@ public class VaadinNORAContactForm
 																						}));
 											});
 		_coords.getSearchByGeoPosition2DBtn().addClickListener(event -> {
-																			_clear(_stateCmb);
-																			_clear(_countyCmb);
-																			_clear(_municipalityCmb);
-																			_clear(_localityCmb);
-																			_clear(_streetCmb);
-																			_clear(_portalCmb);
+																			_clear(_stateCmb, null);
+																			_clear(_countyCmb, _countyTf);
+																			_clear(_municipalityCmb, _municipalityTf);
+																			_clear(_localityCmb, _localityTf);
+																			_clear(_streetCmb, _streetTf);
+																			_clear(_portalCmb, _portalTf);
 																			GeoPosition2D geoPosition2D = _coords.getValue();
 																			if (geoPosition2D != null) {
 																				_presenter.onSearchByGeoPosition2D(geoPosition2D, 
@@ -460,6 +472,11 @@ public class VaadinNORAContactForm
 																								  					}));
 																			}
 														});
+		_toggleStreetBtn.addClickListener(event -> {
+													_showFields(_streetTf, _streetCmb, _toggleStreetBtn.getValue());
+													_showFields(_portalTf, _portalCmb, _toggleStreetBtn.getValue());
+													
+										});
 		_loadCountryCmb();
 	}
 	
@@ -477,16 +494,16 @@ public class VaadinNORAContactForm
 								  								 		   Type.ERROR_MESSAGE);
 								  					})
 		);
-		_clear(_stateCmb);
-		_clear(_countyCmb);
-		_clear(_municipalityCmb);
-		_clear(_localityCmb);
-		_clear(_streetCmb);
-		_clear(_portalCmb);
+		_clear(_stateCmb, _stateTf);
+		_clear(_countyCmb, _countyTf);
+		_clear(_municipalityCmb, _municipalityTf);
+		_clear(_localityCmb, _localityTf);
+		_clear(_streetCmb, _streetTf);
+		_clear(_portalCmb, _portalTf);
 	}
 	private void _loadStateCmb() {
 		if (_countryCmb.getValue() ==  null) {
-			_clear(_stateCmb);
+			_clear(_stateCmb, _stateTf);
 			_zoom_level = VaadinNORAContactConstants.COUNTRY_ZOOM; 
 			return;
 		}
@@ -506,19 +523,19 @@ public class VaadinNORAContactForm
 								  								 		   Type.ERROR_MESSAGE);
 								  					 })
 			);
-			_clear(_countyCmb);
-			_clear(_municipalityCmb);
-			_clear(_localityCmb);
-			_clear(_streetCmb);
-			_clear(_portalCmb);
+			_clear(_countyCmb, _countyTf);
+			_clear(_municipalityCmb, _municipalityTf);
+			_clear(_localityCmb, _localityTf);
+			_clear(_streetCmb, _streetTf);
+			_clear(_portalCmb, _portalTf);
 		} 
 		_showFields(_stateTf, _stateCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
 		_showFields(_countyTf, _countyCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
 		_showFields(_countyTf, _countyCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
 		_showFields(_municipalityTf, _municipalityCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
 		_showFields(_localityTf, _localityCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
-		_showFields(_streetTf, _streetCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
-		_showFields(_portalTf, _portalCmb, !_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN));
+		_showFields(_streetTf, _streetCmb, (!_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN) ||  _toggleStreetBtn.getValue()));
+		_showFields(_portalTf, _portalCmb, (!_countryCmb.getValue().getId().equals(NORAGeoIDs.SPAIN) ||  _toggleStreetBtn.getValue()));
 		
 	}
 	
@@ -532,7 +549,7 @@ public class VaadinNORAContactForm
 	}
 	private void _loadCountyCmb() {
 		if (_stateCmb.getValue() ==  null) {
-			_clear(_countyCmb);
+			_clear(_countyCmb, _countyTf);
 			return;
 		}
 		_loadCoords2D(_stateCmb.getValue().getId());
@@ -550,18 +567,18 @@ public class VaadinNORAContactForm
 							  								 		   Type.ERROR_MESSAGE);
 							  					 })
 		);
-		_clear(_municipalityCmb);
-		_clear(_localityCmb);
-		_clear(_streetCmb);
-		_clear(_portalCmb);
+		_clear(_municipalityCmb, _municipalityTf);
+		_clear(_localityCmb, _localityTf);
+		_clear(_streetCmb, _streetTf);
+		_clear(_portalCmb, _portalTf);
 		
-		_showFields(_streetTf, _streetCmb, !_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI));
-		_showFields(_portalTf, _portalCmb, !_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI));
+		_showFields(_streetTf, _streetCmb, (!_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI) ||  _toggleStreetBtn.getValue()));
+		_showFields(_portalTf, _portalCmb, (!_stateCmb.getValue().getId().equals(NORAGeoIDs.EUSKADI) ||  _toggleStreetBtn.getValue()));
 	}
 	
 	private void _loadMunicipalityCmb() {
 		if (_countyCmb.getValue() ==  null) {
-			_clear(_municipalityCmb);
+			_clear(_municipalityCmb, _municipalityTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
@@ -581,14 +598,14 @@ public class VaadinNORAContactForm
 							  								 		   	     Type.ERROR_MESSAGE);
 									        		   })
 		);
-		_clear(_localityCmb);
-		_clear(_streetCmb);
-		_clear(_portalCmb);
+		_clear(_localityCmb, _localityTf);
+		_clear(_streetCmb, _streetTf);
+		_clear(_portalCmb, _portalTf);
 	}
 	
 	private void _loadLocalityCmb() {
 		if (_municipalityCmb.getValue() ==  null) {
-			_clear(_localityCmb);
+			_clear(_localityCmb, _localityTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
@@ -610,25 +627,25 @@ public class VaadinNORAContactForm
 						  								 		   	     Type.ERROR_MESSAGE);
 								        		   })
 		);
-		_clear(_streetCmb);
-		_clear(_portalCmb);
+		_clear(_streetCmb, _streetTf);
+		_clear(_portalCmb, _portalTf);
 		_streetCmb.setEnabled(true);
 	}
 	
 	private void _loadStreetCmb() {
 		if (_localityCmb.getValue() ==  null) {
-			_clear(_streetCmb);
+			_clear(_streetCmb, _streetTf);
 			_zoom_level = VaadinNORAContactConstants.STATE_ZOOM;
 			return;
 		}
 		_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
 		_loadCoords2D(_localityCmb.getValue().getId());
-		_clear(_portalCmb);
+		_clear(_portalCmb, _streetTf);
 	}
 	private void _loadPortalCmb() {
 		if (_streetCmb.getValue() ==  null) {
 			_zoom_level = VaadinNORAContactConstants.MUNICIPALITY_ZOOM;
-			_clear(_portalCmb);
+			_clear(_portalCmb, _streetTf);
 			return;
 		}
 		_zoom_level = VaadinNORAContactConstants.PORTAL_ZOOM;
@@ -678,8 +695,11 @@ public class VaadinNORAContactForm
 	}
 
 	
-	private static void _clear(final ComboBox<?> cmb) {
+	private static void _clear(final ComboBox<?> cmb, final TextField tf) {
 		cmb.clear();
+		if (tf != null) {
+			tf.clear();
+		}
 		cmb.setEnabled(false);
 	}
 }

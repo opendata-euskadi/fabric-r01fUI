@@ -10,8 +10,8 @@ import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.TextField;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -45,6 +45,8 @@ public class VaadinNORAContactGeoPostion2DComponent
 	private final VaadinNORAContactFormPresenter _presenter;
 	private GeoPosition2DByStandard _geoPosition2DByStandard;
 	private boolean _coords2DListener = true;
+	
+	private VaadinNORACoordsChangeListener _listener = null;
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +87,10 @@ public class VaadinNORAContactGeoPostion2DComponent
 		hl.setExpandRatio(hlStandard, 2);
 		hl.setExpandRatio(hl2D, 3);
 		_coords2D.addValueChangeListener(event -> {
+													_geoPosition2DByStandard = null; //reset values
 													if (_coords2DListener)
 															_showInfo();
+													if (_listener != null) _listener.onCoordsChange(this);
 										});
 		_coordsStandard2D.addValueChangeListener(event -> {
 																if (_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(_coordsStandard2D.getValue())) {
@@ -123,7 +127,7 @@ public class VaadinNORAContactGeoPostion2DComponent
 				_coords2D.setValue("");
 			}
 		}
-		
+		if (_listener != null) _listener.onCoordsChange(this);
 	}
 	
 	public GeoPosition2D getGeoPositionForETRS89Standard() {
@@ -186,6 +190,16 @@ public class VaadinNORAContactGeoPostion2DComponent
 	private void _showInfo() {
 		loadGeoPosition2DByStandard();
 		_printInfo();
-	} 
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	EVENTS                                                                          
+/////////////////////////////////////////////////////////////////////////////////////////
+	public void setVaadinNORACoordsChangeListener(final VaadinNORACoordsChangeListener listener) {
+		_listener = listener;
+	}	
+	
+	public interface VaadinNORACoordsChangeListener {
+		public void onCoordsChange(final VaadinNORAContactGeoPostion2DComponent component );
+	}
 
 }

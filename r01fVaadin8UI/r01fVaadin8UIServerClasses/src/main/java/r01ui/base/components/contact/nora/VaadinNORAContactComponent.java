@@ -36,7 +36,7 @@ public class VaadinNORAContactComponent
 		_map = new BrowserFrame("Mapa");
 		_map.setWidth("600px");
 		_map.setHeight("400px");
-		_contactForm.getCoords().getCoords2D().addValueChangeListener(event -> {
+		_contactForm.getCoords().setVaadinNORACoordsChangeListener(event -> {
 																		GeoPosition2D geo = _contactForm.getCoords().getGeoPositionForETRS89Standard();
 																		if (geo != null) {
 																			if (geo.getX() == 0 || geo.getY() == 0) {

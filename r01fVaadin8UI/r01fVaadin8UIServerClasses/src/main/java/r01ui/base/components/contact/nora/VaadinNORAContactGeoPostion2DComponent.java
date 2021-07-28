@@ -77,6 +77,7 @@ public class VaadinNORAContactGeoPostion2DComponent
 		_coordsStandard2D.setItems(GeoPositionStandard.values());
 		_coordsStandard2D.setItemCaptionGenerator(item -> _i18n.getMessage("geo.coords."+item.name().toLowerCase()));
 		_coordsStandard2D.setEmptySelectionAllowed(false);
+		_coordsStandard2D.setValue(GeoPositionStandard.ETRS89);
 		HorizontalLayout hlStandard = new HorizontalLayout(_coordsStandard2D,_info);
 		hlStandard.setComponentAlignment(_info, Alignment.BOTTOM_LEFT);
 		hlStandard.setSpacing(false);
@@ -132,14 +133,12 @@ public class VaadinNORAContactGeoPostion2DComponent
 	
 	public GeoPosition2D getGeoPositionForETRS89Standard() {
 		GeoPosition2D geoPosition = null;
-		if (_coordsStandard2D.getValue().equals(GeoPositionStandard.ETRS89)) {
+		if (_coordsStandard2D != null && _coordsStandard2D.getValue() != null && _coordsStandard2D.getValue().equals(GeoPositionStandard.ETRS89)) {
 			geoPosition = getValue();
 		} else if (_geoPosition2DByStandard == null) {
 			loadGeoPosition2DByStandard();
-			if ( _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
-				geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.ETRS89);
-			}
-		} else if(_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
+		} 
+		if(_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
 			geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.ETRS89);
 		}
 		return geoPosition;

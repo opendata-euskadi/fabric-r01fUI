@@ -42,6 +42,7 @@ public class VaadinNORAContactComponent
 																			if (geo.getX() == 0 || geo.getY() == 0) {
 																				_map.setSource(null);
 																			} else {
+																				System.out.println("Coordenadas en formato: "+ geo.getStandard() + " x --> " + geo.getX() + " y--> "+geo.getY());
 																				_map.setSource(new ThemeResource("components/geocoder/previewMap.html?x="+geo.getX()+"&y="+geo.getY()+"&zoom="+_contactForm.getZoom_level()));
 																			}
 																		}

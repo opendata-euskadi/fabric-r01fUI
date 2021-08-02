@@ -133,13 +133,13 @@ public class VaadinNORAContactGeoPostion2DComponent
 	
 	public GeoPosition2D getGeoPositionForETRS89Standard() {
 		GeoPosition2D geoPosition = null;
-		if (_coordsStandard2D != null && _coordsStandard2D.getValue() != null && _coordsStandard2D.getValue().equals(GeoPositionStandard.ETRS89)) {
+		if (_coordsStandard2D != null && _coordsStandard2D.getValue() != null && _coordsStandard2D.getValue().equals(GeoPositionStandard.GOOGLE)) {
 			geoPosition = getValue();
 		} else if (_geoPosition2DByStandard == null) {
 			loadGeoPosition2DByStandard();
 		} 
-		if(_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(GeoPositionStandard.ETRS89)) {
-			geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.ETRS89);
+		if(_geoPosition2DByStandard != null && _geoPosition2DByStandard.contains(GeoPositionStandard.GOOGLE)) {
+			geoPosition =  _geoPosition2DByStandard.get(GeoPositionStandard.GOOGLE);
 		}
 		return geoPosition;
 	}

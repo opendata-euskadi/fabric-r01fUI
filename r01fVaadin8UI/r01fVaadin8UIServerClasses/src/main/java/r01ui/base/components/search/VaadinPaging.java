@@ -173,6 +173,12 @@ public class VaadinPaging
 		_btnLast.setEnabled(_paging.hasNextPage());
 		_btnNext.setEnabled(_paging.hasNextPage());
 	}
+	public int getCurrentPageFirstItem() {
+		return _paging.getCurrentPageFirstItem();
+	}
+	public int getPageItems() {
+		return _paging.getPageItems();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	I18N
 /////////////////////////////////////////////////////////////////////////////////////////	

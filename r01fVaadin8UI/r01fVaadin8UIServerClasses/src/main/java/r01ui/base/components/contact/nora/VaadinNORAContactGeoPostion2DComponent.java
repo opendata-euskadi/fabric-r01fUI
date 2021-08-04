@@ -165,6 +165,15 @@ public class VaadinNORAContactGeoPostion2DComponent
 		
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+//		_coordsStandard2D.setEnabled(enabled);
+//		_coords2D.setEnabled(enabled);
+//		_searchByGeoPosition2DBtn.setEnabled(enabled);
+		
+	}
+	
 	private void _printInfo() {
 		_info.setDescription("", ContentMode.HTML);
 		if (_geoPosition2DByStandard != null) {

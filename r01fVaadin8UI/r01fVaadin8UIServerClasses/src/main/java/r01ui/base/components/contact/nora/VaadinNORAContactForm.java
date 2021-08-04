@@ -396,6 +396,25 @@ public class VaadinNORAContactForm
 		
 		return _zoom_level;
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		if(!enabled) {
+			_clear(_countryCmb, null);
+			_clear(_stateCmb, _stateTf);
+			_clear(_countyCmb, _countyTf);
+			_clear(_municipalityCmb, _municipalityTf);
+			_clear(_localityCmb, _localityTf);
+			_clear(_streetCmb, _streetTf);
+			_clear(_portalCmb, _portalTf);
+		} else {
+			_countryCmb.setEnabled(enabled);
+			_loadCountryCmb();
+		}
+		_coords.setEnabled(enabled);
+		
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////
 //	BEHAVIOR
 /////////////////////////////////////////////////////////////////////////////////////////

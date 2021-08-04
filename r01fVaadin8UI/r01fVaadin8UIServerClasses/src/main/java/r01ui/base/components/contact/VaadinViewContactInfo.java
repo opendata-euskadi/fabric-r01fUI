@@ -44,7 +44,7 @@ public class VaadinViewContactInfo
 		return new VaadinViewGeoPosition(_wrappedModelObject.getGeoPosition());
 	}
 	public void setViewGeoPosition(final VaadinViewGeoPosition viewGeoPos) {
-		_wrappedModelObject.setGeoPosition(viewGeoPos.getWrappedModelObject());
+		_wrappedModelObject.setGeoPosition(viewGeoPos != null && viewGeoPos.getWrappedModelObject() != null ? viewGeoPos.getWrappedModelObject() : null);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONTACT INFO - emailChannels

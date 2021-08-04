@@ -77,5 +77,14 @@ public class VaadinNORAContactComponent
 		_contactForm.editViewObject(_viewObject);
 		
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		if (!enabled) {
+			_map.setSource(null);
+		}
+		_contactForm.setEnabled(enabled);
+	}
 
 }

@@ -54,13 +54,13 @@ public class VaadinContactInfoManageComponent
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private final Collection<ContactMeanType> _allowedMediumTypes;
-	private final VaadinNORAContactComponent _noraComponent;
+	protected final Collection<ContactMeanType> _allowedMediumTypes;
+	protected final VaadinNORAContactComponent _noraComponent;
 	//private final TinyMCETextFieldComponent _txtGeoPosition;
-	private final VaadinContactEMailManage _emailsComponent;
-	private final VaadinContactPhoneManage _phonesComponent;
-	private final VaadinContactSocialNetworkManage _socialNetworksComponent;
-	private final VaadinContactWebSiteManage _webSitesComponent;
+	protected final VaadinContactEMailManage _emailsComponent;
+	protected final VaadinContactPhoneManage _phonesComponent;
+	protected final VaadinContactSocialNetworkManage _socialNetworksComponent;
+	protected final VaadinContactWebSiteManage _webSitesComponent;
 	private final UII18NService _i18n;
 
 	@VaadinViewField(bindToViewObjectFieldNamed=VaadinViewContactInfo.PREFERED_LANGUAGE_CHANNELS_FIELD,
@@ -151,8 +151,6 @@ public class VaadinContactInfoManageComponent
 		if (viewObj == null) throw new IllegalArgumentException("Cannot bind a null object!");
 
 		// bind the individual components to the [view object] underlying collection
-//		_txtGeoPosition.setValue(viewObj.getViewGeoPosition()
-//										.getAddressText());
 		_noraComponent.setValue(viewObj.getViewGeoPosition());
 		_emailsComponent.setItems(viewObj.getViewContactMails());
 		_phonesComponent.setItems(viewObj.getViewContactPhones());
@@ -166,12 +164,7 @@ public class VaadinContactInfoManageComponent
 	@Override
 	public void writeAsDraftEditedViewObjectTo(final VaadinViewContactInfo viewObj) {
 		// ensure the binded [view object] is updated
-//		String address = _txtGeoPosition.getValue()
-//										.trim();
 		viewObj.setViewGeoPosition(_noraComponent.getValue());
-//		viewObj.getViewGeoPosition()
-//			   .setAddressText(Strings.isNOTNullOrEmpty(address) ? address : null);
-	
 		viewObj.setViewContactMails(_emailsComponent.getItems());
 		viewObj.setViewContactPhones(_phonesComponent.getItems());
 		viewObj.setViewContactSocialNetworks(_socialNetworksComponent.getItems());

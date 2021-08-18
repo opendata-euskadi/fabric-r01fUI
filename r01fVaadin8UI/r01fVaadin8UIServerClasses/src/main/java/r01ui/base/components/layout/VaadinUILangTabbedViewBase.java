@@ -434,8 +434,9 @@ public abstract class VaadinUILangTabbedViewBase<// the data being binded at the
 		// Set the first tab the one for the current language
 		// ... the other language tabs are set in the received order
 		VaadinTabbedLangForm firstForm = _langForms.tabFormFor(_i18n.getCurrentLanguage())
-												   .or(_langForms.tabFormFor(Language.DEFAULT)
-														  		 .orNull());
+												   .or(_langForms.tabFormFor(Language.DEFAULT))
+												   .or(_langForms.tabFormFor(Iterables.get(langs, 0))
+												   .orNull());
 		if (firstForm == null) throw new IllegalStateException("Could NOT find a form for " + _i18n.getCurrentLanguage() + " nor for " + Language.DEFAULT);
 
 		firstForm.setCurrent(true);

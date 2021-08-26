@@ -63,12 +63,20 @@ public class VaadinHistoryPopUp<V extends VaadinViewHistoryEntry<?,?,?>>
 //	CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public VaadinHistoryPopUp(final UII18NService i18n) {
+		this(i18n,
+			VaadinHistoryGridConfig.builder()
+								   .doNOTShowDetailsColumn()
+								   .build());
+	}
+	public VaadinHistoryPopUp(final UII18NService i18n,
+			 				  final VaadinHistoryGridConfig config) {
 		////////// I18N
 		_i18n = i18n;
 		
 		////////// UI
 		_lblAbout = new Label();
-		_grid = new VaadinHistoryGrid<>(i18n);
+		_grid = new VaadinHistoryGrid<>(i18n,
+										config);
 		_btnClose = new Button();
 		
 		////////// Layout

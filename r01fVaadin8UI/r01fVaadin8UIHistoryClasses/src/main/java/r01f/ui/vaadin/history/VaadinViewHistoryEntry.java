@@ -74,4 +74,8 @@ public abstract class VaadinViewHistoryEntry<A extends HistoryActionAboutObject,
 	public LocalDateTime getWhen() {
 		return VaadinDates.localDateTimeFrom(_wrappedModelObject.getWhen());
 	}
+	public static final String DETAILS_FIELD = "details";
+	public String getDetails() {
+		return _wrappedModelObject.getDetails();
+	}	
 }

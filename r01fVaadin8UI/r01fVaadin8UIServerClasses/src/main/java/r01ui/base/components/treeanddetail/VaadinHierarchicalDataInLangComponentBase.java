@@ -155,7 +155,9 @@ public abstract class VaadinHierarchicalDataInLangComponentBase<// the [view obj
 		hsplitPanel.setFirstComponent(_treeGrid);
 		hsplitPanel.setSecondComponent(_form);
 		hsplitPanel.setSplitPosition(30);
-		
+		hsplitPanel.getFirstComponent().setWidth(98, Unit.PERCENTAGE);
+		hsplitPanel.setMinSplitPosition(17, Unit.PERCENTAGE);
+	
 		return hsplitPanel;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

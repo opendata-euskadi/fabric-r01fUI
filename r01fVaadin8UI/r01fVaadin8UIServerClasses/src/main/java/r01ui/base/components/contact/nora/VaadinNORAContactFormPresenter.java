@@ -27,7 +27,7 @@ import r01f.ui.presenter.UIPresenterSubscriber;
 import r01ui.base.components.geo.VaadinViewGeoPosition;
 
 @Singleton
-public class VaadinNORAContactFormPresenter 
+public class VaadinNORAContactFormPresenter
   implements UIPresenter {
 	private static final long serialVersionUID = 5141850348403136735L;
 
@@ -35,7 +35,7 @@ public class VaadinNORAContactFormPresenter
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final VaadinNORAContactFormCOREMediator _mediator;
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTRUCTOR & BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -43,10 +43,10 @@ public class VaadinNORAContactFormPresenter
 	public VaadinNORAContactFormPresenter (final VaadinNORAContactFormCOREMediator mediator) {
 		_mediator = mediator;
 	}
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	LOAD
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public void onCountriesLoadRequested(final UIPresenterSubscriber<Collection<GeoCountry>> subscriber) {
 		try{
 			Collection<GeoCountry> contries = _mediator.loadCountries();
@@ -73,7 +73,7 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+
 	public void onMunicipalitiesLoadRequested(final GeoStateID stateId,
 									          final GeoCountyID countyId,
 									          final UIPresenterSubscriber<Collection<GeoMunicipality>> subscriber) {
@@ -95,7 +95,7 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+
 
 	public void onStreetLoadRequested(final GeoStateID stateId,
 									  final GeoCountyID countyId,
@@ -109,7 +109,7 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+
 	public Collection<GeoStreet> findStreets(final GeoStateID stateId,
 											 final GeoCountyID countyId,
 											 final GeoMunicipalityID municipalityId,
@@ -117,7 +117,7 @@ public class VaadinNORAContactFormPresenter
 											 final String text) {
 		return  _mediator.loadStreets(stateId, countyId, municipalityId, localityId, text);
 	}
-	
+
 	public void onPortalLoadRequested(final GeoStateID stateId,
 									  final GeoCountyID countyId,
 									  final GeoMunicipalityID municipalityId,
@@ -133,9 +133,9 @@ public class VaadinNORAContactFormPresenter
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	SEARCH
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public void onSearchByZipRequested(final String zipCode, final Language lang, final UIPresenterSubscriber<VaadinViewGeoPosition> subscriber) {
-		
+
 		try{
 			VaadinViewGeoPosition noraContactViewObject = new VaadinViewGeoPosition(_mediator.searchByZipCode(zipCode));
 			subscriber.onSuccess(noraContactViewObject);
@@ -143,7 +143,7 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+
 	public void onSearchByGeoPosition2D(final GeoPosition2D geoPosition2D, final Language lang, final UIPresenterSubscriber<VaadinViewGeoPosition> subscriber ) {
 		try{
 			VaadinViewGeoPosition noraContactViewObject = new VaadinViewGeoPosition(_mediator.searchByGeoPosition2D(geoPosition2D));
@@ -152,7 +152,7 @@ public class VaadinNORAContactFormPresenter
 			subscriber.onError(th);
 		}
 	}
-	
+
 	public <OID extends GeoIDBase>void onSearchPosition2D(final OID oid, final GeoCountyID countyId,
 														  final UIPresenterSubscriber<GeoPosition2D> subscriber) {
 		try{
@@ -164,7 +164,7 @@ public class VaadinNORAContactFormPresenter
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GeoPosition2D Transform
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public void onTransformGeoPositionFromETRS89toED50(final GeoPosition2D geoPosition2D,
 													   final UIPresenterSubscriber<GeoPosition2D> subscriber) {
 		try{

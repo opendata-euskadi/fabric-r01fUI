@@ -35,13 +35,13 @@ import r01f.xmlproperties.XMLPropertiesBuilder;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 @Singleton
-public class VaadinNORAContactFormCOREMediator 
+public class VaadinNORAContactFormCOREMediator
   implements UICOREMediator {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	private final NORAService _nora;
-	
+
 	@Inject
 	public VaadinNORAContactFormCOREMediator() {
 		super();
@@ -51,7 +51,7 @@ public class VaadinNORAContactFormCOREMediator
 		XMLPropertiesForAppComponent props = xmlProps.forAppComponent(AppCode.forId("r01t"), AppComponent.forId("ejie.nora"));
 		_nora = new NORAService(props);
 	}
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //	METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -63,26 +63,26 @@ public class VaadinNORAContactFormCOREMediator
 												.getCountries();
 		return countries;
 	}
-	
-	
+
+
 	public Collection<GeoState> loadStates(final GeoCountryID countryId) {
 		Collection<GeoState> states= _nora.getServicesForStates()
 										  .getStatesOf(countryId);
 		return states;
-	} 
-	
+	}
+
 	public Collection<GeoCounty> loadCounties(final GeoStateID stateId) {
 		Collection<GeoCounty> counties = _nora.getServicesForCounties()
 											  .getCountiesOf(stateId);
 		return counties;
-	} 
-	
+	}
+
 	public Collection<GeoRegion> loadRegions(final GeoStateID stateId, final GeoCountyID countyId) {
 		Collection<GeoRegion> region = _nora.getServicesForRegions()
 											.getRegionsOf(stateId, countyId);
 		return region;
-	} 
-	
+	}
+
 	public Collection<GeoMunicipality> loadMunicipalities(final GeoStateID stateId, final GeoCountyID countyId) {
 		Collection<GeoMunicipality> muns = _nora.getServicesForMunicipalities()
 										  		.getMunicipalitiesOf(stateId, countyId);
@@ -103,8 +103,8 @@ public class VaadinNORAContactFormCOREMediator
 											 .findStreetsWithTextOf(stateId, countyId, municipalityId, localityId, text);
 		return streets;
 	}
-	
-	public Collection<GeoPortal> loadPortals(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId, final GeoLocalityID localityId,  
+
+	public Collection<GeoPortal> loadPortals(final GeoStateID stateId, final GeoCountyID countyId, final GeoMunicipalityID municipalityId, final GeoLocalityID localityId,
 											 final GeoStreetID streetId){
 		Collection<GeoPortal> portals = _nora.getServicesForPortal()
 											 .getPortalsOf(stateId, countyId, municipalityId,localityId,streetId);
@@ -118,12 +118,12 @@ public class VaadinNORAContactFormCOREMediator
 		GeoLocality loc = _nora.getServicesForLocalities().getLocalitybyZipCode(GeoZipCode.forId(zipCode)).iterator().next();
 		return _loadFromLocality(loc);
 	}
-	
+
 	public GeoPosition searchByGeoPosition2D(GeoPosition2D geoPosition2D) {
 		GeoLocality loc = _nora.getServicesForLocalities().getLocalitybyGeoPosition2D(geoPosition2D);
 		return _loadFromLocality(loc);
 	}
-	
+
 	private GeoPosition _loadFromLocality(final GeoLocality loc) {
 		GeoPosition geo = new GeoPosition();
 		geo.setLocality(loc);
@@ -137,7 +137,7 @@ public class VaadinNORAContactFormCOREMediator
 		geo.setMunicipality(mun);
 		return geo;
 	}
-	
+
 	public <OID extends GeoIDBase>GeoPosition2D searchGeoPosition2D(final OID oid, final GeoCountyID countyId) {
 		GeoPosition2D geoPosition2D = new GeoPosition2D();
 		if (oid instanceof GeoCountryID) {
@@ -156,11 +156,11 @@ public class VaadinNORAContactFormCOREMediator
 			geoPosition2D =  _nora.getServicesForPortal().getPortal(null, null, null, null, null, (GeoPortalID)oid).getPosition2D();
 		}
 		return geoPosition2D;
-		
+
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	GeoPosition2D Transform
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	public GeoPosition2D getGeoPositionFromETRS89toED50(final GeoPosition2D geoPosition2D) {
 		GeoPosition2D outGeoPosition2D = _nora.getServicesForGeoPosition2D().getGeoPositionFromETRS89toED50(geoPosition2D);
 		return outGeoPosition2D;
